@@ -48,3 +48,17 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+## Library Documentation
+
+This project uses several useful libraries to enhance the development experience and user interface. Below is the documentation for each:
+
+- [NativeBase](https://docs.nativebase.io/): A UI component library that provides a series of customizable components and styles for creating professional-looking mobile applications.
+
+- [NativeWind](https://www.nativewind.dev/docs): A tool that combines Tailwind CSS with React Native, allowing you to use utility classes to style your components quickly and efficiently.
+
+- [React Native Elements](https://reactnativeelements.com/docs): A UI component library for React Native that makes it easy to create mobile applications with stylized and reusable components.
+
+- [React Native Paper](https://callstack.github.io/react-native-paper/): A Material Design component library for React Native that helps you implement designs that adhere to Material Design standards in your applications.
+
+- [React Native Vector Icons](https://oblador.github.io/react-native-vector-icons/): A library that allows you to use custom icons in your application, featuring a wide variety of icons available from different collections.
