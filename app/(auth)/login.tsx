@@ -6,6 +6,7 @@ import InputField from "@/components/InputField";
 import CustomButton from "@/components/CustomButton";
 import LogoContainer from "@/components/LogoContainer";
 import CustomText from "@/components/CustomText";
+import { Colors } from "@/constants/Colors";
 
 const LoginScreen: React.FC = () => {
   const router = useRouter();
@@ -24,21 +25,21 @@ const LoginScreen: React.FC = () => {
           />
 
           <CustomText
-            style={styles.textBlue500}
+            style={styles.textPrimary}
             onPress={() => {
               /* función de reset */
             }}
           >
             ¿Has olvidado tu contraseña?
-            <CustomText style={styles.textBlue600}> Reset</CustomText>
+            <CustomText style={styles.textSecondary}> Reset</CustomText>
           </CustomText>
 
           <CustomText
             onPress={() => router.push("/(auth)/sign-up")}
-            style={styles.textBlue500}
+            style={styles.textPrimary}
           >
             ¿No tienes cuenta?
-            <CustomText style={styles.textBlue600}> Crear una</CustomText>
+            <CustomText style={styles.textSecondary}> Crear una</CustomText>
           </CustomText>
 
           <CustomButton
@@ -59,11 +60,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
   },
-  textBlue500: {
-    color: "#075e54",
+  textPrimary: {
+    color: Colors.light.primary,
   },
-  textBlue600: {
-    color: "#128c7e",
+  textSecondary: {
+    color: Colors.light.secondary,
   },
 });
 
