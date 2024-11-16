@@ -1,24 +1,55 @@
 import React from "react";
 import { ScrollView, StyleSheet } from "react-native";
-import { Center, VStack } from "native-base";
+import { Center, View, VStack } from "native-base";
 import { useRouter } from "expo-router";
 import InputField from "@/components/InputField";
 import CustomButton from "@/components/CustomButton";
 import LogoContainer from "@/components/LogoContainer";
 import CustomText from "@/components/CustomText";
 import { Colors } from "@/constants/Colors";
+import api from "@/services/api/admin";
+
+const initialValues = {
+  email: '',
+  password: ''
+}
 
 const LoginScreen: React.FC = () => {
+  const [formValues, setFormValues] = React.useState(initialValues)
   const router = useRouter();
+
+  const handleChangeValue = (key: string, value: string) => {
+    setFormValues((prevState) => (
+      {
+        ...prevState,
+        [key]: value
+      })
+    )
+  }
+
+  const Login = async () => {    
+    try {
+      const res = await api.auth.login(formValues)
+      console.log(res);
+      
+    } catch (error) {
+      console.log(error);
+      
+    } 
+  }
+  
 
   return (
     <ScrollView contentContainerStyle={styles.scrollView}>
       <Center>
         <VStack space={4} w="90%" maxW="300px">
-          <LogoContainer />
+          <View style={styles.containerImage}>
+            <LogoContainer />
+          </View>
 
-          <InputField label="Correo" placeholder="Ingresa tu correo" />
+          <InputField onChangeText={(text)=> handleChangeValue('email',text)} label="Correo" placeholder="Ingresa tu correo" />
           <InputField
+            onChangeText={(text)=> handleChangeValue('password',text)}
             label="Contraseña"
             placeholder="Ingresa tu contraseña"
             type="password"
@@ -43,12 +74,21 @@ const LoginScreen: React.FC = () => {
           </CustomText>
 
           <CustomButton
-            onPress={() => {
-              /* función de login */
-            }}
+            onPress={() => Login() }
           >
             Iniciar Sesión
           </CustomButton>
+
+          <CustomButton
+            onPress={() => {
+              router.push("/(tabs)/homeScreen")
+
+            }}
+          >
+            Entrar
+          </CustomButton>
+
+
         </VStack>
       </Center>
     </ScrollView>
@@ -65,6 +105,9 @@ const styles = StyleSheet.create({
   },
   textSecondary: {
     color: Colors.light.secondary,
+  },
+  containerImage: {
+    alignItems: "center"
   },
 });
 

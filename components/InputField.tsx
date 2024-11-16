@@ -4,7 +4,7 @@ import { FormControl, Input } from 'native-base';
 interface InputFieldProps {
   label: string;
   placeholder: string;
-  type?: string;
+  type?: 'text' | 'password'; 
   onChangeText?: (text: string) => void;
 }
 
