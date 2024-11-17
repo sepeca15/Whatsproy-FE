@@ -2,7 +2,8 @@ import * as auth from "../auth/auth"
 
 const api = {
     auth:{
-        login:auth.Login
+        login:auth.Login,
+        me: auth.GetMyAccountData
     }
 }
 
