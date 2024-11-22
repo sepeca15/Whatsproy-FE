@@ -1,16 +1,13 @@
 
+import * as React from "react"
 import CustomText from "@/components/CustomText";
 import { View } from "native-base";
 import { removeData } from "@/storage/localStorage";
 import { router } from "expo-router";
-import { useUser } from "@/hooks/redux/useUser";
 import { styles } from "./HomeStyles";
 
-export default function Home() {
-  const { Mensaje } = useUser()
+const Home = () => {
 
-
-  Mensaje()
   const logout = async() => {
     await removeData('token')
     router.push('/(auth)/login')
@@ -28,3 +25,5 @@ export default function Home() {
     </View>
   );
 }
+
+export default Home

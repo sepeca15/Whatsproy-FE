@@ -7,15 +7,15 @@ export const PrivateView = ({ children }: any) => {
   const { isAuthenticated, loading } = useAuth();
   const router = useRouter();
 
-  useEffect(() => {
-    if (!loading) {
-      if (isAuthenticated) {
-        router.replace('/(tabs)/home')
-      } else {
-        router.replace("/(auth)/login");
-      }
-    }
-  }, [isAuthenticated, loading, router]);
+  // useEffect(() => {
+  //   if (!loading) {
+  //     if (isAuthenticated) {
+  //       router.replace('/(tabs)/home')
+  //     } else {
+  //       router.replace("/(auth)/login");
+  //     }
+  //   }
+  // }, [isAuthenticated, loading, router]);
 
   if (loading) {
     return <Text>Cargando...</Text>;
