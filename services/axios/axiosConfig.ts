@@ -31,6 +31,8 @@ const ApiInstances = (key : KeysApis) => {
       return response;
     },
     async (error)=> {
+      console.log("el error es",error.response.data);
+      
       if(error?.response?.data?.statusCode === 401 && error?.response.data.message != "Invalid credentials") {
         await removeData('token')
         router.push('/(auth)/login')

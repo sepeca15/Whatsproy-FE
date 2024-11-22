@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from "react-redux"
 export const useUser = () => {
 
     const Dispatch = useDispatch()
-    const {user} = useSelector((state : any)=> state.user)
+    const {user,isConfig} = useSelector((state : any)=> state.user)
 
     const Mensaje = () => {
         Dispatch(mostrarMensaje("hola soy un nuevo mensaje ;D"))
@@ -12,6 +12,7 @@ export const useUser = () => {
 
     return {
         Mensaje,
-        user
+        user,
+        isConfig
     }
 }

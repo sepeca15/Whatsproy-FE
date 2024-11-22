@@ -5,6 +5,7 @@ const userSlice = createSlice({
     name:"userSlice",
     initialState:{
         user:{},
+        isConfig:true
     },
     reducers:{
         mostrarMensaje:(state,{payload})=> {

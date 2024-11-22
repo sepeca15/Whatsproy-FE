@@ -4,6 +4,7 @@ import { NativeBaseProvider } from "native-base";
 
 const Layout: React.FC = () => {
   return (
+    
     <NativeBaseProvider>
       <Slot />
     </NativeBaseProvider>

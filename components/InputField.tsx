@@ -4,8 +4,9 @@ import { FormControl, Input } from 'native-base';
 interface InputFieldProps {
   label: string;
   placeholder: string;
-  type?: 'text' | 'password'; 
+  type?: 'text' | 'password';
   onChangeText?: (text: string) => void;
+  marginTop?: number,
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -13,9 +14,11 @@ const InputField: React.FC<InputFieldProps> = ({
   placeholder,
   type = 'text',
   onChangeText,
+  marginTop
 }) => {
   return (
-    <FormControl isRequired>
+    <FormControl style={{ marginTop: marginTop }}
+      isRequired>
       <FormControl.Label>{label}</FormControl.Label>
       <Input
         type={type}
