@@ -1,23 +1,32 @@
-import api from "@/services/api/admin";
 import { getData } from "@/storage/localStorage";
 import { useState, useEffect } from "react";
+import { useUser } from "./redux/useUser";
 
 export function useAuth() {
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const { handleAddUserData } = useUser();
+  const [isAuthenticated, setIsAuthenticated] = useState(false); 
+  const [loading, setLoading] = useState(true); 
 
-  // const isAuth = async () => {
-  //   const userLoggedIn = await getData('token');
-  //   setIsAuthenticated(userLoggedIn ? true : false);
-  //   if(userLoggedIn) {
-  //     const data = await api.auth.me()
-  //   }
-  //   setLoading(false);
-  // };
+  const isAuth = async () => {
+    setLoading(true); 
+    try {
+      const userLoggedIn = await getData("token");      
+      if (userLoggedIn) {
+        setIsAuthenticated(true);
+        await handleAddUserData();
+      } else {
+        setIsAuthenticated(false);
+      }
+    } catch (error) {
+      setIsAuthenticated(false);
+    } finally {
+      setLoading(false); 
+    }
+  };
 
-  // useEffect(() => {
-  //   isAuth();
-  // }, []);
+  useEffect(() => {
+    isAuth();
+  }, []);
 
   return { isAuthenticated, loading };
 }

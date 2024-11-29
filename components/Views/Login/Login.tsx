@@ -32,7 +32,7 @@ const LoginScreen: React.FC = () => {
     try {
       const res = await api.auth.login(formValues)
 
-      if(res.access_token) {
+      if(res.access_token) {        
         StoreData('token',res.access_token)
         router.push('/(tabs)/home')
       }
