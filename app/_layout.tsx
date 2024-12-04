@@ -29,11 +29,10 @@ export default function RootLayout() {
   }
 
   return (
-
     <Provider store={store}>
-      <NativeBaseProvider >
+      <NativeBaseProvider>
         <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-          <Stack screenOptions={{ headerShown: false }} >
+          <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="(auth)" options={{ headerShown: false }} />
             <Stack.Screen name="+not-found" />
