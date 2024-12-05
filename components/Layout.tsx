@@ -49,7 +49,7 @@ const Layout = ({ children }: any) => {
                     <Pressable 
                         key={page.name} 
                         style={styles.LinkContainer}
-                        onPress={() => setSelected(page.name)}  // Al hacer clic, marca como seleccionado
+                        onPress={() => setSelected(page.name)}
                     >
                         <Link style={styles.link} href={page.path}>
                             {page.icon(page.name === selected)}
