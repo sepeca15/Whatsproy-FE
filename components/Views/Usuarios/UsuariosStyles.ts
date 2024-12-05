@@ -38,20 +38,21 @@ const createStyles = (theme: typeof Colors.light | typeof Colors.dark) => StyleS
     padding: 8,
   },
   addButton: {
+    display: 'flex',
     flexDirection: 'row',
     alignSelf: 'center',
     backgroundColor: theme.secondary,
     padding: 16,
     borderRadius: 8,
     marginTop: 16,
-    width: '30%',
+    width: '20%',
     justifyContent: 'center',
     alignItems: 'center',
   },
   addButtonText: {
     color: '#fff',
-    fontSize: 20,
-    marginLeft: 8,
+    fontSize: 30,
+    
   },
 });
 

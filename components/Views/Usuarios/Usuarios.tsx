@@ -51,8 +51,8 @@ const UsuariosEmpresasScreen: React.FC = () => {
           router.push("/(tabs)/addusu")
         }}
       >
-        <Ionicons name="add" size={30} color="#fff" />
-        <Text style={styles.addButtonText}></Text>
+      
+        <Text style={styles.addButtonText}>+</Text>
       </TouchableOpacity>
     </View>
   );
