@@ -11,38 +11,33 @@ import { StoreData } from "@/storage/localStorage";
 import { styles } from "./LoginStyles";
 
 const initialValues = {
-  email: '',
-  password: ''
-}
+  email: "",
+  password: "",
+};
 
 const LoginScreen: React.FC = () => {
-  const [formValues, setFormValues] = React.useState(initialValues)
+  const [formValues, setFormValues] = React.useState(initialValues);
   const router = useRouter();
 
   const handleChangeValue = (key: string, value: string) => {
-    setFormValues((prevState) => (
-      {
-        ...prevState,
-        [key]: value
-      })
-    )
-  }
+    setFormValues((prevState) => ({
+      ...prevState,
+      [key]: value,
+    }));
+  };
 
-  const Login = async () => {    
+  const Login = async () => {
     try {
-      const res = await api.auth.login(formValues)
+      const res = await api.auth.login(formValues);
 
-      if(res.access_token) {
-        StoreData('token',res.access_token)
-        router.push('/(tabs)/home')
+      if (res.access_token) {
+        StoreData("token", res.access_token);
+        router.push("/(tabs)/home");
       }
-      
     } catch (error) {
       console.log(error);
-      
-    } 
-  }
-  
+    }
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.scrollView}>
@@ -52,9 +47,13 @@ const LoginScreen: React.FC = () => {
             <LogoContainer />
           </View>
 
-          <InputField onChangeText={(text)=> handleChangeValue('email',text)} label="Correo" placeholder="Ingresa tu correo" />
           <InputField
-            onChangeText={(text)=> handleChangeValue('password',text)}
+            onChangeText={(text) => handleChangeValue("email", text)}
+            label="Correo"
+            placeholder="Ingresa tu correo"
+          />
+          <InputField
+            onChangeText={(text) => handleChangeValue("password", text)}
             label="Contraseña"
             placeholder="Ingresa tu contraseña"
             type="password"
@@ -78,15 +77,11 @@ const LoginScreen: React.FC = () => {
             <CustomText style={styles.textSecondary}> Crear una</CustomText>
           </CustomText>
 
-          <CustomButton
-            onPress={() => Login() }
-          >
-            Iniciar Sesión
-          </CustomButton>
+          <CustomButton onPress={() => Login()}>Iniciar Sesión</CustomButton>
 
           <CustomButton
             onPress={() => {
-              router.push("/(tabs)/home")
+              router.push("/(tabs)/home");
             }}
           >
             Entrar
@@ -96,6 +91,5 @@ const LoginScreen: React.FC = () => {
     </ScrollView>
   );
 };
-
 
 export default LoginScreen;

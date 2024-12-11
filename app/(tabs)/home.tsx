@@ -1,10 +1,6 @@
-import * as React from "react"
+import * as React from "react";
 import Home from "@/components/Views/Home";
 
 export default function HomeScreen() {
-  
-  return (
-    <Home/>
-  );
+  return <Home />;
 }
-
