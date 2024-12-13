@@ -27,6 +27,8 @@ export const getData = async(key:string) => {
 }
 
 export const removeData = async(key:string) => {
+    console.log("removere el token");
+    
     try {
         await AsyncStorage.removeItem(key)
     } catch (error) {
