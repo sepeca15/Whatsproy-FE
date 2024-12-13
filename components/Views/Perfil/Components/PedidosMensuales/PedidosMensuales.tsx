@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable, Animated, Easing, Dimensions } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { months, ordersData } from './data';
-import { pedidosMensualesStyles as styles } from './StylesMensual';
+import { months, ordersData } from '../data';
+import { Styles } from './PedidosMensualesStyles';
 
 const maxValue = Math.max(...ordersData);
 const screenWidth = Dimensions.get('window').width;
@@ -61,10 +61,10 @@ const PedidosMensuales: React.FC = () => {
         const steps = 5;
         const stepValue = maxValue / steps;
         return (
-            <Animated.View style={[styles.scale, { opacity: scaleAnim, height: 200 }]}>
+            <Animated.View style={[Styles.scale, { opacity: scaleAnim, height: 200 }]}>
                 {Array.from({ length: steps + 1 }).map((_, index) => (
-                    <View key={index} style={styles.scaleStep}>
-                        <Text style={styles.scaleText}>
+                    <View key={index} style={Styles.scaleStep}>
+                        <Text style={Styles.scaleText}>
                             {Math.round(stepValue * (steps - index))}
                         </Text>
                     </View>
@@ -74,30 +74,30 @@ const PedidosMensuales: React.FC = () => {
     };
 
     return (
-        <Animated.View style={[styles.chartContainer, { opacity: fadeAnim }]}>
-            <View style={styles.titleContainer}>
-                <Text style={styles.chartTitle}>Pedidos mensuales</Text>
+        <Animated.View style={[Styles.chartContainer, { opacity: fadeAnim }]}>
+            <View style={Styles.titleContainer}>
+                <Text style={Styles.chartTitle}>Pedidos mensuales</Text>
                 <Pressable onPress={toggleScale}>
                     <Feather name="bar-chart-2" size={24} color="#333" />
                 </Pressable>
             </View>
-            <View style={[styles.chartBackground, { flexDirection: 'row' }]}>
+            <View style={[Styles.chartBackground, { flexDirection: 'row' }]}>
                 {showScale && renderScale()}
-                <View style={[styles.chart, { flex: 1 }]}>
+                <View style={[Styles.chart, { flex: 1 }]}>
                     {ordersData.map((value, index) => (
                         <Pressable
                             key={index}
                             onPressIn={() => handleMouseEnter(index)}
                             onPressOut={handleMouseLeave}
-                            style={styles.barContainer}
+                            style={Styles.barContainer}
                             accessibilityLabel={`${months[index]}: ${value} pedidos`}
                             accessibilityRole="button"
                             accessibilityState={{ selected: hoveredBar === index }}
                         >
-                            <View style={styles.barWrapper}>
+                            <View style={Styles.barWrapper}>
                                 <Animated.View
                                     style={[
-                                        styles.bar,
+                                        Styles.bar,
                                         {
                                             height: barAnimations[index].interpolate({
                                                 inputRange: [0, 1],
@@ -116,10 +116,10 @@ const PedidosMensuales: React.FC = () => {
                                     ]}
                                 />
                             </View>
-                            <Text style={styles.monthLabel}>{months[index]}</Text>
+                            <Text style={Styles.monthLabel}>{months[index]}</Text>
                             {hoveredBar === index && (
-                                <View style={styles.tooltip}>
-                                    <Text style={styles.tooltipText}>{value}</Text>
+                                <View style={Styles.tooltip}>
+                                    <Text style={Styles.tooltipText}>{value}</Text>
                                 </View>
                             )}
                         </Pressable>

@@ -2,7 +2,7 @@ import { StyleSheet, Dimensions } from 'react-native';
 
 const screenWidth = Dimensions.get('window').width;
 
-export const PedidosRealizadosStyles = StyleSheet.create({
+export const Styles = StyleSheet.create({
     chartContainer: {
         backgroundColor: '#fff',
         borderRadius: 10,

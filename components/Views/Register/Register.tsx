@@ -6,6 +6,7 @@ import CustomButton from "@/components/CustomButton";
 import LogoContainer from "@/components/LogoContainer";
 import CustomText from "@/components/CustomText";
 import { styles } from "./RegisterStyles";
+import CheckBox from '@react-native-community/checkbox';
 
 const Register: React.FC = () => {
   const router = useRouter();
@@ -104,14 +105,14 @@ const Register: React.FC = () => {
           onChangeText={(value) => handleInputChange("hora_cierre", value)}
         />
 
-        <Checkbox
-          isChecked={formData.notificarReservaHoras}
-          onChange={(value) =>
+        <CheckBox
+          value={formData.notificarReservaHoras}
+          onValueChange={(value) =>
             handleInputChange("notificarReservaHoras", value)
           }
         >
           Notificar reservas por hora
-        </Checkbox>
+        </CheckBox>
 
         <Select
           selectedValue={formData.tipoServicioId}

@@ -4,7 +4,7 @@ import { HStack, VStack, Avatar, IconButton, Icon } from 'native-base';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router'; 
 import { styles } from './PerfilStyles';
-import Graficas from './components/Graficas';
+import Graficas from './Components/Graficas/Graficas';
 
 const Perfil: React.FC = () => {
   const router = useRouter(); 

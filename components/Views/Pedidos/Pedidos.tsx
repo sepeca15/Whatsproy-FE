@@ -1,9 +1,8 @@
 import React from 'react';
 import { View, ScrollView, StyleSheet, Text } from 'react-native';
-import PedidosRealizados from './components/PedidosRealizados';
+import PedidosRealizados from './Components/PedidosRealizados';
 // import IngresosMensuales from './components/IngresosMensuales';
-import DistribucionPedidos from './components/Ventasporcategorias';
-import TendenciaVentas from './components/TendenciaVentas';
+import TendenciaVentas from './Components/TendenciaVentas';
 
 const PedidosEIngresos: React.FC = () => {
     return (
