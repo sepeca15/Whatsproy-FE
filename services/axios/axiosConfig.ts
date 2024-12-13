@@ -24,13 +24,15 @@ const ApiInstances = (key : KeysApis) => {
   );
   
   globalApi.interceptors.response.use(
-    async (response : AxiosResponse<any, any>)=> {
+    async (response : AxiosResponse<any, any>)=> {      
       return response;
     },
     async (error)=> {            
-      if(error?.response?.data?.statusCode === 401 && error?.response.data.message != "Invalid credentials") {
+      console.log('entro aqui xddddddd');
+      
+      if( (error?.response?.status === 401 || error?.response?.data?.statusCode === 401 )&& error?.response.data.message != "Invalid credentials") {
         await removeData('token')
-        router.replace('/(auth)/login')
+        router.push('/(auth)/login')
       }
       return Promise.reject(error);
     }
