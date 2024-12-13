@@ -4,10 +4,11 @@ import { FormControl, Input } from "native-base";
 interface InputFieldProps {
   label: string;
   placeholder: string;
-  type?: string;
   value?: string;
   onChangeText?: (text: string) => void;
   isRequired?: boolean;
+  marginTop?: number,
+  type?: 'text' | 'password';
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -16,10 +17,11 @@ const InputField: React.FC<InputFieldProps> = ({
   type = "text",
   value,
   onChangeText,
-  isRequired = true,
+  marginTop
 }) => {
   return (
-    <FormControl isRequired={isRequired}>
+    <FormControl style={{ marginTop: marginTop }}
+      isRequired>
       <FormControl.Label>{label}</FormControl.Label>
       <Input
         type={type}

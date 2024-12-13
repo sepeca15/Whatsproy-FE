@@ -29,10 +29,9 @@ const LoginScreen: React.FC = () => {
   const Login = async () => {
     try {
       const res = await api.auth.login(formValues);
-
-      if (res.access_token) {
-        StoreData("token", res.access_token);
-        router.push("/(tabs)/home");
+      if(res.access_token) {        
+        StoreData('token',res.access_token)
+        router.push('/(tabs)/home')
       }
     } catch (error) {
       console.log(error);
