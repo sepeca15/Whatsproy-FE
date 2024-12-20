@@ -7,6 +7,7 @@ interface InputFieldProps {
   type?: 'text' | 'password';
   onChangeText?: (text: string) => void;
   marginTop?: number,
+  [key: string]: any;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -14,7 +15,8 @@ const InputField: React.FC<InputFieldProps> = ({
   placeholder,
   type = 'text',
   onChangeText,
-  marginTop
+  marginTop,
+  ...props
 }) => {
   return (
     <FormControl style={{ marginTop: marginTop }}
@@ -24,6 +26,7 @@ const InputField: React.FC<InputFieldProps> = ({
         type={type}
         placeholder={placeholder}
         onChangeText={onChangeText}
+        {...props} 
       />
     </FormControl>
   );

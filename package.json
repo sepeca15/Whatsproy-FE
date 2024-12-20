@@ -14,7 +14,7 @@
   "jest": {
     "preset": "jest-expo"
   },
- "dependencies": {
+  "dependencies": {
     "@expo/vector-icons": "^14.0.2",
     "@react-native-async-storage/async-storage": "^1.23.1",
     "@reduxjs/toolkit": "^2.3.0",
@@ -39,6 +39,7 @@
     "react-native-elements": "^3.4.3",
     "react-native-gesture-handler": "~2.16.1",
     "react-native-paper": "^5.12.5",
+    "react-native-picker-select": "^9.3.1",
     "react-native-progress": "^5.0.1",
     "react-native-qrcode-svg": "^6.3.12",
     "react-native-reanimated": "~3.10.1",
