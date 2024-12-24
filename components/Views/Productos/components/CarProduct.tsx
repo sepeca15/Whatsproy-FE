@@ -22,16 +22,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     const router = useRouter();
 
     const handleEdit = () => {
+        const params = {
+            name: title,
+            price: price.toString(),
+            currency: 'USD',
+            duration: '15mn',
+            description: description,
+            image: imageUrl,
+        };
+        
         router.push({
-            pathname: '/(tabs)/editpro',
-            params: {
-                name: title,
-                price: price.toString(),
-                currency: 'USD', // Assuming currency is USD for simplicity
-                duration: '15mn', // Assuming a default duration for simplicity
-                description: description,
-                image: imageUrl,
-            },
+            pathname: '/(tabs)/editprod',
+            params: params,
         });
     };
 
