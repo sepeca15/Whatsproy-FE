@@ -39,20 +39,26 @@ export const styles = StyleSheet.create({
         flexDirection:'row',
         alignItems:'center',
         justifyContent:'center',
-        padding:30
     },
     ContainerHeader: {
         width: "100%",
         alignSelf: "flex-start",
-        marginBottom: 40,
     },
     ContainerFooter: {
         width: "100%",
-        alignSelf: "flex-end"
+        alignSelf: "flex-end",
+        marginTop:20,
     },
     test:{
+        width:'100%',
         display:'flex',
         flexDirection:'row',
         alignItems:'center',
-    }
+        justifyContent:'center',
+    },
+    spinner: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    },
 });
