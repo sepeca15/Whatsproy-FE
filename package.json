@@ -14,21 +14,24 @@
   "jest": {
     "preset": "jest-expo"
   },
- "dependencies": {
+  "dependencies": {
     "@expo/vector-icons": "^14.0.2",
     "@react-native-async-storage/async-storage": "^1.23.1",
+    "@react-native-picker/picker": "^2.10.2",
     "@reduxjs/toolkit": "^2.3.0",
     "axios": "^1.7.7",
     "dotenv": "^16.4.5",
     "expo": "~51.0.39",
     "expo-constants": "~16.0.2",
     "expo-font": "~12.0.9",
+    "expo-image-picker": "~15.0.7",
     "expo-linking": "~6.3.1",
     "expo-router": "~3.5.24",
     "expo-splash-screen": "^0.27.7",
     "expo-status-bar": "~1.12.1",
     "expo-system-ui": "~3.0.7",
     "expo-web-browser": "~13.0.3",
+    "lucide-react-native": "^0.468.0",
     "native-base": "^3.4.28",
     "nativewind": "^2.0.11",
     "normalize-css-color": "^1.0.2",
