@@ -15,14 +15,12 @@ const Perfil: React.FC = () => {
     <View style={styles.container}>
       <HStack style={styles.header} alignItems="center" justifyContent="space-between">
         <HStack alignItems="center">
-          <TouchableOpacity onPress={() => setModalVisible(true)}>
-            <Avatar
-              size="md"
-              source={{
-                uri: profileData.avatarUrl, // Usar la URL del avatar desde los datos del perfil
-              }}
-            />
-          </TouchableOpacity>
+          {/* <Avatar
+            size="md"
+            source={{
+              uri: 'https://example.com/avatar.jpg'
+            }}
+          /> */}
           <VStack marginLeft={3}>
             <Text style={styles.name}>{profileData.name}</Text> 
             <Text style={styles.plan}>Plan: {profileData.plan}</Text> 
