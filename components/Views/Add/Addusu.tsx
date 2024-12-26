@@ -51,7 +51,7 @@ const AddUsuario: React.FC = () => {
 
   const handleAddUsuario = () => {
     if (isValid) {
-      console.log('Usuario añadido:', { nombre, email, image: selectedImage });
+      console.log('Usuario agregado:', { nombre, email, image: selectedImage });
       Alert.alert('Éxito', 'Usuario añadido correctamente');
       setNombre('');
       setEmail('');
