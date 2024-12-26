@@ -3,6 +3,7 @@ import * as products from "../products/products"
 import * as company from "../company/company"
 import * as plan from "../plan/plan"
 import * as user from "../user/user"
+import * as dataOrder from "../dateOrder/DateOrder"
 
 const api = {
     auth:{
@@ -23,7 +24,14 @@ const api = {
     },
     user: {
         update: user.updateUser
+    },
+    //(INFO-LINES)
+    dataOrder: {
+        getAll: dataOrder.getAll,
+        create: dataOrder.create,
+        delete: dataOrder.deleteOrderDate
     }
+    
 }
 
 export default api

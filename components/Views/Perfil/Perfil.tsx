@@ -13,12 +13,12 @@ const Perfil: React.FC = () => {
     <View style={styles.container}>
       <HStack style={styles.header} alignItems="center" justifyContent="space-between">
         <HStack alignItems="center">
-          <Avatar
+          {/* <Avatar
             size="md"
             source={{
-              uri: 'https://example.com/avatar.jpg', // Reemplaza con la URL de tu avatar
+              uri: 'https://example.com/avatar.jpg'
             }}
-          />
+          /> */}
           <VStack marginLeft={3}>
             <Text style={styles.name}>Jorge Martinez</Text>
             <Text style={styles.plan}>Plan: Premium</Text>
