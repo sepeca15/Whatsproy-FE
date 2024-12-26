@@ -65,7 +65,7 @@ const AddUsuario: React.FC = () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [16, 9],
+      aspect: [1, 1],
       quality: 1,
     });
 
@@ -89,50 +89,48 @@ const AddUsuario: React.FC = () => {
               style={styles.image}
             />
             <View style={styles.imagePicker}>
-              <Ionicons name="camera" size={24} color="#fff" />
+              <Ionicons name="camera" size={20} color="#fff" />
             </View>
           </TouchableOpacity>
-          <View style={styles.formContent}>
-            <Text style={styles.title}>Agregar Usuario</Text>
-            <View style={styles.inputContainer}>
-              <Ionicons name="person-outline" size={24} style={styles.icon} />
-              <TextInput
-                style={styles.input}
-                value={nombre}
-                onChangeText={(text) => {
-                  setNombre(text);
-                  validateInputs();
-                }}
-                placeholder="Ingrese el nombre"
-                placeholderTextColor={styles.placeholderText.color}
-              />
-            </View>
-            <View style={styles.inputContainer}>
-              <Ionicons name="mail-outline" size={24} style={styles.icon} />
-              <TextInput
-                style={styles.input}
-                value={email}
-                onChangeText={(text) => {
-                  setEmail(text);
-                  validateInputs();
-                }}
-                placeholder="Ingrese el email"
-                placeholderTextColor={styles.placeholderText.color}
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
-            </View>
-            <TouchableOpacity
-              style={[
-                styles.button,
-                !isValid && styles.buttonDisabled
-              ]}
-              onPress={handleAddUsuario}
-              disabled={!isValid}
-            >
-              <Text style={styles.buttonText}>Crear</Text>
-            </TouchableOpacity>
+          <Text style={styles.title}>Agregar Usuario</Text>
+          <View style={styles.inputContainer}>
+            <Ionicons name="person-outline" size={24} style={styles.icon} />
+            <TextInput
+              style={styles.input}
+              value={nombre}
+              onChangeText={(text) => {
+                setNombre(text);
+                validateInputs();
+              }}
+              placeholder="Ingrese el nombre"
+              placeholderTextColor={styles.placeholderText.color}
+            />
           </View>
+          <View style={styles.inputContainer}>
+            <Ionicons name="mail-outline" size={24} style={styles.icon} />
+            <TextInput
+              style={styles.input}
+              value={email}
+              onChangeText={(text) => {
+                setEmail(text);
+                validateInputs();
+              }}
+              placeholder="Ingrese el email"
+              placeholderTextColor={styles.placeholderText.color}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+          </View>
+          <TouchableOpacity
+            style={[
+              styles.button,
+              !isValid && styles.buttonDisabled
+            ]}
+            onPress={handleAddUsuario}
+            disabled={!isValid}
+          >
+            <Text style={styles.buttonText}>Crear</Text>
+          </TouchableOpacity>
         </Animated.View>
       </ScrollView>
     </KeyboardAvoidingView>
