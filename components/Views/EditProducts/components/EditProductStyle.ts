@@ -1,47 +1,76 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 import { Colors } from '../../../../constants/Colors';
+
+const { width } = Dimensions.get('window');
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-  
+    backgroundColor: '#f5f5f5',
   },
-  // title: {
-  //   fontSize: ,
-  //   fontWeight: 'bold',
-  //   marginBottom: 16,
-  // },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 20,
+  },
   backButton: {
     padding: 16,
   },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+    color: Colors.light.primary,
+    paddingTop: 20,
+  },
   imageUpload: {
     alignItems: 'center',
-    marginVertical: 1,
-    maxHeight: 250,
+    marginVertical: 20,
+    width: width * 0.9,
+    height: width * 0.6,
+    alignSelf: 'center',
+    borderRadius: 12,
+    overflow: 'hidden',
   },
   uploadedImage: {
-    width: '100%', // Ajustar el ancho al 100%
+    width: '100%',
     height: '100%',
-    maxHeight:'100%',
   },
   uploadPlaceholder: {
-    width: '100%', // Ajustar el ancho al 100%
-    height: 200,
+    width: '100%',
+    height: '100%',
     borderWidth: 2,
-    borderColor: '#ddd',
+    borderColor: Colors.light.primary,
     borderStyle: 'dashed',
-    borderRadius: 8,
+    borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#fff',
+  },
+  uploadText: {
+    marginTop: 10,
+    color: Colors.light.primary,
+    fontSize: 16,
   },
   formContainer: {
     padding: 16,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    marginHorizontal: 16,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   label: {
     fontSize: 16,
     marginBottom: 8,
     color: '#333',
+    fontWeight: '600',
   },
   input: {
     borderWidth: 1,
@@ -50,27 +79,24 @@ export const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 16,
     fontSize: 16,
+    backgroundColor: '#f9f9f9',
   },
-  priceContainer: {
+  row: {
     flexDirection: 'row',
-    gap: 12,
+    justifyContent: 'space-between',
+    marginBottom: 16,
   },
-  priceInput: {
-    flex: 2,
-  },
-  currencyPicker: {
+  column: {
     flex: 1,
   },
   pickerContainer: {
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 8,
-   
+    backgroundColor: '#f9f9f9',
   },
   picker: {
-    borderWidth: 2,
-    borderColor: '#ddd',
-    borderRadius: 8,
+    height: 50,
   },
   textArea: {
     height: 100,
@@ -81,11 +107,12 @@ export const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
-    marginTop: 16,
+    marginTop: 20,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
   },
 });
+

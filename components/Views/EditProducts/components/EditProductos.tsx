@@ -6,14 +6,18 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import { AntDesign } from '@expo/vector-icons';
 import { styles } from './EditProductStyle';
 import { useRouter } from 'expo-router';
+import { availableCurrencies } from '../../Productos/components/dataProduct'; // Importar las monedas disponibles
 
 interface ProductFormData {
+  id: number;
   name: string;
   price: string;
   currency: string;
@@ -23,24 +27,29 @@ interface ProductFormData {
 }
 
 interface EditProductProps {
+  id: number;
   name: string;
   price: string;
   currency: string;
   duration: string;
   description: string;
   image?: string;
+  onUpdateProduct: (updatedProduct: ProductFormData) => void;
 }
 
 const EditProduct: React.FC<EditProductProps> = ({
+  id,
   name,
   price,
   currency,
   duration,
   description,
   image,
+  onUpdateProduct
 }) => {
   const router = useRouter();
   const [formData, setFormData] = useState<ProductFormData>({
+    id,
     name,
     price,
     currency,
@@ -48,7 +57,7 @@ const EditProduct: React.FC<EditProductProps> = ({
     description,
     image: image || '',
   });
-  const [selectedImage, setSelectedImage] = useState<string | null>(image || null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(image ?? null);
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -64,84 +73,92 @@ const EditProduct: React.FC<EditProductProps> = ({
   };
 
   const handleSubmit = () => {
-    console.log('Form submitted:', { ...formData, image: selectedImage });
-    // Add your submission logic here
+    const updatedProduct = { ...formData, image: selectedImage || undefined };
+    console.log('Form submitted:', updatedProduct);
+    onUpdateProduct(updatedProduct);
+    router.back();
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-        <AntDesign name="left" size={24} color="black" />
-      </TouchableOpacity>
+    <KeyboardAvoidingView 
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <Text style={styles.title}>Editar Producto</Text>
 
-      <TouchableOpacity style={styles.imageUpload} onPress={pickImage}>
-        {selectedImage ? (
-          <Image source={{ uri: selectedImage }} style={styles.uploadedImage} />
-        ) : (
-          <View style={styles.uploadPlaceholder}>
-            <AntDesign name="upload" size={24} color="gray" />
-          </View>
-        )}
-      </TouchableOpacity>
-
-      <View style={styles.formContainer}>
-        <Text style={styles.label}>Nombre:</Text>
-        <TextInput
-          style={styles.input}
-          value={formData.name}
-          onChangeText={(text) => setFormData({ ...formData, name: text })}
-          placeholder="Nombre del producto"
-        />
-
-        <View style={styles.priceContainer}>
-          <View style={styles.priceInput}>
-            <Text style={styles.label}>Precio:</Text>
-            <TextInput
-              style={styles.input}
-              value={formData.price}
-              onChangeText={(text) => setFormData({ ...formData, price: text })}
-              keyboardType="numeric"
-              placeholder="0.00"
-            />
-          </View>
-
-          <View style={styles.currencyPicker}>
-            <Text style={styles.label}>Moneda:</Text>
-            <Picker
-              selectedValue={formData.currency}
-              onValueChange={(value) => setFormData({ ...formData, currency: value })}
-              style={styles.picker}
-            >
-              <Picker.Item label="USD" value="USD" />
-              <Picker.Item label="EUR" value="EUR" />
-              <Picker.Item label="GBP" value="GBP" />
-            </Picker>
-          </View>
-        </View>
-
-        <Text style={styles.label}>Duración (estimado):</Text>
-        <TextInput
-          style={styles.input}
-          value={formData.duration}
-          onChangeText={(text) => setFormData({ ...formData, duration: text })}
-          placeholder="15mn"
-        />
-
-        <Text style={styles.label}>Información:</Text>
-        <TextInput
-          style={[styles.input, styles.textArea]}
-          value={formData.description}
-          onChangeText={(text) => setFormData({ ...formData, description: text })}
-          placeholder="Descripción del producto"
-          multiline
-          numberOfLines={4}
-        />
-
-        <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-          <Text style={styles.buttonText}>Actualizar</Text>
+        <TouchableOpacity style={styles.imageUpload} onPress={pickImage}>
+          {selectedImage ? (
+            <Image source={{ uri: selectedImage }} style={styles.uploadedImage} />
+          ) : (
+            <View style={styles.uploadPlaceholder}>
+              <AntDesign name="camera" size={40} color="gray" />
+              <Text style={styles.uploadText}>Añadir Imagen</Text>
+            </View>
+          )}
         </TouchableOpacity>
-      </View>
-    </ScrollView>
+
+        <View style={styles.formContainer}>
+          <Text style={styles.label}>Nombre del Producto</Text>
+          <TextInput
+            style={styles.input}
+            value={formData.name}
+            onChangeText={(text) => setFormData({ ...formData, name: text })}
+            placeholder="Ej: Corte de Cabello"
+          />
+
+          <View style={styles.row}>
+            <View style={styles.column}>
+              <Text style={styles.label}>Precio</Text>
+              <TextInput
+                style={styles.input}
+                value={formData.price}
+                onChangeText={(text) => setFormData({ ...formData, price: text })}
+                keyboardType="numeric"
+                placeholder="0.00"
+              />
+            </View>
+
+            <View style={styles.column}>
+              <Text style={styles.label}>Moneda</Text>
+              <View style={styles.pickerContainer}>
+                <Picker
+                  selectedValue={formData.currency}
+                  onValueChange={(value) => setFormData({ ...formData, currency: value })}
+                  style={styles.picker}
+                >
+                  {availableCurrencies.map((currency) => (
+                    <Picker.Item key={currency} label={currency} value={currency} />
+                  ))}
+                </Picker>
+              </View>
+            </View>
+          </View>
+
+          <Text style={styles.label}>Duración Estimada</Text>
+          <TextInput
+            style={styles.input}
+            value={formData.duration}
+            onChangeText={(text) => setFormData({ ...formData, duration: text })}
+            placeholder="Ej: 30 minutos"
+          />
+
+          <Text style={styles.label}>Descripción</Text>
+          <TextInput
+            style={[styles.input, styles.textArea]}
+            value={formData.description}
+            onChangeText={(text) => setFormData({ ...formData, description: text })}
+            placeholder="Describe el producto o servicio"
+            multiline
+            numberOfLines={4}
+          />
+
+          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+            <Text style={styles.buttonText}>Guardar Cambios</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 

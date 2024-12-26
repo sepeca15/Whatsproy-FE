@@ -1,13 +1,19 @@
 import React from "react";
 import { View, ScrollView, TouchableOpacity, Text } from "react-native";
 import { ProductCard } from "./components/CarProduct";
-import { sampleProducts } from "./components/dataProduct";
+import { sampleProducts, Product } from "./components/dataProduct";
 import { useRouter } from 'expo-router'; 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { styles } from './ProductosStyles';
 
 const Productos: React.FC = () => {
   const router = useRouter();
+
+  const handleUpdateProduct = (updatedProduct: Product) => {
+    // Aquí puedes manejar la actualización del producto
+    console.log('Product updated:', updatedProduct);
+    // Lógica para actualizar el producto en la base de datos
+  };
 
   return (
     <View style={styles.container}>
@@ -18,10 +24,8 @@ const Productos: React.FC = () => {
         {sampleProducts.map((product) => (
           <ProductCard
             key={product.id}
-            title={product.title}
-            price={product.price}
-            description={product.description}
-            imageUrl={product.imageUrl}
+            product={product}
+            onUpdateProduct={handleUpdateProduct}
           />
         ))}
       </ScrollView>

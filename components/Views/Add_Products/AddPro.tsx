@@ -5,10 +5,9 @@ import { styles } from './components/AddProductStyle';
 
 const AddPro: React.FC = () => {
   return (
-    <View style={styles.container}>
-      <Text>Agregar Producto</Text>
+  
       <AddProduct />
-    </View>
+   
   );
 };
 
