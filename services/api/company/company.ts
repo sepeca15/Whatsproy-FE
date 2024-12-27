@@ -17,9 +17,7 @@ export const LoadAuthCode = async({
     return data
 }
 
-export const LoadQR = async({id_empresa}:{id_empresa: number}) => {
-    console.log(id_empresa);
-    
+export const LoadQR = async({id_empresa}:{id_empresa: number}) => {    
     const {data} = await ApiInstances('global').get(`empresa/qr/${id_empresa}`)
     return data
 }

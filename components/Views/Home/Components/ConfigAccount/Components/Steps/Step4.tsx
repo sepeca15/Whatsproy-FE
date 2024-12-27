@@ -23,7 +23,6 @@ const Step4 = () => {
     const socketIo = io(apiUrl)
 
     socketIo.on('greenApiStatusResponse',(data)=> {
-      console.log('hola');
       FinishConfigGreenApi()
     })
 

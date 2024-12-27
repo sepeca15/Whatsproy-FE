@@ -1,0 +1,108 @@
+import { Colors } from "@/constants/Colors";
+import { StyleSheet } from "react-native";
+
+export const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  title: {
+    width: '100%',
+    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: '600'
+  },
+  containerInfoLineTable: {
+    marginTop: 20,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  tableHeader: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottomColor: '#d8dae0',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+  },
+  tableBody: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  columnName: {
+    flex: 1.8,
+    alignItems: 'flex-start',
+    paddingHorizontal: 5,
+  },
+  column: {
+    flex: 1,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    paddingHorizontal: 5,
+  },
+  text: {
+    fontSize: 12,
+  },
+  ContainerHeader: {
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+  button: {
+    alignSelf: 'center',
+    marginTop: 30,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 40,
+    height: 40,
+    borderRadius: 100,
+    padding: 0,
+    margin: 0,
+    backgroundColor: Colors.light.secondary
+  },
+  message: {
+    backgroundColor: 'white',
+    borderRadius: 16, 
+    width: '92%',
+    padding: 12,
+    display: 'flex',
+    flexDirection: 'row',
+    gap:4,
+    alignItems: 'flex-start',
+    alignSelf: 'center',
+    borderColor: '#f0f0f0', 
+    borderWidth: 1,
+    shadowColor: '#ccc',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 2,
+    overflow: 'hidden', 
+  },
+  progress : {
+    width:'100%',
+    flex:1,
+    display:'flex',
+    flexDirection: 'row',
+    alignItems:'center',
+    justifyContent:'center'
+  },
+  columnDelete: {
+    flex: 0.5,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    paddingHorizontal: 5,
+},
+});
