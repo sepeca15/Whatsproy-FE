@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions } from 'react-native';
-import { Colors } from '../../../constants/Colors'; // Adjust the path according to your file structure
+import { Colors } from '../../../constants/Colors'; 
 
 const { width } = Dimensions.get('window');
 

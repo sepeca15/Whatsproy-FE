@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router'; 
 import { styles } from './PerfilStyles';
 import Graficas from './components/Graficas';
-import { profileData } from './components/profileData'; // Importar los datos del perfil
+import { profileData } from './components/profileData';
 
 const Perfil: React.FC = () => {
   const router = useRouter(); 
@@ -19,7 +19,7 @@ const Perfil: React.FC = () => {
             <Avatar
               size="md"
               source={{
-                uri: profileData.avatarUrl, // Usar la URL del avatar desde los datos del perfil
+                uri: profileData.avatarUrl,
               }}
             />
           </TouchableOpacity>
@@ -51,7 +51,7 @@ const Perfil: React.FC = () => {
               <Avatar
                 size="2xl"
                 source={{
-                  uri: profileData.avatarUrl, // Usar la URL del avatar desde los datos del perfil
+                  uri: profileData.avatarUrl, 
                 }}
                 style={styles.largeAvatar}
               />
