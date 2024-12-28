@@ -35,7 +35,6 @@ const LoadQR = ({QRCode, handleUpdateData} : ILoadQR) => {
 
   React.useEffect(() => {
     if(!QRCode) {
-      console.log('entro aqui');
       LoadQr();
     }
   }, []);
