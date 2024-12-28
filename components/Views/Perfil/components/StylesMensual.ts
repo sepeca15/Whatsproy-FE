@@ -43,7 +43,7 @@ export const pedidosMensualesStyles = StyleSheet.create({
     barContainer: {
         flex: 1,
         alignItems: 'center',
-        maxHeight: '100%', //barras contenedor 
+        maxHeight: '100%',
     },
     barWrapper: {
         maxHeight: '100%',

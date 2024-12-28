@@ -1,13 +1,42 @@
 import React from "react";
-import { View } from "native-base";
-import CustomText from "@/components/CustomText";
-
+import { View, ScrollView, TouchableOpacity, Text } from "react-native";
+import { ProductCard } from "./components/CarProduct";
+import { sampleProducts, Product } from "./components/dataProduct";
+import { useRouter } from 'expo-router'; 
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { styles } from './ProductosStyles';
 
 const Productos: React.FC = () => {
+  const router = useRouter();
+
+  const handleUpdateProduct = (updatedProduct: Product) => {
+    // Aquí puedes manejar la actualización del producto
+    console.log('Product updated:', updatedProduct);
+    // Lógica para actualizar el producto en la base de datos
+  };
 
   return (
-    <View>
-      <CustomText>Productos</CustomText>
+    <View style={styles.container}>
+      <ScrollView 
+        contentContainerStyle={styles.scrollViewContent}
+        style={styles.scrollView}
+      >
+        {sampleProducts.map((product) => (
+          <ProductCard
+            key={product.id}
+            product={product}
+            onUpdateProduct={handleUpdateProduct}
+          />
+        ))}
+      </ScrollView>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.graficButton} onPress={() => {}}>
+          <Icon name="line-chart" size={20} color="#fff" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.addButton} onPress={() => { router.push("/(tabs)/addpro") }}>
+          <Text style={styles.addButtonText}>+</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
