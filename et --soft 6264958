@@ -1,0 +1,9 @@
+[33mff8b5ed[m[33m ([m[1;36mHEAD -> [m[1;32mJM-FT-Disenio-Frontend-Perfil[m[33m)[m HEAD@{0}: reset: moving to ff8b5ed7ffc717a59b2b0c57cedae9e9e514cf6b
+[33mff8b5ed[m[33m ([m[1;36mHEAD -> [m[1;32mJM-FT-Disenio-Frontend-Perfil[m[33m)[m HEAD@{1}: reset: moving to ff8b5ed7ffc717a59b2b0c57cedae9e9e514cf6b
+[33m6264958[m HEAD@{2}: pull origin develop: Merge made by the 'ort' strategy.
+[33mff8b5ed[m[33m ([m[1;36mHEAD -> [m[1;32mJM-FT-Disenio-Frontend-Perfil[m[33m)[m HEAD@{3}: commit: AddProductos end
+[33mad89021[m[33m ([m[1;31morigin/JM-FT-Disenio-Frontend-Perfil[m[33m)[m HEAD@{4}: commit: Termindado
+[33m849527f[m HEAD@{5}: commit: Actualización de componentes y estilos, configuración de navegación, creación de gráficas y pantallas. Añadido botón de agregar usuario en UsuariosEmpresasScreen, configuración de navegación en Perfil, y corrección de errores en TendenciaVentasCircular.
+[33m406e6f5[m[33m ([m[1;32mdevelop[m[33m)[m HEAD@{6}: pull origin develop: Fast-forward
+[33m45448c7[m HEAD@{7}: checkout: moving from develop to JM-FT-Disenio-Frontend-Perfil
+[33m406e6f5[m[33m ([m[1;32mdevelop[m[33m)[m HEAD@{8}: clone: from https://github.com/sepeca15/Whatsproy-FE.git

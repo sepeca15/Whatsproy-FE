@@ -1,0 +1,141 @@
+[33mcommit 6264958fb5a546486b8f4153c1928d6913a42a42[m[33m ([m[1;36mHEAD -> [m[1;32mJM-FT-Disenio-Frontend-Perfil[m[33m)[m
+Merge: ff8b5ed 5ce48a2
+Author: shocady <jocady25@gmail.com>
+Date:   Mon Dec 23 21:13:53 2024 -0300
+
+    Merge branch 'develop' of https://github.com/sepeca15/Whatsproy-FE into JM-FT-Disenio-Frontend-Perfil
+
+[33mcommit ff8b5ed7ffc717a59b2b0c57cedae9e9e514cf6b[m
+Author: shocady <jocady25@gmail.com>
+Date:   Mon Dec 23 21:13:34 2024 -0300
+
+    AddProductos end
+
+[33mcommit 5ce48a25000afa76e716908e32a516c0c1d7be49[m[33m ([m[1;31morigin/develop[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Merge: 84918e7 2711a09
+Author: Rodrigo Olivera Silva <68871996+rocady21@users.noreply.github.com>
+Date:   Thu Dec 5 15:59:04 2024 -0300
+
+    Merge pull request #6 from sepeca15/JM-FT-Disenio-Frontend-Perfil
+    
+    Jm ft disenio frontend perfil
+
+[33mcommit 2711a096ec1d81a784ee2659e0f7091732df7a9a[m
+Merge: ad89021 84918e7
+Author: Rodrigo Olivera Silva <68871996+rocady21@users.noreply.github.com>
+Date:   Thu Dec 5 15:56:35 2024 -0300
+
+    Merge branch 'develop' into JM-FT-Disenio-Frontend-Perfil
+
+[33mcommit ad8902191129782f1c296e2ca93a180f772eca6d[m[33m ([m[1;31morigin/JM-FT-Disenio-Frontend-Perfil[m[33m)[m
+Author: shocady <jocady25@gmail.com>
+Date:   Thu Dec 5 15:49:39 2024 -0300
+
+    Termindado
+
+[33mcommit 849527f0cef87fd3082f78b026108b330f21477f[m
+Author: JorgeMRs <jocady25@gmail.com>
+Date:   Wed Dec 4 17:08:50 2024 -0300
+
+    Actualización de componentes y estilos, configuración de navegación, creación de gráficas y pantallas. Añadido botón de agregar usuario en UsuariosEmpresasScreen, configuración de navegación en Perfil, y corrección de errores en TendenciaVentasCircular.
+
+[33mcommit 84918e752646f7ce1462c5522813a63abf90acaf[m[33m ([m[1;31morigin/feature/integrarInfoPedido[m[33m)[m
+Merge: 406e6f5 4a84e7d
+Author: Rodrigo Olivera Silva <68871996+rocady21@users.noreply.github.com>
+Date:   Fri Nov 29 17:44:33 2024 -0300
+
+    Merge pull request #5 from sepeca15/feature/addLoginFunction
+    
+    add page of config account in first login session
+
+[33mcommit 4a84e7dfc4545cfa1ba7c704a0b0d839dbee4c20[m[33m ([m[1;31morigin/feature/addLoginFunction[m[33m)[m
+Author: Rodrigo Olivera Silva <68871996+rocady21@users.noreply.github.com>
+Date:   Fri Nov 29 12:59:02 2024 -0300
+
+    add page of config account in first login session
+
+[33mcommit 406e6f5d7ad65f1961610f0cf865b113f77df410[m[33m ([m[1;32mdevelop[m[33m)[m
+Merge: 6cb42fb cbfef7e
+Author: Rodrigo Olivera Silva <68871996+rocady21@users.noreply.github.com>
+Date:   Fri Nov 22 15:52:59 2024 -0300
+
+    Merge pull request #4 from sepeca15/feature/addLoginFunction
+    
+    tabbar y metodo de pago
+
+[33mcommit cbfef7e103b550010808c0b636db4b1b64a72fac[m
+Author: Rodrigo Olivera Silva <68871996+rocady21@users.noreply.github.com>
+Date:   Fri Nov 22 15:49:28 2024 -0300
+
+    tabbar y metodo de pago
+
+[33mcommit 6cb42fbec0afb4f56433b82d1b12ef906a4bf194[m[33m ([m[1;31morigin/feature/configureAccount[m[33m)[m
+Merge: 706a574 dfbc804
+Author: Maximiliano Olivera <68874048+maxioliverasilva13@users.noreply.github.com>
+Date:   Sun Nov 17 16:08:07 2024 -0300
+
+    Merge pull request #3 from sepeca15/feature/addLoginFunction
+    
+    Feature/add login function
+
+[33mcommit dfbc8041ebe28dfda5724bef52aa12450213e0ef[m
+Author: Rodrigo Olivera Silva <68871996+rocady21@users.noreply.github.com>
+Date:   Sun Nov 17 15:53:54 2024 -0300
+
+    add login func and organize folders
+
+[33mcommit 82be9792afbb321eeb180b91ad43823f0ee87be6[m
+Author: Rodrigo Olivera Silva <68871996+rocady21@users.noreply.github.com>
+Date:   Sat Nov 16 16:40:22 2024 -0300
+
+    add skeleton for useAuth hook
+
+[33mcommit 706a574a067d2474c60f3a175a62fc41acda83da[m
+Merge: c19c32a 773b2a2
+Author: Maximiliano Olivera <68874048+maxioliverasilva13@users.noreply.github.com>
+Date:   Sat Nov 16 11:58:23 2024 -0300
+
+    Merge pull request #2 from sepeca15/feature/global-color
+    
+    color in a constant for global use
+
+[33mcommit 773b2a232e9e54807b2a9b249358ed10414cebdf[m[33m ([m[1;31morigin/feature/global-color[m[33m)[m
+Author: Sebastian Perez <sebastian.perez@dualbootpartners.com>
+Date:   Thu Nov 14 20:32:11 2024 -0300
+
+    color in a constant for global use
+
+[33mcommit c19c32a4e8ef0e7c68eb61174fd0b49d926dfa9e[m
+Merge: 45448c7 bb9fbd3
+Author: Jorge <110149668+JorgeMRs@users.noreply.github.com>
+Date:   Thu Nov 7 17:43:15 2024 -0300
+
+    Merge pull request #1 from sepeca15/feature/mockup-for-login-and-singup
+    
+    feat mockup for login and sing-up
+
+[33mcommit bb9fbd34752c220204ed0ad6527db090697f0e83[m[33m ([m[1;31morigin/feature/mockup-for-login-and-singup[m[33m)[m
+Author: Sebastian Perez <sebastian.perez@dualbootpartners.com>
+Date:   Wed Oct 30 18:40:51 2024 -0300
+
+    feat mockup for login and sing-up
+
+[33mcommit 45448c77ba5f1dfe1d32dcbf207ee048b40d387b[m
+Author: Sebastian Perez <sebastian.perez@dualbootpartners.com>
+Date:   Mon Oct 14 14:33:32 2024 -0300
+
+    add eslint and prettier
+
+[33mcommit e1bb4edd6f032a8b66c0be7f8332123b14518afe[m
+Author: Sebastian Perez <sebastian.perez@dualbootpartners.com>
+Date:   Wed Oct 9 11:52:38 2024 -0300
+
+    Add new library and update readme with documentation
+
+[33mcommit af7728908f5bfe3eb5c5ed57b89c7ce8261d887b[m
+Author: Sebastian Perez <sebastian.perez@dualbootpartners.com>
+Date:   Wed Oct 9 11:02:19 2024 -0300
+
+    Initial commit
+    
+    Generated by create-expo-app 3.0.0.
