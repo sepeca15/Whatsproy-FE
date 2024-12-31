@@ -10,7 +10,7 @@ import IonIcons from 'react-native-vector-icons/Ionicons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
 import { Button, ScrollView } from "native-base";
-import ProductOrderCard from "./components";
+import ProductOrderCard from "./components/ProductOrderCard";
 import { IOrderDetails } from "./OrderDetailsTypes";
 import { useOrders } from "@/hooks/redux/useOrders";
 
@@ -22,7 +22,6 @@ const initialState = {
     loading: true,
     data: null
 }
-
 
 const OrderDetails = () => {
     const {handleDeleteOrder} = useOrders()
@@ -38,7 +37,7 @@ const OrderDetails = () => {
                 setDetailOfOrder({ ...detailOfOrder, data: orderDetailsData.data })
             }
         } catch (error: any) {
-            console.log('errorrrrrr', JSON.stringify(error))
+            console.log('error', JSON.stringify(error))
         } finally {
             setDetailOfOrder((prevState) => ({
                 ...prevState,
@@ -98,7 +97,7 @@ const OrderDetails = () => {
                     </View>
                     <View style={styles.containerRowinfo}>
                         <IonIcons size={20} style={{ marginRight: 6, marginLeft: -2 }} name="location-outline" />
-                        <Text style={styles.textlocation}>CIudad vieja, Montevideo</Text>
+                        <Text style={styles.textlocation}>{detailOfOrder.data?.infoLines?.direccion? detailOfOrder.data.infoLines.direccion : 'No hay direccion' }</Text>
                     </View>
                     <View style={styles.containerProducts}>
                         <Text style={styles.textBodyBig} >Products</Text>

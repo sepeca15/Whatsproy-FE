@@ -41,7 +41,7 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
                     <View style={styles.column}>
                         <CustomText style={styles.name}>{clientName}</CustomText>
                         <View style={styles.miniSeparator}></View>
-                        <CustomText style={styles.text}>{ direccion.length > 0? direccion.map((direc : any,index : number)=> (<Text key={index}>{direc}</Text>)) :  <Text>No hay direccion.</Text> }</CustomText>
+                        <CustomText style={styles.text}>{direccion}</CustomText>
                         <View style={styles.separator}></View>
                         <CustomText style={styles.text}>Tel: 091664536</CustomText>
                     </View>

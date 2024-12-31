@@ -1,7 +1,7 @@
 import * as React from "react"
 import { Text, View } from "react-native";
 import { styles } from "./ProductOrderCardStyles.";
-import { IProductoInfo } from "../OrderDetailsTypes";
+import { IProductoInfo } from "../../OrderDetailsTypes";
 
 interface IProductOrderCard {
     data: IProductoInfo,

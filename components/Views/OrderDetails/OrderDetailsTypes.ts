@@ -36,4 +36,5 @@ export interface IOrderDetails {
     id: number;
     estimateTime: number;
     total: number;
+    infoLines : any
 }
