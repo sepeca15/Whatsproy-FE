@@ -1,13 +1,15 @@
 import React from 'react';
-import { FormControl, Input } from 'native-base';
+import { FormControl, Input, TextArea } from 'native-base';
 
 interface InputFieldProps {
-  label: string;
+  label?: string;
   placeholder: string;
   type?: 'text' | 'password';
   onChangeText?: (text: string) => void;
-  marginTop?: number,
+  marginTop?: number;
+  isTextArea?: boolean;
   [key: string]: any;
+  isRequired?: boolean;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -16,18 +18,28 @@ const InputField: React.FC<InputFieldProps> = ({
   type = 'text',
   onChangeText,
   marginTop,
+  isTextArea = false,
+  isRequired = true,
   ...props
 }) => {
   return (
-    <FormControl style={{ marginTop: marginTop }}
-      isRequired>
-      <FormControl.Label>{label}</FormControl.Label>
-      <Input
-        type={type}
-        placeholder={placeholder}
-        onChangeText={onChangeText}
-        {...props} 
-      />
+    <FormControl style={{ marginTop: marginTop }} isRequired={isRequired}>
+      {label && <FormControl.Label>{label}</FormControl.Label>}
+      {isTextArea ? (
+        <TextArea
+          autoCompleteType={""}
+          placeholder={placeholder}
+          onChangeText={onChangeText}
+          {...props}
+        />
+      ) : (
+        <Input
+          type={type}
+          placeholder={placeholder}
+          onChangeText={onChangeText}
+          {...props}
+        />
+      )}
     </FormControl>
   );
 };

@@ -6,6 +6,7 @@ import { router } from 'expo-router';
 type KeysApis = "global" | 'current';
 
 const ApiInstances = (key : KeysApis) => {
+  // TODO: add .env and refactor this logic
   const globalApi = axios.create({
     baseURL: key === "global"? 'https://app.whatsproy.com/' : "https://works.whatsproy.com/",
   });
