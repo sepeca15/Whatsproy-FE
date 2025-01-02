@@ -22,6 +22,12 @@ const Home = () => {
       >
         logout
       </CustomText>
+      <CustomText
+        onPress={() => router.push("/(tabs)/calendar")}
+        style={styles.textBlue500}
+      >
+        Calendar
+      </CustomText>
     </View>
   );
 }

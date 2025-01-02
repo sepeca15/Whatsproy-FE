@@ -7,7 +7,7 @@ import { Colors } from "@/constants/Colors";
 import { StyleSheet } from "react-native";
 
 const Layout: React.FC = () => {
-  const { isAuthenticated, loading } = useAuth()
+  const { isAuthenticated, loading, redirecting } = useAuth()
 
   React.useEffect(() => {
     if (isAuthenticated && !loading) {
@@ -15,7 +15,7 @@ const Layout: React.FC = () => {
     }
   }, [isAuthenticated, loading])
 
-  if (loading) {
+  if (loading || redirecting) {
     return <View style={styles.spinner}>
       <Progress.Circle color={Colors.light.primary} indeterminate={true} size={100} />
     </View>

@@ -42,7 +42,7 @@ const ConfigAccount = () => {
           <CustomText
             style={{ fontSize: 22, textAlign: "center", marginBottom:10, fontWeight: "bold" }}
           >
-            Por favor termina de configurar tu cuenta
+            Por favor, termina de configurar tu cuenta
           </CustomText>
           {renderStep()}
         </View>

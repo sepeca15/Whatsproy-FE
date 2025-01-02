@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link, usePathname } from "expo-router";
+import { Link, usePathname, useRouter } from "expo-router";
 import { View } from "native-base";
 import { Pressable, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
@@ -31,6 +31,7 @@ const Pages = [
 ] as const;
 
 const Layout = ({ children }: any) => {
+    const router = useRouter();
     const pathname = usePathname();
     const [selected, setSelected] = React.useState<string>("");
 
@@ -49,7 +50,10 @@ const Layout = ({ children }: any) => {
                     <Pressable 
                         key={page.name} 
                         style={styles.LinkContainer}
-                        onPress={() => setSelected(page.name)}
+                        onPress={() => {
+                            setSelected(page.name);
+                            router.push(page.path)
+                        }}
                     >
                         <Link style={styles.link} href={page.path}>
                             {page.icon(page.name === selected)}

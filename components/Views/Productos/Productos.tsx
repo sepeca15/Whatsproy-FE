@@ -17,7 +17,7 @@ const Productos: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView 
+      <ScrollView
         contentContainerStyle={styles.scrollViewContent}
         style={styles.scrollView}
       >
@@ -30,9 +30,6 @@ const Productos: React.FC = () => {
         ))}
       </ScrollView>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.graficButton} onPress={() => {}}>
-          <Icon name="line-chart" size={20} color="#fff" />
-        </TouchableOpacity>
         <TouchableOpacity style={styles.addButton} onPress={() => { router.push("/(tabs)/addpro") }}>
           <Text style={styles.addButtonText}>+</Text>
         </TouchableOpacity>

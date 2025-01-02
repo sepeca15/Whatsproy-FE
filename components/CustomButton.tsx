@@ -25,7 +25,7 @@ const CustomButton = ({ children, background = "#128c7e", isDisabled = false, va
     >
       {
         loading ?
-          <Progress.Circle color={colorSpiner} indeterminate={true} size={20} />
+          <Progress.Circle thickness={5} color={colorSpiner || "white"} indeterminate={true} size={20} />
           :
           <CustomText style={styles.buttonText}>
             {children}
