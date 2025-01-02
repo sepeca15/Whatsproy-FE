@@ -3,7 +3,7 @@ import { View, Text, Image, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { useRouter } from 'expo-router';
 import { styles } from './CardProdStyle';
-import { Product } from './dataProduct';
+import { Product } from '../dataProduct';
 
 interface ProductCardProps {
     product: Product;

@@ -1,33 +1,137 @@
-import React from 'react';
-import { View, ScrollView, StyleSheet, Text } from 'react-native';
-import PedidosRealizados from './components/PedidosRealizados';
-// import IngresosMensuales from './components/IngresosMensuales';
-import DistribucionPedidos from './components/Ventasporcategorias';
-import TendenciaVentas from './components/TendenciaVentas';
+import * as React from 'react';
+import { View, ScrollView, StyleSheet, Text, Pressable } from 'react-native';
+import CardNewPedido from './components/CardNewPedido.tsx/index.js';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons.js'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons.js'
+import OrdersFinished from './components/OrdersFinished';
+import OrdersPending from './components/OrdersPending';
+
+type pagesOrder = 'finished' | 'pending'
 
 const PedidosEIngresos: React.FC = () => {
+    const [selected, setSelected] = React.useState<pagesOrder>('pending')
+
+    const handleSelectPage = (key: pagesOrder) => {
+        setSelected(key)
+    }
+
     return (
-        <ScrollView style={styles.container}>
-            <View style={styles.chartWrapper}>
-                <PedidosRealizados />
+        <View style={styles.container}>
+            <Text style={styles.title}>Pedidos</Text>
+            <View style={styles.tab}>
+                {['pending', 'finished'].map((key) => (
+                    <View key={key} style={styles.containerTabItem}>
+                        <Pressable
+                            onPress={() => handleSelectPage(key as pagesOrder)}
+                            style={styles.pressable}
+                            accessibilityRole="button"
+                        >
+                            <View style={styles.column}>
+                                <View style={styles.row}>
+
+                                    {
+                                        key === 'pending' ?
+                                            <MaterialCommunityIcons size={16} name='camera-timer' />
+                                            :
+                                            <SimpleLineIcons size={16} name='notebook' />
+                                    }
+                                    <Text style={styles.text}>{key === 'pending' ? 'Pendientes' : 'Finalizados'}</Text>
+                                </View>
+                                {
+                                    selected === key &&
+                                    <View style={styles.selected} />
+                                }
+                            </View>
+                        </Pressable>
+                    </View>
+                ))}
             </View>
-            <View style={styles.chartWrapper}>
-              
-                <TendenciaVentas />
-            </View>
-          
-        </ScrollView>
+            <ScrollView style={styles.orders}>
+                {
+                    selected === 'finished' ?
+                        <OrdersFinished />
+                        :
+                        <OrdersPending />
+                }
+            </ScrollView>
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f5f5f5',
     },
     chartWrapper: {
         marginBottom: 20,
     },
+    title: {
+        fontSize: 30,
+        textAlign: 'center'
+    },
+    orders: {
+        marginTop: 20,
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        flex: 1
+    },
+    Corders: {
+        flex: 1,
+        height: '100%',
+        backgroundColor: 'red'
+    },
+    tab: {
+        marginVertical: 12,
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        borderBottomColor: '#d4ece8',
+        borderBottomWidth: 4,
+    },
+    containerTabItem: {
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'row',
+        alignContent: 'center',
+        justifyContent: 'center',
+        flex: 1 / 2
+    },
+    pressable: {
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 12,
+        width: '60%',
+        paddingVertical: 12,
+    },
+    selected: {
+        height: 4,
+        width: '100%',
+        backgroundColor: "#075e54",
+        position: 'absolute',
+        bottom: -16,
+        borderRadius: 12,
+    },
+    text: {
+        textAlign: 'center'
+    },
+    column: {
+        width: "100%",
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    row: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 4
+    }
 });
 
 export default PedidosEIngresos;
