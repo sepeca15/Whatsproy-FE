@@ -31,16 +31,12 @@ export const styles = StyleSheet.create({
     borderRadius: 5,
     marginRight: 10,
   },
-//   graficButtonText: {
-//     color: '#ffffff',
-//     fontWeight: 'bold',
-//     fontSize: 16,
-//   },
+
   addButton: {
-    backgroundColor: Colors.light.secondary,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    backgroundColor: Colors.light.primary,
+    width: 60,
+    height: 60,
+    borderRadius: 60,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 6,

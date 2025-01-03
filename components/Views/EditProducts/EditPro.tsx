@@ -27,29 +27,19 @@ interface EditProProps {
 
 const EditPro: React.FC = () => {
   const params = useLocalSearchParams();
-  const { id, name, description, duration, currency, price, image } = params;
-
-  // Asegúrate de que los parámetros sean de tipo string
-  const idNum = Array.isArray(id) ? parseInt(id[0], 10) : parseInt(id, 10);
-  const nameStr = Array.isArray(name) ? name[0] : name;
-  const descriptionStr = Array.isArray(description) ? description[0] : description;
-  const durationStr = Array.isArray(duration) ? duration[0] : duration;
-  const currencyStr = Array.isArray(currency) ? currency[0] : currency;
-  const priceStr = Array.isArray(price) ? price[0] : price;
-  const imageStr = Array.isArray(image) ? image[0] : image;
-
-  // Crear un objeto que cumpla con la interfaz EditProProps
+  console.log('Params:', params);
+  
   const editProProps: EditProProps = {
-    id: idNum,
-    name: nameStr,
-    price: priceStr,
-    currency: currencyStr,
-    duration: durationStr,
-    description: descriptionStr,
-    image: imageStr ?? '',
+    id: parseInt(params.id as string, 10),
+    name: params.name as string,
+    price: params.price as string,
+    currency: params.currency as string,
+    duration: params.duration as string,
+    description: params.description as string,
+    image: (params.image as string) ?? '',
     onUpdateProduct: (updatedProduct) => {
       console.log('Product updated:', updatedProduct);
-      // Aquí puedes agregar la lógica para manejar la actualización del producto
+      // Aquí la lógica para manejar la actualización del producto
     },
   };
 

@@ -1,5 +1,5 @@
 import * as React from "react"
-import DateOrder from "@/components/Views/DateOrder";
+import DateOrder from "@/components/Views/DateOrder/DateOrder";
 
 const DateOrderScreen = () => {
   
