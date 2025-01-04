@@ -35,6 +35,7 @@ export const styles = StyleSheet.create({
   },
   contentContainer: {
     padding: 20,
+    maxWidth:'100%',
   },
   titleContainer: {
     marginBottom: 20,
@@ -106,10 +107,11 @@ export const styles = StyleSheet.create({
     lineHeight: 24,
     color: '#666',
   },
+  
   chartContainer: {
     backgroundColor: '#fff',
     borderRadius: 15,
-    padding: 20,
+    // padding: 20,
     marginBottom: 20,
     elevation: 3,
     shadowColor: '#000',
@@ -119,6 +121,7 @@ export const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 3.84,
+    maxWidth:'100%',
   },
   chartTitle: {
     fontSize: 18,
@@ -217,6 +220,30 @@ export const styles = StyleSheet.create({
     color: Colors.light.primary,
     textAlign: 'center',
     marginTop: 10,
+  },
+  salesButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  salesButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: Colors.light.primary,
+    marginHorizontal: 8,
+  },
+  salesButtonActive: {
+    backgroundColor: Colors.light.primary,
+  },
+  salesButtonText: {
+    color: Colors.light.primary,
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  salesButtonTextActive: {
+    color: '#fff',
   },
 });
 

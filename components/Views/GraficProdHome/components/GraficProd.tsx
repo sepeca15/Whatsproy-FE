@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -22,6 +22,7 @@ const GraficProddet: React.FC<ProductDetailProps> = ({
   categoryData,
   satisfactionData
 }) => {
+  const [salesView, setSalesView] = useState<'week' | 'month'>('week');
   const screenWidth = Dimensions.get('window').width;
 
   const chartConfig = {
@@ -42,6 +43,17 @@ const GraficProddet: React.FC<ProductDetailProps> = ({
   }));
 
   const satisfactionPercentage = satisfactionData.data[0] / 100;
+
+  // Datos de ejemplo para ventas semanales y mensuales
+  const weeklySalesData = {
+    labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+    datasets: [{ data: [20, 45, 28, 80, 99, 43, 50] }]
+  };
+
+  const monthlySalesData = {
+    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+    datasets: [{ data: [300, 450, 280, 800, 990, 430, 500, 600, 700, 500, 600, 800] }]
+  };
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
@@ -89,9 +101,23 @@ const GraficProddet: React.FC<ProductDetailProps> = ({
         </View>
 
         <View style={styles.chartContainer}>
-          <Text style={styles.chartTitle}>Ventas Diarias</Text>
+          <Text style={styles.chartTitle}>Ventas</Text>
+          <View style={styles.salesButtonContainer}>
+            <TouchableOpacity
+              style={[styles.salesButton, salesView === 'week' && styles.salesButtonActive]}
+              onPress={() => setSalesView('week')}
+            >
+              <Text style={[styles.salesButtonText, salesView === 'week' && styles.salesButtonTextActive]}>Semana</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.salesButton, salesView === 'month' && styles.salesButtonActive]}
+              onPress={() => setSalesView('month')}
+            >
+              <Text style={[styles.salesButtonText, salesView === 'month' && styles.salesButtonTextActive]}>Mes</Text>
+            </TouchableOpacity>
+          </View>
           <LineChart
-            data={salesData}
+            data={salesView === 'week' ? weeklySalesData : monthlySalesData}
             width={screenWidth - 40}
             height={220}
             chartConfig={chartConfig}
@@ -99,7 +125,7 @@ const GraficProddet: React.FC<ProductDetailProps> = ({
             style={styles.chart}
           />
         </View>
-
+{/* 
         <View style={styles.chartContainer}>
           <Text style={styles.chartTitle}>Ventas por Categoría</Text>
           <PieChart
@@ -112,9 +138,9 @@ const GraficProddet: React.FC<ProductDetailProps> = ({
             paddingLeft="15"
             absolute
           />
-        </View>
+        </View> */}
 
-        <View style={styles.chartContainer}>
+        {/* <View style={styles.chartContainer}>
           <Text style={styles.chartTitle}>Satisfacción del Cliente</Text>
           <ProgressChart
             data={[satisfactionPercentage]}
@@ -126,7 +152,7 @@ const GraficProddet: React.FC<ProductDetailProps> = ({
             hideLegend={false}
           />
           <Text style={styles.satisfactionText}>{satisfactionData.data[0]}% Satisfecho</Text>
-        </View>
+        </View> */}
 
         <View style={styles.statsContainer}>
           <View style={styles.statItem}>
