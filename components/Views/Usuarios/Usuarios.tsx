@@ -1,71 +1,81 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, useColorScheme, Animated } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '../../../constants/Colors';
-import createStyles from './UsuariosStyles';
-import usuariosData from './components/data';
-import { User } from './components/User';
 import { useRouter } from 'expo-router';
+import UserCard from './components/UserCard';
+import { styles } from './UsuariosStyles';
+import api from '@/services/api/admin';
+import { IUserInfo } from './UsuariosType';
+import { Button, Modal, ScrollView } from 'native-base';
+import * as Progress from "react-native-progress";
+import { Colors } from '@/constants/Colors';
+import { useUser } from '@/hooks/redux/useUser';
+import ModalCreateUser from './components/ModalCreateUser';
 
+const initialValues = {
+  data: [],
+  loading: true
+}
 const UsuariosEmpresasScreen: React.FC = () => {
   const router = useRouter();
-  const colorScheme = useColorScheme();
-  const [theme, setTheme] = useState(Colors.light);
-  const [styles, setStyles] = useState(createStyles(Colors.light));
-  const [usuarios, setUsuarios] = useState<User[]>(usuariosData);
-  const [fadeAnim] = useState(new Animated.Value(0));
+  const { user } = useUser()
+  const [userData, setUserData] = React.useState<IUserInfo>(initialValues)
+  const [stateModal, setStateModal] = React.useState<boolean>(false)
 
-  useEffect(() => {
-    const newTheme = colorScheme === 'dark' ? Colors.dark : Colors.light;
-    setTheme(newTheme);
-    setStyles(createStyles(newTheme));
 
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 1000,
-      useNativeDriver: true,
-    }).start();
-  }, [colorScheme]);
+  const uploadUsers = async () => {
+    try {
+      const resp = await api.user.findAll(user.id_empresa)
+      setUserData((prevState) => ({
+        ...prevState,
+        data: resp.data
+      }))
 
-  const deleteUser = (id: number) => {
-    const newUsuarios = usuarios.filter((usuario) => usuario.id !== id);
-    setUsuarios(newUsuarios);
-  };
+    } catch (error) {
+      console.log('error', error);
+    } finally {
+      setUserData((prevState) => ({
+        ...prevState,
+        loading: false
+      }))
+    }
+  }
 
-  const renderItem = ({ item }: { item: User }) => (
-    <Animated.View style={[styles.card, { opacity: fadeAnim }]}>
-      <TouchableOpacity
-        style={styles.cardContent}
-        onPress={() => router.push("/(tabs)/pedidos")}
-      >
-        <View style={styles.userInfo}>
-          <View style={styles.avatarContainer}>
-            <Text style={styles.avatarText}>{item.nombre[0].toUpperCase()}</Text>
-          </View>
-          <Text style={styles.userName}>{item.nombre}</Text>
-        </View>
-        <TouchableOpacity style={styles.deleteButton} onPress={() => deleteUser(item.id)}>
-          <Ionicons name="trash-outline" size={24} color={theme.text} />
-        </TouchableOpacity>
-      </TouchableOpacity>
-    </Animated.View>
-  );
+  React.useEffect(() => {
+    uploadUsers()
+  }, [])
+
+  const toggleModalState = () => {
+    setStateModal((prev) => !prev)
+  }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Usuarios Empresas</Text>
-      <FlatList
-        data={usuarios}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={styles.listContent}
-      />
-      <TouchableOpacity 
-        style={styles.addButton} 
-        onPress={() => router.push("/(tabs)/addusu")}
+      <Text style={styles.title}>Usuarios</Text>
+      {
+        userData.loading === true ?
+          <View style={styles.spinner}>
+            <Progress.Circle color={Colors.light.primary} indeterminate={true} size={100} />
+          </View>
+          :
+          userData.data.length > 0 &&
+          <ScrollView style={{ flex: 1 }} horizontal={false}>
+            {
+              userData.data.map((infoUser, index) => {
+                return <UserCard key={index} infoUser={infoUser} />
+              })
+            }
+          </ScrollView>
+      }
+
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={toggleModalState}
       >
         <Ionicons name="add" size={30} color="#fff" />
       </TouchableOpacity>
+
+            <ModalCreateUser onToogleModal={toggleModalState} isOpen={stateModal}/>
     </View>
   );
 };

@@ -1,10 +1,10 @@
+import AddUser from "@/components/Views/AddUser";
 import * as React from "react"
-import AddUsuario from "@/components/Views/Add";
 
 const AddUsuarioScreen = () => {
   
   return (
-      <AddUsuario/>
+      <AddUser/>
   );
 }
 
