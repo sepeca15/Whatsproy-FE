@@ -102,6 +102,16 @@ const styles = StyleSheet.create({
         borderRadius:4,
         paddingHorizontal:6,
         paddingVertical:2
+    },
+    disabledDelete : {
+        paddingHorizontal:10,
+        paddingVertical:6,
+        borderRadius:4,
+        display:'flex',
+        flexDirection:'row',
+        alignItems:'center',
+        gap:12,
+        backgroundColor:'#bfbfbf'
     }
 });
 

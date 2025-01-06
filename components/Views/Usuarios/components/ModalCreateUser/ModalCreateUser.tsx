@@ -10,6 +10,10 @@ import { Button, FormControl, Input, Modal } from 'native-base';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import { IUser } from '../../UsuariosType';
+import api from '@/services/api/admin';
+import { useUser } from '@/hooks/redux/useUser';
+import CustomButton from '@/components/CustomButton';
 
 type keyValues = 'nombre' | 'apellido' | 'correo' | 'contraseña'
 
@@ -23,6 +27,7 @@ interface CreateUser {
 interface IModalCreateUser {
     onToogleModal: ()=> void,
     isOpen : boolean
+    addNewUser: (user : IUser)=> void
 }
 
 const initialValues = {
@@ -32,11 +37,13 @@ const initialValues = {
     contraseña: ''
 }
 
-const ModalCreateUser = ({ onToogleModal, isOpen }: IModalCreateUser) => {
+const ModalCreateUser = ({ onToogleModal, isOpen, addNewUser }: IModalCreateUser) => {
+    const {user} = useUser()
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [createUser, setCreateUser] = useState<CreateUser>(initialValues);
     const [errors, setErrors] = useState<any>({});
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [loadingApi, setLoadingApi] = useState(false);
 
     const setValueForm = (key: keyValues, value: string) => {
         setCreateUser((prevState) => ({
@@ -68,15 +75,36 @@ const ModalCreateUser = ({ onToogleModal, isOpen }: IModalCreateUser) => {
         return newErrors;
     };
 
+    const createUserApi = async() => {
+        setLoadingApi(true)
+        const {apellido,contraseña,correo,nombre} = createUser
+        try {
+            const resp = await api.user.create({
+                nombre,
+                correo,
+                password: contraseña,
+                apellido,
+                id_empresa: user.id_empresa
+            })
+            if(resp.ok) {
+                addNewUser(resp.data)
+                onToogleModal()
+                setCreateUser(initialValues)
+            }
+        } catch (error : any) {
+            console.log('error',error.response.data.message);
+        } finally { 
+            setLoadingApi(false)
+        }
+    }
+
     const handleSubmit = () => {
         const validationErrors = validate();
         setErrors(validationErrors);
-        setIsSubmitted(true); // Marcar como enviado
+        setIsSubmitted(true);
 
         if (Object.keys(validationErrors).length === 0) {
-            console.log("Formulario válido:", createUser);
-        } else {
-            console.log("Errores en el formulario:", validationErrors);
+            createUserApi()
         }
     };
 
@@ -106,25 +134,28 @@ const ModalCreateUser = ({ onToogleModal, isOpen }: IModalCreateUser) => {
                                 <FormControl isInvalid={isSubmitted && !!errors.nombre} width={"100%"}>
                                     <FormControl.Label>Nombre</FormControl.Label>
                                     <Input
-                                        InputLeftElement={<AntDesign size={16} name='user' color={'gray'}/>}
+                                        InputLeftElement={<AntDesign style={styles.marginCont}  size={16} name='user' color={'gray'}/>}
                                         onChangeText={(value: string) => setValueForm("nombre", value)}
                                         value={createUser.nombre}
                                         style={styles.input}
                                         type="text"
                                         placeholder="Ingrese un nombre"
+                                        _focus={styles.focused}
+
                                     />
                                     <FormControl.ErrorMessage>{errors.nombre}</FormControl.ErrorMessage>
                                 </FormControl>
 
                                 <FormControl isInvalid={isSubmitted && !!errors.apellido} width={"100%"}>
-                                    <FormControl.Label>Apellido</FormControl.Label>
+                                    <FormControl.Label >Apellido</FormControl.Label>
                                     <Input
-                                        InputLeftElement={<AntDesign size={16} name='user' color={'gray'}  />}
+                                        InputLeftElement={<AntDesign style={styles.marginCont} size={16} name='user' color={'gray'}  />}
                                         onChangeText={(value: string) => setValueForm("apellido", value)}
                                         value={createUser.apellido}
                                         style={styles.input}
                                         type="text"
                                         placeholder="Ingrese un apellido"
+                                        _focus={styles.focused}
                                     />
                                     <FormControl.ErrorMessage leftIcon={<MaterialIcons size={12} name='error' color={'red'}/>}>{errors.apellido}</FormControl.ErrorMessage>
                                 </FormControl>
@@ -132,12 +163,13 @@ const ModalCreateUser = ({ onToogleModal, isOpen }: IModalCreateUser) => {
                                 <FormControl isInvalid={isSubmitted && !!errors.correo} width={"100%"}>
                                     <FormControl.Label >Correo</FormControl.Label>
                                     <Input
-                                        InputLeftElement={<MaterialCommunityIcons size={16} name='gmail' color={'gray'}/>}
+                                        InputLeftElement={<MaterialCommunityIcons style={styles.marginCont}  size={16} name='gmail' color={'gray'}/>}
                                         onChangeText={(value: string) => setValueForm("correo", value)}
                                         value={createUser.correo}
                                         style={styles.input}
                                         type="text"
                                         placeholder="Ingrese su correo"
+                                        _focus={styles.focused}
                                     />
                                     <FormControl.ErrorMessage>{errors.correo}</FormControl.ErrorMessage>
                                 </FormControl>
@@ -145,12 +177,13 @@ const ModalCreateUser = ({ onToogleModal, isOpen }: IModalCreateUser) => {
                                 <FormControl isInvalid={isSubmitted && !!errors.contraseña} width={"100%"}>
                                     <FormControl.Label>Contraseña</FormControl.Label>
                                     <Input
-                                        InputLeftElement={<AntDesign name='lock' size={12} color={'gray'}/>}
+                                        InputLeftElement={<AntDesign style={styles.marginCont}  name='lock' size={12} color={'gray'}/>}
                                         onChangeText={(value: string) => setValueForm("contraseña", value)}
                                         value={createUser.contraseña}
                                         style={styles.input}
                                         type="password"
                                         placeholder="Ingrese su contraseña"
+                                        _focus={styles.focused}
                                     />
                                     <FormControl.ErrorMessage>{errors.contraseña}</FormControl.ErrorMessage>
                                 </FormControl>
@@ -159,9 +192,9 @@ const ModalCreateUser = ({ onToogleModal, isOpen }: IModalCreateUser) => {
                     </GestureHandlerRootView>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onPress={handleSubmit} style={styles.buttonCreate}>
+                    <CustomButton colorSpiner='white' loading={loadingApi} onPress={handleSubmit} style={styles.buttonCreate}>
                         Crear
-                    </Button>
+                    </CustomButton>
                 </Modal.Footer>
             </Modal.Content>
         </Modal>

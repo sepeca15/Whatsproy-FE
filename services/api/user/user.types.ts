@@ -1,13 +1,14 @@
 export interface IUserUpdate { 
     nombre?: string;
     apellido?: string;
-    activo?: string;
+    activo?: boolean;
+    photo?: string
 }
 
 export interface IUserCreate { 
     nombre: string;
     apellido: string;
     correo: string;
-    contrasña: string;
+    password: string;
     id_empresa: number
 }
