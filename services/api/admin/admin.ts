@@ -24,7 +24,11 @@ const api = {
         loadAuthCode: company.LoadAuthCode
     },
     user: {
-        update: user.updateUser
+        create: user.createUser,
+        update: user.updateUser,
+        findAll: user.findAllUsers,
+        find: user.findUser,
+        delete : user.deleteUser
     },
     //(INFO-LINES)
     dataOrder: {

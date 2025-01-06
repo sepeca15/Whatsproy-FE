@@ -10,9 +10,8 @@ import { useUser } from "@/hooks/redux/useUser";
 
 const ConfigAccount = () => {
   const { user } = useUser();
-  const [currentStep, setCurrentStep] = React.useState<number>(0); // Controlamos el índice del paso actual
 
-  const steps = React.useMemo(() => {    
+  const steps = React.useMemo(() => {
     const stepList = [];
     if (!user.userConfigured) stepList.push(1);
     if (!user.paymentMade) stepList.push(2);
@@ -21,9 +20,18 @@ const ConfigAccount = () => {
     return stepList;
   }, [user]);
 
+  const [currentStep, setCurrentStep] = React.useState<number | null>(null);
+
+  React.useEffect(() => {
+    if (steps.length > 0 && steps[0] !== currentStep) {
+      setCurrentStep(steps[0]); 
+    } else if (steps.length === 0 && currentStep !== null) {
+      setCurrentStep(null); 
+    }
+  }, [steps, currentStep]);
+
   const renderStep = () => {
-    const step = steps[currentStep];
-    switch (step) {
+    switch (currentStep) {
       case 1:
         return <Step1 />;
       case 2:
@@ -32,6 +40,8 @@ const ConfigAccount = () => {
         return <Step3 />;
       case 4:
         return <Step4 />;
+      default:
+        return null;
     }
   };
 
@@ -40,7 +50,12 @@ const ConfigAccount = () => {
       <View style={styles.container}>
         <View style={styles.ContainerHeader}>
           <CustomText
-            style={{ fontSize: 22, textAlign: "center", marginBottom:10, fontWeight: "bold" }}
+            style={{
+              fontSize: 22,
+              textAlign: "center",
+              marginBottom: 10,
+              fontWeight: "bold",
+            }}
           >
             Por favor, termina de configurar tu cuenta
           </CustomText>
