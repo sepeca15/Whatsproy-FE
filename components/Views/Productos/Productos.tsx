@@ -17,7 +17,7 @@ const Productos: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView 
+      <ScrollView
         contentContainerStyle={styles.scrollViewContent}
         style={styles.scrollView}
       >

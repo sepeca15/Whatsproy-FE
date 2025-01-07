@@ -1,8 +1,6 @@
 import { StyleSheet } from 'react-native';
 
 export const pedidosUsuarioStyles = StyleSheet.create({
-    // ... (keep existing styles)
-
     dataPoint: {
         position: 'absolute',
         width: 12,
@@ -18,7 +16,6 @@ export const pedidosUsuarioStyles = StyleSheet.create({
         paddingHorizontal: 10,
         marginTop: 5,
     },
-    // New styles for DistribucionPedidos and TendenciaVentas
     chartContainer: {
         backgroundColor: 'white',
         borderRadius: 10,

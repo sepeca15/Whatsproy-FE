@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 20,
-    paddingBottom: 80, // Añadimos padding extra en la parte inferior
+    paddingBottom: 80,
   },
   scrollView: {
     width: '100%',
@@ -22,7 +22,7 @@ export const styles = StyleSheet.create({
     right: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    zIndex: 1, // Asegura que los botones estén por encima del contenido
+    zIndex: 1,
   },
   graficButton: {
     backgroundColor: Colors.light.primary,
@@ -48,6 +48,6 @@ export const styles = StyleSheet.create({
   addButtonText: {
     color: '#ffffff',
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: 'semibold',
   },
 });

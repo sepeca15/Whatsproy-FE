@@ -11,6 +11,7 @@ export const styles = StyleSheet.create({
     },
     textSecondary: {
       color: Colors.light.secondary,
+      textDecorationLine: "underline"
     },
     containerImage: {
       alignItems: "center"

@@ -4,6 +4,7 @@ import * as company from "../company/company"
 import * as plan from "../plan/plan"
 import * as user from "../user/user"
 import * as dataOrder from "../dateOrder/DateOrder"
+import * as order from "../order/order"
 
 const api = {
     auth:{
@@ -23,15 +24,25 @@ const api = {
         loadAuthCode: company.LoadAuthCode
     },
     user: {
-        update: user.updateUser
+        create: user.createUser,
+        update: user.updateUser,
+        findAll: user.findAllUsers,
+        find: user.findUser,
+        delete : user.deleteUser
     },
     //(INFO-LINES)
     dataOrder: {
         getAll: dataOrder.getAll,
         create: dataOrder.create,
         delete: dataOrder.deleteOrderDate
-    }
-    
+    },
+    order: {
+        getOrderDetails: order.getDetailsOfOrder,
+        getFinished: order.getAllFinished ,
+        getPending: order.getAllPending ,
+        remove: order.removeOrder,
+        confirm: order.confirmOrder,
+    },
 }
 
 export default api

@@ -1,37 +1,41 @@
 import * as React from "react";
-import { Link, usePathname } from "expo-router";
+import { Link, usePathname, useRouter } from "expo-router";
 import { View } from "native-base";
 import { Pressable, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
 import IonIcon from "react-native-vector-icons/Ionicons";
 import SimpleIcon from "react-native-vector-icons/SimpleLineIcons";
 import { Colors } from "@/constants/Colors";
+import AntDesign from "react-native-vector-icons/AntDesign"
+import { useUser } from "@/hooks/redux/useUser";
 
 const Pages = [
     { 
         name: 'home',
         path: '/(tabs)/home',
-        icon: (select: boolean) => <Icon name="home" size={24} color={select ? Colors.light.primary : "#717171"} />
+        icon: (select: boolean, empresaType?: string) => <Icon name="home" size={24} color={select ? Colors.light.primary : "#717171"} />
     },
     {
         name: 'pedidos',
         path: '/(tabs)/pedidos',
-        icon: (select: boolean) => <SimpleIcon name="notebook" size={24} color={select ? Colors.light.primary : "#717171"} />
+        icon: (select: boolean, empresaType?: string) => empresaType === 'Delivery'? <SimpleIcon name="notebook" size={24} color={select ? Colors.light.primary : "#717171"} /> :  <AntDesign name="calendar" size={24} color={select ? Colors.light.primary : "#717171"} /> 
     },
     {
         name: 'productos',
         path: '/(tabs)/productos',
-        icon: (select: boolean) => <IonIcon name="fast-food" size={24} color={select ? Colors.light.primary : "#717171"} />
+        icon: (select: boolean, empresaType?: string) => <IonIcon name="fast-food" size={24} color={select ? Colors.light.primary : "#717171"} />
     },
     {
         name: 'perfil',
         path: '/(tabs)/perfil',
-        icon: (select: boolean) => <Icon name="user" size={24} color={select ? Colors.light.primary : "#717171"} />
+        icon: (select: boolean, empresaType?: string) => <Icon name="user" size={24} color={select ? Colors.light.primary : "#717171"} />
     },
 ] as const;
 
 const Layout = ({ children }: any) => {
+    const router = useRouter();
     const pathname = usePathname();
+    const {user} = useUser()
     const [selected, setSelected] = React.useState<string>("");
 
     React.useEffect(() => {
@@ -39,7 +43,7 @@ const Layout = ({ children }: any) => {
         if (existRouter) {
             setSelected(existRouter.name);
         }
-    }, [pathname]);
+    }, [pathname]);    
 
     return (
         <View style={styles.mainContainer}>
@@ -49,10 +53,13 @@ const Layout = ({ children }: any) => {
                     <Pressable 
                         key={page.name} 
                         style={styles.LinkContainer}
-                        onPress={() => setSelected(page.name)}
+                        onPress={() => {
+                            setSelected(page.name);
+                            router.push(page.path)
+                        }}
                     >
                         <Link style={styles.link} href={page.path}>
-                            {page.icon(page.name === selected)}
+                            {page.icon(page.name === selected, user.tipo_servicioNombre)}
                         </Link>
                         {page.name === selected && <View style={styles.roundedDivBottom} />}
                     </Pressable>
