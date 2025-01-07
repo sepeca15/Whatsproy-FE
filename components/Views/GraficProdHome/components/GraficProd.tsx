@@ -137,9 +137,7 @@ const GraficProddet: React.FC<ProductDetailProps> = ({
           </View>
         </View>
 
-        <TouchableOpacity style={styles.actionButton}>
-          <Text style={styles.actionButtonText}>Volver</Text>
-        </TouchableOpacity>
+     
       </View>
     </ScrollView>
   );
