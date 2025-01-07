@@ -92,7 +92,7 @@ const sampleProducts: Product[] = [
         reviews: 120,
         tags: ["cheese", "tomato", "basil"],
         description: "High-quality product with great value. This product is designed to provide exceptional performance and reliability, making it a great choice for anyone looking for quality and value.",
-        imageUrl: "../../../../hooks/any.jpg.jpg",
+        imageUrl: "https://fotocreativo.com/wp-content/uploads/2019/10/fotografia-de-alimentos-ideas-creativas.jpg",
         category: "Vegetariana"
     },
     {
