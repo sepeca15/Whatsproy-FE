@@ -34,15 +34,8 @@ const GraficProddet: React.FC<ProductDetailProps> = ({
     useShadowColorFromDataset: false,
   };
 
-  const pieChartData = categoryData.labels.map((label, index) => ({
-    name: label,
-    population: categoryData.datasets[0].data[index],
-    color: `rgba(${Math.random() * 255},${Math.random() * 255},${Math.random() * 255},1)`,
-    legendFontColor: '#7F7F7F',
-    legendFontSize: 12,
-  }));
+ 
 
-  const satisfactionPercentage = satisfactionData.data[0] / 100;
 
   // Datos de ejemplo para ventas semanales y mensuales
   const weeklySalesData = {
@@ -107,7 +100,7 @@ const GraficProddet: React.FC<ProductDetailProps> = ({
               style={[styles.salesButton, salesView === 'week' && styles.salesButtonActive]}
               onPress={() => setSalesView('week')}
             >
-              <Text style={[styles.salesButtonText, salesView === 'week' && styles.salesButtonTextActive]}>Semana</Text>
+              <Text style={[styles.salesButtonText, salesView === 'week' && styles.salesButtonTextActive]}>Dia</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.salesButton, salesView === 'month' && styles.salesButtonActive]}
@@ -125,34 +118,7 @@ const GraficProddet: React.FC<ProductDetailProps> = ({
             style={styles.chart}
           />
         </View>
-{/* 
-        <View style={styles.chartContainer}>
-          <Text style={styles.chartTitle}>Ventas por Categoría</Text>
-          <PieChart
-            data={pieChartData}
-            width={screenWidth - 40}
-            height={220}
-            chartConfig={chartConfig}
-            accessor="population"
-            backgroundColor="transparent"
-            paddingLeft="15"
-            absolute
-          />
-        </View> */}
 
-        {/* <View style={styles.chartContainer}>
-          <Text style={styles.chartTitle}>Satisfacción del Cliente</Text>
-          <ProgressChart
-            data={[satisfactionPercentage]}
-            width={screenWidth - 40}
-            height={220}
-            strokeWidth={16}
-            radius={32}
-            chartConfig={chartConfig}
-            hideLegend={false}
-          />
-          <Text style={styles.satisfactionText}>{satisfactionData.data[0]}% Satisfecho</Text>
-        </View> */}
 
         <View style={styles.statsContainer}>
           <View style={styles.statItem}>

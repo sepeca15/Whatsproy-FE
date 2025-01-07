@@ -19,6 +19,21 @@ interface SalesData {
     }[];
 }
 
+interface WeeklySalesData {
+    labels: string[];
+    datasets: {
+        data: number[];
+    }[];
+}
+
+interface MonthlySalesData {
+    labels: string[];
+    datasets: {
+        data: number[];
+    }[];
+}
+
+
 interface CategoryData {
     labels: string[];
     datasets: {
@@ -37,6 +52,22 @@ const salesData: SalesData = {
         data: [120, 150, 180, 200, 250, 300, 280]
     }]
 };
+
+
+  // Datos de ejemplo para ventas semanales y mensuales
+  const weeklySalesData: WeeklySalesData = {
+    labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+    datasets: [{ data: [20, 45, 28, 80, 99, 43, 50] }]
+  };
+
+
+  
+  const monthlySalesData: MonthlySalesData = {
+    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+    datasets: [{ data: [300, 450, 280, 800, 990, 430, 500, 600, 700, 500, 600, 800] }]
+  };
+
+  
 
 const categoryData: CategoryData = {
     labels: ["Pizza", "Pasta", "Ensalada", "Postre"],
@@ -61,7 +92,7 @@ const sampleProducts: Product[] = [
         reviews: 120,
         tags: ["cheese", "tomato", "basil"],
         description: "High-quality product with great value. This product is designed to provide exceptional performance and reliability, making it a great choice for anyone looking for quality and value.",
-        imageUrl: "https://fotocreativo.com/wp-content/uploads/2019/10/fotografia-de-alimentos-ideas-creativas.jpg",
+        imageUrl: "../../../../hooks/any.jpg.jpg",
         category: "Vegetariana"
     },
     {
@@ -118,31 +149,9 @@ const sampleProducts: Product[] = [
     }
 ];
 
-// const weeklySalesData: SalesData = {
-//     labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
-//     datasets: [
-//         {
-//             data: [150, 200, 250, 300]
-//         }
-//     ]
-// };
 
-// const monthlySalesData: SalesData = {
-//     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-//     datasets: [
-//         {
-//             data: [1200, 1500, 1800, 2000, 2200, 2500, 2700, 3000, 3200, 3500, 3700, 4000]
-//         }
-//     ]
-// };
-// interface SalesData {
-//     labels: string[];
-//     datasets: {
-//         data: number[];
-//     }[];
-// }
 
 
 const availableCurrencies = ["USD", "EUR", "GBP"];
 
-export { sampleProducts, Product, availableCurrencies , satisfactionData, categoryData, salesData, SatisfactionData, CategoryData, SalesData }; 
+export { sampleProducts, Product, availableCurrencies , satisfactionData, categoryData, salesData, SatisfactionData, CategoryData, SalesData, weeklySalesData, WeeklySalesData, monthlySalesData, MonthlySalesData}; 

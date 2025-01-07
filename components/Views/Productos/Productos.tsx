@@ -1,7 +1,7 @@
 import React from "react";
 import { View, ScrollView, TouchableOpacity, Text } from "react-native";
 import { ProductCard } from "./components/CarProduct";
-import { sampleProducts, Product, salesData, categoryData, satisfactionData } from "./components/dataProduct";
+import { sampleProducts, Product, salesData, categoryData, satisfactionData, monthlySalesData, weeklySalesData} from "./components/dataProduct";
 import { useRouter } from 'expo-router'; 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { styles } from './ProductosStyles';
@@ -28,6 +28,8 @@ const Productos: React.FC = () => {
             salesData={salesData}
             satisfactionData={satisfactionData}
             categoryData={categoryData}
+            weeklySalesData={weeklySalesData}
+            monthlySalesData={monthlySalesData}
             onUpdateProduct={handleUpdateProduct}
           />
         ))}
