@@ -3,32 +3,15 @@ import { View, Text } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import GraficProddet from './components/GraficProd';
 import { productData, salesData, categoryData, satisfactionData } from '../GraficProdHome/components/Data';
+import{ProductParams} from './components/types';
 
-// Define la interfaz para los parámetros esperados
-interface ProductParams {
-  id: string;
-  title: string;
-  price: string;
-  currency: string;
-  duration: string;
-  description: string;
-  imageUrl: string;
-  category: string;
-  rating: string;
-  reviews: string;
-  tags?: string;
-  monthlabels: string[];
-  monthdatasets?: string;
-  dayslabels: string[];
-  daysdatasets?: string;
 
-}
 
 const ProductDetails: React.FC = () => {
   // Tipifica los parámetros recibidos
   const rawParams = useLocalSearchParams(); 
   const params = rawParams as unknown as ProductParams;
-
+console.log('params', params)
   const monthdatasets = params.monthdatasets ? JSON.parse(params.monthdatasets) : [];
  
   const daysdatasets = params.daysdatasets ? JSON.parse(params.daysdatasets) : [];
@@ -51,6 +34,8 @@ const ProductDetails: React.FC = () => {
     monthdatasets,
     dayslabels: params.dayslabels,
     daysdatasets,
+    empresa_id: parseInt(params.empresa_id, 10),
+    disponible: params.disponible === 'true',
   };
 
   console.log('Processed Product:', product);

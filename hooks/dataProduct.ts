@@ -12,6 +12,16 @@ interface Product {
     tags: string[];
 }
 
+interface ProductBDD {
+    id: number;
+    nombre: string;
+    descripcion: string;
+    disponible: boolean;
+    empresa_id: number;
+    plazoDuracionEstimadoMinutos: number;
+    precio: number;
+  }
+
 interface SalesData {
     labels: string[];
     datasets: {
@@ -152,6 +162,8 @@ const sampleProducts: Product[] = [
 
 
 
+
+
 const availableCurrencies = ["USD", "EUR", "GBP"];
 
-export { sampleProducts, Product, availableCurrencies , satisfactionData, categoryData, salesData, SatisfactionData, CategoryData, SalesData, weeklySalesData, WeeklySalesData, monthlySalesData, MonthlySalesData}; 
+export { sampleProducts, ProductBDD, Product, availableCurrencies , satisfactionData, categoryData, salesData, SatisfactionData, CategoryData, SalesData, weeklySalesData, WeeklySalesData, monthlySalesData, MonthlySalesData}; 

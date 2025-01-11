@@ -3,7 +3,7 @@ import { View, Text, Image, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { useRouter } from 'expo-router';
 import { styles } from './CardProdStyle';
-import { Product, SatisfactionData, CategoryData, SalesData, WeeklySalesData, MonthlySalesData } from './dataProduct';
+import { Product, SatisfactionData, CategoryData, SalesData, WeeklySalesData, MonthlySalesData } from '../../../../../hooks/dataProduct';
 import { salesData } from '@/components/Views/GraficProdHome/components/Data';
 
 
@@ -31,7 +31,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
    
        
 
-    // console.log("monthdata", monthlySalesData)    
+  
     const commonParams = {
         id: product.id,
         title: product.title,
@@ -56,7 +56,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     
     const handleDet = () => {
         if (!product) {
-            console.error('Product is undefined');
+          
             return;
         }
         router.push({
@@ -73,11 +73,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 daysdatasets: JSON.stringify(weeklySalesData.datasets),
             },
         });
-        // console.log('Detail Params:', {
-        //     // monthlabels: monthlySalesData.labels,
-        //     monthdatasets: monthlySalesData.datasets,
-        // });
-        //  console.log('Monthdatasets Data:', monthlySalesData.datasets.map(dataset => dataset.data));
+      
 
     };
 

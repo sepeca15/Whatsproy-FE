@@ -12,8 +12,14 @@ const api = {
         me: auth.GetMyAccountData,
     },
     products: {
-        getAll: products.findAllProducts
+        getAll: products.findAllProducts,
+        find: products.find,
+        update: products.update,
+        delete: products.deletProd,
+
+
     },
+    
     plans: {
         getAll: plan.getAllPlans,
         assignPlanToCompany: plan.AssignPlan

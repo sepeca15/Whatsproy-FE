@@ -1,3 +1,4 @@
+import { Path } from 'react-native-svg';
 import ApiInstances from "@/services/axios/axiosConfig"
 
 export const findAllProducts = async () => {
@@ -9,3 +10,17 @@ export const findProductsWithQuery = async (query: string) => {
     const data = await ApiInstances('current').get(`producto/findWithQuery?query=${query}`)
     return data;
 }
+export const find = async (id: number) => {
+    const data = await ApiInstances('current').get(`producto/${id}`)
+    return data;
+}
+
+export const update = async (id: number) => {
+    const data = await ApiInstances('current').put(`producto/${id}`)
+    return data;
+}
+export const deletProd = async (id: number) => {
+    const data = await ApiInstances('current').delete(`producto/${id}`)
+    return data;
+}
+

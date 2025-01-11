@@ -36,3 +36,27 @@ export interface ProductDetailProps {
   categoryData: CategoryData;
   satisfactionData: SatisfactionData;
 }
+
+interface ProductParams {
+  id: string;
+  title: string;
+  price: string;
+  currency: string;
+  duration: string;
+  description: string;
+  imageUrl: string;
+  category: string;
+  rating: string;
+  reviews: string;
+  tags?: string;
+  monthlabels: string[];
+  monthdatasets?: string;
+  dayslabels: string[];
+  daysdatasets?: string;
+  disponible: string;
+  empresa_id: string;
+
+}
+
+
+export { ProductParams }; 

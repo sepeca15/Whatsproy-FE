@@ -6,42 +6,49 @@ import { useLocalSearchParams } from "expo-router";
 
 interface ProductFormData {
   id: number;
-  name: string;
+  title: string;
   price: string;
   currency: string;
   duration: string;
   description: string;
-  image?: string;
+  imageUrl?: string; 
+  disponible: boolean;
+  empresa_id: number;
 }
 
 interface EditProProps {
   id: number;
-  name: string;
+  title: string;
   price: string;
   currency: string;
   duration: string;
   description: string;
-  image: string;
+  imageUrl: string;
+  disponible: boolean;
+  empresa_id: number;
   onUpdateProduct: (updatedProduct: ProductFormData) => void;
 }
 
 const EditPro: React.FC = () => {
   const params = useLocalSearchParams();
-  console.log('Params:', params);
-  
+ 
+
   const editProProps: EditProProps = {
-    id: parseInt(params.id as string, 10),
-    name: params.name as string,
-    price: params.price as string,
-    currency: params.currency as string,
-    duration: params.duration as string,
-    description: params.description as string,
-    image: (params.image as string) ?? '',
-    onUpdateProduct: (updatedProduct) => {
-      console.log('Product updated:', updatedProduct);
+    id: parseInt(params.id as string, 10) || 0,
+    title: params.title as string || '',
+    price: params.price as string || '',
+    currency: params.currency as string || '',
+    duration: params.duration as string || '',
+    description: params.description as string || '',
+    imageUrl: (params.imageUrl as string) ?? '', // Uso de 'imageUrl'
+    disponible: params.disponible === 'true',
+    empresa_id: parseInt(params.empresa_id as string, 10) || 0,
+    onUpdateProduct: () => {
       // Aquí la lógica para manejar la actualización del producto
     },
   };
+
+  
 
   return (
     <View style={styles.container}>

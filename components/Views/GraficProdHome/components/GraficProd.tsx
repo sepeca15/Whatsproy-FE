@@ -15,6 +15,10 @@ import {
 } from 'react-native-chart-kit';
 import { styles } from './SalesChartsStyles';
 import { ProductDetailProps } from './types';
+import { weeklySalesData, monthlySalesData } from '../../../../hooks/dataProduct';
+
+
+
 
 const GraficProddet: React.FC<ProductDetailProps> = ({
   product,
@@ -36,17 +40,6 @@ const GraficProddet: React.FC<ProductDetailProps> = ({
 
  
 
-
-  // Datos de ejemplo para ventas semanales y mensuales
-  const weeklySalesData = {
-    labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
-    datasets: [{ data: [20, 45, 28, 80, 99, 43, 50] }]
-  };
-
-  const monthlySalesData = {
-    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-    datasets: [{ data: [300, 450, 280, 800, 990, 430, 500, 600, 700, 500, 600, 800] }]
-  };
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
