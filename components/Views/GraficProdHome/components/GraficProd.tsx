@@ -38,7 +38,7 @@ const GraficProddet: React.FC<ProductDetailProps> = ({
     useShadowColorFromDataset: false,
   };
 
- 
+ //
 
 
   return (
