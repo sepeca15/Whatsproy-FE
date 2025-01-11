@@ -2,8 +2,8 @@ import React from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { useRouter } from 'expo-router';
-import { styles } from './CardProdStyle';
-import { Product } from '../dataProduct';
+import { styles } from '@/components/Views/Productos/components/CardProduct/CardProdStyle';
+import { Product } from '@/components/Views/Productos/components/dataProduct';
 
 interface ProductCardProps {
     product: Product;

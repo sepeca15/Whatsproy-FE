@@ -11,6 +11,7 @@ import {
   Checkbox,
   View,
   Spinner,
+  Button,
 } from "native-base";
 import GlobalModal from "./Modal";
 import InputField from "./InputField";
@@ -24,6 +25,7 @@ interface MultiSelectInputProps {
   isMultiple?: boolean;
   onSearch?: (qry: string) => void;
   loading?: boolean;
+  error?: any;
 }
 
 let timeoutSearch: any = 0;
@@ -35,6 +37,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
   isRequired = false,
   loading,
   isMultiple = true,
+  error,
   setItemsSelected,
   onSearch,
 }) => {
@@ -84,7 +87,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
 
   return (
     <VStack space={4}>
-      <FormControl isRequired={isRequired}>
+      <FormControl  isInvalid={error} isRequired={isRequired}>
         <FormControl.Label>{label}</FormControl.Label>
         <Pressable onPress={() => setIsModalOpen(true)}>
           <Input
@@ -98,6 +101,9 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
             backgroundColor="coolGray.50"
           />
         </Pressable>
+        {error && <FormControl.ErrorMessage>
+          {error}
+        </FormControl.ErrorMessage>}
       </FormControl>
 
       {selectedItems?.length > 0 && (
@@ -131,9 +137,23 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
         isVisible={isModalOpen}
         label={label}
         onClose={() => setIsModalOpen(false)}
-        onAccept={() => setIsModalOpen(false)}
+        actions={[
+          <Button
+          isLoading={false}
+            onPress={() => setIsModalOpen(false)}
+            size="sm"
+            key="aceptar"
+            backgroundColor={"#2C2C2C"}
+            borderRadius={"6"}
+            fontWeight={700}
+          >
+            <Text fontWeight={500} color={"white"}>
+              Aceptar
+            </Text>
+          </Button>
+        ]}
         content={
-          <VStack space={2}>
+          <VStack marginBottom={10} space={2}>
             {onSearch && (
               <View marginBottom={4}>
                 <InputField

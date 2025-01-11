@@ -1,4 +1,4 @@
-interface Product {
+export interface Product {
     id: number;
     title: string;
     price: number;
@@ -7,7 +7,7 @@ interface Product {
     category: string;
 }
 
-const sampleProducts: Product[] = [
+export const sampleProducts: Product[] = [
     {
         id: 1,
         title: "Product 1",
@@ -50,6 +50,4 @@ const sampleProducts: Product[] = [
     },
 ];
 
-const availableCurrencies = ["USD", "EUR", "GBP"]; 
-
-export { sampleProducts, Product, availableCurrencies };
+export const availableCurrencies = ["USD", "EUR", "GBP"]; 

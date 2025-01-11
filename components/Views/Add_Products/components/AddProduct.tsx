@@ -14,7 +14,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { AntDesign } from '@expo/vector-icons';
 import { styles } from './AddProductStyle';
 import { useRouter } from 'expo-router';
-import { availableCurrencies } from '../../Productos/Components/dataProduct'; // Importar las monedas disponibles
+import { availableCurrencies } from '@/components/Views/Productos/components/dataProduct';
 interface ProductFormData {
   name: string;
   price: string;

@@ -3,7 +3,7 @@ import { TouchableWithoutFeedback, Platform } from "react-native";
 import { VStack, FormControl, Input, Modal, Button } from "native-base";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
-const DateTimeInputField = ({ date, setDate, isRequired = true }: any) => {
+const DateTimeInputField = ({ date, setDate, isRequired = true, error }: any) => {
   const [showPicker, setShowPicker] = useState(false);
   const [mode, setMode] = useState<"date" | "time">("date");
 
@@ -15,20 +15,20 @@ const DateTimeInputField = ({ date, setDate, isRequired = true }: any) => {
   };
 
   const handleOpenPicker = (pickerMode: "date" | "time") => {
-    if (Platform.OS === "ios") {
-      setMode(pickerMode);
-      setShowPicker(true);
-    } else {
-      setMode(pickerMode);
-      setShowPicker(true);
-    }
+    setMode(pickerMode);
+    setShowPicker(true);
   };
 
-  const formattedDate = new Intl.DateTimeFormat('es-ES', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
+  const formattedDate = new Intl.DateTimeFormat(navigator.language, {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
   }).format(date);
+
+  const formattedTime = date.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   return (
     <VStack space={4}>
@@ -48,20 +48,18 @@ const DateTimeInputField = ({ date, setDate, isRequired = true }: any) => {
       </TouchableWithoutFeedback>
 
       <TouchableWithoutFeedback onPress={() => handleOpenPicker("time")}>
-        <FormControl isRequired={isRequired}>
+        <FormControl isInvalid={error} isRequired={isRequired}>
           <FormControl.Label _text={{ fontWeight: "bold" }}>
             Hora
           </FormControl.Label>
           <Input
             isReadOnly
-            value={date.toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
+            value={formattedTime}
             placeholder="Seleccionar hora"
             borderColor="coolGray.300"
             backgroundColor="coolGray.50"
           />
+          {error && <FormControl.ErrorMessage>{error}</FormControl.ErrorMessage>}
         </FormControl>
       </TouchableWithoutFeedback>
 

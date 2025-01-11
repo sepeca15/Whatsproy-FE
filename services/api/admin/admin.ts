@@ -38,6 +38,7 @@ const api = {
         getPending: order.getAllPending ,
         remove: order.removeOrder,
         confirm: order.confirmOrder,
+        create: order.createOrder,
     },
 }
 
