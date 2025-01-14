@@ -13,6 +13,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { styles as productosStyles } from "@/components/Views/Productos/ProductosStyles";
 import CreateOrderModal from "../../CreateOrderModal";
 import { ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
+import AddEventToCalendarModal from "./components/AddEventToCalendar";
+import api from "@/services/api/admin";
+import ItemCalendar from "./components/ItemCalendar";
+import { IInfoItem } from "./types";
 
 if (
   Platform.OS === "android" &&
@@ -22,103 +26,47 @@ if (
 }
 
 export default function CalendarView() {
-  const [items, setItems] = useState({});
+  const [orderPerDays, setOrderPerDays] = useState({});
   const [openAddModal, setOpenAddModal] = useState(false);
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split("T")[0]
-  );
+  );  
 
-  const loadItems = (day: any) => {
-    const newItems: any = { ...items };
-    for (let i = -5; i < 20; i++) {
-      const time = day.timestamp + i * 24 * 60 * 60 * 1000;
-      const strTime = new Date(time).toISOString().split("T")[0];
-      if (!newItems[strTime]) {
-        newItems[strTime] = [
-          {
-            id: i,
-            name: strTime,
-            time: "15:30",
-            description: `Detalles extensos de la reserva para el día ${strTime}. Esta reserva tiene información importante.`,
-            height: 50 + Math.random() * 100,
-          },
-        ];
-      }
+  const onLoadItems = async(selectedDate : string) => {
+    try {
+      const data = await api.order.getCalendarOrders(selectedDate)      
+      setOrderPerDays(data.data)
+      console.log(data.data);
+      
+    } catch (error : any) {
+      console.log(error.response.data.message);
     }
-    setItems(newItems);
-  };
+  }
 
-  const toggleExpand = (itemId: string) => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-
-    setItems((prevState) => {
-      const newItems: any = { ...prevState };
-
-      let foundDate: string | null = null;
-      for (const date in newItems) {
-        if (newItems[date].some((item: any) => item.id === itemId)) {
-          foundDate = date;
-          break;
-        }
-      }
-
-      if (!foundDate) {
-        return;
-      }
-      newItems[foundDate] = newItems[foundDate].map((item: any) =>
-        item.id === itemId ? { ...item, expanded: !item.expanded } : item
-      );
-
-      return newItems;
-    });
-  };
-
-  const renderItem = (item: any) => {
-    const isExpanded = item?.expanded;
-    return (
-      <TouchableOpacity
-        key={item?.id}
-        style={[styles.item, isExpanded && styles.expandedItem]}
-        onPress={() => toggleExpand(item?.id)}
-      >
-        <View style={styles.rowTitle}>
-          <Text style={styles.title}>{item.name}</Text>
-          <View style={styles.row}>
-            <Ionicons name={"time-outline"} size={16} color={"white"} />
-            <Text
-              style={{
-                ...styles.title,
-                marginTop: 3,
-              }}
-            >
-              {item.time}
-            </Text>
-          </View>
-        </View>
-        <View>
-          {isExpanded && (
-            <Text style={styles.description}>{item.description}</Text>
-          )}
-        </View>
-      </TouchableOpacity>
-    );
-  };
+  React.useEffect(()=> {
+    if(selectedDate) {
+      onLoadItems(selectedDate)
+    }
+  },[selectedDate])
 
   return (
     <View style={styles.container}>
       <Agenda
-        items={items}
-        loadItemsForMonth={loadItems}
+        loading={false}
+        items={orderPerDays}
         selected={selectedDate}
+        showOnlySelectedDayItems={true}
         onDayPress={(day: any) => {
           setSelectedDate(day.dateString);
         }}
-        renderItem={renderItem}
-        renderEmptyDate={() => (
-          <View style={styles.emptyDate}>
+        renderItem={(data:IInfoItem)=> (
+          <ItemCalendar InfoItem={data}/>
+        )}
+        renderEmptyData={() => {
+          return  <View style={styles.emptyDate}>
             <Text>No hay eventos para este día</Text>
           </View>
-        )}
+        }}
         rowHasChanged={(r1: any, r2: any) =>
           r1.name !== r2.name || r1?.expanded !== r2?.expanded
         }

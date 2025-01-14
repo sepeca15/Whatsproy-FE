@@ -1,8 +1,9 @@
 import React from "react";
 import { View, ScrollView, TouchableOpacity, Text } from "react-native";
-import { ProductCard } from "./components/CarProduct";
-import { sampleProducts, Product, ProductBDD, salesData, categoryData, satisfactionData, monthlySalesData, weeklySalesData } from "../../../hooks/dataProduct";
-import { useRouter } from 'expo-router';
+
+import { ProductCard } from "./components/CardProduct/CardProduct";
+import { sampleProducts, Product } from "./components/dataProduct";
+import { useRouter } from 'expo-router'; 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { styles } from './ProductosStyles';
 import api from "@/services/api/admin";

@@ -6,10 +6,17 @@ export const getDetailsOfOrder = async (id: any) => {
   return data;
 };
 
-export const getAllFinished = async () => {
-  const { data } = await ApiInstances("current").get("pedido/finished");
-  return data;
-};
+
+export const getOrderForCalendar = async (selectedDate : string) => {
+    const { data } = await ApiInstances('current').get('pedido/calendar/formatCalendar/' + selectedDate)
+     
+    return data
+}
+
+export const getAllFinished = async() => {
+    const { data } = await ApiInstances('current').get('pedido/finished')
+    return data
+}
 
 export const getAllPending = async () => {
   const { data } = await ApiInstances("current").get("pedido/pending");
