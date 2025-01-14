@@ -8,59 +8,61 @@ import SimpleIcon from "react-native-vector-icons/SimpleLineIcons";
 import { Colors } from "@/constants/Colors";
 import AntDesign from "react-native-vector-icons/AntDesign"
 import { useUser } from "@/hooks/redux/useUser";
+import { TipoServicio } from "@/enums/TipoServicio";
 
-const Pages = [
-    { 
-        name: 'home',
-        path: '/(tabs)/home',
-        icon: (select: boolean, empresaType?: string) => <Icon name="home" size={24} color={select ? Colors.light.primary : "#717171"} />
-    },
-    {
-        name: 'pedidos',
-        path: '/(tabs)/pedidos',
-        icon: (select: boolean, empresaType?: string) => empresaType === 'Delivery'? <SimpleIcon name="notebook" size={24} color={select ? Colors.light.primary : "#717171"} /> :  <AntDesign name="calendar" size={24} color={select ? Colors.light.primary : "#717171"} /> 
-    },
-    {
-        name: 'productos',
-        path: '/(tabs)/productos',
-        icon: (select: boolean, empresaType?: string) => <IonIcon name="fast-food" size={24} color={select ? Colors.light.primary : "#717171"} />
-    },
-    {
-        name: 'perfil',
-        path: '/(tabs)/perfil',
-        icon: (select: boolean, empresaType?: string) => <Icon name="user" size={24} color={select ? Colors.light.primary : "#717171"} />
-    },
-] as const;
+const Pages = (empresaType: number) => {
+    return [
+        {
+            name: 'home',
+            path: '/(tabs)/home',
+            icon: (select: boolean) => <Icon name="home" size={24} color={select ? Colors.light.primary : "#717171"} />
+        },
+        {
+            name: 'pedidos',
+            path: empresaType === TipoServicio.DELIVERY ? '/(tabs)/pedidos' : '/(tabs)/calendar',
+            icon: (select: boolean) => empresaType === TipoServicio.RESERVA ? <SimpleIcon name="notebook" size={24} color={select ? Colors.light.primary : "#717171"} /> : <AntDesign name="calendar" size={24} color={select ? Colors.light.primary : "#717171"} />
+        },
+        {
+            name: 'productos',
+            path: '/(tabs)/productos',
+            icon: (select: boolean) => <IonIcon name="fast-food" size={24} color={select ? Colors.light.primary : "#717171"} />
+        },
+        {
+            name: 'perfil',
+            path: '/(tabs)/perfil',
+            icon: (select: boolean) => <Icon name="user" size={24} color={select ? Colors.light.primary : "#717171"} />
+        },
+    ] as const;
+}
 
 const Layout = ({ children }: any) => {
     const router = useRouter();
     const pathname = usePathname();
-    const {user} = useUser()
+    const { user } = useUser()
     const [selected, setSelected] = React.useState<string>("");
+    console.log(selected);
 
     React.useEffect(() => {
-        const existRouter = Pages.find((path) => pathname.split('/')[1] === path.name);
+        const existRouter = Pages(user.tipo_servicio).find((path) => pathname.split('/')[1] === path.name);
         if (existRouter) {
             setSelected(existRouter.name);
         }
-    }, [pathname]);    
+    }, [pathname]);
 
     return (
         <View style={styles.mainContainer}>
             {children}
             <View style={styles.navigationMenu}>
-                {Pages.map((page) => (
-                    <Pressable 
-                        key={page.name} 
+                {Pages(user.tipo_servicio).map((page) => (
+                    <Pressable
+                        key={page.name}
                         style={styles.LinkContainer}
                         onPress={() => {
                             setSelected(page.name);
                             router.push(page.path)
                         }}
                     >
-                        <Link style={styles.link} href={page.path}>
-                            {page.icon(page.name === selected, user.tipo_servicioNombre)}
-                        </Link>
+                        {page.icon(page.name === selected)}
                         {page.name === selected && <View style={styles.roundedDivBottom} />}
                     </Pressable>
                 ))}
@@ -79,12 +81,12 @@ const styles = StyleSheet.create({
         display: "flex",
         flexDirection: "row",
         height: 60,
-        paddingTop:15,
         alignItems: "center",
         justifyContent: "space-between",
     },
     LinkContainer: {
-        width: "25%", 
+        height:60,
+        width: "25%",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -94,14 +96,14 @@ const styles = StyleSheet.create({
     roundedDivBottom: {
         position: "absolute",
         width: "60%",
-        height: 20,
+        height: 8,
         backgroundColor: Colors.light.primary,
         borderTopEndRadius: 10,
         borderTopStartRadius: 10,
-        bottom: -12,
+        bottom: 0,
     },
     link: {
-        flex:1,
+        flex: 1,
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
@@ -110,3 +112,4 @@ const styles = StyleSheet.create({
 });
 
 export default Layout;
+

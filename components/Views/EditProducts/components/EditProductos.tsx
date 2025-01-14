@@ -14,7 +14,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { AntDesign } from '@expo/vector-icons';
 import { styles } from './EditProductStyle';
 import { useRouter } from 'expo-router';
-import { availableCurrencies } from '../../Productos/Components/dataProduct'; 
+import { availableCurrencies } from '../../Productos/components/dataProduct'; 
 
 interface ProductFormData {
   id: number;
