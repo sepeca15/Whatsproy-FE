@@ -14,8 +14,15 @@ import * as ImagePicker from 'expo-image-picker';
 import { AntDesign } from '@expo/vector-icons';
 import { styles } from './AddProductStyle';
 import { useRouter } from 'expo-router';
+interface ProductFormData {
+  name: string;
+  price: string;
+  currency: string;
+  duration: string;
+  description: string;
+  image?: string;
+}
 import { availableCurrencies } from '../../../../hooks/dataProduct'; // Importar las monedas disponibles
-import { ProductFormData } from './types';
 
 
 const AddProduct: React.FC = () => {

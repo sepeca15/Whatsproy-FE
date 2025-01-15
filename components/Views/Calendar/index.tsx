@@ -11,7 +11,8 @@ import {
 import { Agenda } from "react-native-calendars";
 import { Ionicons } from "@expo/vector-icons";
 import { styles as productosStyles } from "@/components/Views/Productos/ProductosStyles";
-import AddEventToCalendarModal from "./components/AddEventToCalendar";
+import CreateOrderModal from "../../CreateOrderModal";
+import { ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
 
 if (
   Platform.OS === "android" &&
@@ -131,10 +132,10 @@ export default function CalendarView() {
         }}
       />
       {openAddModal && (
-        <AddEventToCalendarModal
+        <CreateOrderModal
           onClose={() => setOpenAddModal(false)}
-          handleAddOrUpdate={() => null}
           defaultDate={selectedDate}
+          tipoServicio={ID_TIPOSERVICIO_RESERVA}
         />
       )}
 

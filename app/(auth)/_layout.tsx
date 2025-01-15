@@ -5,6 +5,8 @@ import { useAuth } from "@/hooks/useAuth";
 import * as Progress from "react-native-progress";
 import { Colors } from "@/constants/Colors";
 import { StyleSheet } from "react-native";
+import Toast from "react-native-toast-message";
+import toastConfig from "@/utils/toast";
 
 const Layout: React.FC = () => {
   const { isAuthenticated, loading, redirecting } = useAuth()
@@ -22,6 +24,7 @@ const Layout: React.FC = () => {
   }
   return (
     <NativeBaseProvider>
+      <Toast config={toastConfig} />
       <Slot />
     </NativeBaseProvider>
   );

@@ -4,7 +4,7 @@ export interface CategoryData {
   Hamburguesas: number;
   Chorizo: number;
   Salchichas: number;
-  [key: string]: number; // Añadir esta línea para permitir índices de tipo string
+  [key: string]: number;
 }
 
 export interface MonthlySalesData {
