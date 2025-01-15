@@ -14,9 +14,9 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import createStyles from './AddStyles';
+import createStyles from './AddUserStyles';
 
-const AddUsuario: React.FC = () => {
+const AddUser = () => {
   const [nombre, setNombre] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [isValid, setIsValid] = useState<boolean>(false);
@@ -136,5 +136,5 @@ const AddUsuario: React.FC = () => {
   );
 };
 
-export default AddUsuario;
+export default AddUser;
 

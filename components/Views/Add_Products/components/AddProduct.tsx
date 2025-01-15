@@ -14,7 +14,6 @@ import * as ImagePicker from 'expo-image-picker';
 import { AntDesign } from '@expo/vector-icons';
 import { styles } from './AddProductStyle';
 import { useRouter } from 'expo-router';
-import { availableCurrencies } from '@/components/Views/Productos/components/dataProduct';
 interface ProductFormData {
   name: string;
   price: string;
@@ -23,6 +22,8 @@ interface ProductFormData {
   description: string;
   image?: string;
 }
+import { availableCurrencies } from '../../../../hooks/dataProduct'; // Importar las monedas disponibles
+
 
 const AddProduct: React.FC = () => {
   const router = useRouter();
@@ -50,7 +51,7 @@ const AddProduct: React.FC = () => {
 
   const handleSubmit = () => {
     const newProduct = { ...formData, image };
-    console.log('Form submitted:', newProduct);
+    // lelog('Form submitted:', newProduct);
     // Lógica para agregar el producto a la base de datos
   };
 
@@ -81,7 +82,7 @@ const AddProduct: React.FC = () => {
             style={styles.input}
             value={formData.name}
             onChangeText={(text) => setFormData({ ...formData, name: text })}
-            placeholder="Ej: Corte de Cabello"
+            placeholder="Ej: Milanesa de pollo"
           />
 
           <View style={styles.row}>
@@ -125,7 +126,7 @@ const AddProduct: React.FC = () => {
             style={[styles.input, styles.textArea]}
             value={formData.description}
             onChangeText={(text) => setFormData({ ...formData, description: text })}
-            placeholder="Describe el producto o servicio"
+            placeholder="Describe el producto"
             multiline
             numberOfLines={4}
           />

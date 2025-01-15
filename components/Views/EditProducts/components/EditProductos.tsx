@@ -14,50 +14,36 @@ import * as ImagePicker from 'expo-image-picker';
 import { AntDesign } from '@expo/vector-icons';
 import { styles } from './EditProductStyle';
 import { useRouter } from 'expo-router';
-import { availableCurrencies } from '@/components/Views/Productos/components/dataProduct';
-
-interface ProductFormData {
-  id: number;
-  name: string;
-  price: string;
-  currency: string;
-  duration: string;
-  description: string;
-  image?: string;
-}
-
-interface EditProductProps {
-  id: number;
-  name: string;
-  price: string;
-  currency: string;
-  duration: string;
-  description: string;
-  image?: string;
-  onUpdateProduct: (updatedProduct: ProductFormData) => void;
-}
+import { availableCurrencies } from '../../../../hooks/dataProduct'; 
+import { ProductFormData, EditProductProps } from './types';
 
 const EditProduct: React.FC<EditProductProps> = ({
   id,
-  name,
+  title,
   price,
   currency,
   duration,
   description,
-  image,
+  imageUrl,
+  disponible,
+  empresa_id,
   onUpdateProduct
 }) => {
+
+  
   const router = useRouter();
   const [formData, setFormData] = useState<ProductFormData>({
     id,
-    name,
+    title,
     price,
     currency,
     duration,
     description,
-    image: image || '',
+    imageUrl: imageUrl || '',
+    disponible,
+    empresa_id,
   });
-  const [selectedImage, setSelectedImage] = useState<string | null>(image ?? null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(imageUrl ?? null);
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -74,7 +60,7 @@ const EditProduct: React.FC<EditProductProps> = ({
 
   const handleSubmit = () => {
     const updatedProduct = { ...formData, image: selectedImage || undefined };
-    console.log('Form submitted:', updatedProduct);
+    // console.log('Form submitted:', updatedProduct);
     onUpdateProduct(updatedProduct);
     router.back();
   };
@@ -102,9 +88,9 @@ const EditProduct: React.FC<EditProductProps> = ({
           <Text style={styles.label}>Nombre del Producto</Text>
           <TextInput
             style={styles.input}
-            value={formData.name}
-            onChangeText={(text) => setFormData({ ...formData, name: text })}
-            placeholder="Ej: Corte de Cabello"
+            value={formData.title}
+            onChangeText={(text) => setFormData({ ...formData, title: text })}
+            placeholder="Ej: Milanesa"
           />
 
           <View style={styles.row}>
@@ -154,7 +140,7 @@ const EditProduct: React.FC<EditProductProps> = ({
           />
 
           <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-            <Text style={styles.buttonText}>Guardar Cambios</Text>
+            <Text style={styles.buttonText}>Actualizar</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

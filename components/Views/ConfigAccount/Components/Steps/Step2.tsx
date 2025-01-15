@@ -6,6 +6,7 @@ import api from "@/services/api/admin";
 import { IPlans } from "../MethodOfpaycard/MethodOfPayCardTypes";
 import * as Progress from "react-native-progress";
 import { Colors } from "@/constants/Colors";
+import { ScrollView } from "native-base";
 
 const Step2 = () => {
   const [loading, setLoading] = React.useState<boolean>(false)
@@ -38,7 +39,7 @@ const Step2 = () => {
     loading ?
         <Progress.Circle color={Colors.light.primary} style={{margin:'auto', marginVertical:10,}} indeterminate={true} size={50} />
       :
-      <RNScrollView
+      <ScrollView
         horizontal={true}
         showsHorizontalScrollIndicator={false}
         style={styles.containerStep2}
@@ -51,7 +52,7 @@ const Step2 = () => {
             })
           }
         </View>
-      </RNScrollView>
+      </ScrollView>
 
   );
 };

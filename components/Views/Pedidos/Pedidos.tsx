@@ -5,19 +5,24 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons.js'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons.js'
 import OrdersFinished from './components/OrdersFinished';
 import OrdersPending from './components/OrdersPending';
+import { useUser } from "@/hooks/redux/useUser";
 
 type pagesOrder = 'finished' | 'pending'
 
 const PedidosEIngresos: React.FC = () => {
     const [selected, setSelected] = React.useState<pagesOrder>('pending')
-
+    const {user} = useUser()
     const handleSelectPage = (key: pagesOrder) => {
         setSelected(key)
     }
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Pedidos</Text>
+            <Text style={styles.title}>
+                {
+                user.tipo_servicioNombre === 'Delivery' ? "Pedidos" : "Reservas"
+                }
+            </Text>
             <View style={styles.tab}>
                 {['pending', 'finished'].map((key) => (
                     <View key={key} style={styles.containerTabItem}>

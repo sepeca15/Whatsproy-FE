@@ -12,9 +12,17 @@ interface CustomButtonProps extends IButtonProps {
   colorSpiner?: string,
 }
 
-const CustomButton = ({ children, background = "#128c7e", isDisabled = false, variant = "solid", colorSpiner='#128c7e' , loading, ...props }: CustomButtonProps) => {
+const CustomButton = ({ 
+  children, 
+  background = "#128c7e", 
+  isDisabled = false, 
+  variant = "solid", 
+  colorSpiner = "#128c7e", 
+  loading, 
+  ...props 
+}: CustomButtonProps) => {
   const buttonBackgroundColor = isDisabled ? "#d3d3d3" : background;
-
+    
   return (
     <Button
       style={styles.containerButton}
@@ -25,7 +33,7 @@ const CustomButton = ({ children, background = "#128c7e", isDisabled = false, va
     >
       {
         loading ?
-          <Progress.Circle thickness={5} color={colorSpiner || "white"} indeterminate={true} size={20} />
+          <Progress.Circle color={colorSpiner} indeterminate={true} size={20} />
           :
           <CustomText style={styles.buttonText}>
             {children}
@@ -33,7 +41,8 @@ const CustomButton = ({ children, background = "#128c7e", isDisabled = false, va
       }
     </Button>
   );
-}
+};
+
 
 
 CustomButton.displayName = "CustomButton";

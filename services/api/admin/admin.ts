@@ -12,8 +12,14 @@ const api = {
         me: auth.GetMyAccountData,
     },
     products: {
-        getAll: products.findAllProducts
+        getAll: products.findAllProducts,
+        find: products.find,
+        update: products.update,
+        delete: products.deletProd,
+
+
     },
+    
     plans: {
         getAll: plan.getAllPlans,
         assignPlanToCompany: plan.AssignPlan
@@ -24,7 +30,11 @@ const api = {
         loadAuthCode: company.LoadAuthCode
     },
     user: {
-        update: user.updateUser
+        create: user.createUser,
+        update: user.updateUser,
+        findAll: user.findAllUsers,
+        find: user.findUser,
+        delete : user.deleteUser
     },
     //(INFO-LINES)
     dataOrder: {

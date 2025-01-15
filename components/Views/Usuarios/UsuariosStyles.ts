@@ -1,17 +1,16 @@
 import { StyleSheet } from 'react-native';
 import { Colors } from '../../../constants/Colors';
 
-const createStyles = (theme: typeof Colors.light | typeof Colors.dark) => StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: theme.background,
   },
   title: {
     fontSize: 32,
     fontWeight: 'bold',
     marginBottom: 24,
-    color: theme.text,
+    color: Colors.light.text,
     textAlign: 'center',
   },
   listContent: {
@@ -41,7 +40,7 @@ const createStyles = (theme: typeof Colors.light | typeof Colors.dark) => StyleS
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: theme.primary,
+    backgroundColor: Colors.light.primary,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 16,
@@ -54,7 +53,7 @@ const createStyles = (theme: typeof Colors.light | typeof Colors.dark) => StyleS
   userName: {
     fontSize: 18,
     fontWeight: '600',
-    color: theme.text,
+    color: Colors.light.text,
   },
   deleteButton: {
     padding: 8,
@@ -63,7 +62,7 @@ const createStyles = (theme: typeof Colors.light | typeof Colors.dark) => StyleS
     position: 'absolute',
     right: 24,
     bottom: 24,
-    backgroundColor: theme.primary,
+    backgroundColor: Colors.light.primary,
     width: 60,
     height: 60,
     borderRadius: 30,
@@ -75,7 +74,15 @@ const createStyles = (theme: typeof Colors.light | typeof Colors.dark) => StyleS
     shadowOpacity: 0.3,
     shadowRadius: 4,
   },
+    spinner: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  buttonCreate : {
+    backgroundColor:Colors.light.primary,
+    borderRadius:4,
+  }
 });
 
-export default createStyles;
 
