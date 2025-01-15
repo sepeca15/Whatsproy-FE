@@ -14,10 +14,37 @@ import * as ImagePicker from 'expo-image-picker';
 import { AntDesign } from '@expo/vector-icons';
 import { styles } from './EditProductStyle';
 import { useRouter } from 'expo-router';
-import { availableCurrencies } from '../../../../hooks/dataProduct'; 
-import { ProductFormData, EditProductProps } from './types';
+import { availableCurrencies } from '@/hooks/dataProduct';
 
-const EditProduct: React.FC<EditProductProps> = ({
+interface ProductFormData {
+  id: number;
+  name: string;
+  price: string;
+  currency: string;
+  duration: string;
+  description: string;
+  imageUrl?: string;
+  title?: string
+  disponible?: boolean
+  empresa_id?: number;
+}
+
+interface EditProductProps {
+  id: number;
+  name: string;
+  price: string;
+  currency: string;
+  duration: string;
+  description: string;
+  image?: string;
+  title?: string;
+  imageUrl?: string;
+  disponible?: boolean;
+  empresa_id?: number
+  onUpdateProduct: (updatedProduct: ProductFormData) => void;
+}
+
+const EditProduct = ({
   id,
   title,
   price,
@@ -28,13 +55,13 @@ const EditProduct: React.FC<EditProductProps> = ({
   disponible,
   empresa_id,
   onUpdateProduct
-}) => {
+} : EditProductProps) => {
 
   
   const router = useRouter();
   const [formData, setFormData] = useState<ProductFormData>({
     id,
-    title,
+    name: title || "",
     price,
     currency,
     duration,
