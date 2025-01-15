@@ -7,14 +7,17 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ion from 'react-native-vector-icons/Ionicons';
-
 import * as Progress from 'react-native-progress';
 import api from "@/services/api/admin";
 import { IOrderDetails } from "@/components/Views/OrderDetails/OrderDetailsTypes";
-
+import { useRouter } from "expo-router";
+import {styles} from './ItemCalendarStyles'
 
 interface IItemCalendar {
     InfoItem: IInfoItem;
+    deleteOrder: (orderId : number)=> void;
+    confirmOrder: (orderId : number)=> void;
+    confirm: boolean
 }
 
 interface IDataDetails {
@@ -22,7 +25,10 @@ interface IDataDetails {
     loadingApi: boolean;
 }
 
-const ItemCalendar = ({ InfoItem }: IItemCalendar) => {
+const ItemCalendar = ({ InfoItem , confirmOrder, deleteOrder, confirm}: IItemCalendar) => {    
+    console.log(confirm);
+    
+    const router = useRouter()
     const [expanded, setExpanded] = useState<boolean>(false);
     const [dataDetails, setDataDetails] = useState<IDataDetails>({
         info: null,
@@ -42,7 +48,6 @@ const ItemCalendar = ({ InfoItem }: IItemCalendar) => {
         try {
             const data = await api.order.getOrderDetails(InfoItem.orderId);
             if (data.data) {
-                console.log("Order Details:", data.data);
                 setDataDetails({
                     info: data.data,
                     loadingApi: false,
@@ -69,8 +74,24 @@ const ItemCalendar = ({ InfoItem }: IItemCalendar) => {
         }
     }, [expanded, dataDetails.info]);
 
+    const formatDate = (dateString: any) => {
+        const date = new Date(dateString);
+        const datePart = date.toLocaleDateString('es-ES');
+        const timePart = date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+
+        return `${datePart.replace(/\//g, '-')}, ${timePart}`;
+    };
+
+    const validateFunction = async () => {
+        if(confirm){
+            router.push({ pathname: '/(tabs)/orderChat', params: { chatId: dataDetails.info?.chatId.id } })
+        } else {
+            confirmOrder(InfoItem.orderId)
+        }
+    }
+
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: confirm === true ? '#128c7e' : '#A9A9A9' }]}>
             <View style={styles.mainInfo}>
                 <Text color={"white"}>{InfoItem.clientName}</Text>
                 <View style={styles.containerRight}>
@@ -110,6 +131,12 @@ const ItemCalendar = ({ InfoItem }: IItemCalendar) => {
                                     {dataDetails.info?.estimateTime || "Teléfono no disponible"} mn
                                 </Text>
                             </View>
+                            <View style={styles.rowInfo}>
+                                <AntDesign name="calendar" size={16} color={"white"} />
+                                <Text color={"white"}>
+                                    {formatDate(dataDetails.info?.date) || "Fecha no disponible"}
+                                </Text>
+                            </View>
                             <Text color={'white'} fontSize={18} fontWeight={'bold'}>Products</Text>
                             <ScrollView horizontal={false} style={styles.containerProducts}>
                                 {
@@ -135,22 +162,14 @@ const ItemCalendar = ({ InfoItem }: IItemCalendar) => {
                                 </View>
                             </View>
                             <View style={styles.buttons}>
-                                <Pressable style={styles.buttonNormal}>
+                                <Pressable style={[styles.buttonNormal, { backgroundColor: confirm ? '128c7e' : 'transparent' }]}>
                                     <Text color={'white'} fontSize={12}>Delete</Text>
                                     <EvilIcons color={'white'} name='close' size={16} />
                                 </Pressable>
-                                {
-                                    dataDetails.info?.confirm ?
-                                        <Pressable style={styles.buttonConfirm}>
-                                            <Text color={'white'} fontSize={12}>Confirm</Text>
-                                            <Ion color={'white'} name='checkmark-done' size={16} />
-                                        </Pressable>
-                                        :
-                                        <Pressable style={styles.buttonConfirm}>
-                                            <Text color={'white'} fontSize={12}>Go Chat</Text>
-                                            <Ion color={'white'} name='chatbubble' size={16} />
-                                        </Pressable>
-                                }
+                                <Pressable onPress={validateFunction} style={[styles.buttonConfirm, { backgroundColor: confirm ? '#1eab9b' : 'black' }]}>
+                                    <Text color={'white'} fontSize={12}>{confirm ? 'Go chat' : 'Confirm'}</Text>
+                                    <Ion color={'white'} name={confirm ? 'chatbubble' : 'checkmark-done'} size={16} />
+                                </Pressable>
                             </View>
                         </View>
                     )
@@ -159,142 +178,5 @@ const ItemCalendar = ({ InfoItem }: IItemCalendar) => {
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        color: "white",
-        marginBottom: 10,
-        width: "100%",
-        backgroundColor: "#128c7e",
-        borderRadius: 12,
-        paddingHorizontal: 12,
-        paddingVertical: 10,
-        display: "flex",
-        flexDirection: "column",
-    },
-    mainInfo: {
-        width: "100%",
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-    },
-    containerRight: {
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 4,
-    },
-    expandedContent: {
-        overflow: "hidden",
-        width: "100%",
-        paddingHorizontal: 0,
-    },
-    additionalInfo: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-        marginTop: 10,
-        flex: 1,
-    },
-    product: {
-        padding: 10,
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between'
-    },
-    photo: {
-        width: 50,
-        height: 50,
-        backgroundColor: 'white',
-        borderRadius: 8,
-        opacity: 0.8
-    },
-    containerSpiner: {
-        flex: 1,
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    buttons: {
-        width:'100%',
-        display: 'flex',
-        flexDirection: 'row',  
-        justifyContent: 'flex-end',  
-        alignItems: 'center',  
-        gap: 10,  
-    },
-    rowInfo: {
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 6,
-        marginBottom: 6,
-    },
-    containerProducts: {
-        paddingBottom: 20,
-        height: 120,
-        width: '100%',
-        borderColor: 'white',
-        borderWidth: 1,
-        borderRadius: 4,
-    },
-    info: {
-        marginLeft: 20,
-        flexGrow: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-        gap: 6
-    },
-    price: {
-        fontWeight: 'bold',
-        fontSize: 20,
-    },
-    nameProduct: {
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    cantidad: {
-        fontSize: 14,
-    },
-    total: {
-        width: '100%',
-        marginTop: 6,
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-    },
-    buttonConfirm: {
-        gap:8,
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        backgroundColor: '#1eab9b',
-        color: 'white',
-        borderRadius: 8,
-        paddingVertical: 8, 
-        paddingHorizontal: 12,  
-    },
-    buttonNormal: {
-        gap:8,
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        backgroundColor: '#128c7e',
-        color: 'white',
-        borderRadius: 8,
-        borderWidth: 1,
-        borderColor: 'white',
-        paddingVertical: 8,  
-        paddingHorizontal: 12, 
-    },
-});
 
 export default ItemCalendar;

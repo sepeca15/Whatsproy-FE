@@ -2,11 +2,135 @@ import { StyleSheet } from "react-native";
 
 
 export const styles = StyleSheet.create({
-    container : {
-        flex:1,
-        width:'100%',
-        backgroundColor:'#128c7e',
-        borderRadius:12,
-        padding:6,
-    }
-})
+    container: {
+        color: "white",
+        width: "100%",
+        borderRadius: 12,
+        paddingHorizontal: 8,
+        paddingVertical: 10,
+        display: "flex",
+        flexDirection: "column",
+        marginVertical:10,
+    },
+    mainInfo: {
+        width: "100%",
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+    },
+    containerRight: {
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 4,
+    },
+    expandedContent: {
+        overflow: "hidden",
+        width: "100%",
+        paddingHorizontal: 0,
+    },
+    additionalInfo: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        marginTop: 10,
+        flex: 1,
+    },
+    product: {
+        padding: 10,
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
+    photo: {
+        width: 50,
+        height: 50,
+        backgroundColor: 'white',
+        borderRadius: 8,
+        opacity: 0.8
+    },
+    containerSpiner: {
+        flex: 1,
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    buttons: {
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        gap: 10,
+    },
+    rowInfo: {
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 6,
+        marginBottom: 6,
+    },
+    containerProducts: {
+        paddingBottom: 20,
+        height: 120,
+        width: '100%',
+        borderColor: 'white',
+        borderWidth: 1,
+        borderRadius: 4,
+    },
+    info: {
+        marginLeft: 20,
+        flexGrow: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        gap: 6
+    },
+    price: {
+        fontWeight: 'bold',
+        fontSize: 20,
+    },
+    nameProduct: {
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    cantidad: {
+        fontSize: 14,
+    },
+    total: {
+        width: '100%',
+        marginTop: 6,
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    buttonConfirm: {
+        gap: 8,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        color: 'white',
+        borderRadius: 8,
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+    },
+    buttonNormal: {
+        gap: 8,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        color: 'white',
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: 'white',
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+    },
+});
