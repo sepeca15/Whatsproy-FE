@@ -12,7 +12,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { styles as productosStyles } from "@/components/Views/Productos/ProductosStyles";
 import CreateOrderModal from "../../CreateOrderModal";
 import { ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
-import AddEventToCalendarModal from "./components/AddEventToCalendar";
 import api from "@/services/api/admin";
 import ItemCalendar from "./components/ItemCalendar";
 import { IInfoItem } from "./types";
