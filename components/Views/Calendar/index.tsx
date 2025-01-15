@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  LayoutAnimation,
   Platform,
   UIManager,
 } from "react-native";
@@ -15,6 +14,8 @@ import AddEventToCalendarModal from "./components/AddEventToCalendar";
 import api from "@/services/api/admin";
 import ItemCalendar from "./components/ItemCalendar";
 import { IInfoItem } from "./types";
+import * as Progress from "react-native-progress";
+import { Colors } from "@/constants/Colors";
 
 if (
   Platform.OS === "android" &&
@@ -23,48 +24,118 @@ if (
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
+type OrderPerDays = {
+  [date: string]: IInfoItem[];
+};
+
+
 export default function CalendarView() {
-  const [orderPerDays, setOrderPerDays] = useState({});
+  const [orderPerDays, setOrderPerDays] = useState<OrderPerDays>({});
   const [openAddModal, setOpenAddModal] = useState(false);
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split("T")[0]
-  );  
-
-  const onLoadItems = async(selectedDate : string) => {
+  );
+  const [loading, setLoading] = useState(true);
+  
+  const onLoadItems = async (selectedDate: string) => {
+    setLoading(true);
     try {
-      const data = await api.order.getCalendarOrders(selectedDate)      
-      setOrderPerDays(data.data)
-      console.log(data.data);
-      
-    } catch (error : any) {
+      const data = await api.order.getCalendarOrders(selectedDate);
+      setOrderPerDays(data.data);
+    } catch (error: any) {
       console.log(error.response.data.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const confirmOrder = async (orderId: number) => {
+    try {
+      const firstDate = Object.keys(orderPerDays)[0];
+  
+      const data = await api.order.confirm(orderId);
+      if (data.data) {
+        setOrderPerDays((prevState) => {
+          const updatedOrders = prevState[firstDate].map((order) =>
+            order.orderId === orderId ? { ...order, status: true } : order
+          );
+          return {
+            ...prevState,
+            [firstDate]: updatedOrders,
+          };
+        });        
+      }
+    } catch (error: any) {
+      console.log(error.response.data.message, "xddddddddd");
+    }
+  };
+
+  const deleteOrder =  async(orderId : number) => {
+    try {      
+      const firstDate = Object.keys(orderPerDays)[0];
+
+      const data = await api.order.remove(orderId)      
+      if (data) {        
+        setOrderPerDays((prevState) => ({
+          ...prevState,
+          [firstDate]: prevState[firstDate].filter((order) =>
+            order.orderId !== orderId
+          ),
+        }));
+      }
+    } catch (error : any) {
+      console.log(error.response.data.message,'xddddddddd');
     }
   }
 
-  React.useEffect(()=> {
-    if(selectedDate) {
-      onLoadItems(selectedDate)
+  useEffect(() => {
+    if (selectedDate) {
+      onLoadItems(selectedDate);
     }
-  },[selectedDate])
+  }, [selectedDate]);
 
   return (
     <View style={styles.container}>
+      <View style={styles.headerContainer}>
+        <Text style={styles.headerTitle}>Eventos del calendario</Text>
+        <View style={styles.circleAvaiableContainer}>
+          <View style={[styles.circleAvaiable, { backgroundColor: "green", }]} />
+          <Text style={styles.headerDescription}>Confirmados</Text>
+        </View>
+        <View style={[styles.circleAvaiableContainer]}>
+          <View style={[styles.circleAvaiable, { backgroundColor: "gray", }]}></View>
+          <Text style={styles.headerDescription}>Sin Confirmar</Text>
+        </View>
+      </View>
+
       <Agenda
-        loading={false}
+        key={JSON.stringify(orderPerDays)}
         items={orderPerDays}
         selected={selectedDate}
+        refreshing={true}
         showOnlySelectedDayItems={true}
         onDayPress={(day: any) => {
           setSelectedDate(day.dateString);
         }}
-        renderItem={(data:IInfoItem)=> (
-          <ItemCalendar InfoItem={data}/>
-        )}
-        renderEmptyData={() => {
-          return  <View style={styles.emptyDate}>
-            <Text>No hay eventos para este día</Text>
+        renderItem={(data: IInfoItem) => <ItemCalendar
+          key={data.orderId}
+          confirmOrder={confirmOrder}
+          deleteOrder={deleteOrder}
+          InfoItem={data}
+          confirm={data.status}
+        />
+        }
+        renderEmptyData={() => (
+          <View style={styles.emptyDate}>
+            {
+              loading? 
+              <Progress.Circle color={Colors.light.primary} indeterminate={true} size={50} />
+              :
+              <Text>No hay eventos para este día</Text>
+            }
           </View>
-        }}
+        ) 
+    }
         rowHasChanged={(r1: any, r2: any) =>
           r1.name !== r2.name || r1?.expanded !== r2?.expanded
         }
@@ -77,6 +148,7 @@ export default function CalendarView() {
           selectedDayTextColor: "#ffffff",
         }}
       />
+
       {openAddModal && (
         <AddEventToCalendarModal
           onClose={() => setOpenAddModal(false)}
@@ -150,5 +222,33 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 5,
+  },
+  headerContainer: {
+    display: "flex",
+    flexDirection: "row",
+    width: "100%",
+    justifyContent: "space-between",
+    paddingHorizontal: 10,
+    paddingVertical: 15,
+    backgroundColor: "#f2f2f2",
+  },
+  circleAvaiableContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  circleAvaiable: {
+    height: 10,
+    width: 10,
+    borderRadius: 10,
+    marginRight: 5,
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#333",
+  },
+  headerDescription: {
+    fontSize: 14,
+    color: "#666",
   },
 });
