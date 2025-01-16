@@ -10,7 +10,6 @@ import CustomText from '@/components/CustomText';
 
 const OrdersFinished = () => {
     const { loadingApi, ordersFinished, handleLoadOrdersFinished } = useOrders()
-    console.log('finished', ordersFinished);
     
     React.useEffect(() => {
         if (ordersFinished.length === 0) {

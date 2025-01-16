@@ -1,4 +1,5 @@
 
+import { useToastContext } from "@/contexts/ToastContext"
 import api from "@/services/api/admin"
 import { onAddOrderPending, onConfirmOrder, onDeleteOrder, onFinishLoadingApi, onLoadingApi, onLoadOrdersFinished, onLoadOrdersPending } from "@/services/redux/Slices/ordersSlice/orderSlice"
 import { useDispatch, useSelector } from "react-redux"
@@ -7,7 +8,7 @@ export const useOrders = () => {
 
     const Dispatch = useDispatch()
     const { loadingApi, ordersFinished, ordersPending } = useSelector((state: any) => state.orders)
-
+    const {showToast} = useToastContext()
     const handleLoadOrdersFinished = async () => {
         Dispatch(onLoadingApi())
         try {
@@ -45,11 +46,19 @@ export const useOrders = () => {
             const data = await api.order.confirm(infoOrder.orderId)
 
             if (data.ok === true ) {
-                console.log('CONFIRMAAAR PEDIDO');
                 Dispatch(onConfirmOrder(infoOrder))
+                showToast({
+                    title:'Orden confirmada exitosamente',
+                    status:'success'
+                })
             }
 
-        } catch (error) {
+        } catch (error:any) {
+            showToast({
+                title:'Error',
+                description:error.response.data.message,
+                status:'error'
+            })
             console.log('error', error);
         }
     }
@@ -61,14 +70,18 @@ export const useOrders = () => {
             
             if (data.ok === true) {            
                 Dispatch(onDeleteOrder({orderId: id, key: key}))
+                showToast({
+                    title:'Orden eliminada exitosamente',
+                    status:'success'
+                })
             }
 
         } catch (error:any) {
-            if (error.response && error.response.data) {
-                console.log(error.response.data.message);
-              } else {                
-                console.log(error.message || 'Error inesperado');
-              }
+            showToast({
+                title:'Error',
+                description:error.response.data.message,
+                status:'error'
+            })
             
         }
     }

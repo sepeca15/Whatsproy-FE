@@ -37,7 +37,6 @@ const Step4 = () => {
   const FinishConfigGreenApi = async() => {
     try {
       await handleUpdateGreenApiConfig()
-
       showToast({
         description:"Ya hemos terminado de configurar todo.",
         title:'Configuracion exitosa',

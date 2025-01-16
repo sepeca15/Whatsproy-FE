@@ -11,6 +11,7 @@ import IonIcons from 'react-native-vector-icons/Ionicons'
 import MaterialIconss from 'react-native-vector-icons/MaterialIcons'
 import * as Progress from 'react-native-progress';
 import { Colors } from '@/constants/Colors';
+import { useToastContext } from '@/contexts/ToastContext';
 
 
 const ItemsTable = [
@@ -26,7 +27,7 @@ const DateOrder: React.FC = () => {
   const [selectedItem, setSelectedItem] = React.useState<any>({})
   const [stateModal, setStateModal] = React.useState<boolean>(false)
   const [loading, setLoading] = React.useState<boolean>(false)
-
+  const {showToast} = useToastContext()
 
   const updateOrderData = (newOrderData : any) => {
     setOrderDate((prevState)=> ([
@@ -63,8 +64,17 @@ const DateOrder: React.FC = () => {
       if(data) {
         const allItems = orderDate.filter((item)=> item.id !== id)
         setOrderDate(allItems)
+        showToast({
+          title:'Orden borrada exitosamente',
+          status:'success'
+        })
       }
-    } catch (error) {
+    } catch (error: any) {
+      showToast({
+        title:'Error',
+        description:error.response.data.message,
+        status:'error'
+      })
       console.log(error);
     }
   }
