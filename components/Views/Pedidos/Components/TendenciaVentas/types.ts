@@ -5,7 +5,6 @@ export interface CategoryData {
   Salchichas: number;
   [key: string]: number; 
 }
-
 export interface MonthlySalesData {
   month: string;
   categories: CategoryData;

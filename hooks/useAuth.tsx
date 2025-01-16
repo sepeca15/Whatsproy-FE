@@ -5,7 +5,8 @@ import { useUser } from "./redux/useUser";
 export function useAuth() {
   const { handleAddUserData } = useUser();
   const [isAuthenticated, setIsAuthenticated] = useState(false); 
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
+  const [redirecting, setRedirecting] = useState(false);
 
   const isAuth = async () => {
     setLoading(true); 
@@ -13,6 +14,7 @@ export function useAuth() {
       const userLoggedIn = await getData("token");      
       if (userLoggedIn) {
         setIsAuthenticated(true);
+        setRedirecting(true);
         await handleAddUserData();
       } else {
         setIsAuthenticated(false);
@@ -28,5 +30,5 @@ export function useAuth() {
     isAuth();
   }, []);
 
-  return { isAuthenticated, loading };
+  return { isAuthenticated, loading, redirecting };
 }

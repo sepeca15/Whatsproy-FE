@@ -2,28 +2,44 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router'; 
 
+const settingsPage = [
+  {
+    title:'Usuario',
+    href: '/(tabs)/usuarios'
+  },
+  {
+    title:'Notificaciones',
+    href: ''
+  },
+  {
+    title:'Privacidad',
+    href: ''
+  },
+  {
+    title:'Membresia',
+    href: ''
+  },
+  {
+    title:'Datos de pedido',
+    href: '/(tabs)/datosPedido'
+  },
+]
+
 const Settings = () => {
   const router = useRouter();
   return (
     <View style={styles.container}>
-      <TouchableOpacity 
-        style={styles.card} 
-        onPress={() => {
-          
-          router.push("/(tabs)/usuarios")
-        }}
-      >
-        <Text style={styles.cardText}>Usuario</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.card}>
-        <Text style={styles.cardText}>Notificaciones</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.card}>
-        <Text style={styles.cardText}>Privacidad</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.card}>
-        <Text style={styles.cardText}>Membresía</Text>
-      </TouchableOpacity>
+      {
+        settingsPage.map((item : any, index)=> {
+          return <TouchableOpacity 
+          key={index}
+          style={styles.card} 
+          onPress={()=> router.push(item.href)}
+        >
+          <Text style={styles.cardText}>{item.title}</Text>
+        </TouchableOpacity>
+        })
+      }
     </View>
   );
 };

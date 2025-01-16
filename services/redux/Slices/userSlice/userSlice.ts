@@ -46,5 +46,6 @@ const userSlice = createSlice({
 })
 
 export const { mostrarMensaje, onAddUserData, onUserConfigured, greenApiConfigured, onUpdateKeys, onApiConfigured, onPurchasedPlan } = userSlice.actions
+export const selectUser = (state: { user: IUser }) => state.user;
 
 export default userSlice;

@@ -18,6 +18,7 @@ const initialValues = {
 const LoginScreen: React.FC = () => {
   const [formValues, setFormValues] = React.useState(initialValues);
   const router = useRouter();
+  const [loading, setLoading] = React.useState(false);
 
   const handleChangeValue = (key: string, value: string) => {
     setFormValues((prevState) => ({
@@ -28,16 +29,24 @@ const LoginScreen: React.FC = () => {
 
   const Login = async () => {
     try {
-      const res = await api.auth.login(formValues);
-      if(res.access_token) {        
+
+      setLoading(true);
+      const res = await api.auth.login(formValues)
+
+      if(res.access_token) {
+        if (!formValues.email || !formValues.password) {
+          return;
+        }
         StoreData('token',res.access_token)
         router.push('/(tabs)/home')
       }
     } catch (error) {
-      console.log(error);
+      console.log(error);   
+    } finally {
+      setLoading(false);
     }
-  };
-
+  }
+  
   return (
     <ScrollView contentContainerStyle={styles.scrollView}>
       <Center>
@@ -65,7 +74,7 @@ const LoginScreen: React.FC = () => {
             }}
           >
             ¿Has olvidado tu contraseña?
-            <CustomText style={styles.textSecondary}> Reset</CustomText>
+            <CustomText style={styles.textSecondary}> Restablecer</CustomText>
           </CustomText>
 
           <CustomText
@@ -75,15 +84,12 @@ const LoginScreen: React.FC = () => {
             ¿No tienes cuenta?
             <CustomText style={styles.textSecondary}> Crear una</CustomText>
           </CustomText>
-
-          <CustomButton onPress={() => Login()}>Iniciar Sesión</CustomButton>
-
           <CustomButton
-            onPress={() => {
-              router.push("/(tabs)/home");
-            }}
+            loading={loading}
+            onPress={() => Login() }
+            colorSpiner="white"
           >
-            Entrar
+            Iniciar Sesión
           </CustomButton>
         </VStack>
       </Center>

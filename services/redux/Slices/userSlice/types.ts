@@ -14,7 +14,10 @@ export interface IUserData {
     apiConfigured?: boolean;
     globalConfig?: boolean;
     userConfigured?: boolean;
-    greenApiConfigured?: boolean
+    greenApiConfigured?: boolean;
+    tipo_servicio?: number;
+    tipo_servicioNombre?: string;
+    firstUser?: boolean
 }
 
 export interface IUser {

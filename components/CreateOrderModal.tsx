@@ -1,0 +1,430 @@
+import * as React from "react";
+import { Modal, Pressable, StyleSheet } from "react-native";
+import RNPickerSelect from "react-native-picker-select";
+import { Button, FormControl, View, Text } from "native-base";
+import EvilIcons from "react-native-vector-icons/EvilIcons";
+import CustomText from "@/components/CustomText";
+import InputField from "@/components/InputField";
+import { useUser } from "@/hooks/redux/useUser";
+import api from "@/services/api/admin";
+import { TipoServicio } from "../enums/TipoServicio";
+import DateTimePickerField from "@/components/DateTimePickerField";
+import MultiSelectInput from "@/components/MultiSelectInput";
+import { ModalStyles } from "@/components/ModalStyles";
+import { Ionicons } from "@expo/vector-icons";
+import { Colors } from "@/constants/Colors";
+import { Cliente } from "@/services/api/clients/cliente.types";
+import { Producto } from "@/services/api/products/product.types";
+import { findClientsWithQuery } from "@/services/api/clients/clients";
+import { findProductsWithQuery } from "@/services/api/products/products";
+import {
+  CreateOrderDTO,
+  OrderEstadoDefault,
+} from "@/services/api/order/order.type";
+import InfoLineForm from "@/components/InfoLineForm";
+import {
+  EmpresaTypeStr,
+  ID_TIPOSERVICIO_RESERVA,
+  TipoServicioType,
+} from "@/services/api/tiposervicio/tiposervicio.type";
+import {
+  FECHA_HORA_INFOLINE_RESERVA,
+  InfoLineDTO,
+} from "@/services/api/dateOrder/dataOrder.type";
+import { DEFAULT_ESTADO_CREADO } from "@/services/api/estado/estado.type";
+import GlobalModal from "./Modal";
+import CustomButton from "./CustomButton";
+import Toast from "react-native-toast-message";
+import { useToastContext } from "@/contexts/ToastContext";
+
+interface IProps {
+  onClose: () => void;
+  defaultDate?: any;
+  tipoServicio: TipoServicioType;
+  onSuccess?: () => void;
+}
+
+const initialValues: CreateOrderDTO = {
+  confirmado: true,
+  estadoId: OrderEstadoDefault.CREADO,
+  clientName: "",
+  products: [],
+  empresaType: "",
+  messages: [],
+  detalles: "",
+  infoLinesJson: {},
+  fecha: new Date(),
+};
+
+const CreateOrderModal = ({
+  onClose,
+  defaultDate,
+  tipoServicio,
+  onSuccess,
+}: IProps) => {
+  const { showToast } = useToastContext();
+  const { user } = useUser();
+  const localDate = new Date((defaultDate || new Date()) + "T00:00");
+  const [form, setForm] = React.useState({
+    ...initialValues,
+    fecha: localDate,
+  });
+
+
+  const [clients, setClients] = React.useState<Cliente[]>([]);
+  const [products, setProducts] = React.useState<Producto[]>([]);
+  const [loadingClients, setLoadingClients] = React.useState(false);
+  const [loadingProducts, setLoadingProducts] = React.useState(false);
+  const [loadingInfoLines, setLoadingInfoLines] = React.useState(false);
+  const [loadingCreate, setLoadingCreate] = React.useState(false)
+  const [selectedProductsIds, setSelectedProductsIds] = React.useState<
+    string[]
+  >([]);
+  const [isDirty, setIsDirty] = React.useState<boolean>(false);
+  const [errors, setErrors] = React.useState<any>({});
+  const [infoLines, setInfoLines] = React.useState<InfoLineDTO[]>([]);
+  const hasErrors = Object.keys(errors).length > 0;
+
+  const handleChangeValue = (key: string, value: any) => {
+    setForm((prevState) => ({
+      ...prevState,
+      [key]: value,
+    }));
+  };
+
+  React.useEffect(() => {
+    getAllOrderDate();
+  }, []);
+
+  const getAllOrderDate = async () => {
+    setLoadingInfoLines(true);
+    try {
+      const data = await api.dataOrder.getAll();
+      setInfoLines(
+        data?.filter((infoline: InfoLineDTO) => {
+          if (
+            infoline?.id_tipo_servicio === ID_TIPOSERVICIO_RESERVA &&
+            infoline.id === FECHA_HORA_INFOLINE_RESERVA
+          ) {
+            return false;
+          }
+          return infoline.id_tipo_servicio === user.tipo_servicio;
+        })
+      );
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoadingInfoLines(false);
+    }
+  };
+
+  const handleFindClients = async (query: string) => {
+    try {
+      setLoadingClients(true);
+      const resp = await findClientsWithQuery(query, user?.id_empresa);
+      if (resp.data) {
+        setClients(resp.data);
+      }
+    } catch (error) {
+      console.error("error loading clients");
+    } finally {
+      setLoadingClients(false);
+    }
+  };
+
+  React.useEffect(() => {
+    if (hasErrors) {
+      handleValidateForm();
+    }
+  }, [hasErrors, form]);
+
+  const handleValidateForm = (): boolean => {
+    let errors: any = {};
+    if (selectedProductsIds?.length <= 0) {
+      errors["products"] = "Debes agregar al menos un producto";
+    }
+    if (tipoServicio === TipoServicio.RESERVA && !form.fecha) {
+      errors["date"] = "Debes agregar al menos un producto";
+    }
+    infoLines.forEach((infoline) => {
+      if (infoline) {
+        if (infoline?.requerido && !form.infoLinesJson[infoline.nombre]) {
+          errors[infoline.nombre] = `El campo ${infoline.nombre} es requerido`;
+        }
+      }
+    });
+
+    setErrors(errors);
+    return Object.keys(errors)?.length === 0;
+  };
+
+  const handleFindProducts = async (query: string) => {
+    try {
+      setLoadingProducts(true);
+      const resp = await findProductsWithQuery(query);
+      if (resp.data) {
+        setProducts(resp.data);
+      }
+    } catch (error) {
+      console.error("error loading products");
+    } finally {
+      setLoadingProducts(false);
+    }
+  };
+
+  const createOrderData = async () => {
+
+    setIsDirty(true);
+    let isValidForm = handleValidateForm();
+    if (!isValidForm) {
+      return;
+    }
+
+    try {
+      setLoadingCreate(true);
+      const dataToSend = {
+        ...form,
+        tipoServicio: tipoServicio,
+        confirmado: true,
+        empresaType: EmpresaTypeStr[tipoServicio],
+        messages: [],
+        products: selectedProductsIds.map((prod) => {
+          return {
+            productoId: prod,
+            cantidad: 1,
+          }
+        }),
+        clienteId: form?.clienteId,
+        infoLinesJson: JSON.stringify(form.infoLinesJson),
+        estadoId: DEFAULT_ESTADO_CREADO.id,
+      };
+      const data = await api.order.create(dataToSend);
+
+      if (data?.ok) {
+        showToast({
+          title: "¡Evento creado!",
+          description: "Su evento fue agregado al calendario exitosamente.",
+          status: "success",
+        });
+      if (onSuccess) {
+        onSuccess();
+      }
+      onClose();
+      } else {
+        throw new Error("Error desconocido creando event")
+      }
+    } catch (error: any) {
+      setLoadingCreate(false);
+
+      showToast({
+        title: "Error creando evento",
+        description: error?.message,
+        status: "error",
+      });
+    }
+  };
+
+  return (
+    <GlobalModal
+      label={`Agregar ${tipoServicio === ID_TIPOSERVICIO_RESERVA ? "nuevo Evento" : "nueva Orden"}`}
+      isVisible={true}
+      onClose={onClose}
+      actions={[
+        <Button
+        onPress={() => onClose()}
+        size="sm"
+        variant={"ghost"}
+        borderRadius={"6"}
+        fontWeight={"bold"}
+      >
+        <Text fontWeight={500} color={"#2C2C2C"}>
+          Cancelar
+        </Text>
+      </Button>,
+        <Button
+        isLoading={loadingCreate}
+          onPress={() => createOrderData()}
+          size="sm"
+          backgroundColor={"#2C2C2C"}
+          borderRadius={"6"}
+          fontWeight={700}
+        >
+          <Text fontWeight={500} color={"white"}>
+            Crear{" "}
+            {tipoServicio === ID_TIPOSERVICIO_RESERVA ? "Evento" : "Orden"}
+          </Text>
+        </Button>,
+      ]}
+      content={
+        <>
+          {tipoServicio === ID_TIPOSERVICIO_RESERVA && (
+            <>
+              <DateTimePickerField
+                error={errors["fecha"]}
+                date={form.fecha}
+                setDate={(val: any) => handleChangeValue("fecha", val)}
+              />
+              <View
+                display="flex"
+                style={{ gap: 8 }}
+                flexDirection={"row"}
+                alignItems={"center"}
+              >
+                <Ionicons
+                  color={Colors.light.primary}
+                  name="sparkles-outline"
+                  size={20}
+                />
+                <Text
+                  style={{
+                    textDecorationLine: "underline",
+                    fontSize: 14,
+                    cursor: "pointer",
+                    marginBottom: 0,
+                    color: Colors.light.primary,
+                  }}
+                >
+                  Mostrar siguiente horario disponible
+                </Text>
+              </View>
+            </>
+          )}
+
+          <MultiSelectInput
+            isRequired
+            error={errors["products"]}
+            setItemsSelected={setSelectedProductsIds}
+            isMultiple
+            placeholder="Seleccionar productos"
+            label="Productos"
+            loading={loadingProducts}
+            options={products?.map((prod) => {
+              return {
+                label: (
+                  <View
+                    display={"flex"}
+                    flexDirection={"row"}
+                    alignItems={"center"}
+                    justifyContent={"start"}
+                    width={"100%"}
+                    height={"100%"}
+                    style={{ gap: 5, paddingBottom: 10 }}
+                  >
+                    <View
+                      width={36}
+                      height={36}
+                      borderRadius={6}
+                      backgroundColor={"gray.400"}
+                    />
+                    <View
+                      display={"flex"}
+                      flexDirection={"column"}
+                      flexGrow={1}
+                      style={{ gap: 0 }}
+                      justifyContent={"start"}
+                    >
+                      <Text
+                        color={"gray.800"}
+                        fontSize={16}
+                        fontWeight={"medium"}
+                      >
+                        {prod?.nombre ?? ""}
+                      </Text>
+                      <Text fontSize={12} lineHeight={15} color={"gray.600"}>
+                        {prod?.descripcion ?? ""}
+                      </Text>
+                    </View>
+                    <View paddingRight={10}>
+                      <Text
+                        marginTop={3}
+                        fontWeight={"semibold"}
+                        color={"yellow.800"}
+                      >
+                        ${prod?.precio}
+                      </Text>
+                    </View>
+                  </View>
+                ),
+                placeholder: prod?.nombre,
+                value: prod?.id ?? "",
+              };
+            })}
+            onSearch={(query: string) => {
+              handleFindProducts(query);
+            }}
+          />
+          <InputField
+            isRequired={false}
+            isTextArea
+            value={form.detalles}
+            onChangeText={(text) => handleChangeValue("detalles", text)}
+            label="Detalles"
+            placeholder="Agregar detalles"
+          />
+          <MultiSelectInput
+            setItemsSelected={(data: string[]) => {
+              const clientId = data[0] as any;
+              const clientInfo = clients?.find((c) => c.id === clientId);
+
+              handleChangeValue("clienteId", clientId);
+              handleChangeValue("clientName", clientInfo?.nombre ?? "");
+            }}
+            isMultiple={false}
+            onSearch={(query: string) => {
+              handleFindClients(query);
+            }}
+            loading={loadingClients}
+            placeholder="Seleccionar cliente"
+            label="Cliente"
+            options={clients?.map((client) => {
+              return {
+                label: (
+                  <View
+                    display={"flex"}
+                    flexDirection={"row"}
+                    alignItems={"center"}
+                    justifyContent={"start"}
+                    style={{ gap: 5, paddingBottom: 10 }}
+                  >
+                    <Ionicons
+                      color={Colors.light.primary}
+                      name="person-circle"
+                      size={36}
+                    />
+                    <View
+                      display={"flex"}
+                      flexDirection={"column"}
+                      style={{ gap: 2 }}
+                      justifyContent={"start"}
+                    >
+                      <Text
+                        color={"gray.800"}
+                        fontSize={16}
+                        fontWeight={"medium"}
+                      >
+                        {client?.nombre ?? ""}
+                      </Text>
+                      <Text fontSize={12} lineHeight={15} color={"gray.600"}>
+                        {client?.telefono ?? ""}
+                      </Text>
+                    </View>
+                  </View>
+                ),
+                placeholder: client?.nombre,
+                value: client?.id ?? "",
+              };
+            })}
+          />
+          <InfoLineForm
+            errors={errors}
+            infoLines={infoLines}
+            value={form.infoLinesJson ?? {}}
+            setValue={(val) => handleChangeValue("infoLinesJson", val)}
+          />
+        </>
+      }
+    />
+  );
+};
+
+export default CreateOrderModal;

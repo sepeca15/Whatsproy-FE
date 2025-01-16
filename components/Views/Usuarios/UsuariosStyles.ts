@@ -1,59 +1,88 @@
 import { StyleSheet } from 'react-native';
 import { Colors } from '../../../constants/Colors';
 
-const createStyles = (theme: typeof Colors.light | typeof Colors.dark) => StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: theme.background,
   },
   title: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: 'bold',
-    marginBottom: 16,
-    color: theme.text,
+    marginBottom: 24,
+    color: Colors.light.text,
+    textAlign: 'center',
   },
-  scrollView: {
-    flex: 1,
+  listContent: {
+    paddingBottom: 80,
   },
   card: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: theme.primary,
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 12,
-    elevation: 2,
+    backgroundColor: Colors.dark.text,
+    borderRadius: 12,
+    marginBottom: 16,
+    elevation: 4,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
+  cardContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+  },
+  userInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  avatarContainer: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: Colors.light.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  avatarText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
   userName: {
     fontSize: 18,
-    color: '#fff',
+    fontWeight: '600',
+    color: Colors.light.text,
   },
   deleteButton: {
     padding: 8,
   },
   addButton: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignSelf: 'center',
-    backgroundColor: theme.secondary,
-    padding: 16,
-    borderRadius: 8,
-    marginTop: 16,
-    width: '20%',
+    position: 'absolute',
+    right: 24,
+    bottom: 24,
+    backgroundColor: Colors.light.primary,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
   },
-  addButtonText: {
-    color: '#fff',
-    fontSize: 30,
-    
+    spinner: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
+  buttonCreate : {
+    backgroundColor:Colors.light.primary,
+    borderRadius:4,
+  }
 });
 
-export default createStyles;
+

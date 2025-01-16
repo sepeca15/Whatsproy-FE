@@ -1,0 +1,80 @@
+import { StyleSheet } from "react-native";
+
+export const ModalStyles = StyleSheet.create({
+    container: {
+        position: 'absolute',
+        height: '100%',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        width: '100%',
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    containerContent: {
+        width: "90%",
+        backgroundColor: 'white',
+        borderRadius: 12,
+        maxHeight: '80%',
+        overflow: 'hidden',
+    },
+    headerContent: {
+        borderTopEndRadius: 12,
+        borderTopStartRadius: 12,
+        paddingHorizontal: 16,
+        paddingTop: 20,
+        paddingBottom: 10,
+        backgroundColor: '#2C2C2C',
+        alignItems: 'center',
+    },
+    containerCreate: {
+        width: '100%',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: 12,
+    },
+    containerTitle: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 12,
+    },
+    bodyContent: {
+        paddingTop: 12,
+        flexGrow: 1,
+        height: 'auto',
+        maxHeight: '80%',
+    },
+    scrollableContent: {
+        flexGrow: 1,
+    },
+    input: {
+        marginTop: 5,
+        width: '100%',
+        borderWidth: 1,
+        borderColor: '#cfcfcf',
+        borderRadius: 5,
+    },
+    inputElement: {},
+    decorateDiv: {
+        marginBottom: 12,
+        width: '60%',
+        height: 12,
+        borderRadius: 12,
+        backgroundColor: '#818181',
+    },
+    containerInput: {
+        marginTop: 15,
+        width: '100%',
+    },
+    footerContent: {
+        paddingVertical: 16,
+        paddingHorizontal: 20,
+        borderTopWidth: 1,
+        borderTopColor: "#e0e0e0",
+        backgroundColor: "#f9f9f9",
+        position: "absolute",
+        bottom: 0,
+        width: "100%",
+        alignSelf: "center",
+      },
+});

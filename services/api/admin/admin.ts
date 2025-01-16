@@ -3,6 +3,8 @@ import * as products from "../products/products"
 import * as company from "../company/company"
 import * as plan from "../plan/plan"
 import * as user from "../user/user"
+import * as dataOrder from "../dateOrder/DateOrder"
+import * as order from "../order/order"
 
 const api = {
     auth:{
@@ -10,8 +12,14 @@ const api = {
         me: auth.GetMyAccountData,
     },
     products: {
-        getAll: products.findAllProducts
+        getAll: products.findAllProducts,
+        find: products.find,
+        update: products.update,
+        delete: products.deletProd,
+
+
     },
+    
     plans: {
         getAll: plan.getAllPlans,
         assignPlanToCompany: plan.AssignPlan
@@ -22,8 +30,27 @@ const api = {
         loadAuthCode: company.LoadAuthCode
     },
     user: {
-        update: user.updateUser
-    }
+        create: user.createUser,
+        update: user.updateUser,
+        findAll: user.findAllUsers,
+        find: user.findUser,
+        delete : user.deleteUser
+    },
+    //(INFO-LINES)
+    dataOrder: {
+        getAll: dataOrder.getAll,
+        create: dataOrder.create,
+        delete: dataOrder.deleteOrderDate
+    },
+    order: {
+        getCalendarOrders: order.getOrderForCalendar,
+        getOrderDetails: order.getDetailsOfOrder,
+        getFinished: order.getAllFinished ,
+        getPending: order.getAllPending ,
+        remove: order.removeOrder,
+        confirm: order.confirmOrder,
+        create: order.createOrder,
+    },
 }
 
 export default api

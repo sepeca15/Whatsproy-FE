@@ -5,9 +5,11 @@ import { useAuth } from "@/hooks/useAuth";
 import * as Progress from "react-native-progress";
 import { Colors } from "@/constants/Colors";
 import { StyleSheet } from "react-native";
+import Toast from "react-native-toast-message";
+import toastConfig from "@/utils/toast";
 
 const Layout: React.FC = () => {
-  const { isAuthenticated, loading } = useAuth()
+  const { isAuthenticated, loading, redirecting } = useAuth()
 
   React.useEffect(() => {
     if (isAuthenticated && !loading) {
@@ -15,13 +17,14 @@ const Layout: React.FC = () => {
     }
   }, [isAuthenticated, loading])
 
-  if (loading) {
+  if (loading || redirecting) {
     return <View style={styles.spinner}>
       <Progress.Circle color={Colors.light.primary} indeterminate={true} size={100} />
     </View>
   }
   return (
     <NativeBaseProvider>
+      <Toast config={toastConfig} />
       <Slot />
     </NativeBaseProvider>
   );

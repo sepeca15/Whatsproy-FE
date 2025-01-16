@@ -1,34 +1,54 @@
-import React from "react";
-import { FormControl, Input } from "native-base";
+import React from 'react';
+import { FormControl, Input, TextArea } from 'native-base';
 
 interface InputFieldProps {
-  label: string;
+  label?: string;
   placeholder: string;
   value?: string;
   onChangeText?: (text: string) => void;
+  marginTop?: number;
+  isTextArea?: boolean;
+  [key: string]: any;
+  keyboardType?: any;
   isRequired?: boolean;
-  marginTop?: number,
-  type?: 'text' | 'password';
+  error?: any;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
   label,
   placeholder,
-  type = "text",
-  value,
+  type = 'text',
+  keyboardType,
   onChangeText,
-  marginTop
+  marginTop,
+  isTextArea = false,
+  isRequired = true,
+  error,
+  ...props
 }) => {
   return (
-    <FormControl style={{ marginTop: marginTop }}
-      isRequired>
-      <FormControl.Label>{label}</FormControl.Label>
-      <Input
-        type={type}
-        placeholder={placeholder}
-        value={value}
-        onChangeText={onChangeText}
-      />
+    <FormControl isInvalid={error} style={{ marginTop: marginTop }} isRequired={isRequired}>
+      {label && <FormControl.Label>{label}</FormControl.Label>}
+      {isTextArea ? (
+        <TextArea
+          keyboardType={keyboardType}
+          autoCompleteType={""}
+          placeholder={placeholder}
+          onChangeText={onChangeText}
+          {...props}
+        />
+      ) : (
+        <Input
+          keyboardType={keyboardType}
+          type={type}
+          placeholder={placeholder}
+          onChangeText={onChangeText}
+          {...props}
+        />
+      )}
+      {error && <FormControl.ErrorMessage>
+        {error}
+      </FormControl.ErrorMessage>}
     </FormControl>
   );
 };
