@@ -55,7 +55,7 @@ export const useOrders = () => {
     }
 
 
-    const handleDeleteOrder = async (id : number, key: string) => {                
+    const handleDeleteOrder = async (id : number, key: 'pending' | 'finished') => {                
         try {
             const data = await api.order.remove(id)            
             

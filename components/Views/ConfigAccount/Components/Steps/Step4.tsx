@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button, View } from "native-base";
+import { Button, useToast, View } from "native-base";
 import CustomText from "@/components/CustomText";
 import { StyleSheet } from "react-native";
 import { Colors } from "@/constants/Colors";
@@ -8,6 +8,7 @@ import LoadQR from "../LoadQR";
 import { useUser } from "@/hooks/redux/useUser";
 import {io} from 'socket.io-client'
 import CustomButton from "@/components/CustomButton";
+import { useToastContext } from "@/contexts/ToastContext";
 type buttons = 'Auth' | 'QR'
 
 const Step4 = () => {
@@ -17,6 +18,7 @@ const Step4 = () => {
     QRCode: null,
     AuthCode: null
   })
+  const {showToast} = useToastContext()
   
 
   React.useEffect(()=> {
@@ -35,6 +37,13 @@ const Step4 = () => {
   const FinishConfigGreenApi = async() => {
     try {
       await handleUpdateGreenApiConfig()
+
+      showToast({
+        description:"Ya hemos terminado de configurar todo.",
+        title:'Configuracion exitosa',
+        status:'success'
+      })
+
     } catch (error:any) {
       console.log(error?.message);
     }
