@@ -55,6 +55,7 @@ const Productos: React.FC = () => {
             onUpdateProduct={handleUpdateProduct}
           />
         ))}
+        
       </ScrollView>
       <View style={styles.buttonContainer}>
 
