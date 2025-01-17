@@ -14,6 +14,7 @@ import { IUser } from '../../UsuariosType';
 import api from '@/services/api/admin';
 import { useUser } from '@/hooks/redux/useUser';
 import CustomButton from '@/components/CustomButton';
+import { useToastContext } from '@/contexts/ToastContext';
 
 type keyValues = 'nombre' | 'apellido' | 'correo' | 'contraseña'
 
@@ -44,6 +45,7 @@ const ModalCreateUser = ({ onToogleModal, isOpen, addNewUser }: IModalCreateUser
     const [errors, setErrors] = useState<any>({});
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [loadingApi, setLoadingApi] = useState(false);
+    const { showToast } = useToastContext()
 
     const setValueForm = (key: keyValues, value: string) => {
         setCreateUser((prevState) => ({
@@ -87,11 +89,21 @@ const ModalCreateUser = ({ onToogleModal, isOpen, addNewUser }: IModalCreateUser
                 id_empresa: user.id_empresa
             })
             if(resp.ok) {
+                showToast({
+                    description:'Usuario creado exitosamente',
+                    title: "Exitoso",
+                    status: "error",
+                });
                 addNewUser(resp.data)
                 onToogleModal()
                 setCreateUser(initialValues)
             }
         } catch (error : any) {
+            showToast({
+                title: "Error",
+                description:error.response.data.message,
+                status: "error",
+            });
             console.log('error',error.response.data.message);
         } finally { 
             setLoadingApi(false)

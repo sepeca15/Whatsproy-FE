@@ -48,9 +48,7 @@ const orderSlice = createSlice({
         onFinishLoadingApi: (state) => {
             state.loadingApi = false
         },
-        onAddOrderPending: (state, {payload}) => {
-            console.log('payload',payload);
-            
+        onAddOrderPending: (state, {payload}) => {            
             state.ordersPending = [...state.ordersPending, payload]
         }
     }

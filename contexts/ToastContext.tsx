@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState } from "react";
 import { Box, Text, VStack, HStack, Icon, useToast } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
+import { RootSiblingParent } from "react-native-root-siblings";
 
 const ToastContext = createContext<any>(null);
 
@@ -19,7 +20,7 @@ export const ToastProvider = ({ children }: any) => {
           px="4"
           py="3"
           rounded="lg"
-          zIndex={99999}
+          zIndex={9999999}
           shadow="2"
           _text={{ color: "white" }}
         >
@@ -47,9 +48,11 @@ export const ToastProvider = ({ children }: any) => {
   };
 
   return (
+      <RootSiblingParent>
     <ToastContext.Provider value={{ showToast }}>
-      {children}
+        {children}
     </ToastContext.Provider>
+      </RootSiblingParent>
   );
 };
 

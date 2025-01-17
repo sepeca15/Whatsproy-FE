@@ -5,5 +5,5 @@ export interface IInfoItem {
     total: number;
     orderId: number;
     date: string;
-    status: boolean
+    status: boolean;
 }

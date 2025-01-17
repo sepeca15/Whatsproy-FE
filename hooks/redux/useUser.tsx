@@ -32,6 +32,7 @@ export const useUser = () => {
         try {
             const res = await api.plans.assignPlanToCompany({ id_empresa, id_plan, fecha_inicio })
             if (res.ok === true) {
+                
                 Dispatch(onPurchasedPlan())
             }
         } catch (error) {

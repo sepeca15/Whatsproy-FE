@@ -42,5 +42,13 @@ export const pedidosUsuarioStyles = StyleSheet.create({
         borderRadius: 10,
         marginRight: 10,
     },
+    buttonContainer: {
+        position: 'absolute',
+        bottom: 20,
+        right: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
+        zIndex: 1,
+      },
 });
 

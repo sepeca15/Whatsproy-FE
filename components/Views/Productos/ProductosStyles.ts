@@ -31,7 +31,6 @@ export const styles = StyleSheet.create({
     borderRadius: 5,
     marginRight: 10,
   },
-
   addButton: {
     backgroundColor: Colors.light.primary,
     width: 60,
@@ -50,4 +49,5 @@ export const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'semibold',
   },
+  
 });
