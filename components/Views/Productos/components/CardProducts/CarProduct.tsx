@@ -49,6 +49,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         });
     };
     
+
+
+    
     const handleDet = () => {
         if (!product) {
             return;
