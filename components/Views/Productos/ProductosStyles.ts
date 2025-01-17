@@ -4,7 +4,7 @@ import { Colors } from '../../../constants/Colors';
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f0f0f0',
     width: '100%',
   },
   scrollViewContent: {
@@ -20,33 +20,33 @@ export const styles = StyleSheet.create({
   searchBarContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f0f0f0',
-    borderRadius: 25, // Increased border radius for a more rounded look
+    backgroundColor: '#fff',
+    borderRadius: 25, 
     paddingHorizontal: 15,
     margin: 10,
-    width: '95%', // Increased width to take up more space on mobile
+    width: '95%',
     alignSelf: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 2,
-    height: 50, // Fixed height for better touch targets
+    height: 50, 
   },
   searchIcon: {
     marginRight: 10,
     color: '#888',
-    fontSize: 18, // Slightly larger icon for better visibility
+    fontSize: 18, 
   },
   searchBar: {
     flex: 1,
-    height: '100%', // Take up full height of the container
+    height: '100%',
     borderColor: '#ccc',
     borderWidth: 0,
     borderRadius: 25,
     paddingHorizontal: 10,
-    backgroundColor: 'transparent', // Remove background color from input
-    fontSize: 16, // Slightly larger font for better readability on mobile
+    backgroundColor: 'transparent',
+    fontSize: 16, 
   },
   buttonContainer: {
     position: 'absolute',

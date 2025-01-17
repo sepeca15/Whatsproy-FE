@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, ScrollView, TouchableOpacity, Text, TextInput, Keyboard } from "react-native";
+import { View, ScrollView, TouchableOpacity, Text, TextInput } from "react-native";
 import { ProductCard } from "./components/CardProducts/CarProduct";
 import { sampleProducts, Product, ProductBDD, salesData, categoryData, satisfactionData, monthlySalesData, weeklySalesData } from "../../../hooks/dataProduct";
 import { useRouter } from 'expo-router';
@@ -33,23 +33,13 @@ const Productos: React.FC = () => {
   return (
     <View style={styles.container}>
       <View style={styles.searchBarContainer}>
-        <Icon name="search" size={18} style={styles.searchIcon} />
+        <Icon name="search" size={20} style={styles.searchIcon} />
         <TextInput
           style={styles.searchBar}
           placeholder="Buscar por nombre"
           value={searchTerm}
           onChangeText={text => setSearchTerm(text)}
-          returnKeyType="search"
-          onSubmitEditing={Keyboard.dismiss}
         />
-        {searchTerm.length > 0 && (
-          <TouchableOpacity
-            style={styles.clearButton}
-            onPress={() => setSearchTerm('')}
-          >
-            <Icon name="times" style={styles.clearIcon} />
-          </TouchableOpacity>
-        )}
       </View>
       <ScrollView
         contentContainerStyle={styles.scrollViewContent}
@@ -79,4 +69,3 @@ const Productos: React.FC = () => {
 };
 
 export default Productos;
-
