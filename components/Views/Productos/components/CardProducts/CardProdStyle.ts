@@ -3,20 +3,21 @@ import { StyleSheet } from 'react-native';
 export const styles = StyleSheet.create({
   card: {
     backgroundColor: 'white',
-    borderRadius: 8,
+    borderRadius: 16, // Increased border radius
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-    marginVertical: 8,
+    shadowRadius: 4,
+    elevation: 4,
+    marginVertical: 10,
     marginHorizontal: 12,
     flexDirection: 'row',
     overflow: 'hidden',
-    height: 150, // Aumentamos un poco más la altura
+    height: 160, // Slightly increased height
+    width: '95%', // Increased width to take up more space on mobile
   },
   imageContainer: {
-    width: 130, // Aumentamos ligeramente el ancho de la imagen
+    width: 140, // Slightly increased width
     height: '100%',
   },
   image: {
@@ -33,27 +34,27 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 4,
+    marginBottom: 6,
   },
   titlePriceContainer: {
     flex: 1,
-    marginRight: 8,
+    marginRight: 10,
   },
   title: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 4,
   },
   price: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '600',
     color: '#2ecc71',
   },
   description: {
-    fontSize: 12,
+    fontSize: 14,
     color: '#666',
-    marginBottom: 8,
+    marginBottom: 10,
   },
   footer: {
     flexDirection: 'row',
@@ -61,14 +62,17 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   category: {
-    fontSize: 12,
+    fontSize: 14,
     color: '#888',
     flex: 1,
   },
   editButton: {
-    padding: 6,
+    padding: 8,
     backgroundColor: '#f0f0f0',
-    borderRadius: 4,
+    borderRadius: 8,
+  },
+  editButtonPressed: {
+    backgroundColor: '#e0e0e0',
   },
 });
 

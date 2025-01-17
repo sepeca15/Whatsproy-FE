@@ -10,15 +10,10 @@ import {
 import { AntDesign } from '@expo/vector-icons';
 import {
   LineChart,
-  PieChart,
-  ProgressChart,
 } from 'react-native-chart-kit';
 import { styles } from './SalesChartsStyles';
 import { ProductDetailProps } from './types';
 import { weeklySalesData, monthlySalesData } from '../../../../hooks/dataProduct';
-
-
-
 
 const GraficProddet: React.FC<ProductDetailProps> = ({
   product,
@@ -38,8 +33,7 @@ const GraficProddet: React.FC<ProductDetailProps> = ({
     useShadowColorFromDataset: false,
   };
 
- //
-
+  const data = salesView === 'week' ? weeklySalesData : monthlySalesData;
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
@@ -103,15 +97,25 @@ const GraficProddet: React.FC<ProductDetailProps> = ({
             </TouchableOpacity>
           </View>
           <LineChart
-            data={salesView === 'week' ? weeklySalesData : monthlySalesData}
-            width={screenWidth - 40}
-            height={220}
+            data={data}
+            width={screenWidth - 20} // Ajustar el ancho de la gráfica
+            height={260} // Ajustar la altura de la gráfica
             chartConfig={chartConfig}
             bezier
             style={styles.chart}
+            decorator={() => {
+              return data.datasets[0].data.map((value, index) => {
+                const x = (index * (screenWidth - 40) / (data.datasets[0].data.length - 1));
+                const y = 260 - (value / Math.max(...data.datasets[0].data)) * 260;
+                return (
+                  <View key={index} style={{ position: 'absolute', top: y - 15, left: x - 15 }}>
+                    <Text style={{ fontSize: 10, color: '#000' }}>{value}</Text>
+                  </View>
+                );
+              });
+            }}
           />
         </View>
-
 
         <View style={styles.statsContainer}>
           <View style={styles.statItem}>
@@ -129,12 +133,9 @@ const GraficProddet: React.FC<ProductDetailProps> = ({
             <Text style={styles.statLabel}>Rating</Text>
           </View>
         </View>
-
-     
       </View>
     </ScrollView>
   );
 };
 
 export default GraficProddet;
-

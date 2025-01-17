@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TouchableOpacity, Animated } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { useRouter } from 'expo-router';
-import { styles } from './CardProduct/CardProdStyle';
-import { Product, SatisfactionData,ProductBDD, CategoryData, SalesData, WeeklySalesData, MonthlySalesData } from '../../../../hooks/dataProduct';
+import { styles } from './CardProdStyle';
+import { Product, SatisfactionData,ProductBDD, CategoryData, SalesData, WeeklySalesData, MonthlySalesData } from '../../../../../hooks/dataProduct';
+import { useState, useRef } from 'react';
 
 interface ProductCardProps {
     product: Product;
@@ -75,30 +76,63 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         return null;
     }
 
+    const [isPressed, setIsPressed] = useState(false);
+    const scaleAnim = useRef(new Animated.Value(1)).current;
+
+    const handlePressIn = () => {
+      setIsPressed(true);
+      Animated.spring(scaleAnim, {
+        toValue: 0.98,
+        useNativeDriver: true,
+      }).start();
+    };
+
+    const handlePressOut = () => {
+      setIsPressed(false);
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        useNativeDriver: true,
+      }).start();
+    };
+
     return (
-        <TouchableOpacity style={styles.card} onPress={handleDet}>
-            <View style={styles.imageContainer}>
-                <Image
-                    source={{ uri: product.imageUrl }}
-                    style={styles.image}
-                />
+      <TouchableOpacity
+        onPress={handleDet}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        activeOpacity={1}
+      >
+        <Animated.View style={[
+          styles.card,
+          { transform: [{ scale: scaleAnim }] },
+          isPressed && { backgroundColor: '#f9f9f9' }
+        ]}>
+          <View style={styles.imageContainer}>
+            <Image
+              source={{ uri: product.imageUrl }}
+              style={styles.image}
+            />
+          </View>
+          <View style={styles.content}>
+            <View style={styles.header}>
+              <View style={styles.titlePriceContainer}>
+                <Text style={styles.title} numberOfLines={1}>{productBDD.nombre}</Text>
+                <Text style={styles.price}>${productBDD.precio.toFixed(2)} {product.currency}</Text>
+              </View>
+              <TouchableOpacity
+                onPress={handleEdit}
+                style={[styles.editButton, isPressed && styles.editButtonPressed]}
+              >
+                <Icon name="edit-2" size={18} color="#666" />
+              </TouchableOpacity>
             </View>
-            <View style={styles.content}>
-                <View style={styles.header}>
-                    <View style={styles.titlePriceContainer}>
-                        <Text style={styles.title} numberOfLines={1}>{productBDD.nombre}</Text>
-                        <Text style={styles.price}>${productBDD.precio.toFixed(2)} {product.currency}</Text>
-                    </View>
-                    <TouchableOpacity onPress={handleEdit} style={styles.editButton}>
-                        <Icon name="edit-2" size={16} color="#666" />
-                    </TouchableOpacity>
-                </View>
-                <Text style={styles.description} numberOfLines={2}>{productBDD.descripcion}</Text>
-                <View style={styles.footer}>
-                    <Text style={styles.category} numberOfLines={1}>{product.category}</Text>
-                </View>
+            <Text style={styles.description} numberOfLines={2}>{productBDD.descripcion}</Text>
+            <View style={styles.footer}>
+              <Text style={styles.category} numberOfLines={1}>{product.category}</Text>
             </View>
-        </TouchableOpacity>
+          </View>
+        </Animated.View>
+      </TouchableOpacity>
     );
 };
 
