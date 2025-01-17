@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Pressable, Text, View, } from 'react-native';
 import { styles } from './CardNewPedidoStyles';
 import CustomText from '@/components/CustomText';
@@ -8,7 +8,7 @@ import IonIcons from 'react-native-vector-icons/Ionicons'
 import MaterialIconss from 'react-native-vector-icons/MaterialCommunityIcons'
 import { useOrders } from '@/hooks/redux/useOrders';
 import { useRouter } from 'expo-router';
-
+import ModalConfirmAction from '@/components/ModalConfirmAction/ModalConfirmAction';
 
 interface IOrderData {
     clientName: string;
@@ -26,12 +26,17 @@ interface ICardNewPedido {
 const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
     
     const router = useRouter()
+    const [statusModalDelete, setStateModalDelete] = useState<boolean>(false)
     const { handleDeleteOrder, confirmOrder } = useOrders()
     const keyDeleteType = pending ? 'pending' : 'finished'
     const { clientName, direccion, numberSender, orderId, total} = orderData
     
     const handleSendPageDetails = () => {
         router.push({ pathname: '/(tabs)/orderDetails', params: { orderId: orderId, keyDeleteType: keyDeleteType } })
+    }
+
+    const handleModal = (value:boolean) => {
+        setStateModalDelete(value)
     }
 
     return (
@@ -43,7 +48,7 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
                         <View style={styles.miniSeparator}></View>
                         <CustomText style={styles.text}>{direccion}</CustomText>
                         <View style={styles.separator}></View>
-                        <CustomText style={styles.text}>Tel: 091664536</CustomText>
+                        <CustomText style={styles.text}>Tel: {numberSender}</CustomText>
                     </View>
                     <View style={styles.column2}>
                         <View style={styles.buttonsTop}>
@@ -68,12 +73,13 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
                                 </Pressable>
                             </View>
                             :
-                            <Pressable onPress={() => handleDeleteOrder(orderId, keyDeleteType)} style={styles.deleteButton}>
+                            <Pressable onPress={() => handleModal(true)} style={styles.deleteButton}>
                                 <MaterialIconss name='delete' size={20} color={'#FF6F6F'} />
                             </Pressable>
                     }
                 </View>
             </View>
+            <ModalConfirmAction onContinue={()=> handleDeleteOrder(orderData.orderId, keyDeleteType)} title='Eliminar pedido' message='Si borras este pedido, no lo veras aqui pero el mismo afectará las estadisticas de tu empresa.' onClose={()=> handleModal(false)}  isOpen={statusModalDelete}/>
         </View>
     );
 };

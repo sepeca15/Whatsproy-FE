@@ -9,6 +9,7 @@ import CustomText from "@/components/CustomText";
 import api from "@/services/api/admin";
 import { StoreData } from "@/storage/localStorage";
 import { styles } from "./LoginStyles";
+import { useToastContext } from "@/contexts/ToastContext";
 
 const initialValues = {
   email: '',
@@ -19,6 +20,8 @@ const LoginScreen: React.FC = () => {
   const [formValues, setFormValues] = React.useState(initialValues)
   const router = useRouter();
   const [loading, setLoading] = React.useState(false);
+  const { showToast } = useToastContext();
+
 
   const handleChangeValue = (key: string, value: string) => {
     setFormValues((prevState) => (
@@ -40,11 +43,18 @@ const LoginScreen: React.FC = () => {
         }
         StoreData('token',res.access_token)
         router.push('/(tabs)/home')
+        showToast({
+          title: "Logeado Correctamente!",
+          status: "success",
+        });
       }
       
-    } catch (error) {
-      console.log(error);
-      
+    } catch (error : any) {
+      showToast({
+        title: "Error de autenticación",
+        description: error.response.data.message || "Error al logearse.",
+        status: "error",
+      });      
     } finally {
       setLoading(false);
     }

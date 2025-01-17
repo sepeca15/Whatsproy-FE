@@ -7,6 +7,7 @@ import CustomText from '@/components/CustomText';
 import InputField from '@/components/InputField';
 import { useUser } from '@/hooks/redux/useUser';
 import api from '@/services/api/admin';
+import { useToastContext } from '@/contexts/ToastContext';
 
 interface IDateOrder {
     es_defecto: boolean;
@@ -20,7 +21,7 @@ interface IDateOrder {
 interface IProps {
     data?: IDateOrder;
     onClose: () => void;
-    updateOrder: (newOrder : IDateOrder) => void;
+    updateOrder: (newOrder: IDateOrder) => void;
 }
 
 const initialValues = {
@@ -33,9 +34,11 @@ const initialValues = {
 
 const ModalEditOrderDate = ({ data, onClose, updateOrder }: IProps) => {
     const { user } = useUser()
-    const [form, setForm] = React.useState<IDateOrder>(data? data : initialValues);
+    const { showToast } = useToastContext();
+
+    const [form, setForm] = React.useState<IDateOrder>(data ? data : initialValues);
     const isValidData = !!form.nombre && !!form.requerido && !!form.tipo;
-    
+
     const handleChangeValue = (key: string, value: any) => {
         setForm((prevState) => ({
             ...prevState,
@@ -49,8 +52,15 @@ const ModalEditOrderDate = ({ data, onClose, updateOrder }: IProps) => {
                 ...form,
                 id_tipo_servicio: user.tipo_servicio
             })
-            updateOrder(data)
-            onClose()
+
+            if (data.ok) {
+                updateOrder(data)
+                onClose()
+                showToast({
+                    title: "Logeado Correctamente!",
+                    status: "success",
+                });
+            }
         } catch (error) {
             console.log(error);
 

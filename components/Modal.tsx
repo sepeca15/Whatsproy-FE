@@ -1,16 +1,16 @@
-import React from 'react';
-import { Pressable, View, VStack, Button } from 'native-base';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import { ModalStyles as styles } from './ModalStyles';
-import { Modal } from 'react-native';
-import CustomText from './CustomText';
+import React from "react";
+import { Pressable, View, ScrollView, Button, HStack } from "native-base";
+import EvilIcons from "react-native-vector-icons/EvilIcons";
+import { Modal } from "react-native";
+import CustomText from "./CustomText";
+import { ModalStyles as styles } from "./ModalStyles";
 
 interface GlobalModalProps {
   isVisible: boolean;
   label: string;
   onClose: () => void;
-  onAccept?: () => void;
   content: React.ReactNode;
+  actions?: any[];
 }
 
 const GlobalModal: React.FC<GlobalModalProps> = ({
@@ -18,38 +18,59 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
   label,
   content,
   onClose,
-  onAccept,
+  actions,
 }) => {
   return (
     <Modal
+      transparent      
       animationType="slide"
-      transparent={true}
       visible={isVisible}
+      style={{ zIndex: 1 }}
       onRequestClose={onClose}
     >
       <Pressable onPress={onClose} style={styles.container}>
-        <View style={styles.containerContent} onStartShouldSetResponder={() => true}>
+        <View
+          style={styles.containerContent}
+          onStartShouldSetResponder={() => true}
+        >
           <View style={styles.headerContent}>
             <View style={styles.decorateDiv}></View>
             <View style={styles.containerCreate}>
               <View style={styles.containerTitle}>
                 <Pressable onPress={onClose}>
-                  <EvilIcons name="close" size={25} color={'white'} />
+                  <EvilIcons name="close" size={25} color={"white"} />
                 </Pressable>
-                <CustomText style={{ color: 'white', fontSize: 20 }}>
+                <CustomText style={{ color: "white", fontSize: 20 }}>
                   {label}
                 </CustomText>
               </View>
             </View>
           </View>
+
           <View style={styles.bodyContent}>
-            {content}
-            {onAccept && (
-              <Button mt={4} colorScheme="teal" onPress={onAccept}>
-                Aceptar
-              </Button>
-            )}
+            <ScrollView
+              flexDirection={"column"}
+              display={"flex"}
+              horizontal={false}
+              showsVerticalScrollIndicator
+              contentContainerStyle={{
+                flexGrow: 1,
+                gap: 8,
+                paddingHorizontal: 20,
+                paddingBottom: 60
+              }}
+            >
+              {content}
+            </ScrollView>
           </View>
+
+          {actions && actions.length > 0 && (
+            <View style={styles.footerContent}>
+              <HStack  justifyContent="flex-end">
+                {actions}
+              </HStack>
+            </View>
+          )}
         </View>
       </Pressable>
     </Modal>

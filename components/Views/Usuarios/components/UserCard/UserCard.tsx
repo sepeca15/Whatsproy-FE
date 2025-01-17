@@ -9,6 +9,7 @@ import { IUser } from '../../UsuariosType';
 import api from '@/services/api/admin';
 import ModalConfirmAction from '@/components/ModalConfirmAction/ModalConfirmAction';
 import { useUser } from '@/hooks/redux/useUser';
+import { useToastContext } from '@/contexts/ToastContext';
 
 interface IUserCard {
     infoUser: IUser,
@@ -20,16 +21,24 @@ interface IUserCard {
 const UserCard = ({ infoUser, deleteUser, selectEditUser, allowManage}: IUserCard) => {
     const [stateModal, setStateModal] = React.useState<boolean>(false)
     const { user } = useUser()
-
+    const {showToast} = useToastContext()
 
     const onDeleteUser = async () => {
         try {
             const resp = await api.user.delete(infoUser.id)
             if (resp.ok) {
                 deleteUser(infoUser.id)
+                showToast({
+                    title:'Usuario eliminado exitosamente',
+                    status:'success'
+                })
             }
-        } catch (error) {
+        } catch (error: any) {
             console.log('error');
+            showToast({
+                title:error.response.data.message,
+                status:'error'
+            })
         }
     }
 
