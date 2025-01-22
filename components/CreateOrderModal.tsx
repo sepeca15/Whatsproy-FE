@@ -36,6 +36,7 @@ import GlobalModal from "./Modal";
 import CustomButton from "./CustomButton";
 import Toast from "react-native-toast-message";
 import { useToastContext } from "@/contexts/ToastContext";
+import { data } from "./Views/Pedidos/components/data";
 
 interface IProps {
   onClose: () => void;
@@ -55,6 +56,7 @@ const initialValues: CreateOrderDTO = {
   infoLinesJson: {},
   fecha: new Date(),
 };
+
 
 const CreateOrderModal = ({
   onClose,
@@ -206,10 +208,10 @@ const CreateOrderModal = ({
           description: "Su evento fue agregado al calendario exitosamente.",
           status: "success",
         });
-      if (onSuccess) {
-        onSuccess();
-      }
-      onClose();
+        if (onSuccess) {
+          onSuccess();
+        }
+        onClose();
       } else {
         throw new Error("Error desconocido creando event")
       }
@@ -224,6 +226,31 @@ const CreateOrderModal = ({
     }
   };
 
+  const addClient = async(newClient: { nombre: string, telefono: string }) => {
+    console.log(newClient);
+    
+    try {
+      const data = await api.client.create({ ...newClient, empresa_id: user.empresa_id })
+      console.log(data);
+      
+      if (data?.clientName) {
+        showToast({
+          title: "Error creando Cliente",
+          description: 'Ya existe un cliente con este numero.',
+          status: "error",
+        });
+      } else {
+        showToast({
+          title: "Cliente creado Exitosamente",
+          status: "success",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+
   return (
     <GlobalModal
       label={`Agregar ${tipoServicio === ID_TIPOSERVICIO_RESERVA ? "nuevo Evento" : "nueva Orden"}`}
@@ -231,18 +258,18 @@ const CreateOrderModal = ({
       onClose={onClose}
       actions={[
         <Button
-        onPress={() => onClose()}
-        size="sm"
-        variant={"ghost"}
-        borderRadius={"6"}
-        fontWeight={"bold"}
-      >
-        <Text fontWeight={500} color={"#2C2C2C"}>
-          Cancelar
-        </Text>
-      </Button>,
+          onPress={() => onClose()}
+          size="sm"
+          variant={"ghost"}
+          borderRadius={"6"}
+          fontWeight={"bold"}
+        >
+          <Text fontWeight={500} color={"#2C2C2C"}>
+            Cancelar
+          </Text>
+        </Button>,
         <Button
-        isLoading={loadingCreate}
+          isLoading={loadingCreate}
           onPress={() => createOrderData()}
           size="sm"
           backgroundColor={"#2C2C2C"}
@@ -302,6 +329,7 @@ const CreateOrderModal = ({
               return {
                 label: (
                   <View
+                    key={prod.id}
                     display={"flex"}
                     flexDirection={"row"}
                     alignItems={"center"}
@@ -362,6 +390,7 @@ const CreateOrderModal = ({
             placeholder="Agregar detalles"
           />
           <MultiSelectInput
+            actionToAddItem={(data: any) => addClient(data) }
             setItemsSelected={(data: string[]) => {
               const clientId = data[0] as any;
               const clientInfo = clients?.find((c) => c.id === clientId);
@@ -369,6 +398,16 @@ const CreateOrderModal = ({
               handleChangeValue("clienteId", clientId);
               handleChangeValue("clientName", clientInfo?.nombre ?? "");
             }}
+            initialStateAdd={[
+              {
+                name: 'nombre',
+                type: 'text'
+              },
+              {
+                name: 'telefono',
+                type: 'numeric'
+              }
+            ]}
             isMultiple={false}
             onSearch={(query: string) => {
               handleFindClients(query);

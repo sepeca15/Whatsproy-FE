@@ -4,3 +4,9 @@ export interface Cliente {
   nombre: string;
   telefono: string;
 }
+
+export interface CreateClient {
+  empresa_id: number;
+  nombre: string;
+  telefono: string;
+}

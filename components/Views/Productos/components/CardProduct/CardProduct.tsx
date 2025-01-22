@@ -56,7 +56,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             return;
         }
         router.push({
-            pathname: '/(tabs)/graficprodhome',
+            pathname: '/(tabs)/graficprod',
             params: {
                 ...commonParams,
                 category: product.category,

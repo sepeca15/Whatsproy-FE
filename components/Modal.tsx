@@ -22,10 +22,10 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
 }) => {
   return (
     <Modal
+      transparent      
       animationType="slide"
-      transparent={true}
       visible={isVisible}
-      style={{ zIndex: 50 }}
+      style={{ zIndex: 1 }}
       onRequestClose={onClose}
     >
       <Pressable onPress={onClose} style={styles.container}>

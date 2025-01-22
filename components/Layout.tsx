@@ -11,6 +11,7 @@ import { useUser } from "@/hooks/redux/useUser";
 import { TipoServicio } from "@/enums/TipoServicio";
 
 const Pages = (empresaType: number) => {
+    
     return [
         {
             name: 'home',
@@ -20,7 +21,7 @@ const Pages = (empresaType: number) => {
         {
             name: 'pedidos',
             path: empresaType === TipoServicio.DELIVERY ? '/(tabs)/pedidos' : '/(tabs)/calendar',
-            icon: (select: boolean) => empresaType === TipoServicio.RESERVA ? <SimpleIcon name="notebook" size={24} color={select ? Colors.light.primary : "#717171"} /> : <AntDesign name="calendar" size={24} color={select ? Colors.light.primary : "#717171"} />
+            icon: (select: boolean) => empresaType === TipoServicio.DELIVERY ? <SimpleIcon name="notebook" size={24} color={select ? Colors.light.primary : "#717171"} /> : <AntDesign name="calendar" size={24} color={select ? Colors.light.primary : "#717171"} />
         },
         {
             name: 'productos',

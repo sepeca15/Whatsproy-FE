@@ -2,7 +2,6 @@ import React from "react";
 import { View, ScrollView, TouchableOpacity, Text } from "react-native";
 
 import { ProductCard } from "./components/CardProduct/CardProduct";
-
 import { useRouter } from 'expo-router'; 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { styles } from './ProductosStyles';
@@ -20,7 +19,7 @@ const Productos: React.FC = () => {
       const response = await api.products.getAll();
       const productData: ProductBDD[] = response.data;
       setProducts(productData);
-    
+
     } catch (error) {
       console.error(error);
     }
@@ -28,14 +27,14 @@ const Productos: React.FC = () => {
 
   React.useEffect(() => {
     allProduct();
-  
+
   }, []);
 
   console.log("productsBD", ProductsBD);
 
 
   const handleUpdateProduct = (updatedProduct: Product) => {
- 
+
   };
 
   return (
@@ -58,7 +57,6 @@ const Productos: React.FC = () => {
         ))}
       </ScrollView>
       <View style={styles.buttonContainer}>
-
         <TouchableOpacity style={styles.addButton} onPress={() => { router.push("/(tabs)/addpro") }}>
           <Text style={styles.addButtonText}>+</Text>
         </TouchableOpacity>

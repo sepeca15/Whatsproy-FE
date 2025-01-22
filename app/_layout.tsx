@@ -12,8 +12,6 @@ import "react-native-reanimated";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Provider } from "react-redux";
 import { store } from "@/services/redux/store";
-import Toast from "react-native-toast-message";
-import toastConfig from "@/utils/toast";
 import { ToastProvider } from "@/contexts/ToastContext";
 
 SplashScreen.preventAutoHideAsync();
@@ -46,7 +44,6 @@ export default function RootLayout() {
           </Stack>
         </ThemeProvider>
         </ToastProvider>
-
       </NativeBaseProvider>
     </Provider>
   );

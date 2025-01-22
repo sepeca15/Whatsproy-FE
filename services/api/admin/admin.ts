@@ -6,6 +6,7 @@ import * as user from "../user/user"
 import * as dataOrder from "../dateOrder/DateOrder"
 import * as order from "../order/order"
 import * as typeServices from "../typeServices/typeServices"
+import * as client from "../clients/clients"
 
 const api = {
     auth:{
@@ -18,7 +19,6 @@ const api = {
         update: products.update,
         delete: products.deletProd,
     },
-    
     plans: {
         getAll: plan.getAllPlans,
         assignPlanToCompany: plan.AssignPlan
@@ -53,6 +53,9 @@ const api = {
     },
     typeServices : {
         getAll : typeServices.getAll
+    },
+    client: {
+        create: client.CreateOrReturnClient
     }
 }
 

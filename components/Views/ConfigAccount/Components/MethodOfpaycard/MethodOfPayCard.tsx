@@ -6,6 +6,7 @@ import ComunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import CustomButton from "@/components/CustomButton";
 import { IPlans } from "./MethodOfPayCardTypes";
 import { useUser } from "@/hooks/redux/useUser";
+import { useToastContext } from "@/contexts/ToastContext";
 
 interface IMethodOfPayCard {
     Plan: IPlans;
@@ -13,6 +14,7 @@ interface IMethodOfPayCard {
 
 const MethodOfPayCard = ({ Plan }: IMethodOfPayCard) => {
     const { handleAssignUserToPlan, user } = useUser()
+    const {showToast} = useToastContext()
     const [loadingApi, setloadingApi] = React.useState<boolean>(false)
     const adventagesArray = Plan.adventages.split(',')
 
@@ -25,9 +27,17 @@ const MethodOfPayCard = ({ Plan }: IMethodOfPayCard) => {
                     id_empresa: user.id_empresa,
                     id_plan: Plan.id
                 })
+                showToast({
+                    title: "Plan asignado al usuario correctamente!",
+                    status: "success",
+                });
                 setloadingApi(false)
             }
-        } catch (error) {
+        } catch (error : any) {
+            showToast({
+                title: "Error:" + error.response.data.message,
+                status: "error",
+            });
             console.log(error);
 
         }

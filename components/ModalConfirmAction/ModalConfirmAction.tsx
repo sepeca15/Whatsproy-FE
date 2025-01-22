@@ -15,9 +15,7 @@ const ModalConfirmAction = ({ isOpen, onClose, onContinue, message, title }: IMo
 
   const submitAction = () => {
     onClose()
-    onContinue()
-    console.log('terminar');
-    
+    onContinue()    
   }
 
   return <Modal alignSelf={'center'} width={450} onClose={onClose} isOpen={isOpen} style={styles.container}>

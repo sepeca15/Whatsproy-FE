@@ -1,18 +1,20 @@
 
 import * as React from 'react';
 import { View, ScrollView, StyleSheet, Text, Pressable } from 'react-native';
-import CardNewPedido from './components/CardNewPedido.tsx/index.js';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons.js'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons.js'
 import OrdersFinished from './components/OrdersFinished';
 import OrdersPending from './components/OrdersPending';
 import { useUser } from "@/hooks/redux/useUser";
+import CreateOrderModal from '@/components/CreateOrderModal';
 
 type pagesOrder = 'finished' | 'pending'
 
 const PedidosEIngresos: React.FC = () => {
     const [selected, setSelected] = React.useState<pagesOrder>('pending')
-    const {user} = useUser()
+    const [openAddModal, setOpenAddModal] = React.useState<boolean>(false);
+
+    const { user } = useUser()
     const handleSelectPage = (key: pagesOrder) => {
         setSelected(key)
     }
@@ -21,7 +23,7 @@ const PedidosEIngresos: React.FC = () => {
         <View style={styles.container}>
             <Text style={styles.title}>
                 {
-                user.tipo_servicioNombre === 'Delivery' ? "Pedidos" : "Reservas"
+                    user.tipo_servicioNombre === 'Delivery' ? "Pedidos" : "Reservas"
                 }
             </Text>
             <View style={styles.tab}>
@@ -60,6 +62,21 @@ const PedidosEIngresos: React.FC = () => {
                         <OrdersPending />
                 }
             </ScrollView>
+            <View style={styles.buttonContainer}>
+                <Pressable
+                    style={styles.addButton}
+                    onPress={() => {
+                        setOpenAddModal((prevState)=> (!prevState));
+                    }}
+                >
+                    <Text style={styles.addButtonText}>+</Text>
+                </Pressable>
+            </View>
+            {
+                openAddModal && (
+                    <CreateOrderModal tipoServicio={1} defaultDate={{}} onClose={()=> setOpenAddModal(false)}/>
+                )
+            }
         </View>
     );
 };
@@ -137,7 +154,30 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         gap: 4
-    }
+    },
+    buttonContainer: {
+        position: 'absolute',
+        bottom: 20,
+        right: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent:'center',
+        zIndex: 1,
+    },
+    addButton: {
+        backgroundColor: '#075e54',
+        width: 45,
+        height: 45,
+        borderRadius: 60,
+        justifyContent: 'center',
+        alignItems: 'center',
+
+    },
+    addButtonText: {
+        color: '#ffffff',
+        fontSize: 24,
+        fontWeight: 'semibold',
+    },
 });
 
 export default PedidosEIngresos;
