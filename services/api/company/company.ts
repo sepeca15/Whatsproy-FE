@@ -1,8 +1,16 @@
 import ApiInstances from "@/services/axios/axiosConfig"
 import { IUserData } from "@/services/redux/Slices/userSlice/types"
+import { CreateEmpresaDto } from "./types"
+
+export const createCompany = async(info : CreateEmpresaDto) => {
+    const { data } = await ApiInstances('global').post('empresa',info)
+
+    return data
+}
 
 export const updateCompany = async( companyData : IUserData , id_empresa: number) => {
     const { data } = await ApiInstances('global').patch('empresa/' + id_empresa, companyData)
+
     return data
 }
 

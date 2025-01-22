@@ -2,10 +2,11 @@ import React from "react";
 import { View, ScrollView, TouchableOpacity, Text } from "react-native";
 
 import { ProductCard } from "./components/CardProduct/CardProduct";
-import { useRouter } from 'expo-router';
+import { useRouter } from 'expo-router'; 
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { styles } from './ProductosStyles';
 import api from "@/services/api/admin";
-import { categoryData, monthlySalesData, Product, ProductBDD, salesData, sampleProducts, satisfactionData, weeklySalesData } from "@/hooks/dataProduct";
+import { categoryData, monthlySalesData, ProductBDD, salesData, satisfactionData, weeklySalesData , Product, sampleProducts} from "@/hooks/dataProduct";
 
 const Productos: React.FC = () => {
   const router = useRouter();

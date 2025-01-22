@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Dimensions } from 'react-native';
 import Svg, { Path, G, Circle } from 'react-native-svg';
 import { GestureHandlerRootView, TapGestureHandler } from 'react-native-gesture-handler';
-import styles from './TendenciaVentasCircularStyles';
-import { data, categories, colors, totalValues } from './data';
+import { data, categories, colors, totalValues } from '../data';
 import { MonthlySalesData, SalesSegment } from './types';
+import { Styles } from './TendenciaVentasStyles';
 
 const { width: screenWidth } = Dimensions.get('window');
 const chartWidth = screenWidth - 40;
@@ -72,9 +72,9 @@ const TendenciaVentasCircular: React.FC = () => {
   };
 
   return (
-    <GestureHandlerRootView style={styles.container}>
-      <Text style={styles.title}>Tendencia de Ventas por Categoría</Text>
-      <Svg width={chartWidth} height={chartHeight} viewBox={`0 0 ${chartWidth} ${chartHeight}`} style={styles.chart}>
+    <GestureHandlerRootView style={Styles.container}>
+      <Text style={Styles.title}>Tendencia de Ventas por Categoría</Text>
+      <Svg width={chartWidth} height={chartHeight} viewBox={`0 0 ${chartWidth} ${chartHeight}`} style={Styles.chart}>
         <G transform={`translate(${chartWidth / 2}, ${chartHeight / 2})`}>
           {segments.map((segment, index) => (
             <TapGestureHandler key={index} onActivated={() => handleSegmentPress(segment)}>
@@ -88,24 +88,24 @@ const TendenciaVentasCircular: React.FC = () => {
           <Circle cx={0} cy={0} r={radius * 0.6} fill="white" />
         </G>
       </Svg>
-      <View style={styles.legend}>
+      <View style={Styles.legend}>
         {categories.map((category, index) => (
           <TouchableOpacity
             key={index}
-            style={styles.legendItem}
+            style={Styles.legendItem}
             onPress={() => handleCategoryPress(category)}
           >
-            <View style={[styles.legendColor, { backgroundColor: colors[index] }]} />
-            <Text style={[styles.legendText, selectedCategory === category && styles.selectedLegendText]}>
+            <View style={[Styles.legendColor, { backgroundColor: colors[index] }]} />
+            <Text style={[Styles.legendText, selectedCategory === category && Styles.selectedLegendText]}>
               {category} ({calculateCategoryPercentage(category)}%)
             </Text>
           </TouchableOpacity>
         ))}
       </View>
       {selectedSegment && (
-        <View style={styles.tooltip}>
-          <Text style={styles.tooltipText}>{selectedSegment.label}</Text>
-          <Text style={styles.tooltipText}>Valor: {selectedSegment.value}</Text>
+        <View style={Styles.tooltip}>
+          <Text style={Styles.tooltipText}>{selectedSegment.label}</Text>
+          <Text style={Styles.tooltipText}>Valor: {selectedSegment.value}</Text>
         </View>
       )}
     </GestureHandlerRootView>

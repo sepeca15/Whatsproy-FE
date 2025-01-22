@@ -2,7 +2,7 @@ import { StyleSheet, Dimensions } from 'react-native';
 
 const screenWidth = Dimensions.get('window').width;
 
-export const pedidosMensualesStyles = StyleSheet.create({
+export const Styles = StyleSheet.create({
     chartContainer: {
         backgroundColor: '#fff',
         borderRadius: 10,
@@ -13,7 +13,7 @@ export const pedidosMensualesStyles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 4,
         elevation: 3,
-        maxHeight:'100%',
+        maxHeight: '100%',
     },
     titleContainer: {
         flexDirection: 'row',
@@ -48,7 +48,6 @@ export const pedidosMensualesStyles = StyleSheet.create({
     barWrapper: {
         maxHeight: '100%',
         height: '100%',
-        // width: '100%',
         justifyContent: 'flex-end',
     },
     bar: {
@@ -92,4 +91,3 @@ export const pedidosMensualesStyles = StyleSheet.create({
         color: '#666',
     },
 });
-

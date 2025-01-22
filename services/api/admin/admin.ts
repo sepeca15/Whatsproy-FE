@@ -5,6 +5,7 @@ import * as plan from "../plan/plan"
 import * as user from "../user/user"
 import * as dataOrder from "../dateOrder/DateOrder"
 import * as order from "../order/order"
+import * as typeServices from "../typeServices/typeServices"
 import * as client from "../clients/clients"
 
 const api = {
@@ -23,6 +24,7 @@ const api = {
         assignPlanToCompany: plan.AssignPlan
     },
     company: {
+        create: company.createCompany,
         update: company.updateCompany,
         loadQR: company.LoadQR,
         loadAuthCode: company.LoadAuthCode
@@ -48,6 +50,9 @@ const api = {
         remove: order.removeOrder,
         confirm: order.confirmOrder,
         create: order.createOrder,
+    },
+    typeServices : {
+        getAll : typeServices.getAll
     },
     client: {
         create: client.CreateOrReturnClient
