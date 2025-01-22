@@ -19,4 +19,11 @@ export const styles = StyleSheet.create({
   containerImage: {
     alignItems: "center",
   },
+  containerSteps : {
+    flex:1,
+    width:'100%',
+    display:'flex',
+    flexDirection:'column',    
+    justifyContent:'center',
+  }
 });

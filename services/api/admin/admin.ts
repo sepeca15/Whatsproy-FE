@@ -5,6 +5,7 @@ import * as plan from "../plan/plan"
 import * as user from "../user/user"
 import * as dataOrder from "../dateOrder/DateOrder"
 import * as order from "../order/order"
+import * as typeServices from "../typeServices/typeServices"
 
 const api = {
     auth:{
@@ -16,8 +17,6 @@ const api = {
         find: products.find,
         update: products.update,
         delete: products.deletProd,
-
-
     },
     
     plans: {
@@ -25,6 +24,7 @@ const api = {
         assignPlanToCompany: plan.AssignPlan
     },
     company: {
+        create: company.createCompany,
         update: company.updateCompany,
         loadQR: company.LoadQR,
         loadAuthCode: company.LoadAuthCode
@@ -51,6 +51,9 @@ const api = {
         confirm: order.confirmOrder,
         create: order.createOrder,
     },
+    typeServices : {
+        getAll : typeServices.getAll
+    }
 }
 
 export default api
