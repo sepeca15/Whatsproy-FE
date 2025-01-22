@@ -111,7 +111,7 @@ export const styles = StyleSheet.create({
   chartContainer: {
     backgroundColor: '#fff',
     borderRadius: 15,
-    // padding: 20,
+    padding: 20,
     marginBottom: 20,
     elevation: 3,
     shadowColor: '#000',
@@ -128,7 +128,9 @@ export const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#1a1a1a',
     marginBottom: 16,
+    marginTop: 10,
     textAlign: 'center',
+    maxWidth:'100%',
   },
   chart: {
     marginVertical: 8,
@@ -141,6 +143,7 @@ export const styles = StyleSheet.create({
     paddingTop: 20,
     borderTopWidth: 1,
     borderTopColor: '#f0f0f0',
+    maxWidth:'100%',
   },
   statItem: {
     alignItems: 'center',
@@ -246,4 +249,3 @@ export const styles = StyleSheet.create({
     color: '#fff',
   },
 });
-
