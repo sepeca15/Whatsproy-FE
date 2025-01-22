@@ -4,7 +4,7 @@ import { FormControl, Input, TextArea } from 'native-base';
 interface InputFieldProps {
   label?: string;
   placeholder: string;
-  type?: 'text' | 'password';
+  value?: string;
   onChangeText?: (text: string) => void;
   marginTop?: number;
   isTextArea?: boolean;

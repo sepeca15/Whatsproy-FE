@@ -4,8 +4,9 @@ import { HStack, VStack, Avatar, IconButton, Icon } from 'native-base';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router'; 
 import { styles } from './PerfilStyles';
-import Graficas from './components/Graficas';
+
 import { profileData } from './components/profileData';
+import SimpleBarCharts from './components/Graficas/Graficas';
 
 const Perfil: React.FC = () => {
   const router = useRouter(); 
@@ -36,7 +37,7 @@ const Perfil: React.FC = () => {
         />
       </HStack>
       <View style={styles.content}>
-        <Graficas />
+        <SimpleBarCharts />
       </View>
 
       <Modal

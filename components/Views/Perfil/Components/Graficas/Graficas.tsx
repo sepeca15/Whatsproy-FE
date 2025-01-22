@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
-import PedidosMensuales from './PedidosMensuales';
-import PedidosRealizados from './PedidosRealizados';
+import PedidosMensuales from '../PedidosMensuales';
+import PedidosRealizados from '../PedidosRealizados';
+
 
 const SimpleBarCharts: React.FC = () => {
   return (

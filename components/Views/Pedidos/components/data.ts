@@ -1,5 +1,5 @@
 // data.js
-import { MonthlySalesData } from './types';
+import { MonthlySalesData } from './TendenciaVentas/types';
 
 export const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 export const completedData = [30, 50, 40, 70, 90, 80, 100, 95, 85, 110, 120, 130];
