@@ -41,7 +41,6 @@ const Layout = ({ children }: any) => {
     const pathname = usePathname();
     const { user } = useUser()
     const [selected, setSelected] = React.useState<string>("");
-    console.log(selected);
 
     React.useEffect(() => {
         const existRouter = Pages(user.tipo_servicio).find((path) => pathname.split('/')[1] === path.name);

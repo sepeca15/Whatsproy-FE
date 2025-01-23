@@ -12,6 +12,7 @@ interface InputFieldProps {
   keyboardType?: any;
   isRequired?: boolean;
   error?: any;
+  icon?: any
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -23,6 +24,7 @@ const InputField: React.FC<InputFieldProps> = ({
   marginTop,
   isTextArea = false,
   isRequired = true,
+  icon,
   error,
   ...props
 }) => {
@@ -31,6 +33,7 @@ const InputField: React.FC<InputFieldProps> = ({
       {label && <FormControl.Label>{label}</FormControl.Label>}
       {isTextArea ? (
         <TextArea
+          InputLeftElement={icon}
           keyboardType={keyboardType}
           autoCompleteType={""}
           placeholder={placeholder}
@@ -39,6 +42,7 @@ const InputField: React.FC<InputFieldProps> = ({
         />
       ) : (
         <Input
+          InputLeftElement={icon}
           keyboardType={keyboardType}
           type={type}
           placeholder={placeholder}
