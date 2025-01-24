@@ -128,7 +128,7 @@ const ItemCalendar = ({ InfoItem , confirmOrder, deleteOrder, confirm}: IItemCal
                             <View style={styles.rowInfo}>
                                 <MaterialIcons name="access-time" size={16} color={"white"} />
                                 <Text color={"white"}>
-                                    {dataDetails.info?.estimateTime || "Teléfono no disponible"} mn
+                                    {dataDetails.info?.estimateTime || "Tiempo estimado no disponible"} mn
                                 </Text>
                             </View>
                             <View style={styles.rowInfo}>
