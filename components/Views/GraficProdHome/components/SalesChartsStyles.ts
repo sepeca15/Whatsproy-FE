@@ -146,23 +146,26 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#fff",
     padding: 2,
-    margin: 'auto',
-    alignContent: 'center',
-    alignSelf: 'center',
+    margin: "auto",
+    alignContent: "center",
+    alignSelf: "center",
   },
   chartWrapper: {
-
     marginVertical: 8,
     borderRadius: 16,
     maxWidth: "100%",
     width: "100%",
-    borderColor: 'black',
+    borderColor: "black",
     borderWidth: 0.5,
 
-    backgroundColor: '#',
+    backgroundColor: "#",
     alignItems: "center",
-
-
+  },
+  chartHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 16,
   },
   statsContainer: {
     flexDirection: "row",
@@ -277,6 +280,17 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "bold",
     color: "#333",
+  },
+  toggleButton: {
+    backgroundColor: Colors.light.primary,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  toggleButtonText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "600",
   },
 })
 
