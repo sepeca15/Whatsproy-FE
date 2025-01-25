@@ -3,7 +3,7 @@ import { View, Text, Image, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { useRouter } from 'expo-router';
 import { styles } from './CardProdStyle';
-import { Product, SatisfactionData,ProductBDD, CategoryData, SalesData, WeeklySalesData, MonthlySalesData } from '../../../../../hooks/dataProduct';
+import { Product, SatisfactionData,ProductBDD, CategoryData, SalesData, DayslySalesData, MonthlySalesData } from '../../../../../hooks/dataProduct';
 
 interface ProductCardProps {
     product: Product;
@@ -12,7 +12,7 @@ interface ProductCardProps {
     categoryData: CategoryData;
     satisfactionData: SatisfactionData;
     monthlySalesData: MonthlySalesData;
-    weeklySalesData: WeeklySalesData;
+    dayslySalesData: DayslySalesData;
     onUpdateProduct: (updatedProduct: Product) => void;
 }
 
@@ -23,11 +23,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     categoryData,
     satisfactionData,
     monthlySalesData,
-    weeklySalesData,
+    dayslySalesData,
     onUpdateProduct
 }) => {
     const router = useRouter();
 
+    console.log('dayslySalesData: CardProducts.tsx', dayslySalesData)
     const commonParams = {
         id: productBDD.id.toString(),
         title: productBDD.nombre,
@@ -61,10 +62,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 rating: product.rating,
                 reviews: product.reviews,
                 tags: product.tags,
-                monthlabels: monthlySalesData.labels,
-                monthdatasets: JSON.stringify(monthlySalesData.datasets),
-                dayslabels: weeklySalesData.labels,
-                daysdatasets: JSON.stringify(weeklySalesData.datasets),
+                daydata: JSON.stringify(dayslySalesData),
                 disponible: productBDD.disponible.toString(),
                 empresa_id: productBDD.empresa_id.toString(),
             },

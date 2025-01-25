@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, ScrollView, TouchableOpacity, Text, TextInput } from "react-native";
-import { ProductCard } from "./components/CardProducts/CarProduct";
-import { sampleProducts, Product, ProductBDD, salesData, categoryData, satisfactionData, monthlySalesData, weeklySalesData } from "../../../hooks/dataProduct";
+import { ProductCard } from "./components/CardProducts/CardProduct";
+import { sampleProducts, Product, ProductBDD, salesData, categoryData, satisfactionData, monthlySalesData, dayslySalesData } from "../../../hooks/dataProduct";
 import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { styles } from './ProductosStyles';
@@ -17,6 +17,7 @@ const Productos: React.FC = () => {
       const response = await api.products.getAll();
       const productData: ProductBDD[] = response.data;
       setProducts(productData);
+     console.log('productData', productData)
     } catch (error) {
       console.error(error);
     }
@@ -25,6 +26,8 @@ const Productos: React.FC = () => {
   useEffect(() => {
     allProduct();
   }, []);
+
+
 
   const filteredProducts = ProductsBD.filter(product =>
     product.nombre.toLowerCase().includes(searchTerm.toLowerCase())
@@ -48,12 +51,12 @@ const Productos: React.FC = () => {
         {filteredProducts.map((product) => (
           <ProductCard
             key={product.id}
-            product={sampleProducts[0]}
+            product={sampleProducts[2]}
             productBDD={product}
             salesData={salesData}
             satisfactionData={satisfactionData}
             categoryData={categoryData}
-            weeklySalesData={weeklySalesData}
+            dayslySalesData={dayslySalesData}
             monthlySalesData={monthlySalesData}
             onUpdateProduct={() => {}}
           />
