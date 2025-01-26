@@ -29,6 +29,7 @@ interface MultiSelectInputProps {
   label?: string;
   options: { label: any; value: any; placeholder?: string }[];
   setItemsSelected: any;
+  handleProductSelection?: any
   isRequired?: boolean;
   isMultiple?: boolean;
   onSearch?: (qry: string) => void;
@@ -49,6 +50,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
   isMultiple = true,
   error,
   setItemsSelected,
+  handleProductSelection,
   onSearch,
   initialStateAdd,
   actionToAddItem
@@ -70,6 +72,12 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
       }, 1000);
     }
   }, [query]);
+
+  useEffect(() => {
+    if (onSearch) {
+      onSearch(query);
+    }
+  }, []);
 
   useEffect(() => {
     if (initialStateAdd) {
@@ -118,7 +126,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
   const areAllFieldsFilled = () => {
     return initialStateAdd?.every((item) => formValues[item.name]?.trim()) ?? false;
   };
-  
+
   const DispatchActionAdd = async () => {
     if (actionToAddItem && areAllFieldsFilled()) {
       setLoadingApi(true);
@@ -133,7 +141,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
       });
     }
   };
-  
+
 
   return (
     <VStack space={4}>
@@ -215,26 +223,26 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
                 />
               </View>
             )}
-            <View maxHeight={400}>
+            <View position={'relative'} maxHeight={500}>
               {!loading ? <ScrollView
-                flexDirection={"column"}
-                display={"flex"}
                 horizontal={false}
-                contentContainerStyle={{ flexGrow: 1, gap: 8 }}
               >
                 {options.map((option) => (
-                  <Checkbox
-                    key={option.value}
-                    value={option.value}
-                    alignItems={'center'}
-                    isChecked={selectedItemsKeys.includes(option.value)}
-                    onChange={() => {
-                      toggleSelection(option.label);
-                      toggleSelectionKeys(option.value);
-                    }}
-                  >
-                    {option.label}
-                  </Checkbox>
+                  <View width={'100%'}>
+                    <Checkbox
+                      key={option.value}
+                      value={option.value}
+                      isChecked={selectedItemsKeys.includes(option.value)}
+                      onChange={(isSelected) => {
+                        handleProductSelection(option.value, isSelected);
+                        toggleSelection(option.label);
+                        toggleSelectionKeys(option.value);
+                      }}
+                    >
+
+                      {option.label}
+                    </Checkbox>
+                  </View>
                 ))}
               </ScrollView> : <Spinner size={'lg'} />}
             </View>
@@ -263,7 +271,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
                             placeholder={`Ingresar ${item.name}`}
                             onChangeText={(value) => handleFieldChange(item.name, value)}
                           />
-                          
+
                         </View>
                       })
                     }
@@ -280,14 +288,14 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
                     borderRadius={"6"}
                     fontWeight={700}
                   >
-                      {
-                        loadingApi? 
+                    {
+                      loadingApi ?
                         <Spinner color={'white'} size={20} />
                         :
                         <Text fontWeight={500} color={"white"}>
-                        Crear {label}
+                          Crear {label}
                         </Text>
-                      }
+                    }
                   </Button>
                 ]}
                 onClose={() => setIsModalOpenAdd(false)}
