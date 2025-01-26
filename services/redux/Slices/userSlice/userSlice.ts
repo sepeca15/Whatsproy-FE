@@ -16,10 +16,10 @@ const userSlice = createSlice({
             state.user = payload
         },
         onUpdateKeys: (state, { payload }) => {
-            const {data} = payload;
+            const {data} = payload;            
             
             Object.keys(data).forEach((key) => {
-                if (key in state.user) {                    
+                if (key in state.user) {                                        
                     // @ts-ignore
                     state.user[key] = data[key];
                 }
