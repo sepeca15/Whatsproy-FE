@@ -4,7 +4,6 @@ import { VStack, FormControl, Input, Modal, Button } from "native-base";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 const DateTimeInputField = ({ date, setDate, isRequired = true, error }: any) => {
-  console.log("date", date)
   const [showPicker, setShowPicker] = useState(false);
   const [mode, setMode] = useState<"date" | "time">("date");
 

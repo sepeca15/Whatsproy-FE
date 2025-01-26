@@ -38,7 +38,6 @@ const ItemCalendar = ({
     loadingApi: true,
   });
 
-  console.log("dataDetails", dataDetails)
   const animationHeight = useRef(new Animated.Value(0)).current;
 
   const toggleLoadingApi = (value: boolean) => {

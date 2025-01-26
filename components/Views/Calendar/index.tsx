@@ -165,6 +165,7 @@ export default function CalendarView() {
 
       {openAddModal && selectedDate && (
         <CreateOrderModal
+          currentOrders={orderPerDays[selectedDate] ? orderPerDays[selectedDate] : []}
           onClose={() => setOpenAddModal(false)}
           defaultDate={selectedDate}
           onSuccess={() => {
