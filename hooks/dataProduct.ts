@@ -29,7 +29,7 @@ interface SalesData {
     }[];
 }
 
-interface WeeklySalesData {
+interface DayslySalesData {
     labels: string[];
     datasets: {
         data: number[];
@@ -65,7 +65,7 @@ const salesData: SalesData = {
 
 
   // Datos de ejemplo para ventas semanales y mensuales
-  const weeklySalesData: WeeklySalesData = {
+  const dayslySalesData: DayslySalesData = {
     labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
     datasets: [{ data: [20, 45, 28, 80, 99, 43, 50] }]
   };
@@ -166,4 +166,4 @@ const sampleProducts: Product[] = [
 
 const availableCurrencies = ["USD", "EUR", "GBP"];
 
-export { sampleProducts, ProductBDD, Product, availableCurrencies , satisfactionData, categoryData, salesData, SatisfactionData, CategoryData, SalesData, weeklySalesData, WeeklySalesData, monthlySalesData, MonthlySalesData}; 
+export { sampleProducts, ProductBDD, Product, availableCurrencies , satisfactionData, categoryData, salesData, SatisfactionData, CategoryData, SalesData, dayslySalesData, DayslySalesData, monthlySalesData, MonthlySalesData}; 

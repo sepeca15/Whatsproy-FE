@@ -3,20 +3,42 @@ import { View, Text } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import GraficProddet from './components/GraficProd';
 import { productData, salesData, categoryData, satisfactionData } from '../GraficProdHome/components/Data';
-import{ProductParams} from './components/types';
+import { ProductParams } from '../GraficProdHome/components/types';
 
 
 
 const ProductDetails: React.FC = () => {
   // Tipifica los parámetros recibidos
-  const rawParams = useLocalSearchParams(); 
+  const rawParams = useLocalSearchParams();
   const params = rawParams as unknown as ProductParams;
-console.log('params', params)
-  const monthdatasets = params.monthdatasets ? JSON.parse(params.monthdatasets) : [];
- 
-  const daysdatasets = params.daysdatasets ? JSON.parse(params.daysdatasets) : [];
+  // console.log('params', params)
+  // const monthdatasets = params.monthdatasets ? JSON.parse(params.monthdatasets) : [];
+  // const simpleMonthData = monthdatasets.map((dataset: { data: number[] }) => dataset.data).flat();
 
-  console.log (params.daysdatasets)
+  // const daysdatasets = params.daysdatasets ? JSON.parse(params.daysdatasets) : [];
+  // const simpleDaysData = daysdatasets.map((dataset: { data: number[] }) => dataset.data).flat();
+
+  // const day_data = {
+  //   labels: params.dayslabels,
+  //   datasets: [
+  //     {
+  //       data: simpleDaysData,
+  //     },
+  //   ],
+  // };
+
+  // const month_data = {
+  //   labels: params.monthlabels,
+  //   datasets: [
+  //     {
+  //       data: simpleMonthData,
+  //     },
+  //   ],
+  // };
+
+  console.log('paramssss', params.daydata)
+
+
   // Construye el objeto `product`
   const product = {
     id: parseInt(params.id, 10),
@@ -30,15 +52,12 @@ console.log('params', params)
     rating: parseFloat(params.rating),
     reviews: parseInt(params.reviews, 10),
     tags: params.tags ? params.tags.split(',') : [],
-    monthlabels: params.monthlabels,
-    monthdatasets,
-    dayslabels: params.dayslabels,
-    daysdatasets,
+    daydata: params.daydata,
     empresa_id: parseInt(params.empresa_id, 10),
     disponible: params.disponible === 'true',
   };
 
-  console.log('Processed Product:', product);
+  // console.log('Processed Product:', product.monthlabels);
 
   return (
     <GraficProddet
@@ -46,6 +65,8 @@ console.log('params', params)
       salesData={salesData}
       categoryData={categoryData}
       satisfactionData={satisfactionData}
+     
+    
     />
   );
 };
