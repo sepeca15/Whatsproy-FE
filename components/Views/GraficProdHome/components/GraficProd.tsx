@@ -1,53 +1,44 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  Image,
-  TouchableOpacity,
-  Dimensions,
-} from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
-import {
-  LineChart,
-  PieChart,
-  ProgressChart,
-} from 'react-native-chart-kit';
-import { styles } from './SalesChartsStyles';
-import { ProductDetailProps } from './types';
-import { weeklySalesData, monthlySalesData } from '../../../../hooks/dataProduct';
+import React from "react";
+import { View, Text, ScrollView, Image, Dimensions } from "react-native";
+import { AntDesign } from "@expo/vector-icons";
+import { BarChart } from "react-native-chart-kit";
+import { styles } from "./SalesChartsStyles";
+import type { ProductDetailProps } from "./types";
+import { border } from "native-base/lib/typescript/theme/styled-system";
 
-
-
-
-const GraficProddet: React.FC<ProductDetailProps> = ({
-  product,
-  salesData,
-  categoryData,
-  satisfactionData
-}) => {
-  const [salesView, setSalesView] = useState<'week' | 'month'>('week');
-  const screenWidth = Dimensions.get('window').width;
+const GraficProddet: React.FC<ProductDetailProps> = ({ product, salesData, categoryData, satisfactionData }) => {
+  const screenWidth = Dimensions.get("window").width;
 
   const chartConfig = {
-    backgroundGradientFrom: '#ffffff',
-    backgroundGradientTo: '#ffffff',
+    backgroundGradientFrom: "#ffffff",
+    backgroundGradientTo: "#ffffff",
     color: (opacity = 1) => `rgba(0, 128, 255, ${opacity})`,
     strokeWidth: 2,
-    barPercentage: 0.5,
+    barPercentage: 0.7,
+    whilePercentage: 10,
     useShadowColorFromDataset: false,
+   
   };
 
- //
+  // Parsear daydata
+  const daydata = typeof product.daydata === 'string' ? JSON.parse(product.daydata) : product.daydata;
 
+
+
+
+  const data = {
+    labels: daydata.labels.map((label: string) => label.toString()),
+    datasets: [
+      {
+        data: daydata.datasets[0].data.map((value: number) => Number(value)),
+      },
+    ],
+  };
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
       <View style={styles.header}>
-        <Image
-          source={{ uri: product.imageUrl }}
-          style={styles.productImage}
-        />
+        <Image source={{ uri: product.imageUrl }} style={styles.productImage} />
         <View style={styles.badge}>
           <Text style={styles.badgeText}>{product.category}</Text>
         </View>
@@ -88,30 +79,40 @@ const GraficProddet: React.FC<ProductDetailProps> = ({
 
         <View style={styles.chartContainer}>
           <Text style={styles.chartTitle}>Ventas</Text>
-          <View style={styles.salesButtonContainer}>
-            <TouchableOpacity
-              style={[styles.salesButton, salesView === 'week' && styles.salesButtonActive]}
-              onPress={() => setSalesView('week')}
-            >
-              <Text style={[styles.salesButtonText, salesView === 'week' && styles.salesButtonTextActive]}>Dia</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.salesButton, salesView === 'month' && styles.salesButtonActive]}
-              onPress={() => setSalesView('month')}
-            >
-              <Text style={[styles.salesButtonText, salesView === 'month' && styles.salesButtonTextActive]}>Mes</Text>
-            </TouchableOpacity>
+            <View style={[styles.chartWrapper]}>
+            <BarChart
+              data={data}
+              width={screenWidth - 55}
+              height={220}
+              yAxisLabel=""
+              yAxisSuffix=""
+              chartConfig={chartConfig}
+              verticalLabelRotation={0}
+              showValuesOnTopOfBars={true}
+              fromZero={true}
+              style={styles.chart}
+            />
+            </View>
+          <View style={styles.additionalInfo}>
+            <Text style={styles.additionalInfoTitle}>Información adicional</Text>
+            <View style={styles.additionalInfoRow}>
+              <Text style={styles.additionalInfoLabel}>Total de ventas:</Text>
+              <Text style={styles.additionalInfoValue}>{data.datasets[0].data.reduce((a: number, b: number) => a + b, 0)}</Text>
+            </View>
+            <View style={styles.additionalInfoRow}>
+              <Text style={styles.additionalInfoLabel}>Promedio diario:</Text>
+              <Text style={styles.additionalInfoValue}>
+                {(data.datasets[0].data.reduce((a: number, b: number) => a + b, 0) / 7).toFixed(2)}
+              </Text>
+            </View>
+            <View style={styles.additionalInfoRow}>
+              <Text style={styles.additionalInfoLabel}>Día más vendido:</Text>
+              <Text style={styles.additionalInfoValue}>
+                {data.labels[data.datasets[0].data.indexOf(Math.max(...data.datasets[0].data))]}
+              </Text>
+            </View>
           </View>
-          <LineChart
-            data={salesView === 'week' ? weeklySalesData : monthlySalesData}
-            width={screenWidth - 40}
-            height={220}
-            chartConfig={chartConfig}
-            bezier
-            style={styles.chart}
-          />
         </View>
-
 
         <View style={styles.statsContainer}>
           <View style={styles.statItem}>
@@ -129,12 +130,9 @@ const GraficProddet: React.FC<ProductDetailProps> = ({
             <Text style={styles.statLabel}>Rating</Text>
           </View>
         </View>
-
-     
       </View>
     </ScrollView>
   );
 };
 
 export default GraficProddet;
-

@@ -7,6 +7,7 @@ export interface Product {
   description: string;
   imageUrl: string;
   category: string;
+  daydata: DayslySalesData;
   rating: number;
   reviews: number;
   tags: string[];
@@ -28,13 +29,28 @@ export interface CategoryData {
 
 export interface SatisfactionData {
   data: number[];
+
+
 }
+
+interface Dataset {
+  data: number[];
+}
+
+export interface DayslySalesData {
+  labels: string[];
+  datasets: Dataset[];
+}
+
+
 
 export interface ProductDetailProps {
   product: Product;
   salesData: SalesData;
   categoryData: CategoryData;
   satisfactionData: SatisfactionData;
+ 
+
 }
 
 interface ProductParams {
@@ -49,10 +65,7 @@ interface ProductParams {
   rating: string;
   reviews: string;
   tags?: string;
-  monthlabels: string[];
-  monthdatasets?: string;
-  dayslabels: string[];
-  daysdatasets?: string;
+  daydata: DayslySalesData;
   disponible: string;
   empresa_id: string;
 

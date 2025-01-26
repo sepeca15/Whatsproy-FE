@@ -12,28 +12,27 @@ import { styles } from "./LoginStyles";
 import { useToastContext } from "@/contexts/ToastContext";
 
 const initialValues = {
-  email: '',
-  password: ''
-}
+  email: "",
+  password: "",
+};
 
 const LoginScreen: React.FC = () => {
-  const [formValues, setFormValues] = React.useState(initialValues)
+  const [formValues, setFormValues] = React.useState(initialValues);
   const router = useRouter();
   const [loading, setLoading] = React.useState(false);
   const { showToast } = useToastContext();
 
 
   const handleChangeValue = (key: string, value: string) => {
-    setFormValues((prevState) => (
-      {
-        ...prevState,
-        [key]: value
-      })
-    )
-  }
+    setFormValues((prevState) => ({
+      ...prevState,
+      [key]: value,
+    }));
+  };
 
   const Login = async () => {
     try {
+
       setLoading(true);
       const res = await api.auth.login(formValues)
 
@@ -56,7 +55,6 @@ const LoginScreen: React.FC = () => {
     }
   }
   
-
   return (
     <ScrollView contentContainerStyle={styles.scrollView}>
       <Center>
@@ -65,9 +63,13 @@ const LoginScreen: React.FC = () => {
             <LogoContainer />
           </View>
 
-          <InputField onChangeText={(text)=> handleChangeValue('email',text)} label="Correo" placeholder="Ingresa tu correo" />
           <InputField
-            onChangeText={(text)=> handleChangeValue('password',text)}
+            onChangeText={(text) => handleChangeValue("email", text)}
+            label="Correo"
+            placeholder="Ingresa tu correo"
+          />
+          <InputField
+            onChangeText={(text) => handleChangeValue("password", text)}
             label="Contraseña"
             placeholder="Ingresa tu contraseña"
             type="password"
@@ -90,7 +92,6 @@ const LoginScreen: React.FC = () => {
             ¿No tienes cuenta?
             <CustomText style={styles.textSecondary}> Crear una</CustomText>
           </CustomText>
-
           <CustomButton
             loading={loading}
             onPress={() => Login() }
@@ -103,6 +104,5 @@ const LoginScreen: React.FC = () => {
     </ScrollView>
   );
 };
-
 
 export default LoginScreen;

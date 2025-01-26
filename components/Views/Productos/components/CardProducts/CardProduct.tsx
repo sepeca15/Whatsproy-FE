@@ -3,38 +3,39 @@ import { View, Text, Image, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { useRouter } from 'expo-router';
 import { styles } from './CardProdStyle';
-import { Product, SatisfactionData, CategoryData, SalesData, WeeklySalesData, MonthlySalesData } from '../../../../../hooks/dataProduct';
-import { salesData } from '@/components/Views/GraficProdHome/components/Data';
-
+import { Product, SatisfactionData,ProductBDD, CategoryData, SalesData, DayslySalesData, MonthlySalesData } from '../../../../../hooks/dataProduct';
 
 interface ProductCardProps {
     product: Product;
+    productBDD: ProductBDD;
     salesData: SalesData;
     categoryData: CategoryData;
     satisfactionData: SatisfactionData;
     monthlySalesData: MonthlySalesData;
-    weeklySalesData: WeeklySalesData;
+    dayslySalesData: DayslySalesData;
     onUpdateProduct: (updatedProduct: Product) => void;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
     product,
     salesData,
+    productBDD,
     categoryData,
     satisfactionData,
     monthlySalesData,
-    weeklySalesData,
+    dayslySalesData,
     onUpdateProduct
 }) => {
     const router = useRouter();
 
+    console.log('dayslySalesData: CardProducts.tsx', dayslySalesData)
     const commonParams = {
-        id: product.id,
-        title: product.title,
-        price: product.price.toString(),
+        id: productBDD.id.toString(),
+        title: productBDD.nombre,
+        price: productBDD.precio.toString(),
         currency: product.currency,
-        duration: product.duration,
-        description: product.description,
+        duration: productBDD.plazoDuracionEstimadoMinutos.toString(),
+        description: productBDD.descripcion,
         imageUrl: product.imageUrl,
     };
     
@@ -47,12 +48,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             pathname: '/(tabs)/editprod',
             params: { ...commonParams },
         });
-        console.log('Edit Params:', commonParams);
     };
     
     const handleDet = () => {
         if (!product) {
-          
             return;
         }
         router.push({
@@ -63,14 +62,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 rating: product.rating,
                 reviews: product.reviews,
                 tags: product.tags,
-                monthlabels: monthlySalesData.labels,
-                monthdatasets: JSON.stringify(monthlySalesData.datasets),
-                dayslabels: weeklySalesData.labels,
-                daysdatasets: JSON.stringify(weeklySalesData.datasets),
+                daydata: JSON.stringify(dayslySalesData),
+                disponible: productBDD.disponible.toString(),
+                empresa_id: productBDD.empresa_id.toString(),
             },
         });
-      
-
     };
 
     if (!product) {
@@ -78,28 +74,41 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     }
 
     return (
-        <View style={styles.card}>
-            <TouchableOpacity onPress={handleDet} style={styles.imageContainer}>
+        <TouchableOpacity style={styles.containerFatehr} onPress={handleDet}>
+            
+            {product.category === 'Vegetariana' && (
+                <View style={styles.categoryLabel}>
+                    <Text style={styles.categoryText}>{product.category}</Text>
+                </View>
+            )}
+
+           <View style={styles.card}>
+
+
+           <View style={styles.imageContainer}>
                 <Image
                     source={{ uri: product.imageUrl }}
                     style={styles.image}
-                    resizeMode="cover"
                 />
-            </TouchableOpacity>
+               
+            </View>
             <View style={styles.content}>
                 <View style={styles.header}>
-                    <Text style={styles.title}>{product.title}</Text>
-                    <TouchableOpacity onPress={handleEdit} style={styles.shareButton}>
-                        <Icon name="edit" size={20} color="#666" />
+                    <View style={styles.titlePriceContainer}>
+                        <Text style={styles.title} numberOfLines={1}>{productBDD.nombre}</Text>
+                        <Text style={styles.price}>${productBDD.precio.toFixed(2)} {product.currency}</Text>
+                    </View>
+                    <TouchableOpacity onPress={handleEdit} style={styles.editButton}>
+                        <Icon name="edit-2" size={16} color="#666" />
                     </TouchableOpacity>
                 </View>
-                <Text style={styles.price}>Precio: ${product.price}</Text>
-                <Text style={styles.description} numberOfLines={2}>
-                    {product.description}
-                </Text>
+                <Text style={styles.description} numberOfLines={3}>{product.description}</Text>
+              
             </View>
-        </View>
+           </View>
+        </TouchableOpacity>
     );
 };
 
 export default ProductCard;
+

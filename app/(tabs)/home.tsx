@@ -1,4 +1,4 @@
-import * as React from "react"
+import * as React from "react";
 import Home from "@/components/Views/Home";
 
 const HomeScreen = () => {
@@ -9,4 +9,3 @@ const HomeScreen = () => {
 }
 
 export default HomeScreen
-

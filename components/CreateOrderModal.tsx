@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Modal, Pressable, StyleSheet, TouchableOpacity } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
-import { Button, FormControl, View, Text } from "native-base";
+import { Button, FormControl, View, Text, IconButton } from "native-base";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 import CustomText from "@/components/CustomText";
 import InputField from "@/components/InputField";
@@ -40,6 +40,7 @@ import { useToastContext } from "@/contexts/ToastContext";
 import { data } from "./Views/Pedidos/components/data";
 import { getNextDateAvailable } from "@/services/api/order/order";
 import { removeTimeZone } from "@/utils/date";
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
 
 interface IProps {
   onClose: () => void;
@@ -59,6 +60,11 @@ const initialValues: CreateOrderDTO = {
   infoLinesJson: {},
   fecha: new Date(),
 };
+
+interface prodItems {
+  prodId: number,
+  cantidad: number
+}
 
 
 const CreateOrderModal = ({
@@ -86,6 +92,7 @@ const CreateOrderModal = ({
     string[]
   >([]);
   const [loadingNextDateAvailable, setLoadingNextDateAvailable] = React.useState(false);
+  const [prodCant, setProdCant] = React.useState<prodItems[]>([]);
   const [isDirty, setIsDirty] = React.useState<boolean>(false);
   const [errors, setErrors] = React.useState<any>({});
   const [infoLines, setInfoLines] = React.useState<InfoLineDTO[]>([]);
@@ -196,9 +203,10 @@ const CreateOrderModal = ({
         empresaType: EmpresaTypeStr[tipoServicio],
         messages: [],
         products: selectedProductsIds.map((prod) => {
+          const productSend = prodCant.find((product) => product.prodId === parseInt(prod))
           return {
             productoId: prod,
-            cantidad: 1,
+            cantidad: productSend?.cantidad,
           }
         }),
         clienteId: form?.clienteId,
@@ -268,6 +276,34 @@ const CreateOrderModal = ({
     }
   }
 
+  const addCantForProduct = (productId: number, key: 'more' | 'less') => {
+    const newState = prodCant.map((item) => {
+      if (item.prodId === productId) {
+        return {
+          ...item,
+          cantidad: key === 'less' ? (item.cantidad - 1 === 0? 1 : item.cantidad-1) : item.cantidad + 1
+        }
+      } else {
+        return item
+      }
+    })
+
+    setProdCant(newState)
+  }
+
+  const handleProductSelection = (value: string, isSelected: boolean) => {
+    if (isSelected) {
+      setProdCant((prev: any) => {
+        const productExists = prev.some((item: any) => item.prodId === parseInt(value));
+        if (!productExists) {
+          return [...prev, { prodId: parseInt(value), cantidad: 1 }];
+        }
+        return prev;
+      });
+    } else {
+      setProdCant((prev: any) => prev.filter((item: any) => item.prodId !== parseInt(value)));
+    }
+  };  
 
   return (
     <GlobalModal
@@ -342,6 +378,7 @@ const CreateOrderModal = ({
             isRequired
             error={errors["products"]}
             setItemsSelected={setSelectedProductsIds}
+            handleProductSelection={handleProductSelection}
             isMultiple
             placeholder="Seleccionar productos"
             label="Productos"
@@ -353,44 +390,50 @@ const CreateOrderModal = ({
                     key={prod.id}
                     display={"flex"}
                     flexDirection={"row"}
-                    alignItems={"center"}
-                    justifyContent={"start"}
-                    width={"100%"}
+                    justifyContent={"space-between"}
                     height={"100%"}
+                    flex={1}
                     style={{ gap: 5, paddingBottom: 10 }}
                   >
-                    <View
-                      width={36}
-                      height={36}
-                      borderRadius={6}
-                      backgroundColor={"gray.400"}
-                    />
-                    <View
-                      display={"flex"}
-                      flexDirection={"column"}
-                      flexGrow={1}
-                      style={{ gap: 0 }}
-                      justifyContent={"start"}
-                    >
-                      <Text
-                        color={"gray.800"}
-                        fontSize={16}
-                        fontWeight={"medium"}
+                    <View display={'flex'} flexDir={'row'} alignItems={"center"} style={{ gap: 5 }}>
+                      <View
+                        width={36}
+                        height={36}
+                        borderRadius={6}
+                        backgroundColor={"gray.400"}
+                      />
+                      <View
+                        display={"flex"}
+                        flexDirection={"column"}
+                        style={{ gap: 0 }}
+                        justifyContent={"start"}
                       >
-                        {prod?.nombre ?? ""}
-                      </Text>
-                      <Text fontSize={12} lineHeight={15} color={"gray.600"}>
-                        {prod?.descripcion ?? ""}
-                      </Text>
+                        <Text
+                          color={"gray.800"}
+                          fontSize={16}
+                          fontWeight={"medium"}
+                        >
+                          {prod?.nombre ?? ""}
+                        </Text>
+                        <Text fontSize={12} lineHeight={15} color={"gray.600"}>
+                          {prod?.descripcion ?? ""}
+                        </Text>
+                      </View>
                     </View>
-                    <View paddingRight={10}>
-                      <Text
-                        marginTop={3}
-                        fontWeight={"semibold"}
-                        color={"yellow.800"}
-                      >
-                        ${prod?.precio}
-                      </Text>
+                    <View display={'flex'} flexDir={'row'} alignItems={'center'}>
+                      <View marginRight={0} paddingRight={5}>
+                        <Text
+                          marginTop={3}
+                          fontWeight={"semibold"}
+                          color={"yellow.800"}
+                        >
+                          ${prod?.precio}
+                        </Text>
+                      </View>
+                      <View flexDir={'column'} justifyContent={'center'} alignItems={'center'}>
+                        <IconButton onPress={() => addCantForProduct(prod?.id, 'more')} icon={<SimpleLineIcons size={12} name="arrow-up" />} />
+                        <IconButton onPress={() => addCantForProduct(prod?.id, 'less')} icon={<SimpleLineIcons size={12} name="arrow-down" />} />
+                      </View>
                     </View>
                   </View>
                 ),
@@ -411,7 +454,7 @@ const CreateOrderModal = ({
             placeholder="Agregar detalles"
           />
           <MultiSelectInput
-            actionToAddItem={(data: any) => addClient(data) }
+            actionToAddItem={(data: any) => addClient(data)}
             setItemsSelected={(data: string[]) => {
               const clientId = data[0] as any;
               const clientInfo = clients?.find((c) => c.id === clientId);

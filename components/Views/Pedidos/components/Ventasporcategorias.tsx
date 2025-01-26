@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { PieChart } from 'react-native-svg-charts';
 
 const Ventasporcategorias: React.FC = () => {
     const data = [
@@ -25,7 +24,6 @@ const Ventasporcategorias: React.FC = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Distribución de Pedidos</Text>
-            <PieChart style={styles.chart} data={data} />
             <View style={styles.legend}>
                 <View style={styles.legendItem}>
                     <View style={[styles.legendColor, { backgroundColor: '#600080' }]} />

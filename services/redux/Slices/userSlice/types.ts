@@ -17,7 +17,13 @@ export interface IUserData {
     greenApiConfigured?: boolean;
     tipo_servicio?: number;
     tipo_servicioNombre?: string;
-    firstUser?: boolean
+    firstUser?: boolean;
+    hora_apertura?: string;
+    hora_cierre?: string;
+    abierto?: boolean;
+    intervaloTiempoCalendario?: number;
+    notificarReservaHoras?: boolean;
+    remaindersHorsRemainder?: number
 }
 
 export interface IUser {
