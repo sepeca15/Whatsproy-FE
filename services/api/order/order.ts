@@ -9,7 +9,7 @@ export const getDetailsOfOrder = async (id: any) => {
 
 export const getOrderForCalendar = async (selectedDate : string) => {
     const { data } = await ApiInstances('current').get('pedido/calendar/formatCalendar/' + selectedDate)
-     
+
     return data
 }
 
@@ -31,6 +31,11 @@ export const confirmOrder = async (id: number) => {
 
 export const createOrder = async (info: CreateOrderDTO) => {
   const { data } = await ApiInstances("current").post("pedido/", info);
+  return data;
+};
+
+export const getNextDateAvailable = async () => {
+  const { data } = await ApiInstances("current").get("pedido/calendar/next-date-avaiable");
   return data;
 };
 

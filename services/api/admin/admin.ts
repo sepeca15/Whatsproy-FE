@@ -48,6 +48,7 @@ const api = {
         remove: order.removeOrder,
         confirm: order.confirmOrder,
         create: order.createOrder,
+        getNextDateAvailable: order.getNextDateAvailable,
     },
     client: {
         create: client.CreateOrReturnClient

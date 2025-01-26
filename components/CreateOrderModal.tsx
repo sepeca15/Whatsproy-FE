@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Modal, Pressable, StyleSheet } from "react-native";
+import { Modal, Pressable, StyleSheet, TouchableOpacity } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
 import { Button, FormControl, View, Text } from "native-base";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
@@ -17,6 +17,7 @@ import { Cliente } from "@/services/api/clients/cliente.types";
 import { Producto } from "@/services/api/products/product.types";
 import { findClientsWithQuery } from "@/services/api/clients/clients";
 import { findProductsWithQuery } from "@/services/api/products/products";
+import moment from "moment";
 import {
   CreateOrderDTO,
   OrderEstadoDefault,
@@ -37,6 +38,8 @@ import CustomButton from "./CustomButton";
 import Toast from "react-native-toast-message";
 import { useToastContext } from "@/contexts/ToastContext";
 import { data } from "./Views/Pedidos/components/data";
+import { getNextDateAvailable } from "@/services/api/order/order";
+import { removeTimeZone } from "@/utils/date";
 
 interface IProps {
   onClose: () => void;
@@ -82,6 +85,7 @@ const CreateOrderModal = ({
   const [selectedProductsIds, setSelectedProductsIds] = React.useState<
     string[]
   >([]);
+  const [loadingNextDateAvailable, setLoadingNextDateAvailable] = React.useState(false);
   const [isDirty, setIsDirty] = React.useState<boolean>(false);
   const [errors, setErrors] = React.useState<any>({});
   const [infoLines, setInfoLines] = React.useState<InfoLineDTO[]>([]);
@@ -102,10 +106,11 @@ const CreateOrderModal = ({
     setLoadingInfoLines(true);
     try {
       const data = await api.dataOrder.getAll();
+      console.log("data", data)
       setInfoLines(
         data?.filter((infoline: InfoLineDTO) => {
           if (
-            infoline?.id_tipo_servicio === ID_TIPOSERVICIO_RESERVA &&
+            infoline?.id_tipo_servicio === ID_TIPOSERVICIO_RESERVA ||
             infoline.id === FECHA_HORA_INFOLINE_RESERVA
           ) {
             return false;
@@ -199,6 +204,7 @@ const CreateOrderModal = ({
         clienteId: form?.clienteId,
         infoLinesJson: JSON.stringify(form.infoLinesJson),
         estadoId: DEFAULT_ESTADO_CREADO.id,
+        fecha: removeTimeZone(form?.fecha)
       };
       const data = await api.order.create(dataToSend);
 
@@ -226,12 +232,24 @@ const CreateOrderModal = ({
     }
   };
 
-  const addClient = async(newClient: { nombre: string, telefono: string }) => {
-    console.log(newClient);
-    
+  const handleLoadNextAvaialbleDate = async () => {
     try {
-      const data = await api.client.create({ ...newClient, empresa_id: user.empresa_id })
-      console.log(data);
+      setLoadingNextDateAvailable(true);
+      const resp = await api.order.getNextDateAvailable();
+      if (resp) {
+        handleChangeValue("fecha", moment(resp).utc().toDate());
+      }
+    } catch (error) {
+      console.log("error", error)
+      setLoadingNextDateAvailable(false);
+    } finally {
+      setLoadingNextDateAvailable(false);
+    }
+  }
+
+  const addClient = async(newClient: { nombre: string, telefono: string }) => {
+    try {
+      const data = await api.client.create({ ...newClient, empresaId: user.id_empresa })
       
       if (data?.clientName) {
         showToast({
@@ -269,7 +287,7 @@ const CreateOrderModal = ({
           </Text>
         </Button>,
         <Button
-          isLoading={loadingCreate}
+          isLoading={loadingCreate || loadingNextDateAvailable}
           onPress={() => createOrderData()}
           size="sm"
           backgroundColor={"#2C2C2C"}
@@ -288,7 +306,7 @@ const CreateOrderModal = ({
             <>
               <DateTimePickerField
                 error={errors["fecha"]}
-                date={form.fecha}
+                date={form.fecha || localDate}
                 setDate={(val: any) => handleChangeValue("fecha", val)}
               />
               <View
@@ -302,6 +320,8 @@ const CreateOrderModal = ({
                   name="sparkles-outline"
                   size={20}
                 />
+                <TouchableOpacity
+                onPress={() => handleLoadNextAvaialbleDate()}>
                 <Text
                   style={{
                     textDecorationLine: "underline",
@@ -313,6 +333,7 @@ const CreateOrderModal = ({
                 >
                   Mostrar siguiente horario disponible
                 </Text>
+                </TouchableOpacity>
               </View>
             </>
           )}

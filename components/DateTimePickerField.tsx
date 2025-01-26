@@ -4,8 +4,11 @@ import { VStack, FormControl, Input, Modal, Button } from "native-base";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 const DateTimeInputField = ({ date, setDate, isRequired = true, error }: any) => {
+  console.log("date", date)
   const [showPicker, setShowPicker] = useState(false);
   const [mode, setMode] = useState<"date" | "time">("date");
+
+  const dateLocal = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
 
   const onChange = (event: any, selectedDate?: Date) => {
     if (Platform.OS === "android") setShowPicker(false);
@@ -65,8 +68,10 @@ const DateTimeInputField = ({ date, setDate, isRequired = true, error }: any) =>
 
       {showPicker && Platform.OS === "android" && (
         <DateTimePicker
-          value={date}
+          value={dateLocal}
           mode={mode}
+          locale="en-EN"
+          timeZoneName="America/Montevideo"
           display="default"
           onChange={onChange}
         />

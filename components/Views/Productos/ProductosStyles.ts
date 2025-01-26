@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
   buttonContainer: {
     position: 'absolute',
     bottom: 20,
-    right: 20,
+    right: 10,
     flexDirection: 'row',
     alignItems: 'center',
     zIndex: 1,
