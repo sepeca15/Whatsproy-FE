@@ -7,6 +7,8 @@ const DateTimeInputField = ({ date, setDate, isRequired = true, error }: any) =>
   const [showPicker, setShowPicker] = useState(false);
   const [mode, setMode] = useState<"date" | "time">("date");
 
+  const dateLocal = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
+
   const onChange = (event: any, selectedDate?: Date) => {
     if (Platform.OS === "android") setShowPicker(false);
     if (selectedDate) {
@@ -65,8 +67,10 @@ const DateTimeInputField = ({ date, setDate, isRequired = true, error }: any) =>
 
       {showPicker && Platform.OS === "android" && (
         <DateTimePicker
-          value={date}
+          value={dateLocal}
           mode={mode}
+          locale="en-EN"
+          timeZoneName="America/Montevideo"
           display="default"
           onChange={onChange}
         />

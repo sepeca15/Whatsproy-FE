@@ -234,7 +234,9 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
                       value={option.value}
                       isChecked={selectedItemsKeys.includes(option.value)}
                       onChange={(isSelected) => {
-                        handleProductSelection(option.value, isSelected);
+                        if (handleProductSelection) {
+                          handleProductSelection(option.value, isSelected);
+                        }
                         toggleSelection(option.label);
                         toggleSelectionKeys(option.value);
                       }}

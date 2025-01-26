@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Modal, Pressable, StyleSheet } from "react-native";
+import { Modal, Pressable, StyleSheet, TouchableOpacity } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
 import { Button, FormControl, View, Text, IconButton } from "native-base";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
@@ -17,6 +17,7 @@ import { Cliente } from "@/services/api/clients/cliente.types";
 import { Producto } from "@/services/api/products/product.types";
 import { findClientsWithQuery } from "@/services/api/clients/clients";
 import { findProductsWithQuery } from "@/services/api/products/products";
+import moment from "moment";
 import {
   CreateOrderDTO,
   OrderEstadoDefault,
@@ -37,13 +38,17 @@ import CustomButton from "./CustomButton";
 import Toast from "react-native-toast-message";
 import { useToastContext } from "@/contexts/ToastContext";
 import { data } from "./Views/Pedidos/components/data";
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
+import { getNextDateAvailable } from "@/services/api/order/order";
+import { filterOnlyHours, getHourNumber, removeAmPm, removeTimeZone } from "@/utils/date";
+import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
+import TimePicker from "./TimePicker";
 
 interface IProps {
   onClose: () => void;
   defaultDate?: any;
   tipoServicio: TipoServicioType;
   onSuccess?: () => void;
+  currentOrders?: any[]
 }
 
 const initialValues: CreateOrderDTO = {
@@ -59,16 +64,16 @@ const initialValues: CreateOrderDTO = {
 };
 
 interface prodItems {
-  prodId: number,
-  cantidad: number
+  prodId: number;
+  cantidad: number;
 }
-
 
 const CreateOrderModal = ({
   onClose,
   defaultDate,
   tipoServicio,
   onSuccess,
+  currentOrders,
 }: IProps) => {
   const { showToast } = useToastContext();
   const { user } = useUser();
@@ -78,16 +83,17 @@ const CreateOrderModal = ({
     fecha: localDate,
   });
 
-
   const [clients, setClients] = React.useState<Cliente[]>([]);
   const [products, setProducts] = React.useState<Producto[]>([]);
   const [loadingClients, setLoadingClients] = React.useState(false);
   const [loadingProducts, setLoadingProducts] = React.useState(false);
   const [loadingInfoLines, setLoadingInfoLines] = React.useState(false);
-  const [loadingCreate, setLoadingCreate] = React.useState(false)
+  const [loadingCreate, setLoadingCreate] = React.useState(false);
   const [selectedProductsIds, setSelectedProductsIds] = React.useState<
     string[]
   >([]);
+  const [loadingNextDateAvailable, setLoadingNextDateAvailable] =
+    React.useState(false);
   const [prodCant, setProdCant] = React.useState<prodItems[]>([]);
   const [isDirty, setIsDirty] = React.useState<boolean>(false);
   const [errors, setErrors] = React.useState<any>({});
@@ -112,7 +118,7 @@ const CreateOrderModal = ({
       setInfoLines(
         data?.filter((infoline: InfoLineDTO) => {
           if (
-            infoline?.id_tipo_servicio === ID_TIPOSERVICIO_RESERVA &&
+            infoline?.id_tipo_servicio === ID_TIPOSERVICIO_RESERVA ||
             infoline.id === FECHA_HORA_INFOLINE_RESERVA
           ) {
             return false;
@@ -140,6 +146,11 @@ const CreateOrderModal = ({
       setLoadingClients(false);
     }
   };
+
+
+  React.useEffect(() => {
+    handleChangeValue("fecha", new Date(defaultDate).setHours(getHourNumber(user?.hora_apertura)));
+  }, []);
 
   React.useEffect(() => {
     if (hasErrors) {
@@ -182,7 +193,6 @@ const CreateOrderModal = ({
   };
 
   const createOrderData = async () => {
-
     setIsDirty(true);
     let isValidForm = handleValidateForm();
     if (!isValidForm) {
@@ -198,15 +208,18 @@ const CreateOrderModal = ({
         empresaType: EmpresaTypeStr[tipoServicio],
         messages: [],
         products: selectedProductsIds.map((prod) => {
-          const productSend = prodCant.find((product) => product.prodId === parseInt(prod))
+          const productSend = prodCant.find(
+            (product) => product.prodId === parseInt(prod)
+          );
           return {
             productoId: prod,
             cantidad: productSend?.cantidad,
-          }
+          };
         }),
         clienteId: form?.clienteId,
         infoLinesJson: JSON.stringify(form.infoLinesJson),
         estadoId: DEFAULT_ESTADO_CREADO.id,
+        fecha: removeTimeZone(form?.fecha),
       };
       const data = await api.order.create(dataToSend);
 
@@ -221,7 +234,7 @@ const CreateOrderModal = ({
         }
         onClose();
       } else {
-        throw new Error("Error desconocido creando event")
+        throw new Error("Error desconocido creando event");
       }
     } catch (error: any) {
       setLoadingCreate(false);
@@ -234,17 +247,32 @@ const CreateOrderModal = ({
     }
   };
 
-  const addClient = async (newClient: { nombre: string, telefono: string }) => {
-    console.log(newClient);
-
+  const handleLoadNextAvaialbleDate = async () => {
     try {
-      const data = await api.client.create({ ...newClient, empresa_id: user.empresa_id })
-      console.log(data);
+      setLoadingNextDateAvailable(true);
+      const resp = await api.order.getNextDateAvailable();
+      if (resp) {
+        handleChangeValue("fecha", moment(resp).add('hours', 3));
+      }
+    } catch (error) {
+      console.log("error", error);
+      setLoadingNextDateAvailable(false);
+    } finally {
+      setLoadingNextDateAvailable(false);
+    }
+  };
+
+  const addClient = async (newClient: { nombre: string; telefono: string }) => {
+    try {
+      const data = await api.client.create({
+        ...newClient,
+        empresaId: user.id_empresa,
+      });
 
       if (data?.clientName) {
         showToast({
           title: "Error creando Cliente",
-          description: 'Ya existe un cliente con este numero.',
+          description: "Ya existe un cliente con este numero.",
           status: "error",
         });
       } else {
@@ -256,36 +284,45 @@ const CreateOrderModal = ({
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
-  const addCantForProduct = (productId: number, key: 'more' | 'less') => {
+  const addCantForProduct = (productId: number, key: "more" | "less") => {
     const newState = prodCant.map((item) => {
       if (item.prodId === productId) {
         return {
           ...item,
-          cantidad: key === 'less' ? (item.cantidad - 1 === 0? 1 : item.cantidad-1) : item.cantidad + 1
-        }
+          cantidad:
+            key === "less"
+              ? item.cantidad - 1 === 0
+                ? 1
+                : item.cantidad - 1
+              : item.cantidad + 1,
+        };
       } else {
-        return item
+        return item;
       }
-    })
+    });
 
-    setProdCant(newState)
-  }
+    setProdCant(newState);
+  };
 
   const handleProductSelection = (value: string, isSelected: boolean) => {
     if (isSelected) {
       setProdCant((prev: any) => {
-        const productExists = prev.some((item: any) => item.prodId === parseInt(value));
+        const productExists = prev.some(
+          (item: any) => item.prodId === parseInt(value)
+        );
         if (!productExists) {
           return [...prev, { prodId: parseInt(value), cantidad: 1 }];
         }
         return prev;
       });
     } else {
-      setProdCant((prev: any) => prev.filter((item: any) => item.prodId !== parseInt(value)));
+      setProdCant((prev: any) =>
+        prev.filter((item: any) => item.prodId !== parseInt(value))
+      );
     }
-  };  
+  };
 
   return (
     <GlobalModal
@@ -305,7 +342,7 @@ const CreateOrderModal = ({
           </Text>
         </Button>,
         <Button
-          isLoading={loadingCreate}
+          isLoading={loadingCreate || loadingNextDateAvailable}
           onPress={() => createOrderData()}
           size="sm"
           backgroundColor={"#2C2C2C"}
@@ -322,9 +359,14 @@ const CreateOrderModal = ({
         <>
           {tipoServicio === ID_TIPOSERVICIO_RESERVA && (
             <>
-              <DateTimePickerField
+              <TimePicker
+                type="time"
+                interval={user?.intervaloTiempoCalendario ?? 30}
+                startHour={getHourNumber(user?.hora_apertura)}
+                endHour={getHourNumber(user?.hora_cierre)}
                 error={errors["fecha"]}
-                date={form.fecha}
+                occupiedTimes={currentOrders ? filterOnlyHours(currentOrders?.map((order) => removeAmPm(order?.date ?? ""))) : []}
+                date={form.fecha || localDate}
                 setDate={(val: any) => handleChangeValue("fecha", val)}
               />
               <View
@@ -338,17 +380,19 @@ const CreateOrderModal = ({
                   name="sparkles-outline"
                   size={20}
                 />
-                <Text
-                  style={{
-                    textDecorationLine: "underline",
-                    fontSize: 14,
-                    cursor: "pointer",
-                    marginBottom: 0,
-                    color: Colors.light.primary,
-                  }}
-                >
-                  Mostrar siguiente horario disponible
-                </Text>
+                <TouchableOpacity onPress={() => handleLoadNextAvaialbleDate()}>
+                  <Text
+                    style={{
+                      textDecorationLine: "underline",
+                      fontSize: 14,
+                      cursor: "pointer",
+                      marginBottom: 0,
+                      color: Colors.light.primary,
+                    }}
+                  >
+                    Mostrar siguiente horario disponible
+                  </Text>
+                </TouchableOpacity>
               </View>
             </>
           )}
@@ -374,7 +418,12 @@ const CreateOrderModal = ({
                     flex={1}
                     style={{ gap: 5, paddingBottom: 10 }}
                   >
-                    <View display={'flex'} flexDir={'row'} alignItems={"center"} style={{ gap: 5 }}>
+                    <View
+                      display={"flex"}
+                      flexDir={"row"}
+                      alignItems={"center"}
+                      style={{ gap: 5 }}
+                    >
                       <View
                         width={36}
                         height={36}
@@ -399,7 +448,11 @@ const CreateOrderModal = ({
                         </Text>
                       </View>
                     </View>
-                    <View display={'flex'} flexDir={'row'} alignItems={'center'}>
+                    <View
+                      display={"flex"}
+                      flexDir={"row"}
+                      alignItems={"center"}
+                    >
                       <View marginRight={0} paddingRight={5}>
                         <Text
                           marginTop={3}
@@ -409,9 +462,19 @@ const CreateOrderModal = ({
                           ${prod?.precio}
                         </Text>
                       </View>
-                      <View flexDir={'column'} justifyContent={'center'} alignItems={'center'}>
-                        <IconButton onPress={() => addCantForProduct(prod?.id, 'more')} icon={<SimpleLineIcons size={12} name="arrow-up" />} />
-                        <IconButton onPress={() => addCantForProduct(prod?.id, 'less')} icon={<SimpleLineIcons size={12} name="arrow-down" />} />
+                      <View
+                        flexDir={"column"}
+                        justifyContent={"center"}
+                        alignItems={"center"}
+                      >
+                        <IconButton
+                          onPress={() => addCantForProduct(prod?.id, "more")}
+                          icon={<SimpleLineIcons size={12} name="arrow-up" />}
+                        />
+                        <IconButton
+                          onPress={() => addCantForProduct(prod?.id, "less")}
+                          icon={<SimpleLineIcons size={12} name="arrow-down" />}
+                        />
                       </View>
                     </View>
                   </View>
@@ -443,13 +506,13 @@ const CreateOrderModal = ({
             }}
             initialStateAdd={[
               {
-                name: 'nombre',
-                type: 'text'
+                name: "nombre",
+                type: "text",
               },
               {
-                name: 'telefono',
-                type: 'numeric'
-              }
+                name: "telefono",
+                type: "numeric",
+              },
             ]}
             isMultiple={false}
             onSearch={(query: string) => {

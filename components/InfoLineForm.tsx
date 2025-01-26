@@ -84,7 +84,8 @@ const InfoLineForm = ({ setValue, value, infoLines, errors }: Props) => {
         return (
           <DateTimePickerField
             error={error}
-            date={inputValue}
+            type="datetime"
+            date={inputValue || new Date()}
             setDate={(val: any) => {
               setValue({
                 ...value,
