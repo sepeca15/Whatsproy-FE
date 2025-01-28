@@ -5,29 +5,35 @@ import { AntDesign } from "@expo/vector-icons"
 import { BarChart } from "react-native-chart-kit"
 import { styles } from "./SalesChartsStyles"
 import type { ProductDetailProps } from "./types"
-import { border } from "native-base/lib/typescript/theme/styled-system"
+import { border, position } from "native-base/lib/typescript/theme/styled-system"
 
 const GraficProddet: React.FC<ProductDetailProps> = ({ product, salesData, categoryData, satisfactionData }) => {
   const screenWidth = Dimensions.get("window").width
 
-  const [currentView, setCurrentView] = useState<"daily" | "weekly">("daily")
+  const [currentView, setCurrentView] = useState<"daily" | "month">("daily")
 
   const chartConfig = {
     backgroundGradientFrom: "#ffffff",
     backgroundGradientTo: "#ffffff",
     color: (opacity = 1) => `rgba(0, 128, 255, ${opacity})`,
     strokeWidth: 2,
-    barPercentage: 0.7,
+    barPercentage: currentView === "daily" ? 0.7 : 0.5, 
     whilePercentage: 10,
     useShadowColorFromDataset: false,
+   
+    
   }
 
   // Parsear daydata
   const daydata = typeof product.daydata === "string" ? JSON.parse(product.daydata) : product.daydata
+  //Parsear monthdata
+  const monthdata = typeof product.monthdata === "string" ? JSON.parse(product.monthdata) : product.monthdata
 
   const toggleView = () => {
-    setCurrentView(currentView === "daily" ? "weekly" : "daily")
+    setCurrentView(currentView === "daily" ? "month" : "daily")
   }
+
+  console.log('product', monthdata)
 
   const data = {
     daily: {
@@ -38,11 +44,11 @@ const GraficProddet: React.FC<ProductDetailProps> = ({ product, salesData, categ
         },
       ],
     },
-    weekly: {
-      labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
+    month: {
+      labels: monthdata.labels.map((label: string) => label.toString()),
       datasets: [
         {
-          data: [28, 35, 42, 31], // Example weekly data, replace with actual data
+          data: monthdata.datasets[0].data.map((value: number) => Number(value)),
         },
       ],
     },
@@ -94,23 +100,26 @@ const GraficProddet: React.FC<ProductDetailProps> = ({ product, salesData, categ
           <View style={styles.chartHeader}>
             <Text style={styles.chartTitle}>Ventas</Text>
             <TouchableOpacity onPress={toggleView} style={styles.toggleButton}>
-              <Text style={styles.toggleButtonText}>{currentView === "daily" ? "Ver semanal" : "Ver diario"}</Text>
+              <Text style={styles.toggleButtonText}>{currentView === "daily" ? "Ver mansual" : "Ver diario"}</Text>
             </TouchableOpacity>
           </View>
-          <View style={[styles.chartWrapper]}>
-            <BarChart
+          
+            <View style={styles.chartWrapperContainer}>
+            <View style={styles.chartWrapper}>
+              <BarChart 
               data={data[currentView]}
-              width={screenWidth - 55}
+              width={screenWidth - 60}
               height={220}
               yAxisLabel=""
-              yAxisSuffix=""
+              yAxisSuffix=" "
               chartConfig={chartConfig}
               verticalLabelRotation={0}
               showValuesOnTopOfBars={true}
               fromZero={true}
               style={styles.chart}
-            />
-          </View>
+              />
+            </View>
+            </View>
           <View style={styles.additionalInfo}>
             <Text style={styles.additionalInfoTitle}>Información adicional</Text>
             <View style={styles.additionalInfoRow}>
@@ -121,7 +130,7 @@ const GraficProddet: React.FC<ProductDetailProps> = ({ product, salesData, categ
             </View>
             <View style={styles.additionalInfoRow}>
               <Text style={styles.additionalInfoLabel}>
-                {currentView === "daily" ? "Promedio diario:" : "Promedio semanal:"}
+                {currentView === "daily" ? "Promedio diario:" : "Promedio mensual:"}
               </Text>
               <Text style={styles.additionalInfoValue}>
                 {(
@@ -132,7 +141,7 @@ const GraficProddet: React.FC<ProductDetailProps> = ({ product, salesData, categ
             </View>
             <View style={styles.additionalInfoRow}>
               <Text style={styles.additionalInfoLabel}>
-                {currentView === "daily" ? "Día más vendido:" : "Semana más vendida:"}
+                {currentView === "daily" ? "Día más vendido:" : "Mes más vendido:"}
               </Text>
               <Text style={styles.additionalInfoValue}>
                 {

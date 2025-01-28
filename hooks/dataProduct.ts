@@ -73,7 +73,7 @@ const salesData: SalesData = {
 
   
   const monthlySalesData: MonthlySalesData = {
-    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+    labels: ['E', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
     datasets: [{ data: [300, 450, 280, 800, 990, 430, 500, 600, 700, 500, 600, 800] }]
   };
 

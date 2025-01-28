@@ -123,6 +123,7 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3.84,
     maxWidth: "100%",
+    width: "100%",
   },
 
   chartTitle: {
@@ -136,36 +137,48 @@ export const styles = StyleSheet.create({
     textTransform: "uppercase",
     letterSpacing: 1,
     lineHeight: 24,
+   
+    paddingRight: 20,
+    
   },
 
   chart: {
     borderRadius: 16,
-    maxWidth: "100%",
-    width: "100%",
+    left: 0,
     // borderWidth: 1,
     alignItems: "center",
     backgroundColor: "#fff",
-    padding: 2,
-    margin: "auto",
-    alignContent: "center",
-    alignSelf: "center",
+    width: "100%",
+  
   },
-  chartWrapper: {
+
+  chartWrapperContainer: {
     marginVertical: 8,
     borderRadius: 16,
-    maxWidth: "100%",
+    maxWidth: "110%",
     width: "100%",
     borderColor: "black",
     borderWidth: 0.5,
-
-    backgroundColor: "#",
+    backgroundColor: "#fff",
     alignItems: "center",
+  },
+
+  chartWrapper: {
+    width: "90%",
+    maxWidth: "90%",
+    
   },
   chartHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 16,
+    marginTop: 10,
+    maxWidth: "100%",
+    width: "100%",
+    paddingLeft : 10,
+    paddingRight: 10,
+   
   },
   statsContainer: {
     flexDirection: "row",
@@ -286,6 +299,8 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 20,
+   
+    maxWidth:'100%',
   },
   toggleButtonText: {
     color: "#fff",

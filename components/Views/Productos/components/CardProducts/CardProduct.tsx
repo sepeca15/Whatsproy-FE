@@ -63,6 +63,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 reviews: product.reviews,
                 tags: product.tags,
                 daydata: JSON.stringify(dayslySalesData),
+                monthdata: JSON.stringify(monthlySalesData),
                 disponible: productBDD.disponible.toString(),
                 empresa_id: productBDD.empresa_id.toString(),
             },
