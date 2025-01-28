@@ -1,3 +1,4 @@
+import { months } from '../../Pedidos/components/data';
 export interface Product {
   id: number;
   title: string;
@@ -8,6 +9,7 @@ export interface Product {
   imageUrl: string;
   category: string;
   daydata: DayslySalesData;
+  monthdata: DayslySalesData;
   rating: number;
   reviews: number;
   tags: string[];
@@ -66,6 +68,7 @@ interface ProductParams {
   reviews: string;
   tags?: string;
   daydata: DayslySalesData;
+  monthdata: DayslySalesData;
   disponible: string;
   empresa_id: string;
 
