@@ -121,7 +121,7 @@ const GraficProddet: React.FC<ProductDetailProps> = ({ product, salesData, categ
             </View>
             </View>
           <View style={styles.additionalInfo}>
-            <Text style={styles.additionalInfoTitle}>as adicional</Text>
+            <Text style={styles.additionalInfoTitle}>Información adicional</Text>
             <View style={styles.additionalInfoRow}>
               <Text style={styles.additionalInfoLabel}>Total de ventas:</Text>
               <Text style={styles.additionalInfoValue}>
