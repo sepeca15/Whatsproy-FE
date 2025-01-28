@@ -17,7 +17,7 @@ const GraficProddet: React.FC<ProductDetailProps> = ({ product, salesData, categ
     backgroundGradientTo: "#ffffff",
     color: (opacity = 1) => `rgba(0, 128, 255, ${opacity})`,
     strokeWidth: 2,
-    barPercentage: currentView === "daily" ? 0.7 : 0.5, 
+    barPercentage: currentView === "daily" ? 0.7 : 0.3, 
     whilePercentage: 10,
     useShadowColorFromDataset: false,
    
@@ -121,7 +121,7 @@ const GraficProddet: React.FC<ProductDetailProps> = ({ product, salesData, categ
             </View>
             </View>
           <View style={styles.additionalInfo}>
-            <Text style={styles.additionalInfoTitle}>Información adicional</Text>
+            <Text style={styles.additionalInfoTitle}>as adicional</Text>
             <View style={styles.additionalInfoRow}>
               <Text style={styles.additionalInfoLabel}>Total de ventas:</Text>
               <Text style={styles.additionalInfoValue}>

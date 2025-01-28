@@ -137,35 +137,38 @@ export const styles = StyleSheet.create({
     textTransform: "uppercase",
     letterSpacing: 1,
     lineHeight: 24,
-   
     paddingRight: 20,
     
   },
 
   chart: {
     borderRadius: 16,
-    left: 0,
+    marginTop: 20,
+    right: 0,
     // borderWidth: 1,
-    alignItems: "center",
     backgroundColor: "#fff",
     width: "100%",
+   
   
   },
 
   chartWrapperContainer: {
     marginVertical: 8,
     borderRadius: 16,
-    maxWidth: "110%",
+    maxWidth: "100%",
     width: "100%",
     borderColor: "black",
     borderWidth: 0.5,
     backgroundColor: "#fff",
-    alignItems: "center",
+    elevation: 3,
+    shadowColor: "#000",
+  
   },
 
   chartWrapper: {
-    width: "90%",
-    maxWidth: "90%",
+  
+   width: "100%",
+   maxWidth: "100%",
     
   },
   chartHeader: {
