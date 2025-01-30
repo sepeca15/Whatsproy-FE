@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import { TouchableWithoutFeedback, Platform } from "react-native";
 import { VStack, FormControl, Input, Modal, Button } from "native-base";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { useUser } from "@/hooks/redux/useUser";
+import * as moment from 'moment-timezone'
 
 const DateTimeInputField = ({ date, setDate, isRequired = true, error }: any) => {
   const [showPicker, setShowPicker] = useState(false);
   const [mode, setMode] = useState<"date" | "time">("date");
-
-  const dateLocal = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
+  const {user} = useUser()
+  const dateLocal = moment.tz(date, user.timeZone).local();
 
   const onChange = (event: any, selectedDate?: Date) => {
     if (Platform.OS === "android") setShowPicker(false);
@@ -67,7 +69,7 @@ const DateTimeInputField = ({ date, setDate, isRequired = true, error }: any) =>
 
       {showPicker && Platform.OS === "android" && (
         <DateTimePicker
-          value={dateLocal}
+          value={dateLocal.toDate()}
           mode={mode}
           locale="en-EN"
           timeZoneName="America/Montevideo"

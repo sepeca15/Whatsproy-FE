@@ -20,6 +20,7 @@ interface IDataRegister {
   userEmail: string;
   password: string;
   confirmPassword: string;
+  timeZone: string
 }
 
 const Register: React.FC = () => {
@@ -58,6 +59,7 @@ const Register: React.FC = () => {
     userEmail: "",
     password: "",
     confirmPassword: "",
+    timeZone: ""
   });
 
   const handleInputChange = (field: string, value: string | boolean) => {
@@ -70,6 +72,7 @@ const Register: React.FC = () => {
     if (currentStep === 1) {
       if (!formData.nombre.trim()) error.nombre = "Por favor ingrese un nombre válido";
       if (!formData.descripcion.trim()) error.descripcion = "Por favor ingrese una descripción válida";
+      if (!formData.timeZone.trim()) error.timeZone = "Por favor Seleccione una zona horaria valida";
     }
   
     if (currentStep === 2) {
@@ -115,7 +118,7 @@ const Register: React.FC = () => {
     } finally {
       setLoadingApi(false)
     }
-  };
+  };  
 
   return (
     <View alignItems={'center'} style={{ flex: 1 }} >
