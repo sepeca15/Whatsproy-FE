@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TouchableOpacity, Pressable } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { useRouter } from 'expo-router';
 import { styles } from './CardProdStyle';
-import { Product, SatisfactionData,ProductBDD, CategoryData, SalesData, DayslySalesData, MonthlySalesData } from '../../../../../hooks/dataProduct';
+import { Product, SatisfactionData, ProductBDD, CategoryData, SalesData, DayslySalesData, MonthlySalesData } from '../../../../../hooks/dataProduct';
 
 interface ProductCardProps {
     product: Product;
@@ -37,8 +37,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         duration: productBDD.plazoDuracionEstimadoMinutos.toString(),
         description: productBDD.descripcion,
         imageUrl: product.imageUrl,
+
+
+
     };
-    
+
     const handleEdit = () => {
         if (!product) {
             console.error('Product is undefined');
@@ -46,10 +49,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         }
         router.push({
             pathname: '/(tabs)/editprod',
-            params: { ...commonParams },
+            params: {
+                ...commonParams,
+                disponible: productBDD.disponible.toString(),
+                empresa_id: productBDD.empresa_id,
+
+            },
+
         });
     };
-    
+
     const handleDet = () => {
         if (!product) {
             return;
@@ -75,39 +84,42 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     }
 
     return (
-        <TouchableOpacity style={styles.containerFatehr} onPress={handleDet}>
-            
-            {product.category === 'Vegetariana' && (
-                <View style={styles.categoryLabel}>
-                    <Text style={styles.categoryText}>{product.category}</Text>
-                </View>
-            )}
-
-           <View style={styles.card}>
-
-
-           <View style={styles.imageContainer}>
-                <Image
-                    source={{ uri: product.imageUrl }}
-                    style={styles.image}
-                />
-               
-            </View>
-            <View style={styles.content}>
-                <View style={styles.header}>
-                    <View style={styles.titlePriceContainer}>
-                        <Text style={styles.title} numberOfLines={1}>{productBDD.nombre}</Text>
-                        <Text style={styles.price}>${productBDD.precio.toFixed(2)} {product.currency}</Text>
+        <View style={styles.containerFatehr}>
+            <Pressable 
+                style={({ pressed }) => [
+                    styles.containerFatehr, 
+                    { opacity: pressed ? 0.8 : 1 }
+                ]} 
+                onPress={handleDet}
+            >
+                {product.category === 'Vegetariana' && (
+                    <View style={styles.categoryLabel}>
+                        <Text style={styles.categoryText}>{product.category}</Text>
                     </View>
-                    <TouchableOpacity onPress={handleEdit} style={styles.editButton}>
-                        <Icon name="edit-2" size={16} color="#666" />
-                    </TouchableOpacity>
+                )}
+
+                <View style={styles.card}>
+                    <View style={styles.imageContainer}>
+                        <Image
+                            source={{ uri: product.imageUrl }}
+                            style={styles.image}
+                        />
+                    </View>
+                    <View style={styles.content}>
+                        <View style={styles.header}>
+                            <View style={styles.titlePriceContainer}>
+                                <Text style={styles.title} numberOfLines={1}>{productBDD.nombre}</Text>
+                                <Text style={styles.price}>${productBDD.precio.toFixed(2)} {product.currency}</Text>
+                            </View>
+                            <TouchableOpacity onPress={handleEdit} style={styles.editButton}>
+                                <Icon name="edit-2" size={16} color="#666" />
+                            </TouchableOpacity>
+                        </View>
+                        <Text style={styles.description} numberOfLines={3}>{product.description}</Text>
+                    </View>
                 </View>
-                <Text style={styles.description} numberOfLines={3}>{product.description}</Text>
-              
-            </View>
-           </View>
-        </TouchableOpacity>
+            </Pressable>
+        </View>
     );
 };
 

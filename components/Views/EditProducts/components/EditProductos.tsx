@@ -24,7 +24,6 @@ interface ProductFormData {
   duration: string;
   description: string;
   imageUrl?: string;
-  title?: string
   disponible?: boolean
   empresa_id?: number;
 }
@@ -36,17 +35,16 @@ interface EditProductProps {
   currency: string;
   duration: string;
   description: string;
-  image?: string;
-  title?: string;
   imageUrl?: string;
   disponible?: boolean;
   empresa_id?: number
   onUpdateProduct: (updatedProduct: ProductFormData) => void;
+  
 }
 
 const EditProduct = ({
   id,
-  title,
+  name,
   price,
   currency,
   duration,
@@ -61,7 +59,7 @@ const EditProduct = ({
   const router = useRouter();
   const [formData, setFormData] = useState<ProductFormData>({
     id,
-    name: title || "",
+    name: name || "",
     price,
     currency,
     duration,
@@ -115,8 +113,8 @@ const EditProduct = ({
           <Text style={styles.label}>Nombre del Producto</Text>
           <TextInput
             style={styles.input}
-            value={formData.title}
-            onChangeText={(text) => setFormData({ ...formData, title: text })}
+            value={formData.name}
+            onChangeText={(text) => setFormData({ ...formData, name: text })}
             placeholder="Ej: Milanesa"
           />
 
