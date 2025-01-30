@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, Image, TouchableOpacity, Pressable } from 'react-native';
+import React, { useRef } from 'react';
+import { View, Text, Image, TouchableOpacity, Pressable, Animated } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { useRouter } from 'expo-router';
 import { styles } from './CardProdStyle';
@@ -27,8 +27,39 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     onUpdateProduct
 }) => {
     const router = useRouter();
+    const scale = useRef(new Animated.Value(1)).current;
+    const translateX = useRef(new Animated.Value(0)).current;
+    const pressTimeout = useRef<NodeJS.Timeout | null>(null);
 
-    console.log('dayslySalesData: CardProducts.tsx', dayslySalesData)
+    const handlePressIn = () => {
+        pressTimeout.current = setTimeout(() => {
+            Animated.parallel([
+                Animated.spring(scale, {
+                    toValue: 0.95,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(translateX, {
+                    toValue: -300,
+                    duration: 300,
+                    useNativeDriver: true,
+                }),
+            ]).start(() => {
+                // Acción después de que la animación se complete
+                console.log('Tarjeta deslizada y encogida');
+            });
+        }, 2000); // 2 segundos
+    };
+
+    const handlePressOut = () => {
+        if (pressTimeout.current) {
+            clearTimeout(pressTimeout.current);
+        }
+        Animated.spring(scale, {
+            toValue: 1,
+            useNativeDriver: true,
+        }).start();
+    };
+
     const commonParams = {
         id: productBDD.id.toString(),
         title: productBDD.nombre,
@@ -37,9 +68,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         duration: productBDD.plazoDuracionEstimadoMinutos.toString(),
         description: productBDD.descripcion,
         imageUrl: product.imageUrl,
-
-
-
     };
 
     const handleEdit = () => {
@@ -53,9 +81,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 ...commonParams,
                 disponible: productBDD.disponible.toString(),
                 empresa_id: productBDD.empresa_id,
-
             },
-
         });
     };
 
@@ -84,14 +110,20 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     }
 
     return (
-        <View style={styles.containerFatehr}>
-            
-            <Pressable 
+        <Animated.View
+            style={[
+                styles.containerFatehr,
+                { transform: [{ scale }, { translateX }] }
+            ]}
+        >
+            <Pressable
                 style={({ pressed }) => [
-                    styles.containerFatehr, 
+                    styles.containerFatehr,
                     { opacity: pressed ? 0.8 : 1 }
-                ]} 
+                ]}
                 onPress={handleDet}
+                onPressIn={handlePressIn}
+                onPressOut={handlePressOut}
             >
                 {product.category === 'Vegetariana' && (
                     <View style={styles.categoryLabel}>
@@ -120,9 +152,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                     </View>
                 </View>
             </Pressable>
-        </View>
+        </Animated.View>
     );
 };
 
 export default ProductCard;
-
