@@ -51,6 +51,7 @@ const api = {
         remove: order.removeOrder,
         confirm: order.confirmOrder,
         create: order.createOrder,
+        getNextDateAvailable: order.getNextDateAvailable,
     },
     typeServices : {
         getAll : typeServices.getAll

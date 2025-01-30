@@ -1,11 +1,13 @@
+import { useToastContext } from "@/contexts/ToastContext"
 import api from "@/services/api/admin"
 import { IUserUpdate } from "@/services/api/user/user.types"
 import { IUserData } from "@/services/redux/Slices/userSlice/types"
-import { onAddUserData, mostrarMensaje, onUpdateKeys, onPurchasedPlan, greenApiConfigured, onApiConfigured, onUserConfigured,  } from "@/services/redux/Slices/userSlice/userSlice"
+import { onAddUserData, mostrarMensaje, onUpdateKeys, onPurchasedPlan, greenApiConfigured, onApiConfigured, onUserConfigured, } from "@/services/redux/Slices/userSlice/userSlice"
 import { useDispatch, useSelector } from "react-redux"
 
 export const useUser = () => {
 
+    const { showToast } = useToastContext()
     const Dispatch = useDispatch()
     const { user } = useSelector((state: any) => state.user)
 
@@ -13,7 +15,7 @@ export const useUser = () => {
         Dispatch(mostrarMensaje("hola soy un nuevo mensaje ;D"))
     }
 
-    const handleAddUserData = async () => {        
+    const handleAddUserData = async () => {
         try {
             const userData = await api.auth.me()
             if (userData) {
@@ -32,7 +34,7 @@ export const useUser = () => {
         try {
             const res = await api.plans.assignPlanToCompany({ id_empresa, id_plan, fecha_inicio })
             if (res.ok === true) {
-                
+
                 Dispatch(onPurchasedPlan())
             }
         } catch (error) {
@@ -40,18 +42,18 @@ export const useUser = () => {
         }
     }
 
-    const handleUpdateGreenApiConfig = async() => {
+    const handleUpdateGreenApiConfig = async () => {
         try {
-            await api.company.update({greenApiConfigured:true}, user.id_empresa)
+            await api.company.update({ greenApiConfigured: true }, user.id_empresa)
             Dispatch(greenApiConfigured())
         } catch (error) {
             console.log(error);
         }
     }
 
-    const handleUpdateApiConfigured = async() => {
+    const handleUpdateApiConfigured = async () => {
         try {
-            await api.company.update({apiConfigured:true}, user.id_empresa)
+            await api.company.update({ apiConfigured: true }, user.id_empresa)
             Dispatch(onApiConfigured())
         } catch (error) {
             console.log(error);
@@ -60,19 +62,28 @@ export const useUser = () => {
     const handleUpdateCompany = async (companyData: IUserData) => {
         try {
             const data = await api.company.update(companyData, user.id_empresa)
-            if (data.ok) {
-                Dispatch(onUpdateKeys({ data: companyData, isUser: false, isGrenApi:true }))
+            if (data.ok) {                
+                Dispatch(onUpdateKeys({ data: companyData, isUser: false, isGrenApi: true }))
+                showToast({
+                    title: "¡Empresa actualizada!",
+                    description: "Su empresa fue actualizada exitosamente.",
+                    status: "success",
+                });
             }
         } catch (error: any) {
-            console.log(error.response.data.message);
+            showToast({
+                title: "Error",
+                description: error.response.data.message,
+                status: "error",
+              });
         }
     }
 
     const handleUpdateUser = async (userData: IUserUpdate) => {
-        try {            
+        try {
             await api.user.update(user.id, userData)
             Dispatch(onUserConfigured({ data: userData }))
-        } catch (error : any) {
+        } catch (error: any) {
             console.log(error.response.data.message);
         }
     }

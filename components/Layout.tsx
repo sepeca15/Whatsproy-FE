@@ -41,10 +41,10 @@ const Layout = ({ children }: any) => {
     const pathname = usePathname();
     const { user } = useUser()
     const [selected, setSelected] = React.useState<string>("");
-    console.log(selected);
+    const pages = Pages(user.tipo_servicio);
 
     React.useEffect(() => {
-        const existRouter = Pages(user.tipo_servicio).find((path) => pathname.split('/')[1] === path.name);
+        const existRouter = pages.find((path) => pathname.split('/')[1] === path.name);
         if (existRouter) {
             setSelected(existRouter.name);
         }
@@ -54,7 +54,7 @@ const Layout = ({ children }: any) => {
         <View style={styles.mainContainer}>
             {children}
             <View style={styles.navigationMenu}>
-                {Pages(user.tipo_servicio).map((page) => (
+                {pages.map((page) => (
                     <Pressable
                         key={page.name}
                         style={styles.LinkContainer}

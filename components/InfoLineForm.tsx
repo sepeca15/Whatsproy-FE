@@ -8,6 +8,7 @@ import {
 import { FormControl, Switch, View, Text } from "native-base";
 import DateTimePickerField from "./DateTimePickerField";
 import InputField from "./InputField";
+import * as moment from 'moment-timezone'
 
 interface Props {
   value: Record<string, any>;
@@ -20,6 +21,7 @@ const InfoLineForm = ({ setValue, value, infoLines, errors }: Props) => {
   if (infoLines?.length === 0) {
     return null;
   }
+  const {user} = useUser()
 
   const handleRenderInfoLineInput = (infoLine: InfoLineDTO) => {
     const inputValue = value[infoLine.nombre];
@@ -84,7 +86,8 @@ const InfoLineForm = ({ setValue, value, infoLines, errors }: Props) => {
         return (
           <DateTimePickerField
             error={error}
-            date={inputValue}
+            type="datetime"
+            date={inputValue || moment.tz(user.timeZone)}
             setDate={(val: any) => {
               setValue({
                 ...value,

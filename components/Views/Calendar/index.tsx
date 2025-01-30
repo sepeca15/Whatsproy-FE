@@ -6,7 +6,9 @@ import {
   TouchableOpacity,
   Platform,
   UIManager,
+  Image,
 } from "react-native";
+import { styles as stylesPending } from "../Pedidos/components/OrdersPending/OrdersPendingStyles";
 import { Agenda } from "react-native-calendars";
 import { Ionicons } from "@expo/vector-icons";
 import { styles as productosStyles } from "@/components/Views/Productos/ProductosStyles";
@@ -17,6 +19,8 @@ import ItemCalendar from "./components/ItemCalendar";
 import { IInfoItem } from "./types";
 import * as Progress from "react-native-progress";
 import { Colors } from "@/constants/Colors";
+
+import CustomText from "@/components/CustomText";
 
 if (
   Platform.OS === "android" &&
@@ -29,7 +33,6 @@ type OrderPerDays = {
   [date: string]: IInfoItem[];
 };
 
-
 export default function CalendarView() {
   const [orderPerDays, setOrderPerDays] = useState<OrderPerDays>({});
   const [openAddModal, setOpenAddModal] = useState(false);
@@ -37,7 +40,7 @@ export default function CalendarView() {
     new Date().toISOString().split("T")[0]
   );
   const [loading, setLoading] = useState(true);
-  
+
   const onLoadItems = async (selectedDate: string) => {
     setLoading(true);
     try {
@@ -53,7 +56,7 @@ export default function CalendarView() {
   const confirmOrder = async (orderId: number) => {
     try {
       const firstDate = Object.keys(orderPerDays)[0];
-  
+
       const data = await api.order.confirm(orderId);
       if (data.data) {
         setOrderPerDays((prevState) => {
@@ -64,30 +67,30 @@ export default function CalendarView() {
             ...prevState,
             [firstDate]: updatedOrders,
           };
-        });        
+        });
       }
     } catch (error: any) {
       console.log(error.response.data.message, "xddddddddd");
     }
   };
 
-  const deleteOrder =  async(orderId : number) => {
-    try {      
+  const deleteOrder = async (orderId: number) => {
+    try {
       const firstDate = Object.keys(orderPerDays)[0];
 
-      const data = await api.order.remove(orderId)      
-      if (data) {        
+      const data = await api.order.remove(orderId);
+      if (data) {
         setOrderPerDays((prevState) => ({
           ...prevState,
-          [firstDate]: prevState[firstDate].filter((order) =>
-            order.orderId !== orderId
+          [firstDate]: prevState[firstDate].filter(
+            (order) => order.orderId !== orderId
           ),
         }));
       }
-    } catch (error : any) {
-      console.log(error.response.data.message,'xddddddddd');
+    } catch (error: any) {
+      console.log(error.response.data.message, "xddddddddd");
     }
-  }
+  };
 
   useEffect(() => {
     if (selectedDate) {
@@ -100,15 +103,16 @@ export default function CalendarView() {
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Eventos del calendario</Text>
         <View style={styles.circleAvaiableContainer}>
-          <View style={[styles.circleAvaiable, { backgroundColor: "green", }]} />
+          <View style={[styles.circleAvaiable, { backgroundColor: "green" }]} />
           <Text style={styles.headerDescription}>Confirmados</Text>
         </View>
         <View style={[styles.circleAvaiableContainer]}>
-          <View style={[styles.circleAvaiable, { backgroundColor: "gray", }]}></View>
+          <View
+            style={[styles.circleAvaiable, { backgroundColor: "gray" }]}
+          ></View>
           <Text style={styles.headerDescription}>Sin Confirmar</Text>
         </View>
       </View>
-
       <Agenda
         key={JSON.stringify(orderPerDays)}
         items={orderPerDays}
@@ -118,25 +122,34 @@ export default function CalendarView() {
         onDayPress={(day: any) => {
           setSelectedDate(day.dateString);
         }}
-        renderItem={(data: IInfoItem) => <ItemCalendar
-          key={data.orderId}
-          confirmOrder={confirmOrder}
-          deleteOrder={deleteOrder}
-          InfoItem={data}
-          confirm={data.status}
-        />
-        }
+        renderItem={(data: IInfoItem) => (
+          <ItemCalendar
+            key={data.orderId}
+            confirmOrder={confirmOrder}
+            deleteOrder={deleteOrder}
+            InfoItem={data}
+            confirm={data.status}
+          />
+        )}
         renderEmptyData={() => (
           <View style={styles.emptyDate}>
-            {
-              loading? 
-              <Progress.Circle color={Colors.light.primary} indeterminate={true} size={50} />
-              :
-              <Text>No hay eventos para este día</Text>
-            }
+            {loading ? (
+              <Progress.Circle
+                color={Colors.light.primary}
+                indeterminate={true}
+                size={50}
+              />
+            ) : (
+              <View style={{...stylesPending.containerImage, marginTop: 10}}>
+                <Image
+                  source={require("../../../assets/images/no-records.png")}
+                  style={{ width: 350, height: 250, objectFit: "contain" }}
+                />
+                <CustomText>No hay eventos para este día</CustomText>
+              </View>
+            )}
           </View>
-        ) 
-    }
+        )}
         rowHasChanged={(r1: any, r2: any) =>
           r1.name !== r2.name || r1?.expanded !== r2?.expanded
         }
@@ -150,10 +163,14 @@ export default function CalendarView() {
         }}
       />
 
-      {openAddModal && (
+      {openAddModal && selectedDate && (
         <CreateOrderModal
+          currentOrders={orderPerDays[selectedDate] ? orderPerDays[selectedDate] : []}
           onClose={() => setOpenAddModal(false)}
           defaultDate={selectedDate}
+          onSuccess={() => {
+            onLoadItems(selectedDate);
+          }}
           tipoServicio={ID_TIPOSERVICIO_RESERVA}
         />
       )}
@@ -226,9 +243,10 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: "column",
     width: "100%",
-    justifyContent: "space-between",
+    justifyContent: "center",
+    alignItems: "flex-start",
     paddingHorizontal: 10,
     paddingVertical: 15,
     backgroundColor: "#f2f2f2",

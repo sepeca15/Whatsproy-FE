@@ -57,7 +57,7 @@ const ModalEditOrderDate = ({ data, onClose, updateOrder }: IProps) => {
                 updateOrder(data)
                 onClose()
                 showToast({
-                    title: "Logeado Correctamente!",
+                    title: "Orden editada correctamente!",
                     status: "success",
                 });
             }

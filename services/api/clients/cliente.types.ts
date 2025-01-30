@@ -6,7 +6,7 @@ export interface Cliente {
 }
 
 export interface CreateClient {
-  empresa_id: number;
+  empresaId: number;
   nombre: string;
   telefono: string;
 }

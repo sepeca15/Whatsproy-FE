@@ -36,8 +36,6 @@ const ProductDetails: React.FC = () => {
   //   ],
   // };
 
-  console.log('paramssss', params.daydata)
-
 
   // Construye el objeto `product`
   const product = {
