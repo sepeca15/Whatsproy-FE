@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { View, Text, Image, TouchableOpacity, Pressable, Animated } from 'react-native';
+import { View, Text, Image, TouchableOpacity, Pressable, Animated, PanResponder } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { useRouter } from 'expo-router';
 import { styles } from './CardProdStyle';
@@ -27,37 +27,58 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     onUpdateProduct
 }) => {
     const router = useRouter();
-    const scale = useRef(new Animated.Value(1)).current;
-    const translateX = useRef(new Animated.Value(0)).current;
+    const pan = useRef(new Animated.ValueXY()).current;
     const pressTimeout = useRef<NodeJS.Timeout | null>(null);
+    const isLongPress = useRef(false);
+    const hasMoved = useRef(false);
+    const lastTap = useRef<number | null>(null);
+
+    const panResponder = useRef(
+        PanResponder.create({
+            onStartShouldSetPanResponder: () => false, // No responder al inicio del gesto
+            onMoveShouldSetPanResponder: () => isLongPress.current, // Responder al movimiento solo si es una presión prolongada
+            onPanResponderMove: (e, gestureState) => {
+                if (Math.abs(gestureState.dx) > 10 || Math.abs(gestureState.dy) > 10) {
+                    hasMoved.current = true; // Marcar como desplazamiento si se mueve más de 10 píxeles
+                }
+                Animated.event(
+                    [null, { dx: pan.x, dy: pan.y }],
+                    { useNativeDriver: false }
+                )(e, gestureState);
+            },
+            onPanResponderRelease: () => {
+                Animated.spring(pan, {
+                    toValue: { x: 0, y: 0 },
+                    useNativeDriver: false,
+                }).start();
+                isLongPress.current = false;
+                hasMoved.current = false;
+            },
+        })
+    ).current;
 
     const handlePressIn = () => {
+        isLongPress.current = false;
+        hasMoved.current = false;
         pressTimeout.current = setTimeout(() => {
-            Animated.parallel([
-                Animated.spring(scale, {
-                    toValue: 0.95,
-                    useNativeDriver: true,
-                }),
-                Animated.timing(translateX, {
-                    toValue: -300,
-                    duration: 300,
-                    useNativeDriver: true,
-                }),
-            ]).start(() => {
-                // Acción después de que la animación se complete
-                console.log('Tarjeta deslizada y encogida');
-            });
-        }, 2000); // 2 segundos
+            isLongPress.current = true; // Marcar como presión prolongada después de 0.5 segundos
+        }, 500); // 0.5 segundos
     };
 
     const handlePressOut = () => {
         if (pressTimeout.current) {
-            clearTimeout(pressTimeout.current);
+            clearTimeout(pressTimeout.current); // Cancelar el temporizador si se suelta antes de 0.5 segundos
         }
-        Animated.spring(scale, {
-            toValue: 1,
-            useNativeDriver: true,
-        }).start();
+    };
+
+    const handleDoubleTap = () => {
+        const now = Date.now();
+        const DOUBLE_PRESS_DELAY = 300;
+        if (lastTap.current && (now - lastTap.current) < DOUBLE_PRESS_DELAY) {
+            handleDet(); // Ejecutar la función de doble toque
+        } else {
+            lastTap.current = now;
+        }
     };
 
     const commonParams = {
@@ -113,17 +134,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <Animated.View
             style={[
                 styles.containerFatehr,
-                { transform: [{ scale }, { translateX }] }
+                { transform: [{ translateX: pan.x }, { translateY: pan.y }] }
             ]}
+            {...panResponder.panHandlers}
         >
             <Pressable
                 style={({ pressed }) => [
                     styles.containerFatehr,
                     { opacity: pressed ? 0.8 : 1 }
                 ]}
-                onPress={handleDet}
                 onPressIn={handlePressIn}
                 onPressOut={handlePressOut}
+                onPress={handleDoubleTap}
             >
                 {product.category === 'Vegetariana' && (
                     <View style={styles.categoryLabel}>
