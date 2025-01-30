@@ -21,7 +21,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#fff',
-    borderRadius: 25, 
+    borderRadius: 25,
     paddingHorizontal: 15,
     margin: 10,
     width: '95%',
@@ -31,12 +31,12 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 2,
-    height: 50, 
+    height: 50,
   },
   searchIcon: {
     marginRight: 10,
     color: '#888',
-    fontSize: 18, 
+    fontSize: 18,
   },
   searchBar: {
     flex: 1,
@@ -46,7 +46,7 @@ export const styles = StyleSheet.create({
     borderRadius: 25,
     paddingHorizontal: 10,
     backgroundColor: 'transparent',
-    fontSize: 16, 
+    fontSize: 16,
   },
   buttonContainer: {
     position: 'absolute',
@@ -88,5 +88,27 @@ export const styles = StyleSheet.create({
     color: '#888',
     fontSize: 18,
   },
+  trashZoneContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 2,
+  },
+  trashZone: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  trashZoneText: {
+    color: Colors.light.background,
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+
 });
 

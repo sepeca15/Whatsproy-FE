@@ -14,6 +14,8 @@ interface ProductCardProps {
     monthlySalesData: MonthlySalesData;
     dayslySalesData: DayslySalesData;
     onUpdateProduct: (updatedProduct: Product) => void;
+    setIsDragging: (isDragging: boolean) => void;
+    checkIfOverTrash: (gestureState: any) => void;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
@@ -24,7 +26,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     satisfactionData,
     monthlySalesData,
     dayslySalesData,
-    onUpdateProduct
+    onUpdateProduct,
+    setIsDragging,
+    checkIfOverTrash
 }) => {
     const router = useRouter();
     const pan = useRef(new Animated.ValueXY()).current;
@@ -32,23 +36,39 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     const isLongPress = useRef(false);
     const hasMoved = useRef(false);
     const lastTap = useRef<number | null>(null);
+    const zIndex = useRef(new Animated.Value(0)).current;
 
     const panResponder = useRef(
         PanResponder.create({
             onStartShouldSetPanResponder: () => false, // No responder al inicio del gesto
             onMoveShouldSetPanResponder: () => isLongPress.current, // Responder al movimiento solo si es una presión prolongada
+            onPanResponderGrant: () => {
+                setIsDragging(true);
+                Animated.timing(zIndex, {
+                    toValue: 1,
+                    duration: 0,
+                    useNativeDriver: false,
+                }).start();
+            },
             onPanResponderMove: (e, gestureState) => {
                 if (Math.abs(gestureState.dx) > 10 || Math.abs(gestureState.dy) > 10) {
                     hasMoved.current = true; // Marcar como desplazamiento si se mueve más de 10 píxeles
                 }
+                checkIfOverTrash(gestureState);
                 Animated.event(
                     [null, { dx: pan.x, dy: pan.y }],
                     { useNativeDriver: false }
                 )(e, gestureState);
             },
             onPanResponderRelease: () => {
+                setIsDragging(false);
                 Animated.spring(pan, {
                     toValue: { x: 0, y: 0 },
+                    useNativeDriver: false,
+                }).start();
+                Animated.timing(zIndex, {
+                    toValue: 0,
+                    duration: 0,
                     useNativeDriver: false,
                 }).start();
                 isLongPress.current = false;
@@ -134,7 +154,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <Animated.View
             style={[
                 styles.containerFatehr,
-                { transform: [{ translateX: pan.x }, { translateY: pan.y }] }
+                { transform: [{ translateX: pan.x }, { translateY: pan.y }], zIndex }
             ]}
             {...panResponder.panHandlers}
         >

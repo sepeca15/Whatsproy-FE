@@ -89,5 +89,7 @@ export const styles = StyleSheet.create({
   containerFatehr: {
     width: '100%', 
 
-  }
+  },
+  
+  
 });
