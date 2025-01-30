@@ -85,6 +85,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
     return (
         <View style={styles.containerFatehr}>
+            
             <Pressable 
                 style={({ pressed }) => [
                     styles.containerFatehr, 
@@ -115,7 +116,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                                 <Icon name="edit-2" size={16} color="#666" />
                             </TouchableOpacity>
                         </View>
-                        <Text style={styles.description} numberOfLines={3}>{product.description}</Text>
+                        <Text style={styles.description} numberOfLines={3}>{productBDD.descripcion}</Text>
                     </View>
                 </View>
             </Pressable>
