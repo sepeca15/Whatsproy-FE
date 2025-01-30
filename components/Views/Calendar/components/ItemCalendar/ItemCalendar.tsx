@@ -12,6 +12,8 @@ import api from "@/services/api/admin";
 import { IOrderDetails } from "@/components/Views/OrderDetails/OrderDetailsTypes";
 import { useRouter } from "expo-router";
 import { styles } from "./ItemCalendarStyles";
+import * as moment from 'moment-timezone'
+import { useUser } from "@/hooks/redux/useUser";
 
 interface IItemCalendar {
   InfoItem: IInfoItem;
@@ -31,6 +33,7 @@ const ItemCalendar = ({
   deleteOrder,
   confirm,
 }: IItemCalendar) => {
+  const {user} = useUser()
   const router = useRouter();
   const [expanded, setExpanded] = useState<boolean>(false);
   const [dataDetails, setDataDetails] = useState<IDataDetails>({
@@ -79,14 +82,11 @@ const ItemCalendar = ({
   }, [expanded, dataDetails.info]);
 
   const formatDate = (dateString: any) => {
-    const date = new Date(dateString);
-    const datePart = date.toLocaleDateString("es-ES");
-    const timePart = date.toLocaleTimeString("es-ES", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-
-    return `${datePart.replace(/\//g, "-")}, ${timePart}`;
+    const date = moment.tz(dateString, user.timeZone); 
+    const datePart = date.format("DD-MM-YYYY"); 
+    const timePart = date.format("HH:mm"); 
+  
+    return `${datePart}, ${timePart}`;
   };
 
   const validateFunction = async () => {

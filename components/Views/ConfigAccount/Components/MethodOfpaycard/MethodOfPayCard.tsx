@@ -7,6 +7,7 @@ import CustomButton from "@/components/CustomButton";
 import { IPlans } from "./MethodOfPayCardTypes";
 import { useUser } from "@/hooks/redux/useUser";
 import { useToastContext } from "@/contexts/ToastContext";
+import * as moment from 'moment-timezone'
 
 interface IMethodOfPayCard {
     Plan: IPlans;
@@ -23,7 +24,7 @@ const MethodOfPayCard = ({ Plan }: IMethodOfPayCard) => {
             if (loadingApi === false) {
                 setloadingApi(true)
                 await handleAssignUserToPlan({
-                    fecha_inicio: new Date(),
+                    fecha_inicio: moment.tz(user.timeZOne).toDate(),
                     id_empresa: user.id_empresa,
                     id_plan: Plan.id
                 })

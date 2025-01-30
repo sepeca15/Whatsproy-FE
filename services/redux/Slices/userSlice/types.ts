@@ -24,6 +24,7 @@ export interface IUserData {
     intervaloTiempoCalendario?: number;
     notificarReservaHoras?: boolean;
     remaindersHorsRemainder?: number
+    timeZone? : string
 }
 
 export interface IUser {

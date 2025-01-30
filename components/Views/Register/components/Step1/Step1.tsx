@@ -5,13 +5,15 @@ import CustomText from "@/components/CustomText";
 import * as ImagePicker from "expo-image-picker";
 import { Image, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import CustomButton from "@/components/CustomButton";
 import AlertText from "../AlertText";
+import SelectTimeZone from "../SelectTimeZone";
+import * as moment from 'moment-timezone'
 
 interface IDataStep1 {
     nombre: string;
     descripcion: string;
     logo: string;
+    timeZone: string
 }
 
 interface IStep1 {
@@ -21,7 +23,7 @@ interface IStep1 {
 }
 
 const Step1 = ({ formData, handleInputChange, errors }: IStep1) => {
-
+    const timeZones = moment.tz.names()
     const pickImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -74,6 +76,13 @@ const Step1 = ({ formData, handleInputChange, errors }: IStep1) => {
                 />
                 {errors.descripcion && (
                     <AlertText text={errors.descripcion} />
+                )}
+            </View>
+
+            <View>
+                <SelectTimeZone selectTimeZone={(valueTz:string)=> handleInputChange("timeZone", valueTz)} timeZoneSelected={formData.timeZone} timeZones={timeZones}/>
+                {errors.timeZone && (
+                    <AlertText text={errors.timeZone} />
                 )}
             </View>
         </VStack>
