@@ -27,6 +27,7 @@
     "expo-constants": "~16.0.2",
     "expo-font": "~12.0.9",
     "expo-image-picker": "~15.0.7",
+    "expo-linear-gradient": "~13.0.2",
     "expo-linking": "~6.3.1",
     "expo-router": "~3.5.24",
     "expo-splash-screen": "^0.27.7",
@@ -50,6 +51,7 @@
     "react-native-gesture-handler": "~2.16.1",
     "react-native-paper": "^5.12.5",
     "react-native-picker-select": "^9.3.1",
+    "react-native-popup-menu": "^0.16.1",
     "react-native-portalize": "^1.0.7",
     "react-native-progress": "^5.0.1",
     "react-native-qrcode-svg": "^6.3.12",
@@ -63,8 +65,7 @@
     "react-native-web": "~0.19.10",
     "react-redux": "^9.1.2",
     "recharts": "^2.15.0",
-    "socket.io-client": "^4.8.1",
-    "expo-linear-gradient": "~13.0.2"
+    "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
