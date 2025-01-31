@@ -1,9 +1,9 @@
-import type React from "react"
-import { useRef, useState } from "react"
-import { View, Text, Image, TouchableOpacity, Animated, Modal, Pressable } from "react-native"
-import Icon from "react-native-vector-icons/Feather"
-import { useRouter } from "expo-router"
-import { styles } from "./CardProdStyle"
+import React, { useRef, useState } from "react";
+import { View, Text, Image, TouchableOpacity, Animated, Modal, Pressable, Alert } from "react-native";
+import Icon from "react-native-vector-icons/Feather";
+import { useRouter } from "expo-router";
+import { styles } from "./CardProdStyle";
+import api from "@/services/api/admin";
 import type {
   Product,
   SatisfactionData,
@@ -12,17 +12,17 @@ import type {
   SalesData,
   DayslySalesData,
   MonthlySalesData,
-} from "../../../../../hooks/dataProduct"
+} from "../../../../../hooks/dataProduct";
 
 interface ProductCardProps {
-  product: Product
-  productBDD: ProductBDD
-  salesData: SalesData
-  categoryData: CategoryData
-  satisfactionData: SatisfactionData
-  monthlySalesData: MonthlySalesData
-  dayslySalesData: DayslySalesData
-  onUpdateProduct: (updatedProduct: Product) => void
+  product: Product;
+  productBDD: ProductBDD;
+  salesData: SalesData;
+  categoryData: CategoryData;
+  satisfactionData: SatisfactionData;
+  monthlySalesData: MonthlySalesData;
+  dayslySalesData: DayslySalesData;
+  onUpdateProduct: () => void;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
@@ -35,10 +35,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   dayslySalesData,
   onUpdateProduct,
 }) => {
-  const router = useRouter()
-  const [isFlipped, setIsFlipped] = useState(false)
-  const [modalVisible, setModalVisible] = useState(false)
-  const flipAnim = useRef(new Animated.Value(0)).current
+  const router = useRouter();
+  const [isFlipped, setIsFlipped] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const flipAnim = useRef(new Animated.Value(0)).current;
 
   const flipCard = () => {
     if (isFlipped) {
@@ -46,33 +46,33 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         toValue: 0,
         duration: 300,
         useNativeDriver: true,
-      }).start(() => setIsFlipped(false))
+      }).start(() => setIsFlipped(false));
     } else {
       Animated.timing(flipAnim, {
         toValue: 1,
         duration: 300,
         useNativeDriver: true,
-      }).start(() => setIsFlipped(true))
+      }).start(() => setIsFlipped(true));
     }
-  }
+  };
 
   const frontInterpolate = flipAnim.interpolate({
     inputRange: [0, 1],
     outputRange: ["0deg", "180deg"],
-  })
+  });
 
   const backInterpolate = flipAnim.interpolate({
     inputRange: [0, 1],
     outputRange: ["180deg", "360deg"],
-  })
+  });
 
   const frontAnimatedStyle = {
     transform: [{ rotateY: frontInterpolate }],
-  }
+  };
 
   const backAnimatedStyle = {
     transform: [{ rotateY: backInterpolate }],
-  }
+  };
 
   const handleEdit = () => {
     router.push({
@@ -88,8 +88,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         disponible: productBDD.disponible.toString(),
         empresa_id: productBDD.empresa_id,
       },
-    })
-  }
+    });
+  };
 
   const handleView = () => {
     router.push({
@@ -111,16 +111,37 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         disponible: productBDD.disponible.toString(),
         empresa_id: productBDD.empresa_id.toString(),
       },
-    })
-  }
+    });
+  };
 
   const handleModify = () => {
-    console.log("Modificar")
-  }
+    console.log("Modificar");
+  };
 
   const handleDelete = () => {
-    console.log("Eliminar")
-  }
+    Alert.alert(
+      "Confirmar eliminación",
+      "¿Estás seguro de que deseas eliminar este producto?",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+        {
+          text: "Eliminar",
+          onPress: () => {
+            setModalVisible(false);
+            api.products.delete(productBDD.id).then(() => {
+              console.log("Producto eliminado");
+              onUpdateProduct();
+            });
+          },
+          style: "destructive",
+        },
+      ],
+      { cancelable: true }
+    );
+  };
 
   return (
     <View style={styles.containerFatehr}>
@@ -165,7 +186,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         pointerEvents={isFlipped ? "auto" : "none"}
       >
         <View style={styles.cardBackContent}>
-        <Text style={styles.title}>aqui puede que pongamos algo</Text>
+          <Text style={styles.title}>aqui puede que pongamos algo</Text>
           <TouchableOpacity onPress={flipCard} style={[styles.cardBackButton, styles.flipBackButton]}>
             <View style={styles.buttonContent}>
               <Icon name="rotate-ccw" size={20} color="white" style={styles.backIcon} />
@@ -183,27 +204,26 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={() => setModalVisible(false)}>
           <View style={styles.modalContainer}>
             <TouchableOpacity style={[styles.modalOption, styles.editButton]} onPress={handleEdit}>
-              <Icon name="edit" size={20}  style={styles.modalIcon} />
+              <Icon name="edit" size={20} style={styles.modalIcon} />
               <Text style={styles.modalOptionText}>Editar</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.modalOption, styles.archiveButton]}>
-              <Icon name="archive" size={20} color={''} style={styles.modalIcon} />
+              <Icon name="archive" size={20} color={""} style={styles.modalIcon} />
               <Text style={styles.modalOptionText}>Deshabilitar</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.modalOption, styles.deleteButton]}>
-              <Icon name="trash-2" size={20} color={''} style={styles.modalIcon} />
+            <TouchableOpacity onPress={handleDelete} style={[styles.modalOption, styles.deleteButton]}>
+              <Icon name="trash-2" size={20} color={""} style={styles.modalIcon} />
               <Text style={styles.modalOptionText}>Eliminar</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.modalOption, styles.cancelButton]} onPress={() => setModalVisible(false)}>
-              <Icon name="rotate-ccw" size={20} color={''} style={styles.modalIcon} />
-              <Text style={styles.modalOptionText}>Volver</Text>
-            </TouchableOpacity>
+            {/* <TouchableOpacity style={[styles.modalOption, styles.cancelButton]} onPress={() => setModalVisible(false)}>
+              <Icon name="rotate-ccw" size={20} color={""} style={styles.modalIcon} />
+              <Text style={styles.modalOptionText}>Cerrar</Text>
+            </TouchableOpacity> */}
           </View>
         </TouchableOpacity>
       </Modal>
     </View>
-  )
-}
+  );
+};
 
-export default ProductCard
-
+export default ProductCard;

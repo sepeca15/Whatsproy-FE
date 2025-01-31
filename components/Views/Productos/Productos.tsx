@@ -27,11 +27,16 @@ const Productos: React.FC = () => {
     allProduct();
   }, []);
 
-
-
+  
+  const handleUpdateProduct = () => {
+    allProduct(); 
+  };
+  
   const filteredProducts = ProductsBD.filter(product =>
     product.nombre.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+
 
   return (
     <View style={styles.container}>
@@ -58,7 +63,7 @@ const Productos: React.FC = () => {
             categoryData={categoryData}
             dayslySalesData={dayslySalesData}
             monthlySalesData={monthlySalesData}
-            onUpdateProduct={() => {}}
+            onUpdateProduct={handleUpdateProduct}
           />
         ))}
       </ScrollView>
