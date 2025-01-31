@@ -1,14 +1,13 @@
 import * as React from "react";
 import { Modal, Pressable, StyleSheet, TouchableOpacity } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
-import { Button, FormControl, View, Text, IconButton } from "native-base";
+import { Button, FormControl, View, Text, IconButton, VStack } from "native-base";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 import CustomText from "@/components/CustomText";
 import InputField from "@/components/InputField";
 import { useUser } from "@/hooks/redux/useUser";
 import api from "@/services/api/admin";
 import { TipoServicio } from "../enums/TipoServicio";
-import DateTimePickerField from "@/components/DateTimePickerField";
 import MultiSelectInput from "@/components/MultiSelectInput";
 import { ModalStyles } from "@/components/ModalStyles";
 import { Ionicons } from "@expo/vector-icons";
@@ -111,19 +110,18 @@ const CreateOrderModal = ({
     getAllOrderDate();
   }, []);
 
-  const getAllOrderDate = async () => {
+  const getAllOrderDate = async () => {    
     setLoadingInfoLines(true);
     try {
       const data = await api.dataOrder.getAll();
+      
       setInfoLines(
         data?.filter((infoline: InfoLineDTO) => {
-          if (
-            infoline?.id_tipo_servicio === ID_TIPOSERVICIO_RESERVA ||
-            infoline.id === FECHA_HORA_INFOLINE_RESERVA
-          ) {
-            return false;
+          if(infoline.id_tipo_servicio === user.tipo_servicio) {
+            return true
+          } else {
+            return false
           }
-          return infoline.id_tipo_servicio === user.tipo_servicio;
         })
       );
     } catch (error) {
@@ -324,6 +322,11 @@ const CreateOrderModal = ({
     }
   };
 
+  const searchCant = (idProd : number) => {    
+    const prod = prodCant.find((producto)=> producto.prodId === idProd  )
+    return prod?.cantidad
+  }
+
   return (
     <GlobalModal
       label={`Agregar ${tipoServicio === ID_TIPOSERVICIO_RESERVA ? "nuevo Evento" : "nueva Orden"}`}
@@ -407,6 +410,7 @@ const CreateOrderModal = ({
             label="Productos"
             loading={loadingProducts}
             options={products?.map((prod) => {
+              const cantidad = searchCant(prod.id);
               return {
                 label: (
                   <View
@@ -415,10 +419,12 @@ const CreateOrderModal = ({
                     flexDirection={"row"}
                     justifyContent={"space-between"}
                     height={"100%"}
-                    flex={1}
+                    position={'relative'}
+                    width={'100%'}
                     style={{ gap: 5, paddingBottom: 10 }}
                   >
                     <View
+                      width={'70%'}
                       display={"flex"}
                       flexDir={"row"}
                       alignItems={"center"}
@@ -435,27 +441,31 @@ const CreateOrderModal = ({
                         flexDirection={"column"}
                         style={{ gap: 0 }}
                         justifyContent={"start"}
+                        flexShrink={1}
                       >
                         <Text
+                          maxW="100%"
                           color={"gray.800"}
                           fontSize={16}
                           fontWeight={"medium"}
                         >
                           {prod?.nombre ?? ""}
+                          {cantidad && " x" + cantidad}
                         </Text>
-                        <Text fontSize={12} lineHeight={15} color={"gray.600"}>
+                        <Text isTruncated={false} numberOfLines={2} flexWrap="wrap" maxW={150}  fontSize={12} lineHeight={15} color={"gray.600"}>
                           {prod?.descripcion ?? ""}
                         </Text>
                       </View>
                     </View>
-                    <View
+                    <View 
+                      width={'30%'}
                       display={"flex"}
                       flexDir={"row"}
                       alignItems={"center"}
                     >
-                      <View marginRight={0} paddingRight={5}>
+                      <View >
                         <Text
-                          marginTop={3}
+                          marginRight={1}
                           fontWeight={"semibold"}
                           color={"yellow.800"}
                         >
@@ -525,6 +535,7 @@ const CreateOrderModal = ({
               return {
                 label: (
                   <View
+                    key={client.id}
                     display={"flex"}
                     flexDirection={"row"}
                     alignItems={"center"}
