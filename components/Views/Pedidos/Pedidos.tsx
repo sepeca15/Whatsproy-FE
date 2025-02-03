@@ -72,6 +72,9 @@ const PedidosEIngresos: React.FC = () => {
                     <Text style={styles.addButtonText}>+</Text>
                 </Pressable>
             </View>
+            {
+                openAddModal && <CreateOrderModal tipoServicio={user.tipo_servicio} onClose={()=> setOpenAddModal((prevState)=> (!prevState))}/>
+            }
         </View>
     );
 };

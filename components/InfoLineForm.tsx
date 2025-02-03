@@ -17,7 +17,7 @@ interface Props {
   errors: any;
 }
 
-const InfoLineForm = ({ setValue, value, infoLines, errors }: Props) => {
+const InfoLineForm = ({ setValue, value, infoLines, errors }: Props) => {  
   if (infoLines?.length === 0) {
     return null;
   }
@@ -99,7 +99,7 @@ const InfoLineForm = ({ setValue, value, infoLines, errors }: Props) => {
       default:
         return null;
     }
-  };
+  };  
 
   return (
     <View
@@ -110,8 +110,8 @@ const InfoLineForm = ({ setValue, value, infoLines, errors }: Props) => {
       alignItems="center"
       justifyContent="center"
     >
-      {infoLines?.map((infoLine) => (
-        <FormControl key={infoLine.nombre} isRequired={infoLine.requerido}>
+      {infoLines?.map((infoLine, index) => (
+        <FormControl key={infoLine.nombre + index} isRequired={infoLine.requerido}>          
           {handleRenderInfoLineInput(infoLine)}
         </FormControl>
       ))}

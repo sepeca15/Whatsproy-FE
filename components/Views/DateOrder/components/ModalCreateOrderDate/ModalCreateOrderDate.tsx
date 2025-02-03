@@ -32,7 +32,7 @@ const initialValues = {
     tipo: ''
 };
 
-const ModalEditOrderDate = ({ data, onClose, updateOrder }: IProps) => {
+const ModalCreateOrderDate = ({ data, onClose, updateOrder }: IProps) => {
     const { user } = useUser()
     const { showToast } = useToastContext();
 
@@ -51,18 +51,17 @@ const ModalEditOrderDate = ({ data, onClose, updateOrder }: IProps) => {
             const data = await api.dataOrder.create({
                 ...form,
                 id_tipo_servicio: user.tipo_servicio
-            })
-
-            if (data.ok) {
+            })            
+            if (data) {
                 updateOrder(data)
                 onClose()
                 showToast({
-                    title: "Orden editada correctamente!",
+                    title: "Orden creada correctamente!",
                     status: "success",
                 });
             }
-        } catch (error) {
-            console.log(error);
+        } catch (error : any) {
+            console.log(error.response.data.message);
 
         }
     }
@@ -83,7 +82,7 @@ const ModalEditOrderDate = ({ data, onClose, updateOrder }: IProps) => {
                                     Crear
                                 </CustomText>
                             </View>
-                            <Pressable onPress={createOrderData} disabled={!isValidData}>
+                            <Pressable style={{padding:4}} onPress={createOrderData} disabled={!isValidData}>
                                 <CustomText style={{ color: isValidData ? 'white' : '#696969' }}>
                                     Guardar
                                 </CustomText>
@@ -136,7 +135,7 @@ const ModalEditOrderDate = ({ data, onClose, updateOrder }: IProps) => {
     );
 };
 
-export default ModalEditOrderDate;
+export default ModalCreateOrderDate;
 
 const styles = StyleSheet.create({
     container: {

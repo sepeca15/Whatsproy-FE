@@ -6,4 +6,5 @@ export interface IInfoItem {
     orderId: number;
     date: string;
     status: boolean;
+    product: string
 }
