@@ -87,6 +87,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         imageUrl: product.imageUrl,
         disponible: productBDD.disponible.toString(),
         empresa_id: productBDD.empresa_id,
+       
       },
     });
   };
@@ -116,6 +117,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
   const handleModify = () => {
     console.log("Modificar");
+
+
+  };
+
+  const toggleAvailability = () => {
+    const updatedProduct = { ...productBDD, disponible: !productBDD.disponible };
+    api.products.update(productBDD.id, updatedProduct).then(() => {
+      console.log("Producto actualizado");
+      onUpdateProduct();
+    });
+    setModalVisible(false);
   };
 
   const handleDelete = () => {
@@ -143,85 +155,97 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     );
   };
 
+//  console.log("productBDD", productBDD)
+
   return (
+
     <View style={styles.containerFatehr}>
-      <Animated.View style={[styles.card, frontAnimatedStyle, { backfaceVisibility: "hidden" }]}>
-        {product.category === "Vegetariana" && (
+      <Pressable
+        style={({ pressed }) => [{ opacity: pressed ? 0.7 : 1 }]}
+        onPress={handleView}
+      >
+        {productBDD.disponible === false && (
           <View style={styles.categoryLabel}>
-            <Text style={styles.categoryText}>{product.category}</Text>
+            <Text style={styles.categoryText}>No disponible</Text>
           </View>
         )}
-        <Pressable
-          style={({ pressed }) => [styles.imageContainer, { opacity: pressed ? 0.8 : 1 }]}
-          onLongPress={flipCard}
-        >
-          <Image source={{ uri: product.imageUrl }} style={styles.image} />
-        </Pressable>
-        <View style={styles.content}>
-          <View style={styles.header}>
-            <View style={styles.titlePriceContainer}>
-              <Text style={styles.title} numberOfLines={1}>
-                {productBDD.nombre}
-              </Text>
-              <Text style={styles.price}>
-                ${productBDD.precio.toFixed(2)} {product.currency}
-              </Text>
+        <Animated.View style={[styles.card, frontAnimatedStyle, { backfaceVisibility: "hidden" }]}>
+
+          <Pressable
+            style={({ pressed }) => [styles.imageContainer]}
+            onLongPress={flipCard}
+          >
+            <Image source={{ uri: product.imageUrl }} style={styles.image} />
+          </Pressable>
+          <View style={styles.content}>
+            <View style={styles.header}>
+              <View style={styles.titlePriceContainer}>
+                <Text style={styles.title} numberOfLines={2}>
+                  {productBDD.nombre}
+                </Text>
+                <Text style={styles.price}>
+                  ${productBDD.precio.toFixed(2)} {product.currency}
+                </Text>
+              </View>
+              <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.moreButton}>
+                <Icon name="more-vertical" size={20} color="#666" />
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.moreButton}>
-              <Icon name="more-vertical" size={20} color="#666" />
+            <Text style={styles.description} numberOfLines={3}>
+              {productBDD.descripcion}
+            </Text>
+          </View>
+        </Animated.View>
+        <Animated.View
+          style={[
+            styles.card,
+            styles.cardBack,
+            backAnimatedStyle,
+            { backfaceVisibility: "hidden", position: "absolute", top: 0 },
+          ]}
+          pointerEvents={isFlipped ? "auto" : "none"}
+        >
+          <View style={styles.cardBackContent}>
+            <Text style={styles.title}>aqui puede que pongamos algo</Text>
+            <TouchableOpacity onPress={flipCard} style={[styles.cardBackButton, styles.flipBackButton]}>
+              <View style={styles.buttonContent}>
+                <Icon name="rotate-ccw" size={20} color="white" style={styles.backIcon} />
+                <Text style={styles.cardBackButtonText}>Volver</Text>
+              </View>
             </TouchableOpacity>
           </View>
-          <Text style={styles.description} numberOfLines={3}>
-            {productBDD.descripcion}
-          </Text>
-        </View>
-      </Animated.View>
-      <Animated.View
-        style={[
-          styles.card,
-          styles.cardBack,
-          backAnimatedStyle,
-          { backfaceVisibility: "hidden", position: "absolute", top: 0 },
-        ]}
-        pointerEvents={isFlipped ? "auto" : "none"}
-      >
-        <View style={styles.cardBackContent}>
-          <Text style={styles.title}>aqui puede que pongamos algo</Text>
-          <TouchableOpacity onPress={flipCard} style={[styles.cardBackButton, styles.flipBackButton]}>
-            <View style={styles.buttonContent}>
-              <Icon name="rotate-ccw" size={20} color="white" style={styles.backIcon} />
-              <Text style={styles.cardBackButtonText}>Volver</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </Animated.View>
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={() => setModalVisible(false)}>
-          <View style={styles.modalContainer}>
-            <TouchableOpacity style={[styles.modalOption, styles.editButton]} onPress={handleEdit}>
-              <Icon name="edit" size={20} style={styles.modalIcon} />
-              <Text style={styles.modalOptionText}>Editar</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.modalOption, styles.archiveButton]}>
-              <Icon name="archive" size={20} color={""} style={styles.modalIcon} />
-              <Text style={styles.modalOptionText}>Deshabilitar</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleDelete} style={[styles.modalOption, styles.deleteButton]}>
-              <Icon name="trash-2" size={20} color={""} style={styles.modalIcon} />
-              <Text style={styles.modalOptionText}>Eliminar</Text>
-            </TouchableOpacity>
-            {/* <TouchableOpacity style={[styles.modalOption, styles.cancelButton]} onPress={() => setModalVisible(false)}>
+        </Animated.View>
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={() => setModalVisible(false)}>
+            <View style={styles.modalContainer}>
+              <TouchableOpacity style={[styles.modalOption, styles.editButton]} onPress={handleEdit}>
+                <Icon name="edit" size={20} style={styles.modalIcon} />
+                <Text style={styles.modalOptionText}>Editar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={toggleAvailability} style={[styles.modalOption, styles.archiveButton]}>
+                <Icon name="archive" size={20} color={""} style={styles.modalIcon} />
+                <Text style={styles.modalOptionText}>
+                {productBDD.disponible ? "Deshabilitar" : "Habilitar"}
+              </Text>
+              <Text style={styles.modalOptionText}></Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleDelete} style={[styles.modalOption, styles.deleteButton]}>
+                <Icon name="trash-2" size={20} color={""} style={styles.modalIcon} />
+                <Text style={styles.modalOptionText}>Eliminar</Text>
+              </TouchableOpacity>
+              {/* <TouchableOpacity style={[styles.modalOption, styles.cancelButton]} onPress={() => setModalVisible(false)}>
               <Icon name="rotate-ccw" size={20} color={""} style={styles.modalIcon} />
               <Text style={styles.modalOptionText}>Cerrar</Text>
             </TouchableOpacity> */}
-          </View>
-        </TouchableOpacity>
-      </Modal>
+            </View>
+          </TouchableOpacity>
+        </Modal>
+      </Pressable>
     </View>
   );
 };

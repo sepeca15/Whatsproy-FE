@@ -14,7 +14,7 @@ export const styles = StyleSheet.create({
     marginHorizontal: 10,
     flexDirection: "row",
     overflow: "hidden",
-    height: 150,
+    height: 140,
     width: "95%",
   },
   imageContainer: {
@@ -69,7 +69,7 @@ export const styles = StyleSheet.create({
   },
   categoryLabel: {
     position: "absolute",
-    top: 3,
+    top: -2,
     left: 1,
     backgroundColor: "rgba(0, 0, 0, 0.6)",
     paddingHorizontal: 8,
@@ -84,6 +84,7 @@ export const styles = StyleSheet.create({
   },
   containerFatehr: {
     width: "100%",
+    
   },
   cardBack: {
     backgroundColor: "#f8f8f8",
