@@ -38,7 +38,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const router = useRouter();
   const [isFlipped, setIsFlipped] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const flipAnim = useRef(new Animated.Value(0)).current;
+  const [localDisponible, setLocalDisponible] = useState(productBDD.disponible);
+    const flipAnim = useRef(new Animated.Value(0)).current;
 
   const flipCard = () => {
     if (isFlipped) {
@@ -121,13 +122,19 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
   };
 
-  const toggleAvailability = () => {
-    const updatedProduct = { ...productBDD, disponible: !productBDD.disponible };
-    api.products.update(productBDD.id, updatedProduct).then(() => {
+  const toggleAvailability = async () => {
+    setModalVisible(false);
+    const newDisponible = !localDisponible;
+    setLocalDisponible(newDisponible);
+    try {
+      const updatedProduct = { ...productBDD, disponible: newDisponible };
+      await api.products.update(productBDD.id, updatedProduct);
       console.log("Producto actualizado");
       onUpdateProduct();
-    });
-    setModalVisible(false);
+    } catch (error) {
+      console.error("Error al actualizar el producto", error);
+      setLocalDisponible(!newDisponible);
+    }
   };
 
   const handleDelete = () => {
@@ -164,7 +171,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         style={({ pressed }) => [{ opacity: pressed ? 0.7 : 1 }]}
         onPress={handleView}
       >
-        {productBDD.disponible === false && (
+        {localDisponible === false && (
           <View style={styles.categoryLabel}>
             <Text style={styles.categoryText}>No disponible</Text>
           </View>
@@ -230,8 +237,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               <TouchableOpacity onPress={toggleAvailability} style={[styles.modalOption, styles.archiveButton]}>
                 <Icon name="archive" size={20} color={""} style={styles.modalIcon} />
                 <Text style={styles.modalOptionText}>
-                {productBDD.disponible ? "Deshabilitar" : "Habilitar"}
-              </Text>
+                  {localDisponible ? "Deshabilitar" : "Habilitar"}
+                </Text>
               <Text style={styles.modalOptionText}></Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={handleDelete} style={[styles.modalOption, styles.deleteButton]}>
