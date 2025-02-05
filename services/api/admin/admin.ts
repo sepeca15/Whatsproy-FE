@@ -18,6 +18,7 @@ const api = {
         find: products.find,
         update: products.update,
         delete: products.deletProd,
+        create: products.create,
     },
     plans: {
         getAll: plan.getAllPlans,

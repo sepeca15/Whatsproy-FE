@@ -51,7 +51,7 @@ export const styles = StyleSheet.create({
   buttonContainer: {
     position: 'absolute',
     bottom: 20,
-    right: 10,
+    right: 20,
     flexDirection: 'row',
     alignItems: 'center',
     zIndex: 1,

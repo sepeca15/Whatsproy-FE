@@ -17,7 +17,7 @@ const Productos: React.FC = () => {
       const response = await api.products.getAll();
       const productData: ProductBDD[] = response.data;
       setProducts(productData);
-     console.log('productData', productData)
+     console.log('productData<Product', productData)
     } catch (error) {
       console.error(error);
     }
@@ -27,11 +27,16 @@ const Productos: React.FC = () => {
     allProduct();
   }, []);
 
-
-
+  
+  const handleUpdateProduct = () => {
+    allProduct(); 
+  };
+  
   const filteredProducts = ProductsBD.filter(product =>
     product.nombre.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  ).sort((a, b) => a.nombre.localeCompare(b.nombre));
+
+
 
   return (
     <View style={styles.container}>
@@ -51,14 +56,14 @@ const Productos: React.FC = () => {
         {filteredProducts.map((product) => (
           <ProductCard
             key={product.id}
-            product={sampleProducts[2]}
+            product={sampleProducts[1]}
             productBDD={product}
             salesData={salesData}
             satisfactionData={satisfactionData}
             categoryData={categoryData}
             dayslySalesData={dayslySalesData}
             monthlySalesData={monthlySalesData}
-            onUpdateProduct={() => {}}
+            onUpdateProduct={handleUpdateProduct}
           />
         ))}
       </ScrollView>
