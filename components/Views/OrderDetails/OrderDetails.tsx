@@ -8,11 +8,13 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import Octicons from 'react-native-vector-icons/Octicons'
 import IonIcons from 'react-native-vector-icons/Ionicons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-
 import { Button, ScrollView } from "native-base";
 import ProductOrderCard from "./components/ProductOrderCard";
 import { IOrderDetails } from "./OrderDetailsTypes";
 import { useOrders } from "@/hooks/redux/useOrders";
+import { useUser } from "@/hooks/redux/useUser";
+import moment from "moment";
+import "moment/locale/es"; 
 
 interface IDetailsOrder {
     loading: boolean,
@@ -26,13 +28,16 @@ const initialState = {
 const OrderDetails = () => {
     const {handleDeleteOrder} = useOrders()
     const router = useRouter()
+    const {user} = useUser()
     const [detailOfOrder, setDetailOfOrder] = React.useState<IDetailsOrder>(initialState)
     const { orderId, keyDeleteType } = useLocalSearchParams()
-    const resolvedKeyDeleteType = keyDeleteType as string;
+    const resolvedKeyDeleteType = keyDeleteType as "pending" | "finished";
 
-    const loadOrderDetail = async () => {
+    const loadOrderDetail = async () => {        
         try {
             const orderDetailsData = await api.order.getOrderDetails(orderId)
+            console.log(orderDetailsData);
+            
             if (orderDetailsData.ok === true) {
                 setDetailOfOrder({ ...detailOfOrder, data: orderDetailsData.data })
             }
@@ -45,7 +50,7 @@ const OrderDetails = () => {
             }))
         }
     }
-
+    
     React.useEffect(() => {
         if (orderId) {
             loadOrderDetail()
@@ -77,7 +82,7 @@ const OrderDetails = () => {
                         <Text style={[styles.textTitle, { fontWeight: "bold" }]}>Order #{detailOfOrder.data?.id}</Text>
                         <View style={styles.containerDate}>
                             <AntDesign name="calendar" color={'white'} />
-                            <Text style={styles.text}> 25 de diciembre, 12:36</Text>
+                            <Text style={styles.text}> {moment(detailOfOrder.data?.date).locale('es').format("D [de] MMMM [de] YYYY")}</Text>
                         </View>
                     </View>
                     <Text style={styles.buttonStatus}>{detailOfOrder.data?.confirm ? 'Aceptado' : 'Pending'}</Text>

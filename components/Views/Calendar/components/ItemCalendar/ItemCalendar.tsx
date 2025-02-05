@@ -14,6 +14,7 @@ import { useRouter } from "expo-router";
 import { styles } from "./ItemCalendarStyles";
 import * as moment from 'moment-timezone'
 import { useUser } from "@/hooks/redux/useUser";
+import Icon from "react-native-vector-icons/Feather";
 
 interface IItemCalendar {
   InfoItem: IInfoItem;
@@ -40,7 +41,7 @@ const ItemCalendar = ({
     info: null,
     loadingApi: true,
   });
-
+  const keyDeleteType = confirm ? 'pending' : 'finished'
   const animationHeight = useRef(new Animated.Value(0)).current;
 
   const toggleLoadingApi = (value: boolean) => {
@@ -92,13 +93,23 @@ const ItemCalendar = ({
   const validateFunction = async () => {
     if (confirm) {
       router.push({
-        pathname: "/(tabs)/orderChat",
-        params: { chatId: dataDetails.info?.chatId.id },
+        pathname: "/(tabs)/orderDetails",
+        params: { orderId: InfoItem.orderId, keyDeleteType: keyDeleteType},
       });
     } else {
       confirmOrder(InfoItem.orderId);
     }
   };
+
+  const productsText = () => {
+    let productsText = ''
+    dataDetails.info?.products.map((product,index)=> {
+      const isEnd = dataDetails.info?.products.length === index + 1 
+      productsText += product.productoInfo.nombre + (isEnd ? "" : ', ')
+    } )
+
+    return productsText
+  }
 
   return (
     <View style={{ paddingRight: 10 }}>
@@ -117,7 +128,7 @@ const ItemCalendar = ({
             alignItems={"center"}
             fontWeight={"medium"}
           >
-            <Text color={"white"}>ESTADO</Text>
+            <Text color={"white"}>{InfoItem.product}</Text>
           </Container>
           <View style={styles.containerRight}>
             <Container
@@ -184,24 +195,12 @@ const ItemCalendar = ({
                       "Fecha no disponible"}
                   </Text>
                 </View>
-                <ScrollView horizontal={false} style={styles.containerProducts}>
-                  {dataDetails.info?.products.map((product, index) => (
-                    <View key={index} style={styles.product}>
-                      <View style={styles.photo}></View>
-                      <View style={styles.info}>
-                        <Text color={"white"} style={styles.nameProduct}>
-                          {product.productoInfo.nombre}
-                        </Text>
-                        <Text color={"gray.200"} style={styles.cantidad}>
-                          Cantidad: {product.cantidad}
-                        </Text>
-                      </View>
-                      <Text color={"white"} style={styles.price}>
-                        $ {product.cantidad * product.productoInfo.precio}
-                      </Text>
-                    </View>
-                  ))}
-                </ScrollView>
+                <View style={styles.rowInfo}>
+                  <Icon name="shopping-bag" size={16} color="white" />
+                  <Text color={'white'}>
+                    {productsText()}
+                  </Text>
+                </View>
                 <View style={styles.total}>
                   <Text fontSize={18} fontWeight={"bold"} color={"white"}>
                     Total:
@@ -233,13 +232,8 @@ const ItemCalendar = ({
                     ]}
                   >
                     <Text color={"white"} fontSize={12}>
-                      {confirm ? "Ir al chat" : "Confirmar"}
+                      {confirm ? "Ver Detalles" : "Confirmar"}
                     </Text>
-                    <Ion
-                      color={"white"}
-                      name={confirm ? "chatbubble" : "checkmark-done"}
-                      size={16}
-                    />
                   </Pressable>
                 </View>
               </View>
