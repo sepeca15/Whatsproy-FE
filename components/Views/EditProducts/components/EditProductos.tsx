@@ -52,7 +52,6 @@ const EditProduct = ({
   disponible,
   empresa_id,
 }: EditProductProps) => {
-  console.log("disponible", disponible)
   const router = useRouter()
   const [formData, setFormData] = useState<ProductFormData>({
     id,

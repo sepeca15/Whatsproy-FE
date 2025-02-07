@@ -15,6 +15,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import createStyles from './AddUserStyles';
+import { FormattedMessage } from 'react-intl'; // Importa FormattedMessage
 
 const AddUser = () => {
   const [nombre, setNombre] = useState<string>('');
@@ -91,7 +92,7 @@ const AddUser = () => {
               <Ionicons name="camera" size={20} color="#fff" />
             </View>
           </TouchableOpacity>
-          <Text style={styles.title}>Agregar Usuario</Text>
+          <Text style={styles.title}><FormattedMessage id="addUser" /></Text>
           <View style={styles.inputContainer}>
             <Ionicons name="person-outline" size={24} style={styles.icon} />
             <TextInput
@@ -128,7 +129,7 @@ const AddUser = () => {
             onPress={handleAddUsuario}
             disabled={!isValid}
           >
-            <Text style={styles.buttonText}>Crear</Text>
+            <Text style={styles.buttonText}><FormattedMessage id="create" /></Text>
           </TouchableOpacity>
         </Animated.View>
       </ScrollView>
@@ -137,4 +138,3 @@ const AddUser = () => {
 };
 
 export default AddUser;
-

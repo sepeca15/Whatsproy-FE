@@ -6,11 +6,12 @@ import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { styles } from './ProductosStyles';
 import api from "@/services/api/admin";
-
+import { useLocalization } from "@/app/LocalizationContext";
 const Productos: React.FC = () => {
   const router = useRouter();
   const [ProductsBD, setProducts] = useState<ProductBDD[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const { locale } = useLocalization(); // Usa el contexto de localización
 
   const allProduct = async () => {
     try {
@@ -34,7 +35,7 @@ const Productos: React.FC = () => {
   
   const filteredProducts = ProductsBD.filter(product =>
     product.nombre.toLowerCase().includes(searchTerm.toLowerCase())
-  ).sort((a, b) => a.nombre.localeCompare(b.nombre));
+  ).sort((a, b) => a.nombre.localeCompare(b.nombre, locale)); // Usa el locale para comparar
 
 
 

@@ -7,42 +7,43 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import IonIcons from 'react-native-vector-icons/Ionicons'
 import CustomText from '@/components/CustomText';
 import { Center } from 'native-base';
+import { FormattedMessage } from 'react-intl'; // Importa FormattedMessage
 
 const settingsPage = [
   {
-    title: 'Ajustes generales',
+    title: 'generalSettings',
     href: '/(tabs)/generalSettings',
-    description: 'Maneja horas de apertura, cierre, intervalos entre reservas y abre/cierra tu local.',
+    description: 'manageHours',
     icon: <Feather size={20} color={'white'} name='settings' />
   },
   {
-    title: 'Usuario',
+    title: 'user',
     href: '/(tabs)/usuarios',
-    description: 'Crea usuarios para tu empresa los cuales puedes maneajar y llevar control de los mismos.',
+    description: 'createUsers',
     icon: <FontAwesome5 name='users' size={20} color={'white'} />
   },
   {
-    title: 'Notificaciones',
+    title: 'notifications',
     href: '',
-    description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus',
+    description: 'notificationsDescription',
     icon: <IonIcons name='notifications-outline' size={20} color={'white'} />
   },
   {
-    title: 'Privacidad y Seguridad',
+    title: 'privacySecurity',
     href: '',
-    description: 'Privacidad y seguridad de tus datos',
+    description: 'privacyDescription',
     icon: <Feather size={20} color={'white'} name='shield' />
   },
   {
-    title: 'Membresia',
+    title: 'membership',
     href: '',
-    description: 'Gestiona tus pagos, paga por adelantado, cambia de plan o cancela tu suscripcion.',
+    description: 'membershipDescription',
     icon: <AntDesign name='creditcard' size={20} color={'white'} />
   },
   {
-    title: 'Datos de pedido',
+    title: 'orderData',
     href: '/(tabs)/datosPedido',
-    description: 'Ingresa la informacion necesaria para tus pedidos o reservas.',
+    description: 'orderDataDescription',
     icon: <IonIcons size={20} color={'white'} name='newspaper-outline' />
   }
 ]
@@ -53,7 +54,9 @@ const Settings = () => {
     <Center style={styles.father}>
       <View style={styles.container}>
         <View style={styles.title}>
-            <CustomText style={{ textAlign: 'center', fontSize: 25, fontWeight: 'bold', color:'white' }} >Configuraciones</CustomText>
+            <CustomText style={{ textAlign: 'center', fontSize: 25, fontWeight: 'bold', color:'white' }} >
+              <FormattedMessage id="settings" />
+            </CustomText>
         </View>
         <View style={styles.containerItems}>
           {
@@ -68,8 +71,8 @@ const Settings = () => {
                     {item.icon}
                   </View>
                   <View style={styles.col}>
-                    <Text style={styles.cardText}>{item.title}</Text>
-                    <CustomText style={styles.textDesc}>{item.description}</CustomText>
+                    <Text style={styles.cardText}><FormattedMessage id={item.title} /></Text>
+                    <CustomText style={styles.textDesc}><FormattedMessage id={item.description} /></CustomText>
                   </View>
                 </View>
               </TouchableOpacity>
@@ -151,6 +154,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
-
 
 export default Settings;

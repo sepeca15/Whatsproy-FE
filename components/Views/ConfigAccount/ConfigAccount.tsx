@@ -7,6 +7,7 @@ import Step2 from "./Components/Steps/Step2";
 import Step3 from "./Components/Steps/Step3";
 import Step4 from "./Components/Steps/Step4";
 import { useUser } from "@/hooks/redux/useUser";
+import { FormattedMessage } from 'react-intl'; // Importa FormattedMessage
 
 const ConfigAccount = () => {
   const { user } = useUser();
@@ -57,7 +58,7 @@ const ConfigAccount = () => {
               fontWeight: "bold",
             }}
           >
-            Por favor, termina de configurar tu cuenta
+            <FormattedMessage id="pleaseFinishConfig" />
           </CustomText>
           {renderStep()}
         </View>

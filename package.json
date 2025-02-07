@@ -42,6 +42,7 @@
     "normalize-css-color": "^1.0.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-intl": "^7.1.5",
     "react-native": "0.74.5",
     "react-native-calendars": "^1.1307.0",
     "react-native-chart-kit": "^6.12.0",

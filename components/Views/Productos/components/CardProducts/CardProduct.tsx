@@ -4,6 +4,8 @@ import Icon from "react-native-vector-icons/Feather";
 import { useRouter } from "expo-router";
 import { styles } from "./CardProdStyle";
 import api from "@/services/api/admin";
+import { useLocalization } from "@/app/LocalizationContext"; // Importa el contexto de localización
+import { FormattedMessage } from 'react-intl'; // Importa FormattedMessage
 import type {
   Product,
   SatisfactionData,
@@ -36,10 +38,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onUpdateProduct,
 }) => {
   const router = useRouter();
+  const { locale } = useLocalization();
   const [isFlipped, setIsFlipped] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [localDisponible, setLocalDisponible] = useState(productBDD.disponible);
-    const flipAnim = useRef(new Animated.Value(0)).current;
+  const flipAnim = useRef(new Animated.Value(0)).current;
 
   const flipCard = () => {
     if (isFlipped) {
@@ -88,7 +91,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         imageUrl: product.imageUrl,
         disponible: productBDD.disponible.toString(),
         empresa_id: productBDD.empresa_id,
-       
       },
     });
   };
@@ -118,8 +120,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
   const handleModify = () => {
     console.log("Modificar");
-
-
   };
 
   const toggleAvailability = async () => {
@@ -162,10 +162,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     );
   };
 
-//  console.log("productBDD", productBDD)
-
   return (
-
     <View style={styles.containerFatehr}>
       <Pressable
         style={({ pressed }) => [{ opacity: pressed ? 0.7 : 1 }]}
@@ -173,11 +170,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       >
         {localDisponible === false && (
           <View style={styles.categoryLabel}>
-            <Text style={styles.categoryText}>No disponible</Text>
+            <Text style={styles.categoryText}>
+              <FormattedMessage id="notAvailable" />
+            </Text>
           </View>
         )}
         <Animated.View style={[styles.card, frontAnimatedStyle, { backfaceVisibility: "hidden" }]}>
-
           <Pressable
             style={({ pressed }) => [styles.imageContainer]}
             onLongPress={flipCard}
@@ -213,11 +211,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           pointerEvents={isFlipped ? "auto" : "none"}
         >
           <View style={styles.cardBackContent}>
-            <Text style={styles.title}>aqui puede que pongamos algo</Text>
+            <Text style={styles.title}>
+              <FormattedMessage id="somethingHere" />
+            </Text>
             <TouchableOpacity onPress={flipCard} style={[styles.cardBackButton, styles.flipBackButton]}>
               <View style={styles.buttonContent}>
                 <Icon name="rotate-ccw" size={20} color="white" style={styles.backIcon} />
-                <Text style={styles.cardBackButtonText}>Volver</Text>
+                <Text style={styles.cardBackButtonText}>
+                  <FormattedMessage id="back" />
+                </Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -232,23 +234,22 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <View style={styles.modalContainer}>
               <TouchableOpacity style={[styles.modalOption, styles.editButton]} onPress={handleEdit}>
                 <Icon name="edit" size={20} style={styles.modalIcon} />
-                <Text style={styles.modalOptionText}>Editar</Text>
+                <Text style={styles.modalOptionText}>
+                  <FormattedMessage id="edit" />
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={toggleAvailability} style={[styles.modalOption, styles.archiveButton]}>
                 <Icon name="archive" size={20} color={""} style={styles.modalIcon} />
                 <Text style={styles.modalOptionText}>
-                  {localDisponible ? "Deshabilitar" : "Habilitar"}
+                  {localDisponible ? <FormattedMessage id="disable" /> : <FormattedMessage id="enable" />}
                 </Text>
-              <Text style={styles.modalOptionText}></Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={handleDelete} style={[styles.modalOption, styles.deleteButton]}>
                 <Icon name="trash-2" size={20} color={""} style={styles.modalIcon} />
-                <Text style={styles.modalOptionText}>Eliminar</Text>
+                <Text style={styles.modalOptionText}>
+                  <FormattedMessage id="delete" />
+                </Text>
               </TouchableOpacity>
-              {/* <TouchableOpacity style={[styles.modalOption, styles.cancelButton]} onPress={() => setModalVisible(false)}>
-              <Icon name="rotate-ccw" size={20} color={""} style={styles.modalIcon} />
-              <Text style={styles.modalOptionText}>Cerrar</Text>
-            </TouchableOpacity> */}
             </View>
           </TouchableOpacity>
         </Modal>
