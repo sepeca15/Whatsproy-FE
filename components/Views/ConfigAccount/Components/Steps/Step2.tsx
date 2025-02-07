@@ -7,38 +7,38 @@ import { IPlans } from "../MethodOfpaycard/MethodOfPayCardTypes";
 import * as Progress from "react-native-progress";
 import { Colors } from "@/constants/Colors";
 import { ScrollView } from "native-base";
+import { FormattedMessage } from 'react-intl'; // Importa FormattedMessage
 
 const Step2 = () => {
-  const [loading, setLoading] = React.useState<boolean>(false)
-  const [plans, setPlans] = React.useState<IPlans[] | null>(null)
+  const [loading, setLoading] = React.useState<boolean>(false);
+  const [plans, setPlans] = React.useState<IPlans[] | null>(null);
   const scrollViewRef = useRef<RNScrollView>(null);
 
   const loadPlans = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
-      const allPlans = await api.plans.getAll()
+      const allPlans = await api.plans.getAll();
       if (allPlans) {
-        setPlans(allPlans)
+        setPlans(allPlans);
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
-    finally {
-      setLoading(false)
-    }
-  }
+  };
 
   useEffect(() => {
-    loadPlans()
+    loadPlans();
     if (scrollViewRef.current) {
       scrollViewRef.current.scrollTo({ x: 200, animated: false });
     }
   }, []);
 
   return (
-    loading ?
-        <Progress.Circle color={Colors.light.primary} style={{margin:'auto', marginVertical:10,}} indeterminate={true} size={50} />
-      :
+    loading ? (
+      <Progress.Circle color={Colors.light.primary} style={{ margin: 'auto', marginVertical: 10 }} indeterminate={true} size={50} />
+    ) : (
       <ScrollView
         horizontal={true}
         showsHorizontalScrollIndicator={false}
@@ -46,14 +46,12 @@ const Step2 = () => {
         ref={scrollViewRef}
       >
         <View style={styles.test}>
-          {
-            plans?.map((Plan, index) => {
-              return <MethodOfPayCard key={Plan.nombre + index} Plan={Plan} />
-            })
-          }
+          {plans?.map((Plan, index) => (
+            <MethodOfPayCard key={Plan.nombre + index} Plan={Plan} />
+          ))}
         </View>
       </ScrollView>
-
+    )
   );
 };
 

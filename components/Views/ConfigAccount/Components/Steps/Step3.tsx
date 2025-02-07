@@ -1,5 +1,4 @@
-
-import * as React from "react"
+import * as React from "react";
 import { View } from "native-base";
 import { styles } from "../../ConfigAccountStyles";
 import * as Progress from 'react-native-progress';
@@ -8,10 +7,11 @@ import CustomText from "@/components/CustomText";
 import { useUser } from "@/hooks/redux/useUser";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import CustomButton from "@/components/CustomButton";
+import { FormattedMessage } from 'react-intl'; // Importa FormattedMessage
 
 const Step3 = () => {
-  const { handleUpdateApiConfigured } = useUser()
-  const [statusAccount, setStatusAccount] = React.useState<boolean>(false)
+  const { handleUpdateApiConfigured } = useUser();
+  const [statusAccount, setStatusAccount] = React.useState<boolean>(false);
 
   const getResponseFromMyBe = async () => {
     const intervalId = setInterval(async () => {
@@ -29,12 +29,12 @@ const Step3 = () => {
   };
 
   React.useEffect(() => {
-    getResponseFromMyBe()
-  }, [])
+    getResponseFromMyBe();
+  }, []);
 
   const Next = () => {
-    handleUpdateApiConfigured()
-  }
+    handleUpdateApiConfigured();
+  };
 
   return (
     <View style={styles.containerStep3}>
@@ -43,10 +43,10 @@ const Step3 = () => {
           <Progress.Circle color={Colors.light.primary} indeterminate={true} />
           :
           <View style={{flex:1}}>
-            <CustomText style={{textAlign:'center'}}>Ya hemos configurado tu backend, por favor continue</CustomText>
+            <CustomText style={{textAlign:'center'}}><FormattedMessage id="backendConfigured" /></CustomText>
             <View style={styles.ContainerFooter}>
               <CustomButton isDisabled={!statusAccount} onPress={Next}>
-                Continuar
+                <FormattedMessage id="continue" />
               </CustomButton>
             </View>
           </View>
@@ -55,4 +55,4 @@ const Step3 = () => {
   );
 }
 
-export default Step3
+export default Step3;

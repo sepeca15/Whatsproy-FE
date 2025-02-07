@@ -2,8 +2,8 @@ import React from 'react';
 import { FormControl, Input, TextArea } from 'native-base';
 
 interface InputFieldProps {
-  label?: string;
-  placeholder: string;
+  label?: React.ReactNode; // Acepta elementos JSX
+  placeholder: React.ReactNode; // Acepta elementos JSX
   value?: string;
   onChangeText?: (text: string) => void;
   marginTop?: number;
@@ -12,7 +12,7 @@ interface InputFieldProps {
   keyboardType?: any;
   isRequired?: boolean;
   error?: any;
-  icon?: any
+  icon?: any;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -36,7 +36,7 @@ const InputField: React.FC<InputFieldProps> = ({
           InputLeftElement={icon}
           keyboardType={keyboardType}
           autoCompleteType={""}
-          placeholder={placeholder}
+          placeholder={typeof placeholder === 'string' ? placeholder : undefined}
           onChangeText={onChangeText}
           {...props}
         />
@@ -45,7 +45,7 @@ const InputField: React.FC<InputFieldProps> = ({
           InputLeftElement={icon}
           keyboardType={keyboardType}
           type={type}
-          placeholder={placeholder}
+          placeholder={typeof placeholder === 'string' ? placeholder : undefined}
           onChangeText={onChangeText}
           {...props}
         />

@@ -6,47 +6,48 @@ import { Colors } from "@/constants/Colors";
 import LoadAuthCode from "../LoadAuthCode";
 import LoadQR from "../LoadQR";
 import { useUser } from "@/hooks/redux/useUser";
-import {io} from 'socket.io-client'
+import { io } from 'socket.io-client';
 import CustomButton from "@/components/CustomButton";
 import { useToastContext } from "@/contexts/ToastContext";
-type buttons = 'Auth' | 'QR'
+import { FormattedMessage } from 'react-intl'; // Importa FormattedMessage
+
+type buttons = 'Auth' | 'QR';
 
 const Step4 = () => {
-  const {user:{apiUrl}, handleUpdateGreenApiConfig} = useUser()
+  const { user: { apiUrl }, handleUpdateGreenApiConfig } = useUser();
   const [selectedButton, setSelectedButton] = React.useState<buttons | null>(null);
   const [data, setData] = React.useState({
     QRCode: null,
     AuthCode: null
-  })
-  const {showToast} = useToastContext()
-  
+  });
+  const { showToast } = useToastContext();
 
-  React.useEffect(()=> {
-    const socketIo = io(apiUrl)
+  React.useEffect(() => {
+    const socketIo = io(apiUrl);
 
-    socketIo.on('greenApiStatusResponse',(data)=> {
-      FinishConfigGreenApi()
-    })
+    socketIo.on('greenApiStatusResponse', (data) => {
+      FinishConfigGreenApi();
+    });
 
     return () => {
       socketIo.disconnect();
     };
 
-  },[])
+  }, []);
 
-  const FinishConfigGreenApi = async() => {
+  const FinishConfigGreenApi = async () => {
     try {
-      await handleUpdateGreenApiConfig()
+      await handleUpdateGreenApiConfig();
       showToast({
-        description:"Ya hemos terminado de configurar todo.",
-        title:'Configuracion exitosa',
-        status:'success'
-      })
+        description: <FormattedMessage id="configSuccessDescription" />,
+        title: <FormattedMessage id="configSuccessTitle" />,
+        status: 'success'
+      });
 
-    } catch (error:any) {
+    } catch (error: any) {
       console.log(error?.message);
     }
-  }
+  };
 
   const handleButtonSelect = (button: buttons) => {
     setSelectedButton(button);
@@ -56,14 +57,14 @@ const Step4 = () => {
     setData((prevState) => ({
       ...prevState,
       [key as any]: value
-    }))
-  }
+    }));
+  };
 
   return (
     <View style={styles.container}>
       {
         !data.AuthCode && !data.QRCode &&
-        <CustomText style={styles.centerText}>Elije como deseas conectar tu numero de whatsapp</CustomText>
+        <CustomText style={styles.centerText}><FormattedMessage id="chooseConnectionMethod" /></CustomText>
       }
       <View style={styles.containerButtons}>
         <Button
@@ -80,7 +81,7 @@ const Step4 = () => {
               selectedButton === "QR" ? styles.selectedText : styles.defaultText,
             ]}
           >
-            With QR
+            <FormattedMessage id="withQR" />
           </CustomText>
         </Button>
         <Button
@@ -97,7 +98,7 @@ const Step4 = () => {
               selectedButton === "Auth" ? styles.selectedText : styles.defaultText,
             ]}
           >
-            Auth code
+            <FormattedMessage id="authCode" />
           </CustomText>
         </Button>
       </View>
@@ -110,7 +111,7 @@ const Step4 = () => {
             selectedButton === "QR" ?
               <LoadQR QRCode={data.QRCode} handleUpdateData={handleUpdateData} />
               :
-              <CustomText>Por favor elija una opcion</CustomText>
+              <CustomText><FormattedMessage id="pleaseChooseOption" /></CustomText>
         }
       </View>
     </View>
