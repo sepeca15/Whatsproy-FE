@@ -5,7 +5,7 @@ import { useRouter } from "expo-router";
 import { styles } from "./CardProdStyle";
 import api from "@/services/api/admin";
 import { useLocalization } from "@/app/LocalizationContext"; // Importa el contexto de localización
-import { FormattedMessage } from 'react-intl'; // Importa FormattedMessage
+import { FormattedMessage, useIntl } from 'react-intl'; // Importa FormattedMessage y useIntl
 import type {
   Product,
   SatisfactionData,
@@ -39,6 +39,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const router = useRouter();
   const { locale } = useLocalization();
+  const intl = useIntl(); // Usa useIntl para obtener el objeto intl
   const [isFlipped, setIsFlipped] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [localDisponible, setLocalDisponible] = useState(productBDD.disponible);
@@ -139,15 +140,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
   const handleDelete = () => {
     Alert.alert(
-      "Confirmar eliminación",
-      "¿Estás seguro de que deseas eliminar este producto?",
+      intl.formatMessage({ id: "confirmDelete", defaultMessage: "Confirm deletion" }),
+      intl.formatMessage({ id: "confirmDeleteMessage", defaultMessage: "Are you sure you want to delete this product?" }),
       [
         {
-          text: "Cancelar",
+          text: intl.formatMessage({ id: "cancel", defaultMessage: "Cancel" }),
           style: "cancel",
         },
         {
-          text: "Eliminar",
+          text: intl.formatMessage({ id: "delete", defaultMessage: "Delete" }),
           onPress: () => {
             setModalVisible(false);
             api.products.delete(productBDD.id).then(() => {
@@ -171,7 +172,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {localDisponible === false && (
           <View style={styles.categoryLabel}>
             <Text style={styles.categoryText}>
-              <FormattedMessage id="notAvailable" />
+              <FormattedMessage id="notAvailable" defaultMessage="Not available" />
             </Text>
           </View>
         )}
@@ -212,13 +213,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         >
           <View style={styles.cardBackContent}>
             <Text style={styles.title}>
-              <FormattedMessage id="somethingHere" />
+              <FormattedMessage id="somethingHere" defaultMessage="Here we might put something" />
             </Text>
             <TouchableOpacity onPress={flipCard} style={[styles.cardBackButton, styles.flipBackButton]}>
               <View style={styles.buttonContent}>
                 <Icon name="rotate-ccw" size={20} color="white" style={styles.backIcon} />
                 <Text style={styles.cardBackButtonText}>
-                  <FormattedMessage id="back" />
+                  <FormattedMessage id="back" defaultMessage="Back" />
                 </Text>
               </View>
             </TouchableOpacity>
@@ -235,19 +236,19 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               <TouchableOpacity style={[styles.modalOption, styles.editButton]} onPress={handleEdit}>
                 <Icon name="edit" size={20} style={styles.modalIcon} />
                 <Text style={styles.modalOptionText}>
-                  <FormattedMessage id="edit" />
+                  <FormattedMessage id="edit" defaultMessage="Edit" />
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={toggleAvailability} style={[styles.modalOption, styles.archiveButton]}>
                 <Icon name="archive" size={20} color={""} style={styles.modalIcon} />
                 <Text style={styles.modalOptionText}>
-                  {localDisponible ? <FormattedMessage id="disable" /> : <FormattedMessage id="enable" />}
+                  {localDisponible ? <FormattedMessage id="disable" defaultMessage="Disable" /> : <FormattedMessage id="enable" defaultMessage="Enable" />}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={handleDelete} style={[styles.modalOption, styles.deleteButton]}>
                 <Icon name="trash-2" size={20} color={""} style={styles.modalIcon} />
                 <Text style={styles.modalOptionText}>
-                  <FormattedMessage id="delete" />
+                  <FormattedMessage id="delete" defaultMessage="Delete" />
                 </Text>
               </TouchableOpacity>
             </View>

@@ -5,6 +5,7 @@ import { GestureHandlerRootView, TapGestureHandler } from 'react-native-gesture-
 import { data, categories, colors, totalValues } from '../data';
 import { MonthlySalesData, SalesSegment } from './types';
 import { Styles } from './TendenciaVentasStyles';
+import { FormattedMessage } from 'react-intl'; // Importa FormattedMessage
 
 const { width: screenWidth } = Dimensions.get('window');
 const chartWidth = screenWidth - 40;
@@ -73,7 +74,9 @@ const TendenciaVentasCircular: React.FC = () => {
 
   return (
     <GestureHandlerRootView style={Styles.container}>
-      <Text style={Styles.title}>Tendencia de Ventas por Categoría</Text>
+      <Text style={Styles.title}>
+        <FormattedMessage id="salesTrendByCategory" defaultMessage="Sales Trend by Category" />
+      </Text>
       <Svg width={chartWidth} height={chartHeight} viewBox={`0 0 ${chartWidth} ${chartHeight}`} style={Styles.chart}>
         <G transform={`translate(${chartWidth / 2}, ${chartHeight / 2})`}>
           {segments.map((segment, index) => (
@@ -105,7 +108,9 @@ const TendenciaVentasCircular: React.FC = () => {
       {selectedSegment && (
         <View style={Styles.tooltip}>
           <Text style={Styles.tooltipText}>{selectedSegment.label}</Text>
-          <Text style={Styles.tooltipText}>Valor: {selectedSegment.value}</Text>
+          <Text style={Styles.tooltipText}>
+            <FormattedMessage id="value" defaultMessage="Value" />: {selectedSegment.value}
+          </Text>
         </View>
       )}
     </GestureHandlerRootView>

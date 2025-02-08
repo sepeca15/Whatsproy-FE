@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Pressable, Animated, Easing, Dimensions } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { months, completedData,  } from '../data';
+import { months, completedData } from '../data';
 import { Styles } from './PedidosRealizadosStyles';
+import { FormattedMessage } from 'react-intl'; // Importa FormattedMessage
 
 const maxValue = Math.max(...completedData);
 const screenWidth = Dimensions.get('window').width;
@@ -76,7 +77,9 @@ const PedidosRealizados: React.FC = () => {
     return (
         <Animated.View style={[Styles.chartContainer, { opacity: fadeAnim }]}>
             <View style={Styles.titleContainer}>
-                <Text style={Styles.chartTitle}>Pedidos realizados</Text>
+                <Text style={Styles.chartTitle}>
+                    <FormattedMessage id="completedOrders" defaultMessage="Completed Orders" />
+                </Text>
                 <Pressable onPress={toggleScale}>
                     <Feather name="bar-chart-2" size={24} color="#333" />
                 </Pressable>
@@ -131,4 +134,3 @@ const PedidosRealizados: React.FC = () => {
 };
 
 export default PedidosRealizados;
-

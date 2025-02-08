@@ -5,6 +5,7 @@ import CardNewPedido from '../CardNewPedido.tsx';
 import { useOrders } from '@/hooks/redux/useOrders';
 import * as Progress from "react-native-progress";
 import CustomText from '@/components/CustomText';
+import { FormattedMessage } from 'react-intl'; // Importa FormattedMessage
 
 <Progress.Circle style={{ marginVertical: 20 }} indeterminate={true} size={50} />
 
@@ -36,13 +37,14 @@ const OrdersFinished = () => {
                                     source={require('../../../../../assets/images/no-records.png')}
                                     style={{ width:350, height:250, objectFit:'contain'}}                                
                                 />
-                                <CustomText>No hay ordenes disponibles</CustomText>
+                                <CustomText>
+                                    <FormattedMessage id="noOrdersAvailable" defaultMessage="No orders available" />
+                                </CustomText>
                             </View>
                     )
             }
         </View>
     );
 };
-
 
 export default OrdersFinished;

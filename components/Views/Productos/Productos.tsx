@@ -1,24 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { View, ScrollView, TouchableOpacity, Text, TextInput } from "react-native";
 import { ProductCard } from "./components/CardProducts/CardProduct";
-import { sampleProducts, Product, ProductBDD, salesData, categoryData, satisfactionData, monthlySalesData, dayslySalesData } from "../../../hooks/dataProduct";
+import { sampleProducts, ProductBDD, salesData, categoryData, satisfactionData, monthlySalesData, dayslySalesData } from "../../../hooks/dataProduct";
 import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { styles } from './ProductosStyles';
 import api from "@/services/api/admin";
 import { useLocalization } from "@/app/LocalizationContext";
+import { useIntl } from 'react-intl'; 
+
 const Productos: React.FC = () => {
   const router = useRouter();
   const [ProductsBD, setProducts] = useState<ProductBDD[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const { locale } = useLocalization(); // Usa el contexto de localización
+  const { locale } = useLocalization(); 
+  const intl = useIntl(); 
 
   const allProduct = async () => {
     try {
       const response = await api.products.getAll();
       const productData: ProductBDD[] = response.data;
       setProducts(productData);
-     console.log('productData<Product', productData)
+      console.log('productData', productData);
     } catch (error) {
       console.error(error);
     }
@@ -28,16 +31,13 @@ const Productos: React.FC = () => {
     allProduct();
   }, []);
 
-  
   const handleUpdateProduct = () => {
-    allProduct(); 
+    allProduct();
   };
-  
+
   const filteredProducts = ProductsBD.filter(product =>
     product.nombre.toLowerCase().includes(searchTerm.toLowerCase())
-  ).sort((a, b) => a.nombre.localeCompare(b.nombre, locale)); // Usa el locale para comparar
-
-
+  ).sort((a, b) => a.nombre.localeCompare(b.nombre, locale)); // Ordena los productos por nombre
 
   return (
     <View style={styles.container}>
@@ -45,7 +45,7 @@ const Productos: React.FC = () => {
         <Icon name="search" size={20} style={styles.searchIcon} />
         <TextInput
           style={styles.searchBar}
-          placeholder="Buscar por nombre"
+          placeholder={intl.formatMessage({ id: "searchPlaceholder", defaultMessage: "Search by name" })}
           value={searchTerm}
           onChangeText={text => setSearchTerm(text)}
         />

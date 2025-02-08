@@ -7,7 +7,7 @@ import Step2 from "./Components/Steps/Step2";
 import Step3 from "./Components/Steps/Step3";
 import Step4 from "./Components/Steps/Step4";
 import { useUser } from "@/hooks/redux/useUser";
-import { FormattedMessage } from 'react-intl'; // Importa FormattedMessage
+import { FormattedMessage } from 'react-intl'; 
 
 const ConfigAccount = () => {
   const { user } = useUser();
