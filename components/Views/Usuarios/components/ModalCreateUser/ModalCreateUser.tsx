@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from 'react';
 import { Pressable, View, Text, TouchableOpacity, ScrollView, Animated, Image } from 'react-native';
 import styles from './ModalCreateUserStyles';
@@ -15,6 +13,7 @@ import api from '@/services/api/admin';
 import { useUser } from '@/hooks/redux/useUser';
 import CustomButton from '@/components/CustomButton';
 import { useToastContext } from '@/contexts/ToastContext';
+import { useIntl } from 'react-intl'; // Importa useIntl
 
 type keyValues = 'nombre' | 'apellido' | 'correo' | 'contraseña'
 
@@ -39,13 +38,14 @@ const initialValues = {
 }
 
 const ModalCreateUser = ({ onToogleModal, isOpen, addNewUser }: IModalCreateUser) => {
-    const {user} = useUser()
+    const {user} = useUser();
+    const intl = useIntl(); // Usa useIntl para obtener la instancia de intl
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [createUser, setCreateUser] = useState<CreateUser>(initialValues);
     const [errors, setErrors] = useState<any>({});
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [loadingApi, setLoadingApi] = useState(false);
-    const { showToast } = useToastContext()
+    const { showToast } = useToastContext();
 
     const setValueForm = (key: keyValues, value: string) => {
         setCreateUser((prevState) => ({
@@ -69,17 +69,17 @@ const ModalCreateUser = ({ onToogleModal, isOpen, addNewUser }: IModalCreateUser
 
     const validate = () => {
         const newErrors: any = {};
-        if (!createUser.nombre) newErrors.nombre = "Ingrese un nombre válido";
-        if (!createUser.apellido) newErrors.apellido = "Ingrese un apellido válido";
+        if (!createUser.nombre) newErrors.nombre = intl.formatMessage({ id: "modalValidName", defaultMessage: "Please enter a valid name" });
+        if (!createUser.apellido) newErrors.apellido = intl.formatMessage({ id: "modalValidLastName", defaultMessage: "Please enter a valid last name" });
         if (!createUser.correo || !/\S+@\S+\.\S+/.test(createUser.correo))
-            newErrors.correo = "Ingrese un correo válido";
-        if (!createUser.contraseña) newErrors.contraseña = "Ingrese una contraseña válida";
+            newErrors.correo = intl.formatMessage({ id: "modalValidEmail", defaultMessage: "Please enter a valid email address" });
+        if (!createUser.contraseña) newErrors.contraseña = intl.formatMessage({ id: "modalValidPassword", defaultMessage: "Please enter a valid password" });
         return newErrors;
     };
 
     const createUserApi = async() => {
-        setLoadingApi(true)
-        const {apellido,contraseña,correo,nombre} = createUser
+        setLoadingApi(true);
+        const {apellido,contraseña,correo,nombre} = createUser;
         try {
             const resp = await api.user.create({
                 nombre,
@@ -87,26 +87,26 @@ const ModalCreateUser = ({ onToogleModal, isOpen, addNewUser }: IModalCreateUser
                 password: contraseña,
                 apellido,
                 id_empresa: user.id_empresa
-            })
+            });
             if(resp.ok) {
                 showToast({
-                    description:'Usuario creado exitosamente',
-                    title: "Exitoso",
-                    status: "error",
+                    description: intl.formatMessage({ id: "modalUserCreated", defaultMessage: "User created successfully" }),
+                    title: intl.formatMessage({ id: "modalSuccess", defaultMessage: "Success" }),
+                    status: "success",
                 });
-                addNewUser(resp.data)
-                onToogleModal()
-                setCreateUser(initialValues)
+                addNewUser(resp.data);
+                onToogleModal();
+                setCreateUser(initialValues);
             }
         } catch (error : any) {
             showToast({
-                title: "Error",
-                description:error.response.data.message,
+                title: intl.formatMessage({ id: "modalError", defaultMessage: "Error" }),
+                description: error.response.data.message,
                 status: "error",
             });
             console.log('error',error.response.data.message);
         } finally { 
-            setLoadingApi(false)
+            setLoadingApi(false);
         }
     }
 
@@ -116,7 +116,7 @@ const ModalCreateUser = ({ onToogleModal, isOpen, addNewUser }: IModalCreateUser
         setIsSubmitted(true);
 
         if (Object.keys(validationErrors).length === 0) {
-            createUserApi()
+            createUserApi();
         }
     };
 
@@ -124,7 +124,7 @@ const ModalCreateUser = ({ onToogleModal, isOpen, addNewUser }: IModalCreateUser
         <Modal onClose={onToogleModal} isOpen={isOpen}>
             <Modal.Content>
                 <Modal.CloseButton />
-                <Modal.Header>Crear Usuario</Modal.Header>
+                <Modal.Header>{intl.formatMessage({ id: "modalCreateUser", defaultMessage: "Create User" })}</Modal.Header>
                 <Modal.Body>
                     <GestureHandlerRootView style={{ flex: 1 }}>
                         <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -144,14 +144,14 @@ const ModalCreateUser = ({ onToogleModal, isOpen, addNewUser }: IModalCreateUser
                                 </TouchableOpacity>
 
                                 <FormControl isInvalid={isSubmitted && !!errors.nombre} width={"100%"}>
-                                    <FormControl.Label>Nombre</FormControl.Label>
+                                    <FormControl.Label>{intl.formatMessage({ id: "modalName", defaultMessage: "Name" })}</FormControl.Label>
                                     <Input
                                         InputLeftElement={<AntDesign style={styles.marginCont}  size={16} name='user' color={'gray'}/>}
                                         onChangeText={(value: string) => setValueForm("nombre", value)}
                                         value={createUser.nombre}
                                         style={styles.input}
                                         type="text"
-                                        placeholder="Ingrese un nombre"
+                                        placeholder={intl.formatMessage({ id: "modalEnterName", defaultMessage: "Enter a name" })}
                                         _focus={styles.focused}
 
                                     />
@@ -159,42 +159,42 @@ const ModalCreateUser = ({ onToogleModal, isOpen, addNewUser }: IModalCreateUser
                                 </FormControl>
 
                                 <FormControl isInvalid={isSubmitted && !!errors.apellido} width={"100%"}>
-                                    <FormControl.Label >Apellido</FormControl.Label>
+                                    <FormControl.Label >{intl.formatMessage({ id: "modalLastName", defaultMessage: "Last Name" })}</FormControl.Label>
                                     <Input
                                         InputLeftElement={<AntDesign style={styles.marginCont} size={16} name='user' color={'gray'}  />}
                                         onChangeText={(value: string) => setValueForm("apellido", value)}
                                         value={createUser.apellido}
                                         style={styles.input}
                                         type="text"
-                                        placeholder="Ingrese un apellido"
+                                        placeholder={intl.formatMessage({ id: "modalEnterLastName", defaultMessage: "Enter a last name" })}
                                         _focus={styles.focused}
                                     />
                                     <FormControl.ErrorMessage leftIcon={<MaterialIcons size={12} name='error' color={'red'}/>}>{errors.apellido}</FormControl.ErrorMessage>
                                 </FormControl>
 
                                 <FormControl isInvalid={isSubmitted && !!errors.correo} width={"100%"}>
-                                    <FormControl.Label >Correo</FormControl.Label>
+                                    <FormControl.Label >{intl.formatMessage({ id: "modalEmail", defaultMessage: "Email" })}</FormControl.Label>
                                     <Input
                                         InputLeftElement={<MaterialCommunityIcons style={styles.marginCont}  size={16} name='gmail' color={'gray'}/>}
                                         onChangeText={(value: string) => setValueForm("correo", value)}
                                         value={createUser.correo}
                                         style={styles.input}
                                         type="text"
-                                        placeholder="Ingrese su correo"
+                                        placeholder={intl.formatMessage({ id: "modalEnterEmail", defaultMessage: "Enter your email" })}
                                         _focus={styles.focused}
                                     />
                                     <FormControl.ErrorMessage>{errors.correo}</FormControl.ErrorMessage>
                                 </FormControl>
 
                                 <FormControl isInvalid={isSubmitted && !!errors.contraseña} width={"100%"}>
-                                    <FormControl.Label>Contraseña</FormControl.Label>
+                                    <FormControl.Label>{intl.formatMessage({ id: "modalPassword", defaultMessage: "Password" })}</FormControl.Label>
                                     <Input
                                         InputLeftElement={<AntDesign style={styles.marginCont}  name='lock' size={12} color={'gray'}/>}
                                         onChangeText={(value: string) => setValueForm("contraseña", value)}
                                         value={createUser.contraseña}
                                         style={styles.input}
                                         type="password"
-                                        placeholder="Ingrese su contraseña"
+                                        placeholder={intl.formatMessage({ id: "modalEnterPassword", defaultMessage: "Enter your password" })}
                                         _focus={styles.focused}
                                     />
                                     <FormControl.ErrorMessage>{errors.contraseña}</FormControl.ErrorMessage>
@@ -205,7 +205,7 @@ const ModalCreateUser = ({ onToogleModal, isOpen, addNewUser }: IModalCreateUser
                 </Modal.Body>
                 <Modal.Footer>
                     <CustomButton colorSpiner='white' loading={loadingApi} onPress={handleSubmit} style={styles.buttonCreate}>
-                        Crear
+                        {intl.formatMessage({ id: "modalCreate", defaultMessage: "Create" })}
                     </CustomButton>
                 </Modal.Footer>
             </Modal.Content>
@@ -213,6 +213,4 @@ const ModalCreateUser = ({ onToogleModal, isOpen, addNewUser }: IModalCreateUser
     );
 };
 
-
 export default ModalCreateUser;
-

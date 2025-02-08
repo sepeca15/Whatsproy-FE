@@ -6,6 +6,7 @@ import * as ImagePicker from 'expo-image-picker';
 import styles from './ModalEditUserStyles';
 import api from '@/services/api/admin';
 import CustomButton from '@/components/CustomButton';
+import { useIntl } from 'react-intl'; // Importa useIntl
 
 interface IEditUser {
   nombre: string;
@@ -25,6 +26,7 @@ const ModalEditUser = ({ onToogleModal, isOpen, userInfo, editUserSelected }: IM
   const [formData, setFormData] = useState<IEditUser>(userInfo);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
+  const intl = useIntl(); // Usa useIntl para obtener la instancia de intl
 
   useEffect(() => {
     if (userInfo) {
@@ -51,8 +53,8 @@ const ModalEditUser = ({ onToogleModal, isOpen, userInfo, editUserSelected }: IM
 
   const validate = (): boolean => {
     const newErrors: { [key: string]: string } = {};
-    if (!formData.nombre) newErrors.nombre = 'Ingrese un nombre válido';
-    if (!formData.apellido) newErrors.apellido = 'Ingrese un apellido válido';
+    if (!formData.nombre) newErrors.nombre = intl.formatMessage({ id: "modalValidName", defaultMessage: "Please enter a valid name" });
+    if (!formData.apellido) newErrors.apellido = intl.formatMessage({ id: "modalValidLastName", defaultMessage: "Please enter a valid last name" });
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -76,7 +78,7 @@ const ModalEditUser = ({ onToogleModal, isOpen, userInfo, editUserSelected }: IM
     <Modal onClose={onToogleModal} isOpen={isOpen}>
       <Modal.Content>
         <Modal.CloseButton />
-        <Modal.Header>Editar Usuario</Modal.Header>
+        <Modal.Header>{intl.formatMessage({ id: "modalEditUser", defaultMessage: "Edit User" })}</Modal.Header>
         <Modal.Body>
           <ScrollView contentContainerStyle={styles.scrollContainer}>
             <TouchableOpacity onPress={pickImage} style={styles.imageContainer}>
@@ -91,9 +93,9 @@ const ModalEditUser = ({ onToogleModal, isOpen, userInfo, editUserSelected }: IM
             </TouchableOpacity>
 
             <FormControl isInvalid={!!errors.nombre}>
-              <FormControl.Label>Nombre</FormControl.Label>
+              <FormControl.Label>{intl.formatMessage({ id: "modalName", defaultMessage: "Name" })}</FormControl.Label>
               <Input
-                placeholder="Ingrese un nombre"
+                placeholder={intl.formatMessage({ id: "modalEnterName", defaultMessage: "Enter a name" })}
                 value={formData.nombre}
                 onChangeText={(value) => handleInputChange('nombre', value)}
                 InputLeftElement={<AntDesign name="user" size={16} color="gray" style={styles.marginCont} />}
@@ -102,9 +104,9 @@ const ModalEditUser = ({ onToogleModal, isOpen, userInfo, editUserSelected }: IM
             </FormControl>
 
             <FormControl isInvalid={!!errors.apellido}>
-              <FormControl.Label>Apellido</FormControl.Label>
+              <FormControl.Label>{intl.formatMessage({ id: "modalLastName", defaultMessage: "Last Name" })}</FormControl.Label>
               <Input
-                placeholder="Ingrese un apellido"
+                placeholder={intl.formatMessage({ id: "modalEnterLastName", defaultMessage: "Enter a last name" })}
                 value={formData.apellido}
                 onChangeText={(value) => handleInputChange('apellido', value)}
                 InputLeftElement={<AntDesign name="user" size={16} color="gray" style={styles.marginCont} />}
@@ -113,7 +115,7 @@ const ModalEditUser = ({ onToogleModal, isOpen, userInfo, editUserSelected }: IM
             </FormControl>
 
             <FormControl>
-              <FormControl.Label>Activo</FormControl.Label>
+              <FormControl.Label>{intl.formatMessage({ id: "modalActive", defaultMessage: "Active" })}</FormControl.Label>
               <Select
                 selectedValue={formData.activo ? 'Si' : 'No'}
                 onValueChange={(value) => handleInputChange('activo', value === 'Si')}
@@ -127,7 +129,7 @@ const ModalEditUser = ({ onToogleModal, isOpen, userInfo, editUserSelected }: IM
         </Modal.Body>
         <Modal.Footer>
           <CustomButton colorSpiner="white" loading={loading} onPress={handleSubmit} style={styles.buttonCreate}>
-            Guardar
+            {intl.formatMessage({ id: "modalSave", defaultMessage: "Save" })}
           </CustomButton>
         </Modal.Footer>
       </Modal.Content>
