@@ -36,8 +36,6 @@ const ProductDetails: React.FC = () => {
   //   ],
   // };
 
-  console.log('paramssss', params.daydata)
-
 
   // Construye el objeto `product`
   const product = {
@@ -53,11 +51,12 @@ const ProductDetails: React.FC = () => {
     reviews: parseInt(params.reviews, 10),
     tags: params.tags ? params.tags.split(',') : [],
     daydata: params.daydata,
+    monthdata: params.monthdata,
     empresa_id: parseInt(params.empresa_id, 10),
     disponible: params.disponible === 'true',
   };
 
-  // console.log('Processed Product:', product.monthlabels);
+  console.log('monthdata :', product.monthdata);
 
   return (
     <GraficProddet

@@ -8,6 +8,7 @@ import {
 import { FormControl, Switch, View, Text } from "native-base";
 import DateTimePickerField from "./DateTimePickerField";
 import InputField from "./InputField";
+import * as moment from 'moment-timezone'
 
 interface Props {
   value: Record<string, any>;
@@ -16,10 +17,11 @@ interface Props {
   errors: any;
 }
 
-const InfoLineForm = ({ setValue, value, infoLines, errors }: Props) => {
+const InfoLineForm = ({ setValue, value, infoLines, errors }: Props) => {  
   if (infoLines?.length === 0) {
     return null;
   }
+  const {user} = useUser()
 
   const handleRenderInfoLineInput = (infoLine: InfoLineDTO) => {
     const inputValue = value[infoLine.nombre];
@@ -84,7 +86,8 @@ const InfoLineForm = ({ setValue, value, infoLines, errors }: Props) => {
         return (
           <DateTimePickerField
             error={error}
-            date={inputValue}
+            type="datetime"
+            date={inputValue || moment.tz(user.timeZone)}
             setDate={(val: any) => {
               setValue({
                 ...value,
@@ -96,7 +99,7 @@ const InfoLineForm = ({ setValue, value, infoLines, errors }: Props) => {
       default:
         return null;
     }
-  };
+  };  
 
   return (
     <View
@@ -107,8 +110,8 @@ const InfoLineForm = ({ setValue, value, infoLines, errors }: Props) => {
       alignItems="center"
       justifyContent="center"
     >
-      {infoLines?.map((infoLine) => (
-        <FormControl key={infoLine.nombre} isRequired={infoLine.requerido}>
+      {infoLines?.map((infoLine, index) => (
+        <FormControl key={infoLine.nombre + index} isRequired={infoLine.requerido}>          
           {handleRenderInfoLineInput(infoLine)}
         </FormControl>
       ))}

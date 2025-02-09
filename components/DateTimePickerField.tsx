@@ -2,33 +2,29 @@ import React, { useState } from "react";
 import { TouchableWithoutFeedback, Platform } from "react-native";
 import { VStack, FormControl, Input, Modal, Button } from "native-base";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { useUser } from "@/hooks/redux/useUser";
+import moment from "moment-timezone";
 
-const DateTimeInputField = ({ date, setDate, isRequired = true, error }: any) => {
+const DateTimeInputField = ({ date, setDate, isRequired = true, error } : any) => {
   const [showPicker, setShowPicker] = useState(false);
-  const [mode, setMode] = useState<"date" | "time">("date");
+  const [mode, setMode] = useState<'date' | 'time'>("date");
+  const { user } = useUser();
+  const dateLocal = moment.tz(date, user.timeZone).local();
 
-  const onChange = (event: any, selectedDate?: Date) => {
+  const onChange = (event : any, selectedDate : any) => {
     if (Platform.OS === "android") setShowPicker(false);
     if (selectedDate) {
-      setDate(selectedDate);
+      setDate(moment.tz(selectedDate, user.timeZone).toDate());
     }
   };
 
-  const handleOpenPicker = (pickerMode: "date" | "time") => {
+  const handleOpenPicker = (pickerMode : any) => {
     setMode(pickerMode);
     setShowPicker(true);
   };
 
-  const formattedDate = new Intl.DateTimeFormat(navigator.language, {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  }).format(date);
-
-  const formattedTime = date.toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const formattedDate = moment(date).format("DD/MM/YYYY");
+  const formattedTime = moment(date).format("HH:mm");
 
   return (
     <VStack space={4}>
@@ -65,17 +61,14 @@ const DateTimeInputField = ({ date, setDate, isRequired = true, error }: any) =>
 
       {showPicker && Platform.OS === "android" && (
         <DateTimePicker
-          value={date}
+          value={dateLocal.toDate()}
           mode={mode}
           display="default"
           onChange={onChange}
         />
       )}
 
-      <Modal
-        isOpen={showPicker && Platform.OS === "ios"}
-        onClose={() => setShowPicker(false)}
-      >
+      <Modal isOpen={showPicker && Platform.OS === "ios"} onClose={() => setShowPicker(false)}>
         <Modal.Content maxWidth="400px">
           <Modal.CloseButton />
           <Modal.Header>
@@ -83,7 +76,7 @@ const DateTimeInputField = ({ date, setDate, isRequired = true, error }: any) =>
           </Modal.Header>
           <Modal.Body>
             <DateTimePicker
-              value={date}
+              value={dateLocal.toDate()}
               mode={mode}
               display="spinner"
               onChange={onChange}

@@ -123,6 +123,7 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3.84,
     maxWidth: "100%",
+    width: "100%",
   },
 
   chartTitle: {
@@ -136,33 +137,51 @@ export const styles = StyleSheet.create({
     textTransform: "uppercase",
     letterSpacing: 1,
     lineHeight: 24,
+    paddingRight: 20,
+    
   },
 
   chart: {
     borderRadius: 16,
-    maxWidth: "100%",
-    width: "100%",
+    marginTop: 20,
+    right: 0,
     // borderWidth: 1,
-    alignItems: "center",
     backgroundColor: "#fff",
-    padding: 2,
-    margin: 'auto',
-    alignContent: 'center',
-    alignSelf: 'center',
+    width: "100%",
+   
+  
   },
-  chartWrapper: {
 
+  chartWrapperContainer: {
     marginVertical: 8,
     borderRadius: 16,
     maxWidth: "100%",
     width: "100%",
-    borderColor: 'black',
+    borderColor: "black",
     borderWidth: 0.5,
+    backgroundColor: "#fff",
+    elevation: 3,
+    shadowColor: "#000",
+  
+  },
 
-    backgroundColor: '#',
+  chartWrapper: {
+  
+   width: "100%",
+   maxWidth: "100%",
+    
+  },
+  chartHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
-
-
+    marginBottom: 16,
+    marginTop: 10,
+    maxWidth: "100%",
+    width: "100%",
+    paddingLeft : 10,
+    paddingRight: 10,
+   
   },
   statsContainer: {
     flexDirection: "row",
@@ -277,6 +296,19 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "bold",
     color: "#333",
+  },
+  toggleButton: {
+    backgroundColor: Colors.light.primary,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+   
+    maxWidth:'100%',
+  },
+  toggleButtonText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "600",
   },
 })
 

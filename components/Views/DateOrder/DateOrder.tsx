@@ -1,12 +1,10 @@
 import * as React from 'react';
 import { Pressable, Text, View } from 'react-native';
-import { useRouter } from 'expo-router';
 import { styles } from './DateOrderStyles';
 import api from '@/services/api/admin';
 import CustomText from '@/components/CustomText';
 import DateOrderCard from './components/DateOrderCard';
-import ModalEditOrderDate from './components/ModalEditOrderDate';
-import CustomButton from '@/components/CustomButton';
+import ModalCreateOrderDate from './components/ModalCreateOrderDate';
 import IonIcons from 'react-native-vector-icons/Ionicons'
 import MaterialIconss from 'react-native-vector-icons/MaterialIcons'
 import * as Progress from 'react-native-progress';
@@ -123,7 +121,7 @@ const DateOrder: React.FC = () => {
       </Pressable>
       {
         stateModal &&
-        <ModalEditOrderDate updateOrder={updateOrderData} onClose={onCloseModal} data={selectedItem} />
+        <ModalCreateOrderDate updateOrder={updateOrderData} onClose={onCloseModal} data={selectedItem} />
       }
     </View>
   );

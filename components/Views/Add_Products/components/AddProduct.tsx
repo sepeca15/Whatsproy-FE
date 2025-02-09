@@ -15,24 +15,19 @@ import { AntDesign } from '@expo/vector-icons';
 import { styles } from './AddProductStyle';
 import { useRouter } from 'expo-router';
 import { availableCurrencies } from '@/hooks/dataProduct';
+import ProductoTypes from '../../../../services/api/products/types';
+import api from "@/services/api/admin";
 
-interface ProductFormData {
-  name: string;
-  price: string;
-  currency: string;
-  duration: string;
-  description: string;
-  image?: string;
-}
 
 const AddProduct: React.FC = () => {
   const router = useRouter();
-  const [formData, setFormData] = useState<ProductFormData>({
-    name: '',
-    price: '',
-    currency: 'USD',
-    duration: '',
-    description: '',
+  const [formData, setFormData] = useState<ProductoTypes>({
+    nombre: '',
+    precio: 0,
+    empresa_id: 0,
+    descripcion: '',
+    plazoDuracionEstimadoMinutos: 0,
+    disponible: false,
   });
   const [image, setImage] = useState<string | null>(null);
 
@@ -50,18 +45,29 @@ const AddProduct: React.FC = () => {
   };
 
   const handleSubmit = () => {
-    const newProduct = { ...formData, image };
-    // lelog('Form submitted:', newProduct);
-    // Lógica para agregar el producto a la base de datos
+    const newProduct = { ...formData };
+
+  api.products.create(newProduct)
+    .then(response => {
+      console.log('Producto creado exitosamente:', response.data);
+      router.push("/(tabs)/productos");
+    })
+    .catch(error => {
+      console.error('Error al crear el producto:', error.response.data.message);
+      console.log ("error al crear", newProduct )
+    });
+
+
+
   };
 
   return (
-    <KeyboardAvoidingView 
+    <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
       <ScrollView contentContainerStyle={styles.scrollContent}>
-       
+
 
         <Text style={styles.title}>Añadir Producto</Text>
 
@@ -80,8 +86,8 @@ const AddProduct: React.FC = () => {
           <Text style={styles.label}>Nombre del Producto</Text>
           <TextInput
             style={styles.input}
-            value={formData.name}
-            onChangeText={(text) => setFormData({ ...formData, name: text })}
+            value={formData.nombre}
+            onChangeText={(text) => setFormData({ ...formData, nombre: text })}
             placeholder="Ej: Milanesa de pollo"
           />
 
@@ -90,8 +96,8 @@ const AddProduct: React.FC = () => {
               <Text style={styles.label}>Precio</Text>
               <TextInput
                 style={styles.input}
-                value={formData.price}
-                onChangeText={(text) => setFormData({ ...formData, price: text })}
+               
+                onChangeText={(text) => setFormData({ ...formData, precio: parseFloat(text) })}
                 keyboardType="numeric"
                 placeholder="0.00"
               />
@@ -101,8 +107,6 @@ const AddProduct: React.FC = () => {
               <Text style={styles.label}>Moneda</Text>
               <View style={styles.pickerContainer}>
                 <Picker
-                  selectedValue={formData.currency}
-                  onValueChange={(value) => setFormData({ ...formData, currency: value })}
                   style={styles.picker}
                 >
                   {availableCurrencies.map((currency) => (
@@ -116,16 +120,16 @@ const AddProduct: React.FC = () => {
           <Text style={styles.label}>Duración Estimada</Text>
           <TextInput
             style={styles.input}
-            value={formData.duration}
-            onChangeText={(text) => setFormData({ ...formData, duration: text })}
+           
+            onChangeText={(number) => setFormData({ ...formData, plazoDuracionEstimadoMinutos: parseFloat(number) })}
             placeholder="Ej: 30 minutos"
           />
 
           <Text style={styles.label}>Descripción</Text>
           <TextInput
             style={[styles.input, styles.textArea]}
-            value={formData.description}
-            onChangeText={(text) => setFormData({ ...formData, description: text })}
+            
+            onChangeText={(text) => setFormData({ ...formData, descripcion: text })}
             placeholder="Describe el producto"
             multiline
             numberOfLines={4}

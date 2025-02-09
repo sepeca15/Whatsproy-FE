@@ -1,39 +1,58 @@
-import React from "react";
-import { View, Text, ScrollView, Image, Dimensions } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
-import { BarChart } from "react-native-chart-kit";
-import { styles } from "./SalesChartsStyles";
-import type { ProductDetailProps } from "./types";
-import { border } from "native-base/lib/typescript/theme/styled-system";
+import type React from "react"
+import { useState } from "react"
+import { View, Text, ScrollView, Image, Dimensions, TouchableOpacity } from "react-native"
+import { AntDesign } from "@expo/vector-icons"
+import { BarChart } from "react-native-chart-kit"
+import { styles } from "./SalesChartsStyles"
+import type { ProductDetailProps } from "./types"
+import { border, position } from "native-base/lib/typescript/theme/styled-system"
 
 const GraficProddet: React.FC<ProductDetailProps> = ({ product, salesData, categoryData, satisfactionData }) => {
-  const screenWidth = Dimensions.get("window").width;
+  const screenWidth = Dimensions.get("window").width
+
+  const [currentView, setCurrentView] = useState<"daily" | "month">("daily")
 
   const chartConfig = {
     backgroundGradientFrom: "#ffffff",
     backgroundGradientTo: "#ffffff",
     color: (opacity = 1) => `rgba(0, 128, 255, ${opacity})`,
     strokeWidth: 2,
-    barPercentage: 0.7,
+    barPercentage: currentView === "daily" ? 0.7 : 0.3, 
     whilePercentage: 10,
     useShadowColorFromDataset: false,
    
-  };
+    
+  }
 
   // Parsear daydata
-  const daydata = typeof product.daydata === 'string' ? JSON.parse(product.daydata) : product.daydata;
+  const daydata = typeof product.daydata === "string" ? JSON.parse(product.daydata) : product.daydata
+  //Parsear monthdata
+  const monthdata = typeof product.monthdata === "string" ? JSON.parse(product.monthdata) : product.monthdata
 
+  const toggleView = () => {
+    setCurrentView(currentView === "daily" ? "month" : "daily")
+  }
 
-
+  console.log('product', monthdata)
 
   const data = {
-    labels: daydata.labels.map((label: string) => label.toString()),
-    datasets: [
-      {
-        data: daydata.datasets[0].data.map((value: number) => Number(value)),
-      },
-    ],
-  };
+    daily: {
+      labels: daydata.labels.map((label: string) => label.toString()),
+      datasets: [
+        {
+          data: daydata.datasets[0].data.map((value: number) => Number(value)),
+        },
+      ],
+    },
+    month: {
+      labels: monthdata.labels.map((label: string) => label.toString()),
+      datasets: [
+        {
+          data: monthdata.datasets[0].data.map((value: number) => Number(value)),
+        },
+      ],
+    },
+  }
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
@@ -78,37 +97,58 @@ const GraficProddet: React.FC<ProductDetailProps> = ({ product, salesData, categ
         </View>
 
         <View style={styles.chartContainer}>
-          <Text style={styles.chartTitle}>Ventas</Text>
-            <View style={[styles.chartWrapper]}>
-            <BarChart
-              data={data}
-              width={screenWidth - 55}
+          <View style={styles.chartHeader}>
+            <Text style={styles.chartTitle}>Ventas</Text>
+            <TouchableOpacity onPress={toggleView} style={styles.toggleButton}>
+              <Text style={styles.toggleButtonText}>{currentView === "daily" ? "Ver mansual" : "Ver diario"}</Text>
+            </TouchableOpacity>
+          </View>
+          
+            <View style={styles.chartWrapperContainer}>
+            <View style={styles.chartWrapper}>
+              <BarChart 
+              data={data[currentView]}
+              width={screenWidth - 60}
               height={220}
               yAxisLabel=""
-              yAxisSuffix=""
+              yAxisSuffix=" "
               chartConfig={chartConfig}
               verticalLabelRotation={0}
               showValuesOnTopOfBars={true}
               fromZero={true}
               style={styles.chart}
-            />
+              />
+            </View>
             </View>
           <View style={styles.additionalInfo}>
             <Text style={styles.additionalInfoTitle}>Información adicional</Text>
             <View style={styles.additionalInfoRow}>
               <Text style={styles.additionalInfoLabel}>Total de ventas:</Text>
-              <Text style={styles.additionalInfoValue}>{data.datasets[0].data.reduce((a: number, b: number) => a + b, 0)}</Text>
-            </View>
-            <View style={styles.additionalInfoRow}>
-              <Text style={styles.additionalInfoLabel}>Promedio diario:</Text>
               <Text style={styles.additionalInfoValue}>
-                {(data.datasets[0].data.reduce((a: number, b: number) => a + b, 0) / 7).toFixed(2)}
+                {data[currentView].datasets[0].data.reduce((a: number, b: number) => a + b, 0)}
               </Text>
             </View>
             <View style={styles.additionalInfoRow}>
-              <Text style={styles.additionalInfoLabel}>Día más vendido:</Text>
+              <Text style={styles.additionalInfoLabel}>
+                {currentView === "daily" ? "Promedio diario:" : "Promedio mensual:"}
+              </Text>
               <Text style={styles.additionalInfoValue}>
-                {data.labels[data.datasets[0].data.indexOf(Math.max(...data.datasets[0].data))]}
+                {(
+                  data[currentView].datasets[0].data.reduce((a: number, b: number) => a + b, 0) /
+                  data[currentView].labels.length
+                ).toFixed(2)}
+              </Text>
+            </View>
+            <View style={styles.additionalInfoRow}>
+              <Text style={styles.additionalInfoLabel}>
+                {currentView === "daily" ? "Día más vendido:" : "Mes más vendido:"}
+              </Text>
+              <Text style={styles.additionalInfoValue}>
+                {
+                  data[currentView].labels[
+                    data[currentView].datasets[0].data.indexOf(Math.max(...data[currentView].datasets[0].data))
+                  ]
+                }
               </Text>
             </View>
           </View>
@@ -132,7 +172,8 @@ const GraficProddet: React.FC<ProductDetailProps> = ({ product, salesData, categ
         </View>
       </View>
     </ScrollView>
-  );
-};
+  )
+}
 
-export default GraficProddet;
+export default GraficProddet
+

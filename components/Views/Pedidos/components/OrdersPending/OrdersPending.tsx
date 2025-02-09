@@ -45,7 +45,7 @@ const OrdersPending = () => {
                     <View style={styles.containerImage}>
                     <Image
                         source={require('../../../../../assets/images/no-records.png')}
-                        style={{ width:350, height:250, objectFit:'contain'}}                                
+                        style={{ width:350, height:250, objectFit:'contain'}}
                     />
                     <CustomText>No hay ordenes disponibles</CustomText>
                 </View>

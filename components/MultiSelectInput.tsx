@@ -165,13 +165,12 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
       </FormControl>
 
       {selectedItems?.length > 0 && (
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <HStack space={2}>
-            {selectedItemsKeys.map((item) => {
+        <View width={'100%'} display={'flex'} flexDir={'row'} style={{gap:4}} flexWrap={'wrap'}>
+            {selectedItemsKeys.map((item, index) => {
               const itm = options?.find((itm) => itm?.value === item);
               return (
                 <Badge
-                  key={item}
+                  key={index}
                   colorScheme="teal"
                   color={"white"}
                   variant="solid"
@@ -188,8 +187,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
                 </Badge>
               )
             })}
-          </HStack>
-        </ScrollView>
+        </View>
       )}
 
       <GlobalModal
@@ -212,7 +210,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
           </Button>
         ]}
         content={
-          <VStack marginBottom={5} space={2}>
+          <VStack marginBottom={5} space={4}>
             {onSearch && (
               <View marginBottom={4}>
                 <InputField
@@ -227,14 +225,16 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
               {!loading ? <ScrollView
                 horizontal={false}
               >
-                {options.map((option) => (
+                {options.map((option, index) => (
                   <View width={'100%'}>
                     <Checkbox
-                      key={option.value}
+                      key={option.value + index}
                       value={option.value}
                       isChecked={selectedItemsKeys.includes(option.value)}
                       onChange={(isSelected) => {
-                        handleProductSelection(option.value, isSelected);
+                        if (handleProductSelection) {
+                          handleProductSelection(option.value, isSelected);
+                        }
                         toggleSelection(option.label);
                         toggleSelectionKeys(option.value);
                       }}

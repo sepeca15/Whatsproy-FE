@@ -42,10 +42,6 @@ const LoginScreen: React.FC = () => {
         }
         StoreData('token',res.access_token)
         router.push('/(tabs)/home')
-        showToast({
-          title: "Logeado Correctamente!",
-          status: "success",
-        });
       }
       
     } catch (error : any) {

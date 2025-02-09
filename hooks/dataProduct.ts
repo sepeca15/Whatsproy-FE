@@ -73,7 +73,7 @@ const salesData: SalesData = {
 
   
   const monthlySalesData: MonthlySalesData = {
-    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+    labels: ['E', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'],
     datasets: [{ data: [300, 450, 280, 800, 990, 430, 500, 600, 700, 500, 600, 800] }]
   };
 
@@ -100,6 +100,7 @@ const sampleProducts: Product[] = [
         duration: "100 min",
         rating: 4.5,
         reviews: 120,
+        
         tags: ["cheese", "tomato", "basil"],
         description: "High-quality product with great value. This product is designed to provide exceptional performance and reliability, making it a great choice for anyone looking for quality and value.",
         imageUrl: "https://fotocreativo.com/wp-content/uploads/2019/10/fotografia-de-alimentos-ideas-creativas.jpg",

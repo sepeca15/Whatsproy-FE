@@ -18,6 +18,7 @@ const api = {
         find: products.find,
         update: products.update,
         delete: products.deletProd,
+        create: products.create,
     },
     plans: {
         getAll: plan.getAllPlans,
@@ -50,6 +51,7 @@ const api = {
         remove: order.removeOrder,
         confirm: order.confirmOrder,
         create: order.createOrder,
+        getNextDateAvailable: order.getNextDateAvailable,
     },
     typeServices : {
         getAll : typeServices.getAll

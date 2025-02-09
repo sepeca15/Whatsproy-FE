@@ -73,9 +73,7 @@ const PedidosEIngresos: React.FC = () => {
                 </Pressable>
             </View>
             {
-                openAddModal && (
-                    <CreateOrderModal tipoServicio={1} defaultDate={{}} onClose={()=> setOpenAddModal(false)}/>
-                )
+                openAddModal && <CreateOrderModal tipoServicio={user.tipo_servicio} onClose={()=> setOpenAddModal((prevState)=> (!prevState))}/>
             }
         </View>
     );
