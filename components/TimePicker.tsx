@@ -14,6 +14,7 @@ import {
 } from "native-base";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import moment from "moment"; // Importamos moment
+import GlobalModal from "./Modal";
 
 const generateTimeSlots = (
   startHour: number,
@@ -87,8 +88,8 @@ const TimePicker = ({
             {type === "date"
               ? "Fecha"
               : type === "time"
-              ? "Hora"
-              : "Fecha y hora"}
+                ? "Hora"
+                : "Fecha y hora"}
           </FormControl.Label>
           <HStack
             alignItems="center"
@@ -123,13 +124,25 @@ const TimePicker = ({
       </TouchableWithoutFeedback>
 
       {showPicker && (
-        <Modal isOpen={showPicker} onClose={() => setShowPicker(false)}>
-          <Modal.Content maxWidth="400px">
-            <Modal.CloseButton />
-            <Modal.Header>
-              {type === "date" ? "Seleccionar Fecha" : "Seleccionar Hora"}
-            </Modal.Header>
-            <Modal.Body>
+        <GlobalModal
+          label={type === "date" ? "Seleccionar Fecha" : "Seleccionar Hora"}
+          isVisible={showPicker}
+          onClose={() => setShowPicker(false)}
+          actions={[
+            <Button
+              onPress={() => setShowPicker(false)}
+              size="sm"
+              key="Cancel"
+              backgroundColor={"#2C2C2C"}
+              borderRadius="md"
+            >
+              <Text fontSize={14} color={"white"} fontWeight={500}>
+                Cancelar
+              </Text>
+            </Button>,
+          ]}
+          content={
+            <>
               {type === "time" && (
                 <FlatList
                   scrollEnabled={false}
@@ -181,21 +194,9 @@ const TimePicker = ({
                   }}
                 />
               )}
-            </Modal.Body>
-            <Modal.Footer>
-              <Button
-                onPress={() => setShowPicker(false)}
-                size="sm"
-                backgroundColor={"#2C2C2C"}
-                borderRadius="md"
-              >
-                <Text fontSize={14} color={"white"} fontWeight={500}>
-                  Cancelar
-                </Text>
-              </Button>
-            </Modal.Footer>
-          </Modal.Content>
-        </Modal>
+            </>
+          }
+        ></GlobalModal>
       )}
     </VStack>
   );

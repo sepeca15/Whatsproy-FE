@@ -1,7 +1,14 @@
 import * as React from "react";
 import { Modal, Pressable, StyleSheet, TouchableOpacity } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
-import { Button, FormControl, View, Text, IconButton, VStack } from "native-base";
+import {
+  Button,
+  FormControl,
+  View,
+  Text,
+  IconButton,
+  VStack,
+} from "native-base";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 import CustomText from "@/components/CustomText";
 import InputField from "@/components/InputField";
@@ -38,7 +45,12 @@ import Toast from "react-native-toast-message";
 import { useToastContext } from "@/contexts/ToastContext";
 import { data } from "./Views/Pedidos/components/data";
 import { getNextDateAvailable } from "@/services/api/order/order";
-import { filterOnlyHours, getHourNumber, removeAmPm, removeTimeZone } from "@/utils/date";
+import {
+  filterOnlyHours,
+  getHourNumber,
+  removeAmPm,
+  removeTimeZone,
+} from "@/utils/date";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import TimePicker from "./TimePicker";
 
@@ -47,7 +59,7 @@ interface IProps {
   defaultDate?: any;
   tipoServicio: TipoServicioType;
   onSuccess?: () => void;
-  currentOrders?: any[]
+  currentOrders?: any[];
 }
 
 const initialValues: CreateOrderDTO = {
@@ -110,17 +122,17 @@ const CreateOrderModal = ({
     getAllOrderDate();
   }, []);
 
-  const getAllOrderDate = async () => {    
+  const getAllOrderDate = async () => {
     setLoadingInfoLines(true);
     try {
       const data = await api.dataOrder.getAll();
-      
+
       setInfoLines(
         data?.filter((infoline: InfoLineDTO) => {
-          if(infoline.id_tipo_servicio === user.tipo_servicio) {
-            return true
+          if (infoline.id_tipo_servicio === user.tipo_servicio) {
+            return true;
           } else {
-            return false
+            return false;
           }
         })
       );
@@ -145,9 +157,11 @@ const CreateOrderModal = ({
     }
   };
 
-
   React.useEffect(() => {
-    handleChangeValue("fecha", new Date(defaultDate).setHours(getHourNumber(user?.hora_apertura)));
+    handleChangeValue(
+      "fecha",
+      new Date(defaultDate).setHours(getHourNumber(user?.hora_apertura))
+    );
   }, []);
 
   React.useEffect(() => {
@@ -250,7 +264,7 @@ const CreateOrderModal = ({
       setLoadingNextDateAvailable(true);
       const resp = await api.order.getNextDateAvailable();
       if (resp) {
-        handleChangeValue("fecha", moment(resp).add('hours', 3));
+        handleChangeValue("fecha", moment(resp).add("hours", 3));
       }
     } catch (error) {
       console.log("error", error);
@@ -322,10 +336,10 @@ const CreateOrderModal = ({
     }
   };
 
-  const searchCant = (idProd : number) => {    
-    const prod = prodCant.find((producto)=> producto.prodId === idProd  )
-    return prod?.cantidad
-  }
+  const searchCant = (idProd: number) => {
+    const prod = prodCant.find((producto) => producto.prodId === idProd);
+    return prod?.cantidad;
+  };
 
   return (
     <GlobalModal
@@ -368,7 +382,15 @@ const CreateOrderModal = ({
                 startHour={getHourNumber(user?.hora_apertura)}
                 endHour={getHourNumber(user?.hora_cierre)}
                 error={errors["fecha"]}
-                occupiedTimes={currentOrders ? filterOnlyHours(currentOrders?.map((order) => removeAmPm(order?.date ?? ""))) : []}
+                occupiedTimes={
+                  currentOrders
+                    ? filterOnlyHours(
+                        currentOrders?.map((order) =>
+                          removeAmPm(order?.date ?? "")
+                        )
+                      )
+                    : []
+                }
                 date={form.fecha || localDate}
                 setDate={(val: any) => handleChangeValue("fecha", val)}
               />
@@ -419,12 +441,12 @@ const CreateOrderModal = ({
                     flexDirection={"row"}
                     justifyContent={"space-between"}
                     height={"100%"}
-                    position={'relative'}
-                    width={'100%'}
+                    position={"relative"}
+                    width={"100%"}
                     style={{ gap: 5, paddingBottom: 10 }}
                   >
                     <View
-                      width={'70%'}
+                      width={"70%"}
                       display={"flex"}
                       flexDir={"row"}
                       alignItems={"center"}
@@ -452,18 +474,26 @@ const CreateOrderModal = ({
                           {prod?.nombre ?? ""}
                           {cantidad && " x" + cantidad}
                         </Text>
-                        <Text isTruncated={false} numberOfLines={2} flexWrap="wrap" maxW={150}  fontSize={12} lineHeight={15} color={"gray.600"}>
+                        <Text
+                          isTruncated={false}
+                          numberOfLines={2}
+                          flexWrap="wrap"
+                          maxW={150}
+                          fontSize={12}
+                          lineHeight={15}
+                          color={"gray.600"}
+                        >
                           {prod?.descripcion ?? ""}
                         </Text>
                       </View>
                     </View>
-                    <View 
-                      width={'30%'}
+                    <View
+                      width={"30%"}
                       display={"flex"}
                       flexDir={"row"}
                       alignItems={"center"}
                     >
-                      <View >
+                      <View>
                         <Text
                           marginRight={1}
                           fontWeight={"semibold"}
@@ -491,6 +521,7 @@ const CreateOrderModal = ({
                 ),
                 placeholder: prod?.nombre,
                 value: prod?.id ?? "",
+                subText: ` (x${prodCant.find((producto) => producto.prodId === prod?.id)?.cantidad})`,
               };
             })}
             onSearch={(query: string) => {

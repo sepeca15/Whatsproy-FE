@@ -1,24 +1,30 @@
 import React, { useState } from "react";
 import { TouchableWithoutFeedback, Platform } from "react-native";
-import { VStack, FormControl, Input, Modal, Button } from "native-base";
+import { VStack, FormControl, Input, Modal, Button, View } from "native-base";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useUser } from "@/hooks/redux/useUser";
 import moment from "moment-timezone";
+import GlobalModal from "./Modal";
 
-const DateTimeInputField = ({ date, setDate, isRequired = true, error } : any) => {
+const DateTimeInputField = ({
+  date,
+  setDate,
+  isRequired = true,
+  error,
+}: any) => {
   const [showPicker, setShowPicker] = useState(false);
-  const [mode, setMode] = useState<'date' | 'time'>("date");
+  const [mode, setMode] = useState<"date" | "time">("date");
   const { user } = useUser();
   const dateLocal = moment.tz(date, user.timeZone).local();
 
-  const onChange = (event : any, selectedDate : any) => {
+  const onChange = (event: any, selectedDate: any) => {
     if (Platform.OS === "android") setShowPicker(false);
     if (selectedDate) {
       setDate(moment.tz(selectedDate, user.timeZone).toDate());
     }
   };
 
-  const handleOpenPicker = (pickerMode : any) => {
+  const handleOpenPicker = (pickerMode: any) => {
     setMode(pickerMode);
     setShowPicker(true);
   };
@@ -35,6 +41,7 @@ const DateTimeInputField = ({ date, setDate, isRequired = true, error } : any) =
           </FormControl.Label>
           <Input
             isReadOnly
+            onPress={() => handleOpenPicker("date")}
             value={formattedDate}
             placeholder="Seleccionar fecha"
             borderColor="coolGray.300"
@@ -50,12 +57,15 @@ const DateTimeInputField = ({ date, setDate, isRequired = true, error } : any) =
           </FormControl.Label>
           <Input
             isReadOnly
+            onPress={() => handleOpenPicker("time")}
             value={formattedTime}
             placeholder="Seleccionar hora"
             borderColor="coolGray.300"
             backgroundColor="coolGray.50"
           />
-          {error && <FormControl.ErrorMessage>{error}</FormControl.ErrorMessage>}
+          {error && (
+            <FormControl.ErrorMessage>{error}</FormControl.ErrorMessage>
+          )}
         </FormControl>
       </TouchableWithoutFeedback>
 
@@ -68,25 +78,45 @@ const DateTimeInputField = ({ date, setDate, isRequired = true, error } : any) =
         />
       )}
 
-      <Modal isOpen={showPicker && Platform.OS === "ios"} onClose={() => setShowPicker(false)}>
-        <Modal.Content maxWidth="400px">
-          <Modal.CloseButton />
-          <Modal.Header>
-            Seleccionar {mode === "date" ? "Fecha" : "Hora"}
-          </Modal.Header>
-          <Modal.Body>
+      <GlobalModal
+        label={`Seleccionar ${mode === "date" ? "Fecha" : "Hora"}`}
+        isVisible={showPicker && Platform.OS === "ios"}
+        onClose={() => setShowPicker(false)}
+        actions={[
+          <Button
+            key="Accept"
+            onPress={() => setShowPicker(false)}
+            size="sm"
+            backgroundColor={"#2C2C2C"}
+            borderRadius="md"
+          >
+            Aceptar
+          </Button>,
+        ]}
+        content={
+          <View
+            width={"100%"}
+            flexGrow={1}
+            margin={"auto"}
+            display={"flex"}
+            alignItems={"center"}
+            justifyContent={"center"}
+            paddingY={5}
+            paddingBottom={10}
+          >
             <DateTimePicker
+              style={{
+                marginLeft: -5,
+              }}
               value={dateLocal.toDate()}
               mode={mode}
+              textColor="black"
               display="spinner"
               onChange={onChange}
             />
-          </Modal.Body>
-          <Modal.Footer>
-            <Button onPress={() => setShowPicker(false)}>Aceptar</Button>
-          </Modal.Footer>
-        </Modal.Content>
-      </Modal>
+          </View>
+        }
+      />
     </VStack>
   );
 };
