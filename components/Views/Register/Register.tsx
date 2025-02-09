@@ -1,6 +1,14 @@
 import React, { useState } from "react";
-import { Center, VStack, Checkbox, Select, View, ScrollView } from "native-base";
-import { useRouter } from "expo-router";
+import {
+  Center,
+  VStack,
+  Checkbox,
+  Select,
+  View,
+  ScrollView,
+  KeyboardAvoidingView,
+} from "native-base";
+import { Link, useRouter } from "expo-router";
 import CustomButton from "@/components/CustomButton";
 import { styles } from "./RegisterStyles";
 import Step1 from "./components/Step1";
@@ -8,6 +16,7 @@ import Step3 from "./components/Step3";
 import Step2 from "./components/Step2";
 import { useToastContext } from "@/contexts/ToastContext";
 import api from "@/services/api/admin";
+import CustomText from "@/components/CustomText";
 import { useIntl } from 'react-intl'; // Importa useIntl
 
 interface IDataRegister {
@@ -21,11 +30,11 @@ interface IDataRegister {
   userEmail: string;
   password: string;
   confirmPassword: string;
-  timeZone: string
+  timeZone: string;
 }
 
 const Register: React.FC = () => {
-  const router = useRouter();
+  const router = useRouter();;
   const intl = useIntl(); // Usa useIntl para obtener la instancia de intl
 
   const [steps, setSteps] = useState<number>(1);
@@ -45,8 +54,8 @@ const Register: React.FC = () => {
         Object.keys(errorsData).length === 0 && setSteps((prevState) => (prevState + 1));
         break;
       case 3:
-        Object.keys(errorsData).length === 0 && handleRegister();
-        break;
+        Object.keys(errorsData).length === 0 && handleRegister()
+        break
     }
   };
 
@@ -61,7 +70,7 @@ const Register: React.FC = () => {
     userEmail: "",
     password: "",
     confirmPassword: "",
-    timeZone: ""
+    timeZone: "",
   });
 
   const handleInputChange = (field: string, value: string | boolean) => {
@@ -86,6 +95,7 @@ const Register: React.FC = () => {
         error.tipoServicioId = intl.formatMessage({ id: "validServiceType", defaultMessage: "Please select a valid service type" });
     }
 
+
     if (currentStep === 3) {
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.userEmail))
         error.userEmail = intl.formatMessage({ id: "validEmail", defaultMessage: "Please enter a valid email address" });
@@ -95,13 +105,16 @@ const Register: React.FC = () => {
         error.confirmPassword = intl.formatMessage({ id: "passwordMismatch", defaultMessage: "Password confirmation does not match password" });
     }
 
+
     return error;
   };
 
-  const handleRegister = async () => {
+  const handleRegister = async  () => {
     console.log(formData);
 
     setLoadingApi(true);
+
+
     try {
       const data = await api.company.create(formData);
       if (data.ok) {
@@ -112,13 +125,14 @@ const Register: React.FC = () => {
         });
       }
     } catch (error: any) {
+  
       showToast({
         title: intl.formatMessage({ id: "error", defaultMessage: "Error" }),
         description: error.response.data.message,
         status: 'error'
       });
     } finally {
-      setLoadingApi(false);
+      setLoadingApi(false);;
     }
   };
 

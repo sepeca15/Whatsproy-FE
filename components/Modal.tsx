@@ -52,8 +52,11 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
               flexDirection={"column"}
               display={"flex"}
               horizontal={false}
+              width={"100%"}
               showsVerticalScrollIndicator
               contentContainerStyle={{
+                margin: "auto",
+                width: "100%",
                 flexGrow: 1,
                 gap: 8,
                 paddingHorizontal: 20,
