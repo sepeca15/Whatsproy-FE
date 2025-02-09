@@ -52,12 +52,7 @@ const InputField: React.FC<InputFieldProps> = ({
           InputLeftElement={icon}
           keyboardType={keyboardType}
           type={type}
-<<<<<<< HEAD
           placeholder={typeof placeholder === 'string' ? placeholder : undefined}
-=======
-          blurOnSubmit={false}
-          placeholder={placeholder}
->>>>>>> 27f7b16c561a7bda988eb4f51bedc0172bd7f3b0
           onChangeText={onChangeText}
           {...props}
         />

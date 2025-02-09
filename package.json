@@ -40,16 +40,10 @@
     "native-base": "^3.4.28",
     "nativewind": "^2.0.11",
     "normalize-css-color": "^1.0.2",
-<<<<<<< HEAD
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-intl": "^7.1.5",
     "react-native": "0.74.5",
-=======
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
-    "react-native": "0.76.7",
->>>>>>> 27f7b16c561a7bda988eb4f51bedc0172bd7f3b0
     "react-native-calendars": "^1.1307.0",
     "react-native-chart-kit": "^6.12.0",
     "react-native-date-picker": "^5.0.8",
