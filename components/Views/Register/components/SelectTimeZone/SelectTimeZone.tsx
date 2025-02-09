@@ -53,7 +53,7 @@ const SelectTimeZone = ({ timeZones, timeZoneSelected, selectTimeZone }: ISelect
         <View>
             <TouchableOpacity onPress={handleModal} style={styles.container}>
                 <Text style={styles.buttonText}>
-                    {timeZoneSelected ? timeZoneSelected : "Select a time zone"}
+                    {timeZoneSelected ? timeZoneSelected : "Seleccionar zona horaria"}
                 </Text>
             </TouchableOpacity>
             <Modal style={styles.modalContainer} isOpen={stateModal} onClose={handleModal}>
