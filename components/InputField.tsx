@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { FormControl, Input, TextArea } from 'native-base';
 
 interface InputFieldProps {
@@ -28,6 +28,9 @@ const InputField: React.FC<InputFieldProps> = ({
   error,
   ...props
 }) => {
+
+  const inputRef = useRef<any>(null);
+
   return (
     <FormControl isInvalid={error} style={{ marginTop: marginTop }} isRequired={isRequired}>
       {label && <FormControl.Label>{label}</FormControl.Label>}
@@ -38,13 +41,18 @@ const InputField: React.FC<InputFieldProps> = ({
           autoCompleteType={""}
           placeholder={placeholder}
           onChangeText={onChangeText}
-          {...props}
+          _stack={{ style: {} }} 
+          {...props as any}
         />
       ) : (
         <Input
+          ref={inputRef}
+          autoFocus={false}
+          _stack={{ style: {} }} 
           InputLeftElement={icon}
           keyboardType={keyboardType}
           type={type}
+          blurOnSubmit={false}
           placeholder={placeholder}
           onChangeText={onChangeText}
           {...props}

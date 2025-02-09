@@ -41,6 +41,7 @@ export const ModalStyles = StyleSheet.create({
     bodyContent: {
         paddingTop: 12,
         flexGrow: 1,
+        width: "100%",
         height: 'auto',
         maxHeight: '80%',
     },
