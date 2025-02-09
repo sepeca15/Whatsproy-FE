@@ -8,6 +8,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator, // Importa ActivityIndicator
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
@@ -30,6 +31,7 @@ const AddProduct: React.FC = () => {
     disponible: false,
   });
   const [image, setImage] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false); // Estado para el spinner
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -45,16 +47,19 @@ const AddProduct: React.FC = () => {
   };
 
   const handleSubmit = () => {
+    setLoading(true); // Inicia el spinner
     const newProduct = { ...formData };
 
     api.products.create(newProduct)
       .then(response => {
         console.log('Producto creado exitosamente:', response.data);
+        setLoading(false); // Detiene el spinner
         router.push("/(tabs)/productos");
       })
       .catch(error => {
         console.error('Error al crear el producto:', error.response.data.message);
-        console.log("error al crear", newProduct)
+        console.log("error al crear", newProduct);
+        setLoading(false); // Detiene el spinner
       });
   };
 
@@ -127,8 +132,12 @@ const AddProduct: React.FC = () => {
             numberOfLines={4}
           />
 
-          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-            <Text style={styles.buttonText}><FormattedMessage id="createProduct" /></Text>
+          <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={loading}>
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.buttonText}><FormattedMessage id="createProduct" /></Text>
+            )}
           </TouchableOpacity>
         </View>
       </ScrollView>
