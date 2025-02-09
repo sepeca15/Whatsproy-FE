@@ -1,4 +1,4 @@
-import { Path } from 'react-native-svg';
+
 import ApiInstances from "@/services/axios/axiosConfig"
 import ProductoTypes  from './types';
 

@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { IntlProvider } from 'react-intl';
-import translations from './locales/translations.json'; // Importa el archivo JSON con todas las traducciones
+import translations from './locales/translations.json'; 
 
-// Define los tipos de las traducciones
+
 interface Messages extends Record<string, string> {
   notAvailable: string;
   edit: string;
@@ -18,7 +18,7 @@ interface Translations {
   es: Messages;
 }
 
-// Asegúrate de que las traducciones sean del tipo correcto
+
 const messages: Translations = translations as Translations;
 
 interface LocalizationContextProps {
@@ -40,7 +40,7 @@ export const LocalizationProvider: React.FC<LocalizationProviderProps> = ({ chil
 
   useEffect(() => {
     const userLocale = Intl.DateTimeFormat().resolvedOptions().locale.split('-')[0];
-    console.log('Detected locale:', userLocale); // Verifica la configuración regional detectada
+    console.log('Detected locale:', userLocale); 
 
     // Mapea la configuración regional a los idiomas soportados
     const supportedLocales: Record<string, keyof Translations> = {
@@ -64,3 +64,6 @@ export const LocalizationProvider: React.FC<LocalizationProviderProps> = ({ chil
 };
 
 export const useLocalization = () => useContext(LocalizationContext);
+
+// Exporta LocalizationProvider por defecto
+export default LocalizationProvider;
