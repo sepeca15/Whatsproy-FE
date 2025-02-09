@@ -1,39 +1,34 @@
-import type React from "react"
-import { useState } from "react"
-import { View, Text, ScrollView, Image, Dimensions, TouchableOpacity } from "react-native"
-import { AntDesign } from "@expo/vector-icons"
-import { BarChart } from "react-native-chart-kit"
-import { styles } from "./SalesChartsStyles"
-import type { ProductDetailProps } from "./types"
-import { border, position } from "native-base/lib/typescript/theme/styled-system"
+import React, { useState } from "react";
+import { View, Text, ScrollView, Image, Dimensions, TouchableOpacity } from "react-native";
+import { AntDesign } from "@expo/vector-icons";
+import { BarChart } from "react-native-chart-kit";
+import { styles } from "./SalesChartsStyles";
+import { FormattedMessage } from 'react-intl'; // Importa FormattedMessage
+import type { ProductDetailProps } from "./types";
 
 const GraficProddet: React.FC<ProductDetailProps> = ({ product, salesData, categoryData, satisfactionData }) => {
-  const screenWidth = Dimensions.get("window").width
+  const screenWidth = Dimensions.get("window").width;
 
-  const [currentView, setCurrentView] = useState<"daily" | "month">("daily")
+  const [currentView, setCurrentView] = useState<"daily" | "month">("daily");
 
   const chartConfig = {
     backgroundGradientFrom: "#ffffff",
     backgroundGradientTo: "#ffffff",
     color: (opacity = 1) => `rgba(0, 128, 255, ${opacity})`,
     strokeWidth: 2,
-    barPercentage: currentView === "daily" ? 0.7 : 0.3, 
+    barPercentage: currentView === "daily" ? 0.7 : 0.3,
     whilePercentage: 10,
     useShadowColorFromDataset: false,
-   
-    
-  }
+  };
 
   // Parsear daydata
-  const daydata = typeof product.daydata === "string" ? JSON.parse(product.daydata) : product.daydata
-  //Parsear monthdata
-  const monthdata = typeof product.monthdata === "string" ? JSON.parse(product.monthdata) : product.monthdata
+  const daydata = typeof product.daydata === "string" ? JSON.parse(product.daydata) : product.daydata;
+  // Parsear monthdata
+  const monthdata = typeof product.monthdata === "string" ? JSON.parse(product.monthdata) : product.monthdata;
 
   const toggleView = () => {
-    setCurrentView(currentView === "daily" ? "month" : "daily")
-  }
-
-  console.log('product', monthdata)
+    setCurrentView(currentView === "daily" ? "month" : "daily");
+  };
 
   const data = {
     daily: {
@@ -52,7 +47,7 @@ const GraficProddet: React.FC<ProductDetailProps> = ({ product, salesData, categ
         },
       ],
     },
-  }
+  };
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
@@ -72,20 +67,20 @@ const GraficProddet: React.FC<ProductDetailProps> = ({ product, salesData, categ
           </View>
           <View style={styles.ratingContainer}>
             <AntDesign name="star" size={20} color="#FFD700" />
-            <Text style={styles.ratingText}>({product.reviews} reseñas)</Text>
+            <Text style={styles.ratingText}>({product.reviews} <FormattedMessage id="reviews" />)</Text>
           </View>
         </View>
 
         <View style={styles.infoCard}>
           <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Duración</Text>
+            <Text style={styles.infoLabel}><FormattedMessage id="duration" /></Text>
             <Text style={styles.infoValue}>{product.duration}</Text>
           </View>
           <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Categoría</Text>
+            <Text style={styles.infoLabel}><FormattedMessage id="category" /></Text>
             <Text style={styles.infoValue}>{product.category}</Text>
           </View>
-          <Text style={styles.descriptionTitle}>Descripción</Text>
+          <Text style={styles.descriptionTitle}><FormattedMessage id="description" /></Text>
           <Text style={styles.description}>{product.description}</Text>
           <View style={styles.tagContainer}>
             {product.tags.map((tag, index) => (
@@ -98,39 +93,41 @@ const GraficProddet: React.FC<ProductDetailProps> = ({ product, salesData, categ
 
         <View style={styles.chartContainer}>
           <View style={styles.chartHeader}>
-            <Text style={styles.chartTitle}>Ventas</Text>
+            <Text style={styles.chartTitle}><FormattedMessage id="sales" /></Text>
             <TouchableOpacity onPress={toggleView} style={styles.toggleButton}>
-              <Text style={styles.toggleButtonText}>{currentView === "daily" ? "Ver mansual" : "Ver diario"}</Text>
+              <Text style={styles.toggleButtonText}>
+                {currentView === "daily" ? <FormattedMessage id="viewMonthly" /> : <FormattedMessage id="viewDaily" />}
+              </Text>
             </TouchableOpacity>
           </View>
-          
-            <View style={styles.chartWrapperContainer}>
+
+          <View style={styles.chartWrapperContainer}>
             <View style={styles.chartWrapper}>
-              <BarChart 
-              data={data[currentView]}
-              width={screenWidth - 60}
-              height={220}
-              yAxisLabel=""
-              yAxisSuffix=" "
-              chartConfig={chartConfig}
-              verticalLabelRotation={0}
-              showValuesOnTopOfBars={true}
-              fromZero={true}
-              style={styles.chart}
+              <BarChart
+                data={data[currentView]}
+                width={screenWidth - 60}
+                height={220}
+                yAxisLabel=""
+                yAxisSuffix=" "
+                chartConfig={chartConfig}
+                verticalLabelRotation={0}
+                showValuesOnTopOfBars={true}
+                fromZero={true}
+                style={styles.chart}
               />
             </View>
-            </View>
+          </View>
           <View style={styles.additionalInfo}>
-            <Text style={styles.additionalInfoTitle}>Información adicional</Text>
+            <Text style={styles.additionalInfoTitle}><FormattedMessage id="additionalInfo" /></Text>
             <View style={styles.additionalInfoRow}>
-              <Text style={styles.additionalInfoLabel}>Total de ventas:</Text>
+              <Text style={styles.additionalInfoLabel}><FormattedMessage id="totalSales" />:</Text>
               <Text style={styles.additionalInfoValue}>
                 {data[currentView].datasets[0].data.reduce((a: number, b: number) => a + b, 0)}
               </Text>
             </View>
             <View style={styles.additionalInfoRow}>
               <Text style={styles.additionalInfoLabel}>
-                {currentView === "daily" ? "Promedio diario:" : "Promedio mensual:"}
+                {currentView === "daily" ? <FormattedMessage id="dailyAverage" /> : <FormattedMessage id="monthlyAverage" />}:
               </Text>
               <Text style={styles.additionalInfoValue}>
                 {(
@@ -141,7 +138,7 @@ const GraficProddet: React.FC<ProductDetailProps> = ({ product, salesData, categ
             </View>
             <View style={styles.additionalInfoRow}>
               <Text style={styles.additionalInfoLabel}>
-                {currentView === "daily" ? "Día más vendido:" : "Mes más vendido:"}
+                {currentView === "daily" ? <FormattedMessage id="bestSellingDay" /> : <FormattedMessage id="bestSellingMonth" />}:
               </Text>
               <Text style={styles.additionalInfoValue}>
                 {
@@ -157,23 +154,22 @@ const GraficProddet: React.FC<ProductDetailProps> = ({ product, salesData, categ
         <View style={styles.statsContainer}>
           <View style={styles.statItem}>
             <Text style={styles.statValue}>{satisfactionData.data[0]}%</Text>
-            <Text style={styles.statLabel}>Satisfacción</Text>
+            <Text style={styles.statLabel}><FormattedMessage id="satisfaction" /></Text>
           </View>
           <View style={styles.divider} />
           <View style={styles.statItem}>
             <Text style={styles.statValue}>127</Text>
-            <Text style={styles.statLabel}>Ventas</Text>
+            <Text style={styles.statLabel}><FormattedMessage id="sales" /></Text>
           </View>
           <View style={styles.divider} />
           <View style={styles.statItem}>
             <Text style={styles.statValue}>{product.rating}</Text>
-            <Text style={styles.statLabel}>Rating</Text>
+            <Text style={styles.statLabel}><FormattedMessage id="rating" /></Text>
           </View>
         </View>
       </View>
     </ScrollView>
-  )
-}
+  );
+};
 
-export default GraficProddet
-
+export default GraficProddet;

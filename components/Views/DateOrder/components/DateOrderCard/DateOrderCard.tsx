@@ -3,7 +3,8 @@ import { Pressable, Text, View } from 'react-native';
 import { styles } from './DateOrderStyles';
 import CustomText from '@/components/CustomText';
 import { Colors } from '@/constants/Colors';
-import MaterialIconss from 'react-native-vector-icons/MaterialCommunityIcons'
+import MaterialIconss from 'react-native-vector-icons/MaterialCommunityIcons';
+import { FormattedMessage } from 'react-intl'; // Importa FormattedMessage
 
 interface IDateOrder {
     es_defecto: boolean;
@@ -37,12 +38,12 @@ const DateOrderCard = ({data, onDeleteItem, isPar}:IProps ) => {
             </View>
             <View style={styles.column}>
                 <CustomText style={styles.text}>
-                    {data.requerido ? "SI" : "NO"}
+                    {data.requerido ? <FormattedMessage id="yes" /> : <FormattedMessage id="no" />}
                 </CustomText>
             </View>
             <View style={styles.column}>
                 <CustomText style={styles.text}>
-                    {data.es_defecto ? "SI" : "NO"}
+                    {data.es_defecto ? <FormattedMessage id="yes" /> : <FormattedMessage id="no" />}
                 </CustomText>
             </View>
             <View style={styles.columnDelete}>

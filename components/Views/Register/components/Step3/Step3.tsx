@@ -1,9 +1,9 @@
-import { Switch, View, VStack } from "native-base"
-import { styles } from "./Step3Styles"
+import { Switch, View, VStack } from "native-base";
+import { styles } from "./Step3Styles";
 import InputField from "@/components/InputField";
 import CustomText from "@/components/CustomText";
-import { useState } from "react";
 import AlertText from "../AlertText";
+import { useIntl } from 'react-intl'; // Importa useIntl
 
 interface IStep3 {
     formData: any,
@@ -13,13 +13,14 @@ interface IStep3 {
 }
 
 const Step3 = ({ formData, errors, handleInputChange, tipoServicio }: IStep3) => {
+    const intl = useIntl(); // Usa useIntl para obtener la instancia de intl
 
     return (
         <VStack space={4}>
             <View>
                 <InputField
-                    label="Email"
-                    placeholder="Ingresa el email de tu empresa"
+                    label={intl.formatMessage({ id: "email", defaultMessage: "Email" })}
+                    placeholder={intl.formatMessage({ id: "enterEmailCompani", defaultMessage: "Enter your company's email" })}
                     value={formData.userEmail}
                     onChangeText={(value) => handleInputChange("userEmail", value)}
                 />
@@ -31,7 +32,7 @@ const Step3 = ({ formData, errors, handleInputChange, tipoServicio }: IStep3) =>
             <View>
                 <InputField
                     type={'password'}
-                    label="Password"
+                    label={intl.formatMessage({ id: "password", defaultMessage: "Password" })}
                     placeholder=""
                     value={formData.password}
                     onChangeText={(value) => handleInputChange("password", value)}
@@ -44,7 +45,7 @@ const Step3 = ({ formData, errors, handleInputChange, tipoServicio }: IStep3) =>
             <View>
                 <InputField
                     type={'password'}
-                    label="Confirm password"
+                    label={intl.formatMessage({ id: "confirmPassword", defaultMessage: "Confirm Password" })}
                     placeholder=""
                     value={formData.confirmPassword}
                     onChangeText={(value) => handleInputChange("confirmPassword", value)}
@@ -56,7 +57,9 @@ const Step3 = ({ formData, errors, handleInputChange, tipoServicio }: IStep3) =>
             {
                 tipoServicio === 2 &&
                 <View display={'flex'} flexDir={'row'} alignItems={'center'} >
-                    <CustomText style={{marginRight:6}}>¿Desea notificcar las horas de las reservas?</CustomText>
+                    <CustomText style={{marginRight:6}}>
+                        {intl.formatMessage({ id: "notifyReservationHours", defaultMessage: "Do you want to notify reservation hours?" })}
+                    </CustomText>
                     <Switch
                         isChecked={formData.notificarReservaHoras}
                         onToggle={()=> handleInputChange('notificarReservaHoras',!formData.notificarReservaHoras)}
@@ -67,7 +70,6 @@ const Step3 = ({ formData, errors, handleInputChange, tipoServicio }: IStep3) =>
             }
         </VStack>
     )
-
 }
 
-export default Step3 
+export default Step3;

@@ -15,6 +15,7 @@ import { styles } from "./ItemCalendarStyles";
 import * as moment from 'moment-timezone'
 import { useUser } from "@/hooks/redux/useUser";
 import Icon from "react-native-vector-icons/Feather";
+import { FormattedMessage } from 'react-intl'; // Importa FormattedMessage
 
 interface IItemCalendar {
   InfoItem: IInfoItem;
@@ -171,20 +172,19 @@ const ItemCalendar = ({
                 <View style={styles.rowInfo}>
                   <AntDesign name="user" size={16} color={"white"} />
                   <Text color={"white"}>
-                    {dataDetails.info?.client?.name || "Nombre no disponible"}
+                    {dataDetails.info?.client?.name || <FormattedMessage id="clientName" />}
                   </Text>
                 </View>
                 <View style={styles.rowInfo}>
                   <AntDesign name="phone" size={16} color={"white"} />
                   <Text color={"white"}>
-                    {dataDetails.info?.client?.phone ||
-                      "Teléfono no disponible"}
+                    {dataDetails.info?.client?.phone || <FormattedMessage id="clientPhone" />}
                   </Text>
                 </View>
                 <View style={styles.rowInfo}>
                   <MaterialIcons name="access-time" size={16} color={"white"} />
                   <Text color={"white"}>
-                    {dataDetails.info?.estimateTime || "Teléfono no disponible"}{" "}
+                    {dataDetails.info?.estimateTime || <FormattedMessage id="estimateTime" />}{" "}
                     mn
                   </Text>
                 </View>
@@ -192,7 +192,7 @@ const ItemCalendar = ({
                   <AntDesign name="calendar" size={16} color={"white"} />
                   <Text color={"white"}>
                     {formatDate(dataDetails.info?.date) ||
-                      "Fecha no disponible"}
+                      <FormattedMessage id="date" />}
                   </Text>
                 </View>
                 <View style={styles.rowInfo}>
@@ -203,7 +203,7 @@ const ItemCalendar = ({
                 </View>
                 <View style={styles.total}>
                   <Text fontSize={18} fontWeight={"bold"} color={"white"}>
-                    Total:
+                    <FormattedMessage id="total" />:
                   </Text>
                   <View style={styles.rowInfo}>
                     <FontAwesome name="money" size={12} color={"white"} />
@@ -220,7 +220,7 @@ const ItemCalendar = ({
                     ]}
                   >
                     <Text color={"white"} fontSize={12}>
-                      Eliminar
+                      <FormattedMessage id="deleteOrder" />
                     </Text>
                     <EvilIcons color={"white"} name="close" size={16} />
                   </Pressable>
@@ -232,7 +232,7 @@ const ItemCalendar = ({
                     ]}
                   >
                     <Text color={"white"} fontSize={12}>
-                      {confirm ? "Ver Detalles" : "Confirmar"}
+                      {confirm ? <FormattedMessage id="viewDetails" /> : <FormattedMessage id="confirmOrder" />}
                     </Text>
                   </Pressable>
                 </View>

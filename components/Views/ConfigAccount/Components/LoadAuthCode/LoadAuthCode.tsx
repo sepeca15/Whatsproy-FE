@@ -1,4 +1,3 @@
-
 import * as React from "react"
 import { View } from "native-base";
 import { styles } from "./LoadAuthCodeStyles"
@@ -7,6 +6,7 @@ import api from "@/services/api/admin";
 import { useUser } from "@/hooks/redux/useUser";
 import { Image, Text, TextInput } from "react-native";
 import CustomButton from "@/components/CustomButton";
+import { FormattedMessage } from 'react-intl'; // Importa FormattedMessage
 
 interface ILoadAuthCode {
     AuthCode: string | null,
@@ -37,12 +37,7 @@ const LoadAuthCode = ({ AuthCode, handleUpdateData }: ILoadAuthCode) => {
             <View>
                 <View>
                     <Text style={{textAlign:'center'}}>
-                        Abre Whatsapp, ve a &gt;{' '}
-                        <Text style={styles.bold}> Configuración</Text> &gt; 
-                        <Text style={styles.bold}> Dispositivos Vinculados </Text> &gt;
-                        <Text style={styles.bold}> Vincular un nuevo dispositivo </Text> &gt;
-                        <Text style={styles.bold}> Vincular con el número de teléfono </Text>
-                        y ingresa el siguiente codigo:
+                        <FormattedMessage id="openWhatsApp" />
                     </Text>
                 </View>
                 <CustomText style={styles.AuthCodeText}>
@@ -52,7 +47,7 @@ const LoadAuthCode = ({ AuthCode, handleUpdateData }: ILoadAuthCode) => {
 
             :
             <View style={styles.container}>
-                <CustomText>Por favor ingrese su numero de telefono con el codigo de pais</CustomText>
+                <CustomText><FormattedMessage id="enterPhoneNumber" /></CustomText>
                 <View>
                     <TextInput
                         style={styles.input}
@@ -61,7 +56,7 @@ const LoadAuthCode = ({ AuthCode, handleUpdateData }: ILoadAuthCode) => {
                         onChangeText={(num) => setNumberPhone(num)}
                         placeholder="Ej: 59891443445"
                     />
-                    <CustomButton loading={loading} colorSpiner="white" isDisabled={!numberPhone} onPress={LoadAuthCode}>Obtener codigo</CustomButton>
+                    <CustomButton loading={loading} colorSpiner="white" isDisabled={!numberPhone} onPress={LoadAuthCode}><FormattedMessage id="getCode" /></CustomButton>
                 </View>
             </View>
     );

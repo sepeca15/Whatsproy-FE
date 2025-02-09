@@ -7,6 +7,7 @@ import CustomText from '@/components/CustomText';
 import { io } from 'socket.io-client';
 import { useUser } from '@/hooks/redux/useUser';
 import CardNewPedido from '../CardNewPedido.tsx';
+import { FormattedMessage } from 'react-intl'; // Importa FormattedMessage
 
 const OrdersPending = () => {
     const {user} = useUser()
@@ -47,12 +48,13 @@ const OrdersPending = () => {
                         source={require('../../../../../assets/images/no-records.png')}
                         style={{ width:350, height:250, objectFit:'contain'}}
                     />
-                    <CustomText>No hay ordenes disponibles</CustomText>
+                    <CustomText>
+                        <FormattedMessage id="noOrdersAvailable" defaultMessage="No orders available" />
+                    </CustomText>
                 </View>
             }
         </View>
     );
 };
 
-
-export default OrdersPending
+export default OrdersPending;

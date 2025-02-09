@@ -49,7 +49,6 @@ const EditPro: React.FC = () => {
   };
 
   
- console.log('editProProps - disponible', editProProps.disponible)
 
   return (
     <View style={styles.container}>

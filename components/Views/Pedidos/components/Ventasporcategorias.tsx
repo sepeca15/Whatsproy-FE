@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { FormattedMessage } from 'react-intl'; // Importa FormattedMessage
 
 const Ventasporcategorias: React.FC = () => {
     const data = [
@@ -23,19 +24,27 @@ const Ventasporcategorias: React.FC = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Distribución de Pedidos</Text>
+            <Text style={styles.title}>
+                <FormattedMessage id="orderDistribution" defaultMessage="Order Distribution" />
+            </Text>
             <View style={styles.legend}>
                 <View style={styles.legendItem}>
                     <View style={[styles.legendColor, { backgroundColor: '#600080' }]} />
-                    <Text>Completados (50%)</Text>
+                    <Text>
+                        <FormattedMessage id="completed" defaultMessage="Completed" /> (50%)
+                    </Text>
                 </View>
                 <View style={styles.legendItem}>
                     <View style={[styles.legendColor, { backgroundColor: '#9900cc' }]} />
-                    <Text>En Proceso (30%)</Text>
+                    <Text>
+                        <FormattedMessage id="inProcess" defaultMessage="In Process" /> (30%)
+                    </Text>
                 </View>
                 <View style={styles.legendItem}>
                     <View style={[styles.legendColor, { backgroundColor: '#c61aff' }]} />
-                    <Text>Cancelados (20%)</Text>
+                    <Text>
+                        <FormattedMessage id="cancelled" defaultMessage="Cancelled" /> (20%)
+                    </Text>
                 </View>
             </View>
         </View>
@@ -75,4 +84,3 @@ const styles = StyleSheet.create({
 });
 
 export default Ventasporcategorias;
-

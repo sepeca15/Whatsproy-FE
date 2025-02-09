@@ -1,29 +1,29 @@
-
 import * as React from 'react';
 import { View, ScrollView, StyleSheet, Text, Pressable } from 'react-native';
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons.js'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons.js'
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons.js';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons.js';
 import OrdersFinished from './components/OrdersFinished';
 import OrdersPending from './components/OrdersPending';
 import { useUser } from "@/hooks/redux/useUser";
 import CreateOrderModal from '@/components/CreateOrderModal';
+import { FormattedMessage } from 'react-intl'; // Importa FormattedMessage
 
-type pagesOrder = 'finished' | 'pending'
+type pagesOrder = 'finished' | 'pending';
 
 const PedidosEIngresos: React.FC = () => {
-    const [selected, setSelected] = React.useState<pagesOrder>('pending')
+    const [selected, setSelected] = React.useState<pagesOrder>('pending');
     const [openAddModal, setOpenAddModal] = React.useState<boolean>(false);
 
-    const { user } = useUser()
+    const { user } = useUser();
     const handleSelectPage = (key: pagesOrder) => {
-        setSelected(key)
-    }
+        setSelected(key);
+    };
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>
                 {
-                    user.tipo_servicioNombre === 'Delivery' ? "Pedidos" : "Reservas"
+                    user.tipo_servicioNombre === 'Delivery' ? <FormattedMessage id="orders" defaultMessage="Orders" /> : <FormattedMessage id="reservations" defaultMessage="Reservations" />
                 }
             </Text>
             <View style={styles.tab}>
@@ -36,14 +36,15 @@ const PedidosEIngresos: React.FC = () => {
                         >
                             <View style={styles.column}>
                                 <View style={styles.row}>
-
                                     {
                                         key === 'pending' ?
                                             <MaterialCommunityIcons size={16} name='camera-timer' />
                                             :
                                             <SimpleLineIcons size={16} name='notebook' />
                                     }
-                                    <Text style={styles.text}>{key === 'pending' ? 'Pendientes' : 'Finalizados'}</Text>
+                                    <Text style={styles.text}>
+                                        {key === 'pending' ? <FormattedMessage id="pending" defaultMessage="Pending" /> : <FormattedMessage id="finished" defaultMessage="Finished" />}
+                                    </Text>
                                 </View>
                                 {
                                     selected === key &&
@@ -66,14 +67,14 @@ const PedidosEIngresos: React.FC = () => {
                 <Pressable
                     style={styles.addButton}
                     onPress={() => {
-                        setOpenAddModal((prevState)=> (!prevState));
+                        setOpenAddModal((prevState) => (!prevState));
                     }}
                 >
                     <Text style={styles.addButtonText}>+</Text>
                 </Pressable>
             </View>
             {
-                openAddModal && <CreateOrderModal tipoServicio={user.tipo_servicio} onClose={()=> setOpenAddModal((prevState)=> (!prevState))}/>
+                openAddModal && <CreateOrderModal tipoServicio={user.tipo_servicio} onClose={() => setOpenAddModal((prevState) => (!prevState))} />
             }
         </View>
     );
@@ -159,7 +160,7 @@ const styles = StyleSheet.create({
         right: 20,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent:'center',
+        justifyContent: 'center',
         zIndex: 1,
     },
     addButton: {

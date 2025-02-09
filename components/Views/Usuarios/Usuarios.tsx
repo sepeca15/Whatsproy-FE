@@ -12,28 +12,29 @@ import { Colors } from '@/constants/Colors';
 import { useUser } from '@/hooks/redux/useUser';
 import ModalCreateUser from './components/ModalCreateUser';
 import ModalEditUser from './components/ModalEditUser';
-
+import { useIntl } from 'react-intl'; 
 
 const initialValues = {
   data: [],
   loading: true
 }
 const UsuariosEmpresasScreen: React.FC = () => {
-  const { user } = useUser()
-  const [userData, setUserData] = React.useState<IUserInfo>(initialValues)
+  const { user } = useUser();
+  const intl = useIntl(); 
+  const [userData, setUserData] = React.useState<IUserInfo>(initialValues);
   const [stateModal, setStateModal] = React.useState({
     modalEdit: false,
     modalCreate: false
-  })
-  const [selectedUser, setSelectedUser] = React.useState<any>(undefined)
+  });
+  const [selectedUser, setSelectedUser] = React.useState<any>(undefined);
 
   const uploadUsers = async () => {
     try {
-      const resp = await api.user.findAll(user.id_empresa)
+      const resp = await api.user.findAll(user.id_empresa);
       setUserData((prevState) => ({
         ...prevState,
         data: resp.data
-      }))
+      }));
 
     } catch (error) {
       console.log('error', error);
@@ -41,13 +42,13 @@ const UsuariosEmpresasScreen: React.FC = () => {
       setUserData((prevState) => ({
         ...prevState,
         loading: false
-      }))
+      }));
     }
   }
 
   React.useEffect(() => {
-    uploadUsers()
-  }, [])
+    uploadUsers();
+  }, []);
 
   const toggleModalState = (key: 'modalEdit' | 'modalCreate', value: boolean) => {
     setStateModal((prev) => ({
@@ -60,19 +61,19 @@ const UsuariosEmpresasScreen: React.FC = () => {
     setUserData((prevState) => ({
       ...prevState,
       data: [...prevState.data, user]
-    }))
+    }));
   }
 
   const deleteUser = (userId: number) => {
     setUserData((prevState) => ({
       ...prevState,
       data: prevState.data.filter((data) => data.id !== userId)
-    }))
+    }));
   }
 
   const selectEditUser = (user: IUser) => {
-    toggleModalState('modalEdit', true)
-    setSelectedUser(user)
+    toggleModalState('modalEdit', true);
+    setSelectedUser(user);
   }
 
   const editUserSelected = (userId: number, userData: any) => {
@@ -88,7 +89,7 @@ const UsuariosEmpresasScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Usuarios</Text>
+      <Text style={styles.title}>{intl.formatMessage({ id: "users", defaultMessage: "Users" })}</Text>
       {
         userData.loading === true ?
           <View style={styles.spinner}>
@@ -120,4 +121,3 @@ const UsuariosEmpresasScreen: React.FC = () => {
 };
 
 export default UsuariosEmpresasScreen;
-

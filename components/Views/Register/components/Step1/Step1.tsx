@@ -7,7 +7,8 @@ import { Image, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import AlertText from "../AlertText";
 import SelectTimeZone from "../SelectTimeZone";
-import * as moment from 'moment-timezone'
+import * as moment from 'moment-timezone';
+import { useIntl } from 'react-intl'; 
 
 interface IDataStep1 {
     nombre: string;
@@ -23,7 +24,9 @@ interface IStep1 {
 }
 
 const Step1 = ({ formData, handleInputChange, errors }: IStep1) => {
-    const timeZones = moment.tz.names()
+    const timeZones = moment.tz.names();
+    const intl = useIntl();
+
     const pickImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -51,13 +54,12 @@ const Step1 = ({ formData, handleInputChange, errors }: IStep1) => {
                 </TouchableOpacity>
             </View>
             <CustomText style={styles.textCenterLg}>
-                Registra tu empresa y comienza a llevar control de tus pedidos y
-                reservas
+                {intl.formatMessage({ id: "registerCompany", defaultMessage: "Register your company and start managing your orders and reservations" })}
             </CustomText>
             <View>
                 <InputField
-                    label="Nombre de la empresa"
-                    placeholder="Ingresa el nombre de tu empresa"
+                    label={intl.formatMessage({ id: "companyName", defaultMessage: "Company Name" })}
+                    placeholder={intl.formatMessage({ id: "enterCompanyName", defaultMessage: "Enter your company name" })}
                     value={formData.nombre}
                     onChangeText={(value) => handleInputChange("nombre", value)}
                 />
@@ -67,8 +69,8 @@ const Step1 = ({ formData, handleInputChange, errors }: IStep1) => {
             </View>
             <View>
                 <InputField
-                    label="Descripción"
-                    placeholder="Breve descripción"
+                    label={intl.formatMessage({ id: "description", defaultMessage: "Description" })}
+                    placeholder={intl.formatMessage({ id: "enterDescription", defaultMessage: "Brief description" })}
                     value={formData.descripcion}
                     onChangeText={(value) => handleInputChange("descripcion", value)}
                     isTextArea={true}

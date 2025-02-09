@@ -4,6 +4,7 @@ import { HStack, VStack, Avatar, IconButton, Icon } from 'native-base';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router'; 
 import { styles } from './PerfilStyles';
+import { FormattedMessage } from 'react-intl'; // Importa FormattedMessage
 
 import { profileData } from './components/profileData';
 import SimpleBarCharts from './components/Graficas/Graficas';
@@ -26,7 +27,9 @@ const Perfil: React.FC = () => {
           </TouchableOpacity>
           <VStack marginLeft={3}>
             <Text style={styles.name}>{profileData.name}</Text> 
-            <Text style={styles.plan}>Plan: {profileData.plan}</Text> 
+            <Text style={styles.plan}>
+              <FormattedMessage id="plan" defaultMessage="Plan" />: {profileData.plan}
+            </Text> 
           </VStack>
         </HStack>
         <IconButton

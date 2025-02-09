@@ -10,7 +10,7 @@ import MaterialIconss from 'react-native-vector-icons/MaterialIcons'
 import * as Progress from 'react-native-progress';
 import { Colors } from '@/constants/Colors';
 import { useToastContext } from '@/contexts/ToastContext';
-
+import { FormattedMessage } from 'react-intl'; // Importa FormattedMessage
 
 const ItemsTable = [
   'Name',
@@ -63,14 +63,14 @@ const DateOrder: React.FC = () => {
         const allItems = orderDate.filter((item)=> item.id !== id)
         setOrderDate(allItems)
         showToast({
-          title:'Orden borrada exitosamente',
+          title: <FormattedMessage id="orderDeletedSuccess" />,
           status:'success'
         })
       }
     } catch (error: any) {
       showToast({
-        title:'Error',
-        description:error.response.data.message,
+        title: <FormattedMessage id="error" />,
+        description: error.response.data.message,
         status:'error'
       })
       console.log(error);
@@ -91,11 +91,11 @@ const DateOrder: React.FC = () => {
     :
     <View style={styles.container}>
       <View style={styles.ContainerHeader}>
-        <CustomText style={styles.title} >Datos de Pedido</CustomText>
+        <CustomText style={styles.title} ><FormattedMessage id="orderData" /></CustomText>
       </View>
       <View style={styles.message}>
         <MaterialIconss style={{marginTop:3}} color={'gray'} size={16} name='error-outline'/>
-        <CustomText style={{flex:1}}>Aquí podrás gestionar la información de tus pedidos. Cada dato que ingreses aquí será solicitado al cliente para concretar un pedido o reserva de manera efectiva.</CustomText>
+        <CustomText style={{flex:1}}><FormattedMessage id="manageOrderData" /></CustomText>
       </View>
       <View style={styles.containerInfoLineTable}>
         <View style={styles.tableHeader}>

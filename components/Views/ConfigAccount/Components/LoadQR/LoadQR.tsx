@@ -5,6 +5,7 @@ import CustomText from "@/components/CustomText";
 import api from "@/services/api/admin";
 import { useUser } from "@/hooks/redux/useUser";
 import * as Progress from "react-native-progress";
+import { FormattedMessage } from 'react-intl'; // Importa FormattedMessage
 
 interface ILoadQR {
   QRCode: string | null,
@@ -41,7 +42,7 @@ const LoadQR = ({QRCode, handleUpdateData} : ILoadQR) => {
 
   return (
     <View style={styles.container}>
-      <CustomText>QR Code</CustomText>
+      <CustomText><FormattedMessage id="qrCode" /></CustomText>
       {loading ? (
         <Progress.Circle style={{marginVertical:20}} indeterminate={true} size={50} />
       ) : QRCode ? (
@@ -51,7 +52,7 @@ const LoadQR = ({QRCode, handleUpdateData} : ILoadQR) => {
           style={{ width: 200, height: 200 }}
         />
       ) : (
-        <CustomText>No se pudo cargar el código QR</CustomText>
+        <CustomText><FormattedMessage id="qrCodeError" /></CustomText>
       )}
     </View>
   );

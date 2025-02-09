@@ -8,6 +8,7 @@ import InputField from '@/components/InputField';
 import { useUser } from '@/hooks/redux/useUser';
 import api from '@/services/api/admin';
 import { useToastContext } from '@/contexts/ToastContext';
+import { FormattedMessage } from 'react-intl'; // Importa FormattedMessage
 
 interface IDateOrder {
     es_defecto: boolean;
@@ -56,7 +57,7 @@ const ModalCreateOrderDate = ({ data, onClose, updateOrder }: IProps) => {
                 updateOrder(data)
                 onClose()
                 showToast({
-                    title: "Orden creada correctamente!",
+                    title: <FormattedMessage id="orderCreatedSuccess" />,
                     status: "success",
                 });
             }
@@ -79,20 +80,20 @@ const ModalCreateOrderDate = ({ data, onClose, updateOrder }: IProps) => {
                                     <EvilIcons name='close' size={25} color={'white'} />
                                 </Pressable>
                                 <CustomText style={{ color: 'white', fontSize: 20 }}>
-                                    Crear
+                                    <FormattedMessage id="create" />
                                 </CustomText>
                             </View>
                             <Pressable style={{padding:4}} onPress={createOrderData} disabled={!isValidData}>
                                 <CustomText style={{ color: isValidData ? 'white' : '#696969' }}>
-                                    Guardar
+                                    <FormattedMessage id="save" />
                                 </CustomText>
                             </Pressable>
                         </View>
                     </View>
                     <View style={styles.bodyContent}>
-                        <InputField value={form.nombre} onChangeText={(text) => handleChangeValue('nombre', text)} label="Nombre" placeholder="Ingresa el nombre" />
+                        <InputField value={form.nombre} onChangeText={(text) => handleChangeValue('nombre', text)} label={<FormattedMessage id="name" />} placeholder={<FormattedMessage id="enterName" />} />
                         <FormControl isRequired style={styles.containerInput}>
-                            <FormControl.Label>Requerido</FormControl.Label>
+                            <FormControl.Label><FormattedMessage id="required" /></FormControl.Label>
                             <View style={styles.input}>
                                 <RNPickerSelect
                                     value={form.requerido}
@@ -105,12 +106,12 @@ const ModalCreateOrderDate = ({ data, onClose, updateOrder }: IProps) => {
                                         inputAndroid: styles.inputElement,
                                         inputIOS: styles.inputElement,
                                     }}
-                                    placeholder={{ label: 'Seleccione requerido', value: null }}
+                                    placeholder={{ label: <FormattedMessage id="selectRequired" />, value: null }}
                                 />
                             </View>
                         </FormControl>
                         <FormControl isRequired style={styles.containerInput}>
-                            <FormControl.Label>Tipo</FormControl.Label>
+                            <FormControl.Label><FormattedMessage id="type" /></FormControl.Label>
                             <View style={styles.input}>
                                 <RNPickerSelect
                                     value={form.tipo}
@@ -124,7 +125,7 @@ const ModalCreateOrderDate = ({ data, onClose, updateOrder }: IProps) => {
                                         inputAndroid: styles.inputElement,
                                         inputIOS: styles.inputElement,
                                     }}
-                                    placeholder={{ label: 'Seleccione tipo', value: null }}
+                                    placeholder={{ label: <FormattedMessage id="selectType" />, value: null }}
                                 />
                             </View>
                         </FormControl>

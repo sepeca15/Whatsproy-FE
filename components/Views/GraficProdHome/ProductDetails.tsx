@@ -56,7 +56,6 @@ const ProductDetails: React.FC = () => {
     disponible: params.disponible === 'true',
   };
 
-  console.log('monthdata :', product.monthdata);
 
   return (
     <GraficProddet

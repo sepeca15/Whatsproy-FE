@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Pressable, Animated, Easing, Dimensions } from 
 import { Feather } from '@expo/vector-icons';
 import { months, ordersData } from '../data';
 import { Styles } from './PedidosMensualesStyles';
+import { FormattedMessage } from 'react-intl'; // Importa FormattedMessage
 
 const maxValue = Math.max(...ordersData);
 const screenWidth = Dimensions.get('window').width;
@@ -76,7 +77,9 @@ const PedidosMensuales: React.FC = () => {
     return (
         <Animated.View style={[Styles.chartContainer, { opacity: fadeAnim }]}>
             <View style={Styles.titleContainer}>
-                <Text style={Styles.chartTitle}>Pedidos mensuales</Text>
+                <Text style={Styles.chartTitle}>
+                    <FormattedMessage id="monthlyOrders" defaultMessage="Monthly Orders" />
+                </Text>
                 <Pressable onPress={toggleScale}>
                     <Feather name="bar-chart-2" size={24} color="#333" />
                 </Pressable>
@@ -131,4 +134,3 @@ const PedidosMensuales: React.FC = () => {
 };
 
 export default PedidosMensuales;
-

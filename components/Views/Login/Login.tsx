@@ -1,7 +1,7 @@
 import React from "react";
-import { ScrollView, StyleSheet } from "react-native";
+import { ScrollView, Text } from "react-native";
 import { Center, View, VStack } from "native-base";
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import InputField from "@/components/InputField";
 import CustomButton from "@/components/CustomButton";
 import LogoContainer from "@/components/LogoContainer";
@@ -10,7 +10,8 @@ import api from "@/services/api/admin";
 import { StoreData } from "@/storage/localStorage";
 import { styles } from "./LoginStyles";
 import { useToastContext } from "@/contexts/ToastContext";
-import { KeyboardAvoidingView, Platform } from "react-native";
+import { KeyboardAvoidingView } from "react-native";
+import { FormattedMessage, useIntl } from 'react-intl'; // Importa FormattedMessage y useIntl
 
 const initialValues = {
   email: "",
@@ -19,6 +20,7 @@ const initialValues = {
 
 const LoginScreen: React.FC = () => {
   const [formValues, setFormValues] = React.useState(initialValues);
+  const intl = useIntl();
   const router = useRouter();
   const [loading, setLoading] = React.useState(false);
   const { showToast } = useToastContext();
@@ -44,8 +46,8 @@ const LoginScreen: React.FC = () => {
       }
     } catch (error: any) {
       showToast({
-        title: "Error de autenticación",
-        description: error.response.data.message || "Error al logearse.",
+        title: <Text><FormattedMessage id="authErrorTitle" defaultMessage="Authentication Error" /></Text>,
+        description: <Text>{error.response.data.message || <FormattedMessage id="authErrorDescription" defaultMessage="Error logging in." />}</Text>,
         status: "error",
       });
     } finally {
@@ -68,42 +70,43 @@ const LoginScreen: React.FC = () => {
 
             <InputField
               onChangeText={(text) => handleChangeValue("email", text)}
-              label="Correo"
-              placeholder="Ingresa tu correo"
-              blurOnSubmit={false}
+              label={<Text><FormattedMessage id="emailLabel" defaultMessage="Email" /></Text>}
+              placeholder={intl.formatMessage({ id: "emailPlaceholder", defaultMessage: "Enter your email" })}
             />
             <InputField
               onChangeText={(text) => handleChangeValue("password", text)}
-              label="Contraseña"
-              placeholder="Ingresa tu contraseña"
+              label={<Text><FormattedMessage id="passwordLabel" defaultMessage="Password" /></Text>}
+              placeholder={intl.formatMessage({ id: "passwordPlaceholder", defaultMessage: "Enter your password" })}
               type="password"
             />
 
             <CustomText
               style={styles.textPrimary}
-              onPress={() => {
-                /* función de reset */
-              }}
+              // onPress={() => {
+              //   router.push("/(auth)/forgot-password");
+              // }}
             >
-              ¿Has olvidado tu contraseña?
-              <CustomText style={styles.textSecondary}> Restablecer</CustomText>
+              <FormattedMessage id="forgotPassword" defaultMessage="Forgot your password?" />
+              <CustomText style={styles.textSecondary}>
+                <FormattedMessage id="resetPassword" defaultMessage=" Reset" />
+              </CustomText>
             </CustomText>
 
             <CustomText
               onPress={() => router.push("/(auth)/sign-up")}
               style={styles.textPrimary}
             >
-              ¿No tienes cuenta?
-              <Link href="/(auth)/sign-up">
-                <CustomText style={styles.textSecondary}>Crear una</CustomText>
-              </Link>
+              <FormattedMessage id="noAccount" defaultMessage="Don't have an account?" />
+              <CustomText style={styles.textSecondary}>
+                <FormattedMessage id="createAccount" defaultMessage=" Create one" />
+              </CustomText>
             </CustomText>
             <CustomButton
               loading={loading}
               onPress={() => Login()}
               colorSpiner="white"
             >
-              Iniciar Sesión
+              <FormattedMessage id="loginButton" defaultMessage="Login" />
             </CustomButton>
           </VStack>
         </Center>

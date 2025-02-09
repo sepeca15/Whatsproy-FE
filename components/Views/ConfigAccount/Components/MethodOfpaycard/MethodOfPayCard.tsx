@@ -7,49 +7,49 @@ import CustomButton from "@/components/CustomButton";
 import { IPlans } from "./MethodOfPayCardTypes";
 import { useUser } from "@/hooks/redux/useUser";
 import { useToastContext } from "@/contexts/ToastContext";
-import * as moment from 'moment-timezone'
+import * as moment from 'moment-timezone';
+import { FormattedMessage } from 'react-intl'; // Importa FormattedMessage
 
 interface IMethodOfPayCard {
     Plan: IPlans;
 }
 
 const MethodOfPayCard = ({ Plan }: IMethodOfPayCard) => {
-    const { handleAssignUserToPlan, user } = useUser()
-    const {showToast} = useToastContext()
-    const [loadingApi, setloadingApi] = React.useState<boolean>(false)
-    const adventagesArray = Plan.adventages.split(',')
+    const { handleAssignUserToPlan, user } = useUser();
+    const { showToast } = useToastContext();
+    const [loadingApi, setloadingApi] = React.useState<boolean>(false);
+    const adventagesArray = Plan.adventages.split(',');
 
     const assignPlan = async () => {
         try {
             if (loadingApi === false) {
-                setloadingApi(true)
+                setloadingApi(true);
                 await handleAssignUserToPlan({
                     fecha_inicio: moment.tz(user.timeZOne).toDate(),
                     id_empresa: user.id_empresa,
                     id_plan: Plan.id
-                })
+                });
                 showToast({
-                    title: "Plan asignado al usuario correctamente!",
+                    title: <FormattedMessage id="planAssignedSuccess" />,
                     status: "success",
                 });
-                setloadingApi(false)
+                setloadingApi(false);
             }
-        } catch (error : any) {
+        } catch (error: any) {
             showToast({
-                title: "Error:" + error.response.data.message,
+                title: <FormattedMessage id="planAssignedError" /> + error.response.data.message,
                 status: "error",
             });
             console.log(error);
-
         }
-    }
+    };
 
     return (
         <View style={styles.MainContainer}>
             {
                 Plan.mostPoppular &&
                 <View style={styles.ContainerMostPopular}>
-                    <CustomText style={styles.WhiteTextBold}>MOST POPULAR</CustomText>
+                    <CustomText style={styles.WhiteTextBold}><FormattedMessage id="mostPopular" /></CustomText>
                 </View>
             }
             <View style={styles.containerCardMethodOfPay}>
@@ -74,12 +74,11 @@ const MethodOfPayCard = ({ Plan }: IMethodOfPayCard) => {
                 </View>
                 <View style={styles.ContainerFooter}>
                     <CustomButton colorSpiner="white" loading={loadingApi} style={{ alignContent: 'flex-start' }} width={'100%'} background="#323232" onPress={assignPlan} >
-                        Buy Now
+                        <FormattedMessage id="buyNow" />
                     </CustomButton>
                 </View>
             </View>
         </View>
-
     );
 };
 
