@@ -9,10 +9,13 @@ export const styles = StyleSheet.create({
   },
   scrollViewContent: {
     justifyContent: 'center',
-    alignItems: 'center',
     paddingVertical: 20,
     paddingBottom: 80,
     width: '100%',
+  
+  },
+  updatingOverlay:{
+  
   },
   scrollView: {
     width: '100%',
@@ -24,7 +27,7 @@ export const styles = StyleSheet.create({
     borderRadius: 25, 
     paddingHorizontal: 15,
     margin: 10,
-    width: '95%',
+    width: '100%',
     alignSelf: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },

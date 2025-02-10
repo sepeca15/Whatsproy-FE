@@ -28,7 +28,7 @@ export const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    padding: 12,
+    padding: 5,
   },
   header: {
     flexDirection: "row",

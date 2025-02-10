@@ -197,7 +197,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 <Icon name="more-vertical" size={20} color="#666" />
               </TouchableOpacity>
             </View>
-            <Text style={styles.description} numberOfLines={3}>
+            <Text style={styles.description} numberOfLines={2}>
               {productBDD.descripcion}
             </Text>
           </View>
