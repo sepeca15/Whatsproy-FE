@@ -1,6 +1,5 @@
 import { StyleSheet, Dimensions } from "react-native"
 import { Colors } from "../../../../constants/Colors"
-import { red } from "react-native-reanimated/lib/typescript/reanimated2/Colors"
 
 const { width } = Dimensions.get("window")
 
@@ -138,7 +137,7 @@ export const styles = StyleSheet.create({
     letterSpacing: 1,
     lineHeight: 24,
     paddingRight: 20,
-    
+
   },
 
   chart: {
@@ -148,8 +147,8 @@ export const styles = StyleSheet.create({
     // borderWidth: 1,
     backgroundColor: "#fff",
     width: "100%",
-   
-  
+
+
   },
 
   chartWrapperContainer: {
@@ -158,18 +157,19 @@ export const styles = StyleSheet.create({
     maxWidth: "100%",
     width: "100%",
     borderColor: "black",
-    borderWidth: 0.5,
+    borderLeftWidth: 0.2,
+    borderRightWidth: 0.2,
     backgroundColor: "#fff",
-    elevation: 3,
+
     shadowColor: "#000",
-  
+
   },
 
   chartWrapper: {
-  
-   width: "100%",
-   maxWidth: "100%",
-    
+
+    width: "100%",
+    maxWidth: "100%",
+
   },
   chartHeader: {
     flexDirection: "row",
@@ -179,9 +179,9 @@ export const styles = StyleSheet.create({
     marginTop: 10,
     maxWidth: "100%",
     width: "100%",
-    paddingLeft : 10,
+    paddingLeft: 10,
     paddingRight: 10,
-   
+
   },
   statsContainer: {
     flexDirection: "row",
@@ -302,8 +302,8 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 20,
-   
-    maxWidth:'100%',
+
+    maxWidth: '100%',
   },
   toggleButtonText: {
     color: "#fff",

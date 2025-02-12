@@ -18,7 +18,7 @@ import { useRouter } from 'expo-router';
 import { availableCurrencies } from '@/hooks/dataProduct';
 import ProductoTypes from '../../../../services/api/products/types';
 import api from "@/services/api/admin";
-import { FormattedMessage } from 'react-intl'; // Importa FormattedMessage
+import { FormattedMessage } from 'react-intl';
 
 const AddProduct: React.FC = () => {
   const router = useRouter();
