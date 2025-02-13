@@ -1,30 +1,38 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet } from "react-native"
+import Index from '../../../../../app/index';
 
 export const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
-    borderRadius: 10,
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
     margin: 10,
-    padding: 15,
+    padding: 5,
   },
   card: {
     flexDirection: "row",
     alignItems: "center",
+    height: 100,
   },
   image: {
-    width: 80,
-    height: 80,
-    borderRadius: 8,
+    width: 100,
+    height: 100,
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
+
     marginRight: 15,
   },
+
   content: {
     flex: 1,
   },
+
+
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -71,4 +79,20 @@ export const styles = StyleSheet.create({
   modalOptionText: {
     fontSize: 16,
   },
-});
+  disabledLabel: {
+    position: "absolute",
+    top: 40,
+    right: 260,
+    backgroundColor: "rgba(255, 0, 0, 0.7)",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+    zIndex: 1,
+  },
+  disabledText: {
+    color: "#fff",
+    fontSize: 12,
+    fontWeight: "bold",
+  },
+})
+
