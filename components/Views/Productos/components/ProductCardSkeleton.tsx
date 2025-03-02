@@ -1,63 +1,91 @@
-import type React from "react"
-import { View, StyleSheet } from "react-native"
+import React from "react";
+import { View, StyleSheet } from "react-native";
 
 const ProductCardSkeleton: React.FC = () => {
   return (
-    <View style={styles.card}>
-      <View style={styles.imageContainer}>
+    <View style={styles.container}>
+      <View style={styles.card}>
+
         <View style={styles.image} />
-      </View>
-      <View style={styles.content}>
-        <View style={styles.title} />
-        <View style={styles.description} />
-        <View style={styles.price} />
+
+
+        <View style={styles.content}>
+
+          <View style={styles.headerSkeleton}>
+            <View style={styles.titleSkeleton} />
+            <View style={styles.moreButtonSkeleton} />
+          </View>
+
+          <View style={styles.priceSkeleton} />
+
+          <View style={styles.descriptionSkeleton} />
+        </View>
       </View>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
-  card: {
-
-    borderRadius: 8,
-
-    marginVertical: 8,
-    marginHorizontal: 10,
-    flexDirection: "row",
-    overflow: "hidden",
-    height: 140,
-    width: "95%",
+  container: {
+    backgroundColor: "#fff",
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    margin: 10,
+    padding: 5,
   },
-  imageContainer: {
-    width: 130,
-    height: "100%",
+  card: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: 100,
   },
   image: {
-    flex: 1,
+    width: 100,
+    height: 100,
     backgroundColor: "#e0e0e0",
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
+    marginRight: 15,
   },
   content: {
     flex: 1,
-    padding: 16,
+    paddingVertical: 16,
   },
-  title: {
+  headerSkeleton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 8,
+  },
+  titleSkeleton: {
     height: 24,
     backgroundColor: "#e0e0e0",
-    marginBottom: 8,
     width: "80%",
+    borderRadius: 4,
   },
-  description: {
-    height: 16,
+  moreButtonSkeleton: {
+    width: 20,
+    height: 20,
     backgroundColor: "#e0e0e0",
-    marginBottom: 8,
-    width: "60%",
+    borderRadius: 10,
   },
-  price: {
+  priceSkeleton: {
     height: 20,
     backgroundColor: "#e0e0e0",
     width: "40%",
+    marginBottom: 8,
+    borderRadius: 4,
   },
-})
+  descriptionSkeleton: {
+    height: 16,
+    backgroundColor: "#e0e0e0",
+    width: "60%",
+    borderRadius: 4,
+  },
+});
 
-export default ProductCardSkeleton
-
+export default ProductCardSkeleton;

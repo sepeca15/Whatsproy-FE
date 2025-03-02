@@ -207,7 +207,11 @@
     "inactive": "Inactive",
     "noPermission": "You do not have permission to manage users",
     "confirmDeleteUser": "Do you want to delete the selected user?",
-    "deleteUser": "Delete User"
+    "deleteUser": "Delete User",
+    "confirmDisable": "disable this product?",
+    "confirmDisableMessage": "If you disable this product, it will not be available to your customers.",
+    "disabled": "Disabled",
+    "viewModal": "View"
   },
   "es": {
     "notAvailable": "No disponible",
@@ -417,7 +421,10 @@
     "inactive": "Inactivo",
     "noPermission": "No tienes permisos para manejar usuarios",
     "confirmDeleteUser": "¿Desea eliminar el usuario seleccionado?",
-    "deleteUser": "Eliminar Usuario"
-
+    "deleteUser": "Eliminar Usuario",
+    "confirmDisable": "desabilitar este producto?",
+    "confirmDisableMessage": "Si deshabilitas este producto, no estará disponible para tus clientes.",
+    "disabled": "Deshabilitado",
+    "viewModal": "Ver"
   }
 }

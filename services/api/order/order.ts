@@ -44,3 +44,20 @@ export const removeOrder = async (id: number) => {
 
   return data;
 };
+
+
+
+export const getMoneyInDay = async (date: string) => {
+  const { data } = await ApiInstances('current').get(`/pedido/stats/momeyInDay/${date}`);
+  return data;
+};
+
+export const lastThreeOrders = async () => {
+  const { data } = await ApiInstances('current').get('/pedido/stats/lastThree')
+  return data
+}
+
+export const getOrdersByDate = async (date: string) => {
+  const { data } = await ApiInstances('current').get(`/pedido/stats/ordersDay/${date}`)
+  return data
+}

@@ -1,3 +1,4 @@
+import { getMoneyInDay } from './../order/order';
 import * as auth from "../auth/auth"
 import * as products from "../products/products"
 import * as company from "../company/company"
@@ -7,6 +8,7 @@ import * as dataOrder from "../dateOrder/DateOrder"
 import * as order from "../order/order"
 import * as typeServices from "../typeServices/typeServices"
 import * as client from "../clients/clients"
+import * as image from "../image/image"
 
 const api = {
     auth:{
@@ -41,7 +43,8 @@ const api = {
     dataOrder: {
         getAll: dataOrder.getAll,
         create: dataOrder.create,
-        delete: dataOrder.deleteOrderDate
+        delete: dataOrder.deleteOrderDate,
+     
     },
     order: {
         getCalendarOrders: order.getOrderForCalendar,
@@ -51,14 +54,22 @@ const api = {
         remove: order.removeOrder,
         confirm: order.confirmOrder,
         create: order.createOrder,
-        getNextDateAvailable: order.getNextDateAvailable,
+        moneyinday: order.getMoneyInDay,
+        lastThreeOrders: order.lastThreeOrders,
+        getOrdersByDate: order.getOrdersByDate,
+
     },
     typeServices : {
         getAll : typeServices.getAll
     },
     client: {
         create: client.CreateOrReturnClient
+    },
+
+    image:{
+        upload: image.uploadImage
     }
+
 }
 
 export default api

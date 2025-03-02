@@ -4,7 +4,7 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { NativeBaseProvider, ScrollView } from "native-base";
+import { NativeBaseProvider } from "native-base";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
@@ -36,11 +36,11 @@ export default function RootLayout() {
 
   return (
     <Provider store={store}>
-      <StatusBar style="dark" />
       <NativeBaseProvider>
         <ToastProvider>
-          <LocalizationProvider> 
+          <LocalizationProvider>
             <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+              <StatusBar style="auto" /> 
               <Stack screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
                 <Stack.Screen name="(auth)" options={{ headerShown: false }} />

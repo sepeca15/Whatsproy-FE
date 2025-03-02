@@ -11,7 +11,7 @@ import { StoreData } from "@/storage/localStorage";
 import { styles } from "./LoginStyles";
 import { useToastContext } from "@/contexts/ToastContext";
 import { KeyboardAvoidingView } from "react-native";
-import { FormattedMessage, useIntl } from 'react-intl'; // Importa FormattedMessage y useIntl
+import { FormattedMessage, useIntl } from 'react-intl'; 
 
 const initialValues = {
   email: "",

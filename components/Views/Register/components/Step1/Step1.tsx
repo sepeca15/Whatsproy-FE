@@ -8,7 +8,11 @@ import { Ionicons } from "@expo/vector-icons";
 import AlertText from "../AlertText";
 import SelectTimeZone from "../SelectTimeZone";
 import * as moment from 'moment-timezone';
-import { useIntl } from 'react-intl'; 
+import { FormattedMessage, useIntl } from 'react-intl'; 
+import { useState } from 'react';
+import api from "@/services/api/admin";
+
+
 
 interface IDataStep1 {
     nombre: string;
@@ -25,7 +29,11 @@ interface IStep1 {
 
 const Step1 = ({ formData, handleInputChange, errors }: IStep1) => {
     const timeZones = moment.tz.names();
+    const [uri, setUri] = useState('');
     const intl = useIntl();
+
+    console.log(intl); // Esto debería mostrar el objeto intl si está disponible
+
 
     const pickImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
@@ -36,9 +44,31 @@ const Step1 = ({ formData, handleInputChange, errors }: IStep1) => {
         });
 
         if (!result.canceled) {
-            handleInputChange("logo", result.assets[0].uri);
+            try {
+               
+                const { uri, fileName } = result.assets[0];
+
+                
+                const file = {
+                    uri: result.assets[0].uri,
+                    type: 'image/png',
+                    name: 'image.png'
+                };
+                setUri(file.uri);
+               
+
+
+                const uploadResponse = await api.image.upload(file);
+                console.log("Imagen subida con éxito:", uploadResponse.url);
+                handleInputChange("logo", uploadResponse.url);
+
+            } catch (error) {
+                console.error("Error al subir la imagen:", error);
+            }
         }
     };
+
+
 
     return (
         <VStack space={2} style={styles.container}>
@@ -46,7 +76,7 @@ const Step1 = ({ formData, handleInputChange, errors }: IStep1) => {
                 <TouchableOpacity onPress={pickImage}>
                     <Image
                         source={{
-                            uri: formData.logo || "https://static.vecteezy.com/system/resources/previews/036/280/651/non_2x/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-illustration-vector.jpg",
+                            uri: uri || "https://static.vecteezy.com/system/resources/previews/036/280/651/non_2x/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-illustration-vector.jpg",
                         }}
                         style={styles.image}
                     />
@@ -82,7 +112,7 @@ const Step1 = ({ formData, handleInputChange, errors }: IStep1) => {
             </View>
 
             <View>
-                <SelectTimeZone selectTimeZone={(valueTz:string)=> handleInputChange("timeZone", valueTz)} timeZoneSelected={formData.timeZone} timeZones={timeZones}/>
+                <SelectTimeZone selectTimeZone={(valueTz: string) => handleInputChange("timeZone", valueTz)} timeZoneSelected={formData.timeZone} timeZones={timeZones} />
                 {errors.timeZone && (
                     <AlertText text={errors.timeZone} />
                 )}
