@@ -86,7 +86,7 @@ const Productos: React.FC = () => {
       </View>
       <ScrollView contentContainerStyle={styles.scrollViewContent} style={styles.scrollView}>
         {isInitialLoading ? (
-          Array.from({ length: 5 }).map((_, index) => <ProductCardSkeleton key={index} />)
+          Array.from({ length: 4 }).map((_, index) => <ProductCardSkeleton key={index} />)
         ) : (
           <Animated.View style={{ opacity: fadeAnim }}>
             {filteredProducts.map((product) => (

@@ -35,7 +35,7 @@ interface IDataRegister {
 
 const Register: React.FC = () => {
   const router = useRouter();;
-  const intl = useIntl(); // Usa useIntl para obtener la instancia de intl
+  const intl = useIntl(); 
 
   const [steps, setSteps] = useState<number>(1);
   const [errors, setErrors] = useState<any>({});

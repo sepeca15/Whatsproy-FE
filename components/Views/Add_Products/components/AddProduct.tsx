@@ -47,19 +47,19 @@ const AddProduct: React.FC = () => {
   };
 
   const handleSubmit = () => {
-    setLoading(true); // Inicia el spinner
+    setLoading(true);
     const newProduct = { ...formData };
 
     api.products.create(newProduct)
       .then(response => {
         console.log('Producto creado exitosamente:', response.data);
-        setLoading(false); // Detiene el spinner
+        setLoading(false);
         router.push("/(tabs)/productos");
       })
       .catch(error => {
         console.error('Error al crear el producto:', error.response.data.message);
         console.log("error al crear", newProduct);
-        setLoading(false); // Detiene el spinner
+        setLoading(false); 
       });
   };
 

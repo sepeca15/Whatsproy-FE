@@ -1,25 +1,31 @@
-import type React from "react"
-import { View, StyleSheet } from "react-native"
+import React from "react";
+import { View, StyleSheet } from "react-native";
 
 const ProductCardSkeleton: React.FC = () => {
   return (
     <View style={styles.container}>
       <View style={styles.card}>
-      
-          <View style={styles.image} />
-     
+
+        <View style={styles.image} />
+
+
         <View style={styles.content}>
-          <View style={styles.title} />
-          <View style={styles.description} />
-          <View style={styles.price} />
+
+          <View style={styles.headerSkeleton}>
+            <View style={styles.titleSkeleton} />
+            <View style={styles.moreButtonSkeleton} />
+          </View>
+
+          <View style={styles.priceSkeleton} />
+
+          <View style={styles.descriptionSkeleton} />
         </View>
       </View>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
-
   container: {
     backgroundColor: "#fff",
     borderTopRightRadius: 10,
@@ -36,64 +42,50 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     height: 100,
-    borderRadius: 8,
-
-    marginVertical: 8,
-    marginHorizontal: 10,
-  
-    
-
-    // borderRadius: 8,
-
-    // marginVertical: 8,
-    // marginHorizontal: 10,
-    // flexDirection: "row",
-    // overflow: "hidden",
-    // height: 140,
-    // width: "95%",
   },
-  imageContainer: {
+  image: {
     width: 100,
     height: 100,
+    backgroundColor: "#e0e0e0",
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
     marginRight: 15,
   },
-  image: {
-    flex: 1,
-    backgroundColor: "#e0e0e0",
-    width: 100,
-    height: 100,
-    borderTopRightRadius: 10,
-    borderBottomRightRadius: 10,
-  },
   content: {
     flex: 1,
-    padding: 16,
+    paddingVertical: 16,
   },
-  title: {
+  headerSkeleton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 8,
+  },
+  titleSkeleton: {
     height: 24,
     backgroundColor: "#e0e0e0",
-    marginBottom: 8,
     width: "80%",
-
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#333",
-    flex: 1,
+    borderRadius: 4,
   },
-  description: {
-    height: 16,
+  moreButtonSkeleton: {
+    width: 20,
+    height: 20,
     backgroundColor: "#e0e0e0",
-    marginBottom: 8,
-    width: "60%",
+    borderRadius: 10,
   },
-  price: {
+  priceSkeleton: {
     height: 20,
     backgroundColor: "#e0e0e0",
     width: "40%",
+    marginBottom: 8,
+    borderRadius: 4,
   },
-})
+  descriptionSkeleton: {
+    height: 16,
+    backgroundColor: "#e0e0e0",
+    width: "60%",
+    borderRadius: 4,
+  },
+});
 
-export default ProductCardSkeleton
-
+export default ProductCardSkeleton;
