@@ -227,6 +227,9 @@ const Home: React.FC = () => {
                   onPress={() => {
                     router.push("/(tabs)/generalSettings");
                   }}
+
+
+                  
                 />
               </View>
             </Animated.View>
