@@ -36,20 +36,21 @@ export default function RootLayout() {
 
   return (
     <Provider store={store}>
-      <NativeBaseProvider>
-        <ToastProvider>
-          <LocalizationProvider>
+      <LocalizationProvider>
+        <NativeBaseProvider>
+          <ToastProvider>
             <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-              <StatusBar style="auto" /> 
+              <StatusBar style="auto" />
               <Stack screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
                 <Stack.Screen name="(auth)" options={{ headerShown: false }} />
                 <Stack.Screen name="+not-found" />
               </Stack>
             </ThemeProvider>
-          </LocalizationProvider>
-        </ToastProvider>
-      </NativeBaseProvider>
+          </ToastProvider>
+        </NativeBaseProvider>
+      </LocalizationProvider>
     </Provider>
   );
+  
 }

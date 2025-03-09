@@ -32,11 +32,16 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
     borderRadius: 200,
-    padding: 16,
+    
   },
   largeAvatar: {
     width: 300,
     height: 300,
     borderRadius: 200,
   },
+  inProgress:{
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#666',
+  }
 });

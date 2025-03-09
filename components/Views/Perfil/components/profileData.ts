@@ -1,11 +1,8 @@
-export interface ProfileData {
-  name: string;
-  plan: string;
-  avatarUrl: string;
+// Crear un archivo con datos de perfil predeterminados
+export const profileData = {
+  plan: "Premium",
+  expiryDate: "30/06/2023",
+  usagePercentage: 75,
+  // Otros datos de perfil que puedas necesitar
 }
 
-export const profileData: ProfileData = {
-  name: "Jorge Martinez",
-  plan: "Premium",
-  avatarUrl: "https://cdn-icons-png.flaticon.com/512/4794/4794936.png", 
-};

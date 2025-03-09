@@ -15,7 +15,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import createStyles from './AddUserStyles';
-import { FormattedMessage } from 'react-intl'; // Importa FormattedMessage
+import { FormattedMessage } from 'react-intl';
 
 const AddUser = () => {
   const [nombre, setNombre] = useState<string>('');

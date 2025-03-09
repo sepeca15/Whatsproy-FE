@@ -19,6 +19,7 @@ import { removeData } from "@/storage/localStorage";
 import { router, useRouter } from "expo-router";
 import api from "@/services/api/admin";
 
+
 const Home: React.FC = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -46,7 +47,7 @@ const Home: React.FC = () => {
   };
 
   const getOrders = useCallback(async () => {
-    if (isFetching.current) return;  
+    if (isFetching.current) return;
     try {
       isFetching.current = true;
       setLoading(true);
@@ -114,7 +115,7 @@ const Home: React.FC = () => {
   }, []);
 
   const handleRefresh = async () => {
-    if (isFetching.current) return;  
+    if (isFetching.current) return;
     setRefreshing(true);
     await Promise.all([getOrders(), getOrdersByDate(), moneyinday()]);
     setRefreshing(false);
@@ -170,19 +171,19 @@ const Home: React.FC = () => {
                 icon="cart-outline"
                 title="Pedidos Hoy"
                 value={ordersCount.toString()}
-                onPress={() => {}}
+                onPress={() => { }}
               />
               <MetricCard
                 icon="account-group"
                 title="Clientes"
                 value="120"
-                onPress={() => {}}
+                onPress={() => { }}
               />
               <MetricCard
                 icon="cash-multiple"
                 title="Ingresos"
                 value={`$${dailyRevenue}`}
-                onPress={() => {}}
+                onPress={() => { }}
               />
             </Animated.View>
 
@@ -193,22 +194,49 @@ const Home: React.FC = () => {
               {lastOrders.length > 0 ? (
                 lastOrders.map((order) => (
                   <LastActivityCard
-                  key={order.id}
-                  title={`Pedido #${order.id}`}
-                  time={order.time || "Desconocido"} 
-                  id={order.id?.toString() || "0"}
-                  amount={order.amount || "$0"}
-                  icon={order.icon || "receipt"}
-                  address="Desconocido"
-                  onPress={() => {}}
-                />
-                
+                    key={order.id}
+                    title={`Pedido #${order.id}`}
+                    time={order.time || "Desconocido"}
+                    id={order.id?.toString() || "0"}
+                    amount={order.amount || "$0"}
+                    icon={order.icon || "receipt"}
+                    address="Desconocido"
+                    onPress={() => { }}
+                  />
+
                 ))
               ) : (
                 <CustomText>No hay pedidos recientes</CustomText>
               )}
+
+
+              <CustomText style={styles.sectionTitle}>
+                Gestión Rápida
+              </CustomText>
+              <View style={styles.quickActionsGrid}>
+                <QuickActionButton
+                  icon="calendar"
+                  title="Reservas"
+                  onPress={() => {
+                    router.push("/(tabs)/pedidos");
+                  }}
+                />
+                <QuickActionButton
+                  icon="cog"
+                  title="Ajustes"
+                  onPress={() => {
+                    router.push("/(tabs)/generalSettings");
+                  }}
+
+
+                  
+                />
+              </View>
             </Animated.View>
+
+
           </>
+
         )}
       </ScrollView>
     </SafeAreaView>
