@@ -20,6 +20,8 @@ import type {
   DayslySalesData,
   MonthlySalesData,
 } from "../../../../../hooks/dataProduct";
+import { useToast } from "native-base"
+import { useToastContext } from "@/contexts/ToastContext"
 
 interface ProductCardProps {
   product: Product;
@@ -37,7 +39,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, productBDD, c
   const intl = useIntl()
   const [modalVisible, setModalVisible] = useState(false)
   const [localDisponible, setLocalDisponible] = useState(productBDD.disponible)
-
+  const { showToast } = useToastContext();
+  
   const handleEdit = () => {
     router.push({
       pathname: "/(tabs)/editprod",
@@ -97,9 +100,21 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, productBDD, c
               setLocalDisponible(newDisponible)
               try {
                 const updatedProduct = { ...productBDD, disponible: newDisponible }
-                await api.products.update(productBDD.id, updatedProduct)
-                onUpdateProduct()
+                const res = await api.products.update(productBDD.id, updatedProduct)
+                
+                if(res.data.ok) {
+                  showToast({
+                    title: "Product updated successfully",
+                    status: "success",
+                  })
+                  onUpdateProduct()
+                }
+
               } catch (error) {
+                showToast({
+                  title: "Error updating product availablity",
+                  status: "error",
+                })
                 console.error("Error al actualizar el producto", error)
                 setLocalDisponible(!newDisponible)
               }
@@ -136,11 +151,24 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, productBDD, c
         },
         {
           text: intl.formatMessage({ id: "delete", defaultMessage: "Delete" }),
-          onPress: () => {
+          onPress: async () => {
             setModalVisible(false)
-            api.products.delete(productBDD.id).then(() => {
-              onUpdateProduct()
-            })
+            try {
+              const resp = await api.products.delete(productBDD.id)
+              
+              if(resp.data.ok) {
+                onUpdateProduct()
+                showToast({
+                  title: "Product created successfully",
+                  status: "success",
+                })
+              }
+            } catch (error: any) {
+              showToast({
+                title: error.response.data.message || "Error deleting product",
+                status: "error",
+              })
+            }
           },
           style: "destructive",
         },

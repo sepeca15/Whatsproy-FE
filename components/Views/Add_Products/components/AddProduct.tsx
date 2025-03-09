@@ -19,8 +19,10 @@ import { availableCurrencies } from '@/hooks/dataProduct';
 import ProductoTypes from '../../../../services/api/products/types';
 import api from "@/services/api/admin";
 import { FormattedMessage } from 'react-intl';
+import { useToastContext } from '@/contexts/ToastContext';
 
 const AddProduct: React.FC = () => {
+  const {showToast} = useToastContext()
   const router = useRouter();
   const [formData, setFormData] = useState<ProductoTypes>({
     nombre: '',
@@ -53,10 +55,18 @@ const AddProduct: React.FC = () => {
     api.products.create(newProduct)
       .then(response => {
         console.log('Producto creado exitosamente:', response.data);
+        showToast({
+          title: "Porudct created successfully",
+          status: 'success'
+        })
         setLoading(false);
         router.push("/(tabs)/productos");
       })
       .catch(error => {
+        showToast({
+          title: error.response.data.message || "Error creating product",
+          status: 'error'
+        })
         console.error('Error al crear el producto:', error.response.data.message);
         console.log("error al crear", newProduct);
         setLoading(false); 

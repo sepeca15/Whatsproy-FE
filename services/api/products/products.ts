@@ -4,7 +4,7 @@ import ProductoTypes  from './types';
 
 
 export const findAllProducts = async () => {
-    const data = await ApiInstances('current').get(`producto`)
+    const {data} = await ApiInstances('current').get(`producto`)
     return data
 }
 
