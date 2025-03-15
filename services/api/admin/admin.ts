@@ -9,7 +9,7 @@ import * as order from "../order/order"
 import * as typeServices from "../typeServices/typeServices"
 import * as client from "../clients/clients"
 import * as image from "../image/image"
-
+import * as perfil from "../perfil/perfil"
 const api = {
     auth:{
         login:auth.Login,
@@ -68,6 +68,9 @@ const api = {
 
     image:{
         upload: image.uploadImage
+    },
+    perfil:{
+        getResumenVentas: perfil.resumenVentas
     }
 
 }

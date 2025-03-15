@@ -47,7 +47,7 @@ const SubscriptionInfo: React.FC<SubscriptionProps> = ({
       <TouchableOpacity style={{ marginTop: 12 }}>
         <Box bg="#075e54" py={2} borderRadius="md" alignItems="center">
           <Text style={{ color: "white", fontWeight: "bold" }}>
-            <FormattedMessage id="r" defaultMessage="Mejorar plan" />
+            <FormattedMessage id="profile.upgradePlan" defaultMessage="Mejorar plan" />
           </Text>
         </Box>
       </TouchableOpacity>

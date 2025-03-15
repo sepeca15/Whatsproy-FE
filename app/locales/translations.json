@@ -239,8 +239,7 @@
     "profile.edit": "Edit profile",
     "sales.period.semanal": "Weekly",
     "sales.period.trimestral": "Quarterly",
-      "sales.period.anual": "Annual"
-   
+    "sales.period.anual": "Annual"
     
   },
   "es": {
@@ -484,5 +483,6 @@
     "sales.period.semanal": "Semanal",
     "sales.period.trimestral": "Trimestral",
     "sales.period.anual": "Anual"
+   
   }
 }
