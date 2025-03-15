@@ -57,7 +57,7 @@ const api = {
         moneyinday: order.getMoneyInDay,
         lastThreeOrders: order.lastThreeOrders,
         getOrdersByDate: order.getOrdersByDate,
-
+        getNextDateAvailable: order.getNextDateAvailable,
     },
     typeServices : {
         getAll : typeServices.getAll

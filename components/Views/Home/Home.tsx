@@ -135,7 +135,6 @@ const Home: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <CustomText onPress={logout} accessibilityLabel="Cerrar sesión">logout</CustomText>
       <Animated.View entering={FadeIn} style={styles.header}>
         <View>
           <CustomText style={styles.businessName} accessibilityLabel="Nombre del negocio">

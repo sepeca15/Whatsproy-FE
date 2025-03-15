@@ -66,7 +66,7 @@ const EditProduct = ({
     precio: Number.parseFloat(price) || 0,
   });
   const [selectedImage, setSelectedImage] = useState<string | null>(imageUrl ?? null);
-  const [ showToast ] = useToastContext()
+  const { showToast } = useToastContext();
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,

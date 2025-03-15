@@ -10,15 +10,18 @@ export const ToastProvider = ({ children }: any) => {
 
   const showToast = ({ title, description, status }: any) => {
     toast.show({
-      placement: "top",
+      placement: "bottom-right",
       zIndex: 9999999,
       duration: 3000,
+      marginRight: 3,
+      paddingRight: 3,
       position: "fixed",
       render: () => (
         <Box
           bg={status === "success" ? "green.500" : "red.500"}
           px="4"
           py="3"
+          marginRight={3}
           rounded="lg"
           zIndex={9999999}
           shadow="2"

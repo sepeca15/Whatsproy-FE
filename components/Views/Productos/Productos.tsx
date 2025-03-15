@@ -40,7 +40,7 @@ const Productos: React.FC = () => {
       }
       try {
         const response = await api.products.getAll()
-        const productData: ProductBDD[] = response.data
+        const productData: ProductBDD[] = response
         setProducts(productData)
         console.log("productData", productData)
       } catch (error) {
@@ -69,7 +69,7 @@ const Productos: React.FC = () => {
     allProduct(false)
   }, [allProduct])
 
-  const filteredProducts = ProductsBD.filter((product) =>
+  const filteredProducts = (ProductsBD ?? []).filter((product) =>
     product.nombre.toLowerCase().includes(searchTerm.toLowerCase()),
   ).sort((a, b) => a.nombre.localeCompare(b.nombre, locale))
 

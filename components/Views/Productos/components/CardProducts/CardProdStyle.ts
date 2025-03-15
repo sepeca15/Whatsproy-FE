@@ -82,7 +82,7 @@ export const styles = StyleSheet.create({
   disabledLabel: {
     position: "absolute",
     top: 40,
-    right: 260,
+    left: "2%",
     backgroundColor: "rgba(255, 0, 0, 0.7)",
     paddingHorizontal: 8,
     paddingVertical: 4,
