@@ -18,8 +18,8 @@ interface SalesChartProps {
 }
 
 const SalesChart: React.FC<SalesChartProps> = ({
-  monthlySales = [],
-  labels = [],
+  monthlySales = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
+  labels = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct"],
   period = "mensual",
   onPeriodChange = () => {},
 }) => {
