@@ -19,6 +19,7 @@ import { useRouter } from "expo-router";
 import { availableCurrencies } from "@/hooks/dataProduct";
 import api from "@/services/api/admin";
 import { FormattedMessage, useIntl } from 'react-intl'; // Importa FormattedMessage y useIntl
+import { useToastContext } from "@/contexts/ToastContext";
 
 interface ProductFormData {
   id: number;
@@ -65,7 +66,7 @@ const EditProduct = ({
     precio: Number.parseFloat(price) || 0,
   });
   const [selectedImage, setSelectedImage] = useState<string | null>(imageUrl ?? null);
-
+  const [ showToast ] = useToastContext()
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -80,15 +81,29 @@ const EditProduct = ({
   };
 
   const handleSubmit = async () => {
-    const Prodnew = { ...formData };
-    const UpdateProd = async () => {
-      await api.products.update(Prodnew.id, Prodnew);
-    };
-    UpdateProd();
+    try {
+      const Prodnew = { ...formData };
+       
+      const res = await api.products.update(Prodnew.id, Prodnew);
+      
+      if(res.data.ok) {
+        showToast({
+          title:"Product edited successfully",
+          status:'success'
+        })
+      }
 
-    router.back();
+      router.back();
+      
+    } catch (error: any) {
+      console.log(error);
+      showToast({
+        title:error.response.data.message,
+        status:'error'
+      })
+    }
   };
-
+      
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
