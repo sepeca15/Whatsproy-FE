@@ -10,23 +10,23 @@ import Toast from "react-native-toast-message";
 import ConfigAccount from "@/components/Views/ConfigAccount";
 
 const TabLayout: React.FC = () => {
-  const { user:{userConfigured, paymentMade, apiConfigured, greenApiConfigured }} = useUser()
+  const { user } = useUser();
+  // const {userConfigured, paymentMade, apiConfigured, greenApiConfigured } = user;
   // const globalConfig = userConfigured && paymentMade && apiConfigured && greenApiConfigured
   const globalConfig = true;
   return (
     <NativeBaseProvider>
       <Toast config={toastConfig} />
       <PrivateView>
-        {
-          globalConfig ?
-            <Layout>
-              <SafeAreaView style={{ flex: 1 }}>
-                <Slot />
-              </SafeAreaView>
-            </Layout>
-            :
-            <ConfigAccount />
-        }
+        {globalConfig ? (
+          <Layout>
+            <SafeAreaView style={{ flex: 1 }}>
+              <Slot />
+            </SafeAreaView>
+          </Layout>
+        ) : (
+          <ConfigAccount />
+        )}
       </PrivateView>
     </NativeBaseProvider>
   );

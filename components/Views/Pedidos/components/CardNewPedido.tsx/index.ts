@@ -1,3 +1,3 @@
 import CardNewPedido from "./CardNewPedido";
 
-export default CardNewPedido
+export default CardNewPedido;

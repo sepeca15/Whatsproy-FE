@@ -1,3 +1,3 @@
-import ProductOrderCard from "./ProductOrderCard"
+import ProductOrderCard from "./ProductOrderCard";
 
-export default ProductOrderCard
+export default ProductOrderCard;

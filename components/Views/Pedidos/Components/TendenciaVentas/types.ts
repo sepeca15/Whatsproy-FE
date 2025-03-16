@@ -1,9 +1,8 @@
-
 export interface CategoryData {
   Hamburguesas: number;
   Chorizo: number;
   Salchichas: number;
-  [key: string]: number; 
+  [key: string]: number;
 }
 export interface MonthlySalesData {
   month: string;

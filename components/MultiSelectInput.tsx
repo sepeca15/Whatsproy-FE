@@ -28,7 +28,7 @@ interface itemAdd {
 interface MultiSelectInputProps {
   placeholder?: string;
   label?: string;
-  options: { label: any; value: any; placeholder?: string, subText?: string }[];
+  options: { label: any; value: any; placeholder?: string; subText?: string }[];
   setItemsSelected: any;
   handleProductSelection?: any;
   isRequired?: boolean;
@@ -64,9 +64,8 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
   const [loadingApi, setLoadingApi] = useState(false);
   const { showToast } = useToastContext();
   const [formValues, setFormValues] = React.useState<Record<string, string>>(
-    {}
+    {},
   );
-  console.log("isModalOpen", isModalOpen);
 
   useEffect(() => {
     if (onSearch) {
@@ -87,7 +86,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
     if (initialStateAdd) {
       const initialValues = initialStateAdd.reduce(
         (acc, item) => ({ ...acc, [item.name]: "" }),
-        {}
+        {},
       );
       setFormValues(initialValues);
     }
@@ -105,7 +104,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
     setSelectedItems((prev) =>
       prev.includes(value)
         ? prev.filter((item) => item !== value)
-        : [...prev, value]
+        : [...prev, value],
     );
   };
 
@@ -118,12 +117,12 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
     setItemsSelected((prev: any) =>
       prev.includes(value)
         ? prev.filter((item: any) => item !== value)
-        : [...prev, value]
+        : [...prev, value],
     );
     setSelectedItemsKeys((prev: any) =>
       prev.includes(value)
         ? prev.filter((item: any) => item !== value)
-        : [...prev, value]
+        : [...prev, value],
     );
   };
 
@@ -203,9 +202,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
                   {typeof itm?.label !== "string"
                     ? itm?.placeholder
                     : itm?.placeholder}
-                  {typeof itm?.subText === "string"
-                    ? itm?.subText
-                    : ""}
+                  {typeof itm?.subText === "string" ? itm?.subText : ""}
                 </Text>
               </Badge>
             );

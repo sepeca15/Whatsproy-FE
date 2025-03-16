@@ -1,62 +1,60 @@
-import { StyleSheet } from 'react-native';
-import { Colors } from '../../../constants/Colors';
+import { StyleSheet } from "react-native";
+import { Colors } from "../../../constants/Colors";
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f0f0',
-    width: '100%',
+    backgroundColor: "#f0f0f0",
+    width: "100%",
+    paddingHorizontal: 10,
   },
   scrollViewContent: {
-    justifyContent: 'center',
-    paddingVertical: 20,
+    justifyContent: "center",
+    paddingTop: 5,
     paddingBottom: 80,
-    width: '100%',
-  
+    width: "100%",
   },
-  updatingOverlay:{
-  
-  },
+  updatingOverlay: {},
   scrollView: {
-    width: '100%',
+    width: "100%",
   },
   searchBarContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 25, 
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    borderRadius: 25,
     paddingHorizontal: 15,
     margin: 10,
-    width: '100%',
-    alignSelf: 'center',
-    shadowColor: '#000',
+    width: "100%",
+    alignSelf: "center",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 2,
-    height: 50, 
+    height: 50,
   },
   searchIcon: {
     marginRight: 10,
-    color: '#888',
-    fontSize: 18, 
+    color: "#888",
+    fontSize: 18,
   },
   searchBar: {
     flex: 1,
-    height: '100%',
-    borderColor: '#ccc',
+    height: "100%",
+    borderColor: "#ccc",
     borderWidth: 0,
     borderRadius: 25,
     paddingHorizontal: 10,
-    backgroundColor: 'transparent',
-    fontSize: 16, 
+    backgroundColor: "transparent",
+    fontSize: 16,
   },
   buttonContainer: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 20,
     right: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     zIndex: 1,
   },
   graficButton: {
@@ -71,25 +69,24 @@ export const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     elevation: 6,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
   addButtonText: {
-    color: '#ffffff',
+    color: "#ffffff",
     fontSize: 24,
-    fontWeight: 'semibold',
+    fontWeight: "semibold",
   },
   clearButton: {
     padding: 8,
   },
   clearIcon: {
-    color: '#888',
+    color: "#888",
     fontSize: 18,
   },
 });
-

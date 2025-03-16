@@ -134,7 +134,7 @@ const CreateOrderModal = ({
           } else {
             return false;
           }
-        })
+        }),
       );
     } catch (error) {
       console.log(error);
@@ -160,7 +160,7 @@ const CreateOrderModal = ({
   React.useEffect(() => {
     handleChangeValue(
       "fecha",
-      new Date(defaultDate).setHours(getHourNumber(user?.hora_apertura))
+      new Date(defaultDate).setHours(getHourNumber(user?.hora_apertura)),
     );
   }, []);
 
@@ -221,7 +221,7 @@ const CreateOrderModal = ({
         messages: [],
         products: selectedProductsIds.map((prod) => {
           const productSend = prodCant.find(
-            (product) => product.prodId === parseInt(prod)
+            (product) => product.prodId === parseInt(prod),
           );
           return {
             productoId: prod,
@@ -322,7 +322,7 @@ const CreateOrderModal = ({
     if (isSelected) {
       setProdCant((prev: any) => {
         const productExists = prev.some(
-          (item: any) => item.prodId === parseInt(value)
+          (item: any) => item.prodId === parseInt(value),
         );
         if (!productExists) {
           return [...prev, { prodId: parseInt(value), cantidad: 1 }];
@@ -331,7 +331,7 @@ const CreateOrderModal = ({
       });
     } else {
       setProdCant((prev: any) =>
-        prev.filter((item: any) => item.prodId !== parseInt(value))
+        prev.filter((item: any) => item.prodId !== parseInt(value)),
       );
     }
   };
@@ -386,8 +386,8 @@ const CreateOrderModal = ({
                   currentOrders
                     ? filterOnlyHours(
                         currentOrders?.map((order) =>
-                          removeAmPm(order?.date ?? "")
-                        )
+                          removeAmPm(order?.date ?? ""),
+                        ),
                       )
                     : []
                 }

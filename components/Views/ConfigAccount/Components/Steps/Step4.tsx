@@ -6,33 +6,37 @@ import { Colors } from "@/constants/Colors";
 import LoadAuthCode from "../LoadAuthCode";
 import LoadQR from "../LoadQR";
 import { useUser } from "@/hooks/redux/useUser";
-import { io } from 'socket.io-client';
+import { io } from "socket.io-client";
 import CustomButton from "@/components/CustomButton";
 import { useToastContext } from "@/contexts/ToastContext";
-import { FormattedMessage } from 'react-intl'; // Importa FormattedMessage
+import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
 
-type buttons = 'Auth' | 'QR';
+type buttons = "Auth" | "QR";
 
 const Step4 = () => {
-  const { user: { apiUrl }, handleUpdateGreenApiConfig } = useUser();
-  const [selectedButton, setSelectedButton] = React.useState<buttons | null>(null);
+  const {
+    user: { apiUrl },
+    handleUpdateGreenApiConfig,
+  } = useUser();
+  const [selectedButton, setSelectedButton] = React.useState<buttons | null>(
+    null,
+  );
   const [data, setData] = React.useState({
     QRCode: null,
-    AuthCode: null
+    AuthCode: null,
   });
   const { showToast } = useToastContext();
 
   React.useEffect(() => {
     const socketIo = io(apiUrl);
 
-    socketIo.on('greenApiStatusResponse', (data) => {
+    socketIo.on("greenApiStatusResponse", (data) => {
       FinishConfigGreenApi();
     });
 
     return () => {
       socketIo.disconnect();
     };
-
   }, []);
 
   const FinishConfigGreenApi = async () => {
@@ -41,9 +45,8 @@ const Step4 = () => {
       showToast({
         description: <FormattedMessage id="configSuccessDescription" />,
         title: <FormattedMessage id="configSuccessTitle" />,
-        status: 'success'
+        status: "success",
       });
-
     } catch (error: any) {
       console.log(error?.message);
     }
@@ -53,19 +56,20 @@ const Step4 = () => {
     setSelectedButton(button);
   };
 
-  const handleUpdateData = (key: String, value: string) => {
+  const handleUpdateData = (key: string, value: string) => {
     setData((prevState) => ({
       ...prevState,
-      [key as any]: value
+      [key as any]: value,
     }));
   };
 
   return (
     <View style={styles.container}>
-      {
-        !data.AuthCode && !data.QRCode &&
-        <CustomText style={styles.centerText}><FormattedMessage id="chooseConnectionMethod" /></CustomText>
-      }
+      {!data.AuthCode && !data.QRCode && (
+        <CustomText style={styles.centerText}>
+          <FormattedMessage id="chooseConnectionMethod" />
+        </CustomText>
+      )}
       <View style={styles.containerButtons}>
         <Button
           style={[
@@ -78,7 +82,9 @@ const Step4 = () => {
           <CustomText
             style={[
               styles.buttonText,
-              selectedButton === "QR" ? styles.selectedText : styles.defaultText,
+              selectedButton === "QR"
+                ? styles.selectedText
+                : styles.defaultText,
             ]}
           >
             <FormattedMessage id="withQR" />
@@ -95,7 +101,9 @@ const Step4 = () => {
           <CustomText
             style={[
               styles.buttonText,
-              selectedButton === "Auth" ? styles.selectedText : styles.defaultText,
+              selectedButton === "Auth"
+                ? styles.selectedText
+                : styles.defaultText,
             ]}
           >
             <FormattedMessage id="authCode" />
@@ -104,15 +112,18 @@ const Step4 = () => {
       </View>
       <View style={styles.content}>
         <CustomButton onPress={FinishConfigGreenApi}>OK</CustomButton>
-        {
-          selectedButton === 'Auth' ?
-            <LoadAuthCode AuthCode={data.AuthCode} handleUpdateData={handleUpdateData} />
-            :
-            selectedButton === "QR" ?
-              <LoadQR QRCode={data.QRCode} handleUpdateData={handleUpdateData} />
-              :
-              <CustomText><FormattedMessage id="pleaseChooseOption" /></CustomText>
-        }
+        {selectedButton === "Auth" ? (
+          <LoadAuthCode
+            AuthCode={data.AuthCode}
+            handleUpdateData={handleUpdateData}
+          />
+        ) : selectedButton === "QR" ? (
+          <LoadQR QRCode={data.QRCode} handleUpdateData={handleUpdateData} />
+        ) : (
+          <CustomText>
+            <FormattedMessage id="pleaseChooseOption" />
+          </CustomText>
+        )}
       </View>
     </View>
   );
@@ -156,22 +167,22 @@ const styles = StyleSheet.create({
     color: "#FFF",
   },
   content: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   buttonLeft: {
     borderBottomLeftRadius: 15,
-    borderTopLeftRadius: 15, 
-    borderColor: Colors.light.primary, 
-    borderWidth: 1
+    borderTopLeftRadius: 15,
+    borderColor: Colors.light.primary,
+    borderWidth: 1,
   },
   buttonRight: {
-    borderBottomRightRadius: 15, 
-    borderTopRightRadius: 15, 
-    borderColor: Colors.light.primary, 
-    borderWidth: 1
-  }
+    borderBottomRightRadius: 15,
+    borderTopRightRadius: 15,
+    borderColor: Colors.light.primary,
+    borderWidth: 1,
+  },
 });
 
 export default Step4;

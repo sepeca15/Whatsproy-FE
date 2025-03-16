@@ -6,17 +6,18 @@ export const getDetailsOfOrder = async (id: any) => {
   return data;
 };
 
+export const getOrderForCalendar = async (selectedDate: string) => {
+  const { data } = await ApiInstances("current").get(
+    "pedido/calendar/formatCalendar/" + selectedDate,
+  );
 
-export const getOrderForCalendar = async (selectedDate : string) => {
-    const { data } = await ApiInstances('current').get('pedido/calendar/formatCalendar/' + selectedDate)
+  return data;
+};
 
-    return data
-}
-
-export const getAllFinished = async() => {
-    const { data } = await ApiInstances('current').get('pedido/finished')
-    return data
-}
+export const getAllFinished = async () => {
+  const { data } = await ApiInstances("current").get("pedido/finished");
+  return data;
+};
 
 export const getAllPending = async () => {
   const { data } = await ApiInstances("current").get("pedido/pending");
@@ -35,7 +36,9 @@ export const createOrder = async (info: CreateOrderDTO) => {
 };
 
 export const getNextDateAvailable = async () => {
-  const { data } = await ApiInstances("current").get("pedido/calendar/next-date-avaiable");
+  const { data } = await ApiInstances("current").get(
+    "pedido/calendar/next-date-avaiable",
+  );
   return data;
 };
 
@@ -45,19 +48,21 @@ export const removeOrder = async (id: number) => {
   return data;
 };
 
-
-
 export const getMoneyInDay = async (date: string) => {
-  const { data } = await ApiInstances('current').get(`/pedido/stats/momeyInDay/${date}`);
+  const { data } = await ApiInstances("current").get(
+    `/pedido/stats/momeyInDay/${date}`,
+  );
   return data;
 };
 
 export const lastThreeOrders = async () => {
-  const { data } = await ApiInstances('current').get('/pedido/stats/lastThree')
-  return data
-}
+  const { data } = await ApiInstances("current").get("/pedido/stats/lastThree");
+  return data;
+};
 
 export const getOrdersByDate = async (date: string) => {
-  const { data } = await ApiInstances('current').get(`/pedido/stats/ordersDay/${date}`)
-  return data
-}
+  const { data } = await ApiInstances("current").get(
+    `/pedido/stats/ordersDay/${date}`,
+  );
+  return data;
+};

@@ -1,4 +1,4 @@
-import { months } from '../../Pedidos/components/data';
+import { months } from "../../Pedidos/components/data";
 export interface Product {
   id: number;
   title: string;
@@ -12,6 +12,7 @@ export interface Product {
   monthdata: DayslySalesData;
   rating: number;
   reviews: number;
+  currency_id?: string;
   tags: string[];
 }
 
@@ -31,8 +32,6 @@ export interface CategoryData {
 
 export interface SatisfactionData {
   data: number[];
-
-
 }
 
 interface Dataset {
@@ -44,21 +43,18 @@ export interface DayslySalesData {
   datasets: Dataset[];
 }
 
-
-
 export interface ProductDetailProps {
   product: Product;
   salesData: SalesData;
   categoryData: CategoryData;
   satisfactionData: SatisfactionData;
- 
-
 }
 
 interface ProductParams {
   id: string;
   title: string;
   price: string;
+  currency_id?: string;
   currency: string;
   duration: string;
   description: string;
@@ -71,8 +67,6 @@ interface ProductParams {
   monthdata: DayslySalesData;
   disponible: string;
   empresa_id: string;
-
 }
 
-
-export { ProductParams }; 
+export { ProductParams };

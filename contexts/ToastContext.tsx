@@ -51,11 +51,11 @@ export const ToastProvider = ({ children }: any) => {
   };
 
   return (
-      <RootSiblingParent>
-    <ToastContext.Provider value={{ showToast }}>
+    <RootSiblingParent>
+      <ToastContext.Provider value={{ showToast }}>
         {children}
-    </ToastContext.Provider>
-      </RootSiblingParent>
+      </ToastContext.Provider>
+    </RootSiblingParent>
   );
 };
 

@@ -1,12 +1,8 @@
 import AddUser from "@/components/Views/AddUser";
-import * as React from "react"
+import * as React from "react";
 
 const AddUsuarioScreen = () => {
-  
-  return (
-      <AddUser/>
-  );
-}
+  return <AddUser />;
+};
 
-export default AddUsuarioScreen
-
+export default AddUsuarioScreen;

@@ -1,3 +1,3 @@
-import ModalCreateOrderDate from "./ModalCreateOrderDate"
+import ModalCreateOrderDate from "./ModalCreateOrderDate";
 
-export default ModalCreateOrderDate
+export default ModalCreateOrderDate;

@@ -1,12 +1,8 @@
-import * as React from "react"
+import * as React from "react";
 import Productos from "@/components/Views/Productos";
 
 const ProductosScreen = () => {
-  
-  return (
-      <Productos/>
-  );
-}
+  return <Productos />;
+};
 
-export default ProductosScreen
-
+export default ProductosScreen;

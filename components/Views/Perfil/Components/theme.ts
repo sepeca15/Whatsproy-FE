@@ -1,10 +1,10 @@
 // Actualizar el archivo de tema para usar con NativeBase
-import { extendTheme } from "native-base"
+import { extendTheme } from "native-base";
 
-export const primaryColor = "#075e54"
-export const secondaryColor = "#128c7e"
-export const tertiaryColor = "#25d366" // Verde más claro
-export const accentColor = "#34b7f1" // Azul
+export const primaryColor = "#075e54";
+export const secondaryColor = "#128c7e";
+export const tertiaryColor = "#25d366"; // Verde más claro
+export const accentColor = "#34b7f1"; // Azul
 
 // Crear un tema extendido para NativeBase
 export const nativeBaseTheme = extendTheme({
@@ -45,7 +45,7 @@ export const nativeBaseTheme = extendTheme({
     useSystemColorMode: false,
     initialColorMode: "light",
   },
-})
+});
 
 // Exportar colores individuales para uso directo
 export const theme = {
@@ -72,7 +72,6 @@ export const theme = {
       tabIconSelected: primaryColor,
     },
   },
-}
+};
 
-export default nativeBaseTheme
-
+export default nativeBaseTheme;

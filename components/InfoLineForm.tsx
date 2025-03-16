@@ -8,7 +8,7 @@ import {
 import { FormControl, Switch, View, Text } from "native-base";
 import DateTimePickerField from "./DateTimePickerField";
 import InputField from "./InputField";
-import * as moment from 'moment-timezone'
+import * as moment from "moment-timezone";
 
 interface Props {
   value: Record<string, any>;
@@ -17,11 +17,11 @@ interface Props {
   errors: any;
 }
 
-const InfoLineForm = ({ setValue, value, infoLines, errors }: Props) => {  
+const InfoLineForm = ({ setValue, value, infoLines, errors }: Props) => {
   if (infoLines?.length === 0) {
     return null;
   }
-  const {user} = useUser()
+  const { user } = useUser();
 
   const handleRenderInfoLineInput = (infoLine: InfoLineDTO) => {
     const inputValue = value[infoLine.nombre];
@@ -99,7 +99,7 @@ const InfoLineForm = ({ setValue, value, infoLines, errors }: Props) => {
       default:
         return null;
     }
-  };  
+  };
 
   return (
     <View
@@ -111,7 +111,10 @@ const InfoLineForm = ({ setValue, value, infoLines, errors }: Props) => {
       justifyContent="center"
     >
       {infoLines?.map((infoLine, index) => (
-        <FormControl key={infoLine.nombre + index} isRequired={infoLine.requerido}>          
+        <FormControl
+          key={infoLine.nombre + index}
+          isRequired={infoLine.requerido}
+        >
           {handleRenderInfoLineInput(infoLine)}
         </FormControl>
       ))}

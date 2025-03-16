@@ -5,7 +5,6 @@
 
 // const PaymentMethodsBarChart = ({ paymentMethods }) => {
 
-    
 //   const chartData = {
 //     labels: paymentMethods.map((item) => item.method),
 //     datasets: [

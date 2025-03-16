@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -9,29 +9,33 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator, // Importa ActivityIndicator
-} from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import * as ImagePicker from 'expo-image-picker';
-import { AntDesign } from '@expo/vector-icons';
-import { styles } from './AddProductStyle';
-import { useRouter } from 'expo-router';
-import { availableCurrencies } from '@/hooks/dataProduct';
-import ProductoTypes from '../../../../services/api/products/types';
+} from "react-native";
+import { Picker } from "@react-native-picker/picker";
+import * as ImagePicker from "expo-image-picker";
+import { AntDesign } from "@expo/vector-icons";
+import { styles } from "./AddProductStyle";
+import { useRouter } from "expo-router";
+import { availableCurrencies } from "@/hooks/dataProduct";
+import ProductoTypes from "../../../../services/api/products/types";
 import api from "@/services/api/admin";
-import { FormattedMessage } from 'react-intl';
-import { useToastContext } from '@/contexts/ToastContext';
+import { FormattedMessage } from "react-intl";
+import { useToastContext } from "@/contexts/ToastContext";
+import { useUser } from "@/hooks/redux/useUser";
 
 const AddProduct: React.FC = () => {
-  const {showToast} = useToastContext()
+  const { showToast } = useToastContext();
   const router = useRouter();
   const [formData, setFormData] = useState<ProductoTypes>({
-    nombre: '',
+    nombre: "",
     precio: 0,
     empresa_id: 0,
-    descripcion: '',
+    descripcion: "",
     plazoDuracionEstimadoMinutos: 0,
     disponible: false,
   });
+
+  const { user } = useUser();
+  const currencies = user?.currencies;
   const [image, setImage] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false); // Estado para el spinner
 
@@ -52,24 +56,26 @@ const AddProduct: React.FC = () => {
     setLoading(true);
     const newProduct = { ...formData };
 
-    api.products.create(newProduct)
-      .then(response => {
-        console.log('Producto creado exitosamente:', response.data);
+    api.products
+      .create(newProduct)
+      .then((response) => {
         showToast({
           title: "Porudct created successfully",
-          status: 'success'
-        })
+          status: "success",
+        });
         setLoading(false);
         router.push("/(tabs)/productos");
       })
-      .catch(error => {
+      .catch((error) => {
         showToast({
           title: error.response.data.message || "Error creating product",
-          status: 'error'
-        })
-        console.error('Error al crear el producto:', error.response.data.message);
-        console.log("error al crear", newProduct);
-        setLoading(false); 
+          status: "error",
+        });
+        console.error(
+          "Error al crear el producto:",
+          error.response.data.message,
+        );
+        setLoading(false);
       });
   };
 
@@ -79,7 +85,9 @@ const AddProduct: React.FC = () => {
       style={styles.container}
     >
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <Text style={styles.title}><FormattedMessage id="addProduct" /></Text>
+        <Text style={styles.title}>
+          <FormattedMessage id="addProduct" />
+        </Text>
 
         <TouchableOpacity style={styles.imageUpload} onPress={pickImage}>
           {image ? (
@@ -87,13 +95,17 @@ const AddProduct: React.FC = () => {
           ) : (
             <View style={styles.uploadPlaceholder}>
               <AntDesign name="camera" size={40} color="gray" />
-              <Text style={styles.uploadText}><FormattedMessage id="addImage" /></Text>
+              <Text style={styles.uploadText}>
+                <FormattedMessage id="addImage" />
+              </Text>
             </View>
           )}
         </TouchableOpacity>
 
         <View style={styles.formContainer}>
-          <Text style={styles.label}><FormattedMessage id="productName" /></Text>
+          <Text style={styles.label}>
+            <FormattedMessage id="productName" />
+          </Text>
           <TextInput
             style={styles.input}
             value={formData.nombre}
@@ -103,50 +115,80 @@ const AddProduct: React.FC = () => {
 
           <View style={styles.row}>
             <View style={styles.column}>
-              <Text style={styles.label}><FormattedMessage id="price" /></Text>
+              <Text style={styles.label}>
+                <FormattedMessage id="price" />
+              </Text>
               <TextInput
                 style={styles.input}
-                onChangeText={(text) => setFormData({ ...formData, precio: parseFloat(text) })}
+                onChangeText={(text) =>
+                  setFormData({ ...formData, precio: parseFloat(text) })
+                }
                 keyboardType="numeric"
                 placeholder="0.00"
               />
             </View>
 
             <View style={styles.column}>
-              <Text style={styles.label}><FormattedMessage id="currency" /></Text>
+              <Text style={styles.label}>
+                <FormattedMessage id="currency" />
+              </Text>
               <View style={styles.pickerContainer}>
                 <Picker
                   style={styles.picker}
+                  onValueChange={(value) => {
+                    setFormData({ ...formData, currency_id: value });
+                  }}
                 >
-                  {availableCurrencies.map((currency) => (
-                    <Picker.Item key={currency} label={currency} value={currency} />
+                  {currencies.map((currency: any) => (
+                    <Picker.Item
+                      key={currency?.codigo}
+                      label={`${currency?.codigo} (${currency?.simbolo})`}
+                      value={currency?.id}
+                    />
                   ))}
                 </Picker>
               </View>
             </View>
           </View>
 
-          <Text style={styles.label}><FormattedMessage id="estimatedDuration" /></Text>
+          <Text style={styles.label}>
+            <FormattedMessage id="estimatedDuration" />
+          </Text>
           <TextInput
             style={styles.input}
-            onChangeText={(number) => setFormData({ ...formData, plazoDuracionEstimadoMinutos: parseFloat(number) })}
+            onChangeText={(number) =>
+              setFormData({
+                ...formData,
+                plazoDuracionEstimadoMinutos: parseFloat(number),
+              })
+            }
             placeholder="Ej: 30 minutos"
           />
 
-          <Text style={styles.label}><FormattedMessage id="description" /></Text>
+          <Text style={styles.label}>
+            <FormattedMessage id="description" />
+          </Text>
           <TextInput
             style={[styles.input, styles.textArea]}
-            onChangeText={(text) => setFormData({ ...formData, descripcion: text })}
+            onChangeText={(text) =>
+              setFormData({ ...formData, descripcion: text })
+            }
             placeholder="Describe el producto"
             multiline
             numberOfLines={4}
           />
 
-          <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={loading}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleSubmit}
+            disabled={loading}
+          >
             {loading ? (
               <ActivityIndicator color="#fff" />
             ) : (
-              <Text style={styles.buttonText}><FormattedMessage id="createProduct" /></Text>
+              <Text style={styles.buttonText}>
+                <FormattedMessage id="createProduct" />
+              </Text>
             )}
           </TouchableOpacity>
         </View>

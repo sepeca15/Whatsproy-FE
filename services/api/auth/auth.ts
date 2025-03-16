@@ -1,17 +1,20 @@
 import ApiInstances from "@/services/axios/axiosConfig";
 
 export const Login = async ({
-    email,
-    password
+  email,
+  password,
 }: {
-    email: string;
-    password: string
+  email: string;
+  password: string;
 }) => {
-    const { data } = await ApiInstances('global').post(`auth/login`, { email, password })
-    return data
-}
+  const { data } = await ApiInstances("global").post(`auth/login`, {
+    email,
+    password,
+  });
+  return data;
+};
 
 export const GetMyAccountData = async () => {
-    const { data } = await ApiInstances('global').get(`auth/me`)
-    return data
-}
+  const { data } = await ApiInstances("global").get(`auth/me`);
+  return data;
+};

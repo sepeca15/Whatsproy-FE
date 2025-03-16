@@ -1,8 +1,7 @@
 import CalendarView from "@/components/Views/Calendar";
 
-
 const CalendarPage = () => {
-    return <CalendarView />
-}
+  return <CalendarView />;
+};
 
 export default CalendarPage;

@@ -1,3 +1,3 @@
 import PedidosMensuales from "./PedidosMensuales";
 
-export default PedidosMensuales
+export default PedidosMensuales;

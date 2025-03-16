@@ -1,3 +1,3 @@
 import AddUser from "./AddUser";
 
-export default AddUser
+export default AddUser;

@@ -1,3 +1,3 @@
 import ConfigAccount from "./ConfigAccount";
 
-export default ConfigAccount
+export default ConfigAccount;

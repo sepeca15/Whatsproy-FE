@@ -1,3 +1,3 @@
 import OrdersPending from "./OrdersPending";
 
-export default OrdersPending
+export default OrdersPending;

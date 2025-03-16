@@ -1,23 +1,23 @@
-import type React from "react"
-import { Text } from "react-native"
-import { Box, HStack, VStack, Icon, Divider } from "native-base"
-import { Ionicons } from "@expo/vector-icons"
-import { FormattedMessage } from "react-intl"
-import SafeProgress from "./SafeProgress"
+import type React from "react";
+import { Text } from "react-native";
+import { Box, HStack, VStack, Icon, Divider } from "native-base";
+import { Ionicons } from "@expo/vector-icons";
+import { FormattedMessage } from "react-intl";
+import SafeProgress from "./SafeProgress";
 
 interface CategoryData {
-  id: string
-  name: string
-  sales: number
-  percentage: number
-  color: string
-  icon: string
+  id: string;
+  name: string;
+  sales: number;
+  percentage: number;
+  color: string;
+  icon: string;
 }
 
 interface CategorySalesProps {
-  categories: CategoryData[]
-  currency: string
-  totalSales: number
+  categories: CategoryData[];
+  currency: string;
+  totalSales: number;
 }
 
 const CategorySales: React.FC<CategorySalesProps> = ({
@@ -68,13 +68,16 @@ const CategorySales: React.FC<CategorySalesProps> = ({
 }) => {
   // Formatear números para mostrar con separadores de miles
   const formatNumber = (num: number) => {
-    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-  }
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
 
   return (
     <Box bg="white" borderRadius="lg" p={4} shadow={2} mb={4}>
       <Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 10 }}>
-        <FormattedMessage id="sales.byCategory" defaultMessage="Ventas por categoría" />
+        <FormattedMessage
+          id="sales.byCategory"
+          defaultMessage="Ventas por categoría"
+        />
       </Text>
 
       <VStack space={4}>
@@ -83,7 +86,12 @@ const CategorySales: React.FC<CategorySalesProps> = ({
             <HStack justifyContent="space-between" alignItems="center">
               <HStack space={2} alignItems="center">
                 <Box bg={`${category.color}20`} p={1.5} borderRadius="full">
-                  <Icon as={Ionicons} name={category.icon} size="xs" color={category.color} />
+                  <Icon
+                    as={Ionicons}
+                    name={category.icon}
+                    size="xs"
+                    color={category.color}
+                  />
                 </Box>
                 <Text style={{ fontSize: 14 }}>{category.name}</Text>
               </HStack>
@@ -93,8 +101,20 @@ const CategorySales: React.FC<CategorySalesProps> = ({
               </Text>
             </HStack>
             <HStack space={2} alignItems="center">
-              <SafeProgress value={category.percentage} _filledTrack={{ bg: category.color }} size="xs" flex={1} />
-              <Text style={{ fontSize: 12, color: "#666", width: 35, textAlign: "right" }}>
+              <SafeProgress
+                value={category.percentage}
+                _filledTrack={{ bg: category.color }}
+                size="xs"
+                flex={1}
+              />
+              <Text
+                style={{
+                  fontSize: 12,
+                  color: "#666",
+                  width: 35,
+                  textAlign: "right",
+                }}
+              >
                 {Math.round(category.percentage)}%
               </Text>
             </HStack>
@@ -114,8 +134,7 @@ const CategorySales: React.FC<CategorySalesProps> = ({
         </Text>
       </HStack>
     </Box>
-  )
-}
+  );
+};
 
-export default CategorySales
-
+export default CategorySales;

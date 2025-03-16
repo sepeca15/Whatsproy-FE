@@ -1,13 +1,8 @@
-import * as React from "react"
+import * as React from "react";
 import EditPro from "@/components/Views/EditProducts/EditPro";
 
-
 const AddUsuarioScreen = () => {
+  return <EditPro />;
+};
 
-  return (
-    <EditPro />
-  )
-}
-
-export default AddUsuarioScreen
-
+export default AddUsuarioScreen;

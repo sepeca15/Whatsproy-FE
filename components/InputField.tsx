@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { FormControl, Input, TextArea } from 'native-base';
+import React, { useRef } from "react";
+import { FormControl, Input, TextArea } from "native-base";
 
 interface InputFieldProps {
   label?: React.ReactNode; // Acepta elementos JSX
@@ -18,7 +18,7 @@ interface InputFieldProps {
 const InputField: React.FC<InputFieldProps> = ({
   label,
   placeholder,
-  type = 'text',
+  type = "text",
   keyboardType,
   onChangeText,
   marginTop,
@@ -28,38 +28,43 @@ const InputField: React.FC<InputFieldProps> = ({
   error,
   ...props
 }) => {
-
   const inputRef = useRef<any>(null);
 
   return (
-    <FormControl isInvalid={error} style={{ marginTop: marginTop }} isRequired={isRequired}>
+    <FormControl
+      isInvalid={error}
+      style={{ marginTop: marginTop }}
+      isRequired={isRequired}
+    >
       {label && <FormControl.Label>{label}</FormControl.Label>}
       {isTextArea ? (
         <TextArea
           InputLeftElement={icon}
           keyboardType={keyboardType}
           autoCompleteType={""}
-          placeholder={typeof placeholder === 'string' ? placeholder : undefined}
+          placeholder={
+            typeof placeholder === "string" ? placeholder : undefined
+          }
           onChangeText={onChangeText}
-          _stack={{ style: {} }} 
-          {...props as any}
+          _stack={{ style: {} }}
+          {...(props as any)}
         />
       ) : (
         <Input
           ref={inputRef}
           autoFocus={false}
-          _stack={{ style: {} }} 
+          _stack={{ style: {} }}
           InputLeftElement={icon}
           keyboardType={keyboardType}
           type={type}
-          placeholder={typeof placeholder === 'string' ? placeholder : undefined}
+          placeholder={
+            typeof placeholder === "string" ? placeholder : undefined
+          }
           onChangeText={onChangeText}
           {...props}
         />
       )}
-      {error && <FormControl.ErrorMessage>
-        {error}
-      </FormControl.ErrorMessage>}
+      {error && <FormControl.ErrorMessage>{error}</FormControl.ErrorMessage>}
     </FormControl>
   );
 };

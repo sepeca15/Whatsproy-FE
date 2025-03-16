@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
@@ -11,19 +11,19 @@ import {
   Alert,
   useColorScheme,
   Animated,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import * as ImagePicker from 'expo-image-picker';
-import createStyles from './AddUserStyles';
-import { FormattedMessage } from 'react-intl';
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
+import createStyles from "./AddUserStyles";
+import { FormattedMessage } from "react-intl";
 
 const AddUser = () => {
-  const [nombre, setNombre] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
+  const [nombre, setNombre] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [isValid, setIsValid] = useState<boolean>(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const colorScheme = useColorScheme();
-  const theme = colorScheme === 'dark' ? 'dark' : 'light';
+  const theme = colorScheme === "dark" ? "dark" : "light";
   const styles = createStyles(theme);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -52,12 +52,15 @@ const AddUser = () => {
 
   const handleAddUsuario = () => {
     if (isValid) {
-      Alert.alert('Éxito', 'Usuario añadido correctamente');
-      setNombre('');
-      setEmail('');
+      Alert.alert("Éxito", "Usuario añadido correctamente");
+      setNombre("");
+      setEmail("");
       setSelectedImage(null);
     } else {
-      Alert.alert('Error', 'Por favor, complete todos los campos correctamente');
+      Alert.alert(
+        "Error",
+        "Por favor, complete todos los campos correctamente",
+      );
     }
   };
 
@@ -80,11 +83,18 @@ const AddUser = () => {
       style={styles.container}
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Animated.View style={[styles.formContainer, { opacity: fadeAnim, transform: [{ scale: scaleAnim }] }]}>
+        <Animated.View
+          style={[
+            styles.formContainer,
+            { opacity: fadeAnim, transform: [{ scale: scaleAnim }] },
+          ]}
+        >
           <TouchableOpacity onPress={pickImage} style={styles.imageContainer}>
             <Image
               source={{
-                uri: selectedImage || 'https://static.vecteezy.com/system/resources/previews/036/280/651/non_2x/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-illustration-vector.jpg'
+                uri:
+                  selectedImage ||
+                  "https://static.vecteezy.com/system/resources/previews/036/280/651/non_2x/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-illustration-vector.jpg",
               }}
               style={styles.image}
             />
@@ -92,7 +102,9 @@ const AddUser = () => {
               <Ionicons name="camera" size={20} color="#fff" />
             </View>
           </TouchableOpacity>
-          <Text style={styles.title}><FormattedMessage id="addUser" /></Text>
+          <Text style={styles.title}>
+            <FormattedMessage id="addUser" />
+          </Text>
           <View style={styles.inputContainer}>
             <Ionicons name="person-outline" size={24} style={styles.icon} />
             <TextInput
@@ -122,14 +134,13 @@ const AddUser = () => {
             />
           </View>
           <TouchableOpacity
-            style={[
-              styles.button,
-              !isValid && styles.buttonDisabled
-            ]}
+            style={[styles.button, !isValid && styles.buttonDisabled]}
             onPress={handleAddUsuario}
             disabled={!isValid}
           >
-            <Text style={styles.buttonText}><FormattedMessage id="create" /></Text>
+            <Text style={styles.buttonText}>
+              <FormattedMessage id="create" />
+            </Text>
           </TouchableOpacity>
         </Animated.View>
       </ScrollView>

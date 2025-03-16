@@ -1,170 +1,169 @@
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-    container: {
-        flex:1,
-        display:'flex',
-        flexDirection:'column',
-        alignItems:'center',
-        justifyContent:'space-between'
-    },
-    containerSpiner : {
-        display:'flex',
-        flexDirection:'column',
-        alignItems:'center',
-        justifyContent:'center',
-        flex:1,
-    },
-    header : {
-        paddingHorizontal:20,
-        paddingVertical:30,
-        width:'100%',
-        display:'flex',
-        flexDirection:'row',
-        justifyContent:'space-between',
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-        color:'white'
-    },
-    body : {
-        flexGrow:1,
-        width:'90%',
-        display:'flex',
-        flexDirection:'column',
-        alignItems:'center',
-    },
-    footer : {
-        width:'100%',
-        borderTopWidth:1,
-        borderTopColor:'#d5d5d5',
-        display:'flex',
-        flexDirection:'column',
-        alignItems:'center'
-    },
-    columnDate : {
-        display:'flex',
-        flexDirection:'column',
-        alignItems:'flex-start',
-        justifyContent:'space-between'
-
-    },
-    text:{ 
-        color:'white'
-    },
-    textTitle:{ 
-        fontSize:30,
-        color:'white'
-    },
-    buttonStatus: {
-        fontWeight:'bold',
-        alignSelf:'flex-start',
-        backgroundColor:'white',
-        paddingHorizontal:20,
-        paddingVertical:6,
-        borderRadius:50,
-        color:'#1F2937'
-    }, 
-    containerDate: {
-        marginTop:25,
-        display:'flex',
-        flexDirection:'row',
-        alignItems:'center',
-        gap:4,
-    },
-    containerEstimateTime : {
-        width:'100%',
-        display:'flex',
-        flexDirection:'row',
-        alignItems:'center',
-        justifyContent:'space-between',
-        paddingHorizontal:20,
-        paddingVertical:30,
-    },
-    containerRowinfo : {
-        display:'flex',
-        flexDirection:'row',
-        alignItems:'center',
-        alignSelf:'flex-start',
-        marginBottom:14
-    },
-    containerRowinfoGap : {
-        display:'flex',
-        flexDirection:'row',
-        alignItems:'center',
-        justifyContent:'space-between',
-        gap:12,
-    },
-    containerProducts: {
-        alignSelf:'center',
-        width:'100%',
-        display:'flex',
-        flexDirection:'column',
-        alignItems:'flex-start',
-        gap:12,
-    },
-    products: {
-        height:250,
-        width:'100%',
-        borderColor:'#d5d5d5',
-        borderWidth:1,
-        borderRadius:4,
-    },
-    textBody : {
-        fontSize:19
-    },
-    textBodyBold : {
-        fontSize:19,
-        fontWeight:'bold'
-    },
-    textBodyBig: {
-        fontSize:25,
-        fontWeight:'bold'
-    },
-    textlocation : {
-        fontSize:16,
-        color:'#999999'
-    },
-    textEstimateTime : {
-        fontSize:24,
-        fontWeight:'bold'
-    },
-    containerrColumn: {
-        paddingVertical:25,
-        width:'90%',
-        display:'flex',
-        flexDirection:'column',
-    },
-    containerRow: {
-        width:'100%',
-        display:'flex',
-        flexDirection:'row',
-        alignItems:'center',
-        justifyContent:'space-between'
-    },
-    ContainerButtons: {
-        marginTop:12,
-        width:'100%',
-        display:'flex',
-        flexDirection:'row',
-        alignItems:'center',
-        justifyContent:'space-between',
-        gap:16,
-    },
-    buttonDelete : {
-        borderWidth:1,
-        borderColor:'#999999',
-        backgroundColor:'transparent',
-        display:'flex',
-        flexDirection:'row',
-        alignItems:'center',
-        justifyContent:'center',
-        flex:1
-    },
-    buttonViewChat:{
-        backgroundColor:'black',
-        display:'flex',
-        flexDirection:'row',
-        alignItems:'center',
-        justifyContent:'center',
-        flex:1
-    }
-})
+  container: {
+    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  containerSpiner: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
+  },
+  header: {
+    paddingHorizontal: 20,
+    paddingVertical: 30,
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
+    color: "white",
+  },
+  body: {
+    flexGrow: 1,
+    width: "90%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  footer: {
+    width: "100%",
+    borderTopWidth: 1,
+    borderTopColor: "#d5d5d5",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  columnDate: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+  },
+  text: {
+    color: "white",
+  },
+  textTitle: {
+    fontSize: 30,
+    color: "white",
+  },
+  buttonStatus: {
+    fontWeight: "bold",
+    alignSelf: "flex-start",
+    backgroundColor: "white",
+    paddingHorizontal: 20,
+    paddingVertical: 6,
+    borderRadius: 50,
+    color: "#1F2937",
+  },
+  containerDate: {
+    marginTop: 25,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  containerEstimateTime: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    paddingVertical: 30,
+  },
+  containerRowinfo: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+    marginBottom: 14,
+  },
+  containerRowinfoGap: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12,
+  },
+  containerProducts: {
+    alignSelf: "center",
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    gap: 12,
+  },
+  products: {
+    height: 250,
+    width: "100%",
+    borderColor: "#d5d5d5",
+    borderWidth: 1,
+    borderRadius: 4,
+  },
+  textBody: {
+    fontSize: 19,
+  },
+  textBodyBold: {
+    fontSize: 19,
+    fontWeight: "bold",
+  },
+  textBodyBig: {
+    fontSize: 25,
+    fontWeight: "bold",
+  },
+  textlocation: {
+    fontSize: 16,
+    color: "#999999",
+  },
+  textEstimateTime: {
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+  containerrColumn: {
+    paddingVertical: 25,
+    width: "90%",
+    display: "flex",
+    flexDirection: "column",
+  },
+  containerRow: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  ContainerButtons: {
+    marginTop: 12,
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 16,
+  },
+  buttonDelete: {
+    borderWidth: 1,
+    borderColor: "#999999",
+    backgroundColor: "transparent",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
+  },
+  buttonViewChat: {
+    backgroundColor: "black",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
+  },
+});

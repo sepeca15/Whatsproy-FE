@@ -19,7 +19,6 @@ import { removeData } from "@/storage/localStorage";
 import { router, useRouter } from "expo-router";
 import api from "@/services/api/admin";
 
-
 const Home: React.FC = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -27,14 +26,16 @@ const Home: React.FC = () => {
   const [dailyRevenue, setDailyRevenue] = useState(0);
   const [lastOrders, setLastOrders] = useState<any[]>([]);
 
-  const isFetching = useRef(false);  // Controla las solicitudes en curso
+  const isFetching = useRef(false); // Controla las solicitudes en curso
 
   const getFormattedDate = (): string => new Date().toISOString().split("T")[0];
 
   const getTimeAgo = (date: string): string => {
     const now = new Date();
     const createdAt = new Date(date);
-    const diffInSeconds = Math.floor((now.getTime() - createdAt.getTime()) / 1000);
+    const diffInSeconds = Math.floor(
+      (now.getTime() - createdAt.getTime()) / 1000,
+    );
 
     const minutes = Math.floor(diffInSeconds / 60);
     const hours = Math.floor(minutes / 60);
@@ -130,14 +131,17 @@ const Home: React.FC = () => {
   const logout = () => {
     Alert.alert("Logout", "You have been logged out.");
     removeData("token");
-    router.push("/(auth)/login")
+    router.push("/(auth)/login");
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <Animated.View entering={FadeIn} style={styles.header}>
         <View>
-          <CustomText style={styles.businessName} accessibilityLabel="Nombre del negocio">
+          <CustomText
+            style={styles.businessName}
+            accessibilityLabel="Nombre del negocio"
+          >
             Mi Negocio
           </CustomText>
           <CustomText style={styles.dateText} accessibilityLabel="Fecha actual">
@@ -162,32 +166,45 @@ const Home: React.FC = () => {
         }
       >
         {loading ? (
-          <ActivityIndicator size="large" color={Colors.light.primary} style={styles.loader} />
+          <ActivityIndicator
+            size="large"
+            color={Colors.light.primary}
+            style={styles.loader}
+          />
         ) : (
           <>
-            <Animated.View entering={FadeInDown.delay(100)} style={styles.metricsContainer}>
+            <Animated.View
+              entering={FadeInDown.delay(100)}
+              style={styles.metricsContainer}
+            >
               <MetricCard
                 icon="cart-outline"
                 title="Pedidos Hoy"
                 value={ordersCount.toString()}
-                onPress={() => { }}
+                onPress={() => {}}
               />
               <MetricCard
                 icon="account-group"
                 title="Clientes"
                 value="120"
-                onPress={() => { }}
+                onPress={() => {}}
               />
               <MetricCard
                 icon="cash-multiple"
                 title="Ingresos"
                 value={`$${dailyRevenue}`}
-                onPress={() => { }}
+                onPress={() => {}}
               />
             </Animated.View>
 
-            <Animated.View entering={FadeInDown.delay(200)} style={styles.lastActivitiesContainer}>
-              <CustomText style={styles.sectionTitle} accessibilityLabel="Últimos 3 pedidos">
+            <Animated.View
+              entering={FadeInDown.delay(200)}
+              style={styles.lastActivitiesContainer}
+            >
+              <CustomText
+                style={styles.sectionTitle}
+                accessibilityLabel="Últimos 3 pedidos"
+              >
                 Últimos 3 Pedidos
               </CustomText>
               {lastOrders.length > 0 ? (
@@ -200,14 +217,12 @@ const Home: React.FC = () => {
                     amount={order.amount || "$0"}
                     icon={order.icon || "receipt"}
                     address="Desconocido"
-                    onPress={() => { }}
+                    onPress={() => {}}
                   />
-
                 ))
               ) : (
                 <CustomText>No hay pedidos recientes</CustomText>
               )}
-
 
               <CustomText style={styles.sectionTitle}>
                 Gestión Rápida
@@ -226,23 +241,14 @@ const Home: React.FC = () => {
                   onPress={() => {
                     router.push("/(tabs)/generalSettings");
                   }}
-
-
-                  
                 />
               </View>
             </Animated.View>
-
-
           </>
-
         )}
       </ScrollView>
     </SafeAreaView>
   );
 };
 
-
-
 export default Home;
-

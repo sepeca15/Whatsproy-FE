@@ -1,5 +1,5 @@
-import { StyleSheet } from 'react-native';
-import { Colors } from '../../../constants/Colors';
+import { StyleSheet } from "react-native";
+import { Colors } from "../../../constants/Colors";
 
 export const styles = StyleSheet.create({
   container: {
@@ -8,10 +8,10 @@ export const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 24,
     color: Colors.light.text,
-    textAlign: 'center',
+    textAlign: "center",
   },
   listContent: {
     paddingBottom: 80,
@@ -21,68 +21,66 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
     marginBottom: 16,
     elevation: 4,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
   cardContent: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 16,
   },
   userInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   avatarContainer: {
     width: 50,
     height: 50,
     borderRadius: 25,
     backgroundColor: Colors.light.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginRight: 16,
   },
   avatarText: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
+    fontWeight: "bold",
+    color: "#fff",
   },
   userName: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     color: Colors.light.text,
   },
   deleteButton: {
     padding: 8,
   },
   addButton: {
-    position: 'absolute',
+    position: "absolute",
     right: 24,
     bottom: 24,
     backgroundColor: Colors.light.primary,
     width: 60,
     height: 60,
     borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     elevation: 8,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
   },
-    spinner: {
+  spinner: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
-  buttonCreate : {
-    backgroundColor:Colors.light.primary,
-    borderRadius:4,
-  }
+  buttonCreate: {
+    backgroundColor: Colors.light.primary,
+    borderRadius: 4,
+  },
 });
-
-

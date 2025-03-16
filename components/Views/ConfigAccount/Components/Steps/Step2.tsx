@@ -7,7 +7,7 @@ import { IPlans } from "../MethodOfpaycard/MethodOfPayCardTypes";
 import * as Progress from "react-native-progress";
 import { Colors } from "@/constants/Colors";
 import { ScrollView } from "native-base";
-import { FormattedMessage } from 'react-intl'; // Importa FormattedMessage
+import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
 
 const Step2 = () => {
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -35,23 +35,26 @@ const Step2 = () => {
     }
   }, []);
 
-  return (
-    loading ? (
-      <Progress.Circle color={Colors.light.primary} style={{ margin: 'auto', marginVertical: 10 }} indeterminate={true} size={50} />
-    ) : (
-      <ScrollView
-        horizontal={true}
-        showsHorizontalScrollIndicator={false}
-        style={styles.containerStep2}
-        ref={scrollViewRef}
-      >
-        <View style={styles.test}>
-          {plans?.map((Plan, index) => (
-            <MethodOfPayCard key={Plan.nombre + index} Plan={Plan} />
-          ))}
-        </View>
-      </ScrollView>
-    )
+  return loading ? (
+    <Progress.Circle
+      color={Colors.light.primary}
+      style={{ margin: "auto", marginVertical: 10 }}
+      indeterminate={true}
+      size={50}
+    />
+  ) : (
+    <ScrollView
+      horizontal={true}
+      showsHorizontalScrollIndicator={false}
+      style={styles.containerStep2}
+      ref={scrollViewRef}
+    >
+      <View style={styles.test}>
+        {plans?.map((Plan, index) => (
+          <MethodOfPayCard key={Plan.nombre + index} Plan={Plan} />
+        ))}
+      </View>
+    </ScrollView>
   );
 };
 

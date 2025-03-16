@@ -1,3 +1,3 @@
-import DateOrder from "./DateOrder"
+import DateOrder from "./DateOrder";
 
-export default DateOrder
+export default DateOrder;

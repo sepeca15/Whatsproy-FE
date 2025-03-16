@@ -1,151 +1,177 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useEffect } from "react"
-import { View, Text, Modal, TouchableOpacity, ScrollView } from "react-native"
-import { HStack, VStack, Avatar, IconButton, Icon } from "native-base"
-import { Ionicons } from "@expo/vector-icons"
-import { useRouter } from "expo-router"
-import { styles } from "./PerfilStyles"
-import { FormattedMessage } from "react-intl"
-import AsyncStorage from "@react-native-async-storage/async-storage"
-import { profileData as defaultProfileData } from "./components/profileData"
-import SimpleBarCharts from "./components/Graficas/Graficas"
-import ProfileStats from "./components/ProfileStats"
-import QuickActions from "./components/QuickActions"
-import RecentActivity from "./components/RecentActivity"
-import SubscriptionInfo from "./components/SubscriptionInfo"
-import SalesOverview from "./components/SalesOverview"
-import CategorySales from "./components/CategorySales"
-import SalesChart from "./components/SalesChart"
+import type React from "react";
+import { useState, useEffect } from "react";
+import { View, Text, Modal, TouchableOpacity, ScrollView } from "react-native";
+import { HStack, VStack, Avatar, IconButton, Icon } from "native-base";
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { styles } from "./PerfilStyles";
+import { FormattedMessage } from "react-intl";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { profileData as defaultProfileData } from "./components/profileData";
+import SimpleBarCharts from "./components/Graficas/Graficas";
+import ProfileStats from "./components/ProfileStats";
+import QuickActions from "./components/QuickActions";
+import RecentActivity from "./components/RecentActivity";
+import SubscriptionInfo from "./components/SubscriptionInfo";
+import SalesOverview from "./components/SalesOverview";
+import CategorySales from "./components/CategorySales";
+import SalesChart from "./components/SalesChart";
 import api from "@/services/api/admin";
-import { data } from '../Pedidos/components/data';
-
+import { data } from "../Pedidos/components/data";
 
 const Perfil: React.FC = () => {
-  const router = useRouter()
-  const [modalVisible, setModalVisible] = useState(false)
+  const router = useRouter();
+  const [modalVisible, setModalVisible] = useState(false);
   const [user, setUser] = useState<{
-    id: number
-    nombre: string
-    apellido: string
-    correo: string
-    image: string
-    hora_apertura: string
-    hora_cierre: string
-    id_empresa: number
-    id_rol: number
-  } | null>(null)
-  const [salesPeriod, setSalesPeriod] = useState("mensual")
-  const [profileData, setProfileData] = useState(defaultProfileData)
-  const [pedidos, setPedidos] = useState(0)
-   const [resumenVentas, setResumenVentas] = useState<{
-    weekly: number
-    monthly: number
-    quarterly: number
-    yearly: number
-  } | null>(null)
+    id: number;
+    nombre: string;
+    apellido: string;
+    correo: string;
+    image: string;
+    hora_apertura: string;
+    hora_cierre: string;
+    id_empresa: number;
+    id_rol: number;
+  } | null>(null);
+  const [salesPeriod, setSalesPeriod] = useState("mensual");
+  const [profileData, setProfileData] = useState(defaultProfileData);
+  const [pedidos, setPedidos] = useState(0);
+  const [resumenVentas, setResumenVentas] = useState<{
+    weekly: number;
+    monthly: number;
+    quarterly: number;
+    yearly: number;
+  } | null>(null);
 
-  const [valorPrueba, setValorPrueba] = useState<{ labels: string[], sales: number[] }>({
+  const [valorPrueba, setValorPrueba] = useState<{
+    labels: string[];
+    sales: number[];
+  }>({
     labels: [],
     sales: [],
   });
-  
+
   // Datos de ventas simulados
   const resumenVentasData = {
     weeklySales: [1, 2, 3, 4, 5, 6, 7],
-    weeklyLabels: ["week1", "week2", "week3", "week4", "wee5", "week6", "week7"],
-    
-    monthlySales: [12500, 14200, 13800, 15750, 16300, 15200, 16000, 17000, 18000, 19000, 20000, 21000],
-    monthlyLabels: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
-    
+    weeklyLabels: [
+      "week1",
+      "week2",
+      "week3",
+      "week4",
+      "wee5",
+      "week6",
+      "week7",
+    ],
+
+    monthlySales: [
+      12500, 14200, 13800, 15750, 16300, 15200, 16000, 17000, 18000, 19000,
+      20000, 21000,
+    ],
+    monthlyLabels: [
+      "Ene",
+      "Feb",
+      "Mar",
+      "Abr",
+      "May",
+      "Jun",
+      "Jul",
+      "Ago",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dic",
+    ],
+
     quarterlySales: [11, 22, 33, 44],
     quarterlyLabels: ["Q1", "Q2", "Q3", "Q4"],
-    
+
     yearlySales: [3333333, 14244400, 13444800, 155555750],
-    yearlyLabels: ["2021", "2022", "2023", "2024"]
+    yearlyLabels: ["2021", "2022", "2023", "2024"],
   };
 
   const fetchProfileData = async () => {
     try {
-      const res = await api.perfil.getResumenVentas()
-    
-      setResumenVentas(res)
+      const res = await api.perfil.getResumenVentas();
+
+      setResumenVentas(res);
     } catch (error) {
-      console.error("Error fetching profile data:", error)
+      console.error("Error fetching profile data:", error);
     }
-  }
-  
+  };
 
   useEffect(() => {
-    console.log("Fetching profile data...")
-    fetchProfileData()
-    
+    console.log("Fetching profile data...");
+    fetchProfileData();
+
     const fetchUser = async () => {
       try {
-      const userData = await AsyncStorage.getItem("user")
-      if (userData) {
-        setUser(JSON.parse(userData))
-      } else {
-        router.push("/login")
-      }
+        const userData = await AsyncStorage.getItem("user");
+        if (userData) {
+          setUser(JSON.parse(userData));
+        } else {
+          router.push("/login");
+        }
       } catch (error) {
-      console.error("Error retrieving user data:", error)
-      router.push("/login")
+        console.error("Error retrieving user data:", error);
+        router.push("/login");
       }
-    }
+    };
 
-    fetchUser()
-    }, [])
+    fetchUser();
+  }, []);
 
-  console.log("dataaaaa", resumenVentas)
+  console.log("dataaaaa", resumenVentas);
 
   useEffect(() => {
     if (resumenVentas) {
       switch (salesPeriod) {
         case "semanal":
-          setPedidos(resumenVentas.weekly)
+          setPedidos(resumenVentas.weekly);
           setValorPrueba({
             labels: resumenVentasData.weeklyLabels,
             sales: resumenVentasData.weeklySales,
           });
-          break
+          break;
         case "mensual":
-          setPedidos(resumenVentas.monthly)
+          setPedidos(resumenVentas.monthly);
           setValorPrueba({
             labels: resumenVentasData.monthlyLabels,
             sales: resumenVentasData.monthlySales,
           });
-          break
+          break;
         case "trimestral":
-          setPedidos(resumenVentas.quarterly)
+          setPedidos(resumenVentas.quarterly);
           setValorPrueba({
             labels: resumenVentasData.quarterlyLabels,
             sales: resumenVentasData.quarterlySales,
           });
-          break
+          break;
         case "anual":
-          setPedidos(resumenVentas.yearly)
+          setPedidos(resumenVentas.yearly);
           setValorPrueba({
             labels: resumenVentasData.yearlyLabels,
             sales: resumenVentasData.yearlySales,
           });
-          break
+          break;
         default:
-          break
+          break;
       }
     }
-  }, [salesPeriod, resumenVentas])
+  }, [salesPeriod, resumenVentas]);
 
-
-  console.log("profileData", profileData)
+  console.log("profileData", profileData);
   return (
-
-  
     <View style={styles.container}>
       {/* barra de arriba */}
       <ScrollView>
-        <HStack style={styles.header} alignItems="center" justifyContent="space-between">
+        <HStack
+          style={styles.header}
+          alignItems="center"
+          justifyContent="space-between"
+        >
           <HStack alignItems="center">
             <TouchableOpacity onPress={() => setModalVisible(true)}>
               <Avatar
@@ -158,22 +184,20 @@ const Perfil: React.FC = () => {
             <VStack marginLeft={3}>
               <Text style={styles.name}>{user?.nombre || "Usuario"}</Text>
               <Text style={styles.plan}>
-                <FormattedMessage id="plan" defaultMessage="Plan" />: {profileData?.plan || "Free"}
+                <FormattedMessage id="plan" defaultMessage="Plan" />:{" "}
+                {profileData?.plan || "Free"}
               </Text>
             </VStack>
           </HStack>
           <IconButton
             icon={<Icon as={Ionicons} name="settings-outline" size="md" />}
             onPress={() => {
-              router.push("/(tabs)/config")
+              router.push("/(tabs)/config");
             }}
           />
         </HStack>
 
-
         <View style={styles.content}>
-
-          
           <SalesOverview
             totalSales={pedidos ? pedidos : 0}
             previousPeriodSales={12500}
@@ -182,7 +206,6 @@ const Perfil: React.FC = () => {
             period={salesPeriod}
           />
 
-          
           <SalesChart
             monthlySales={valorPrueba.sales}
             labels={valorPrueba.labels}
@@ -236,15 +259,17 @@ const Perfil: React.FC = () => {
             ]}
           />
           {/* <ProfileStats completionPercentage={75} totalVisits={user?.id_empresa || 28} streak={5} /> */}
-          <SubscriptionInfo plan={profileData?.plan || "Free"} expiryDate="30/06/2023" usagePercentage={75} />
+          <SubscriptionInfo
+            plan={profileData?.plan || "Free"}
+            expiryDate="30/06/2023"
+            usagePercentage={75}
+          />
           {/* graficas con pedidos mensuale sy pedidos realizados */}
           {/* <SimpleBarCharts /> */}
-
 
           <QuickActions />
           {/* <RecentActivity /> */}
         </View>
-
 
         <Modal
           animationType="fade"
@@ -268,8 +293,7 @@ const Perfil: React.FC = () => {
         </Modal>
       </ScrollView>
     </View>
-  )
-}
+  );
+};
 
-export default Perfil
-
+export default Perfil;

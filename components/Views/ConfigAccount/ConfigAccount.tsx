@@ -7,7 +7,7 @@ import Step2 from "./Components/Steps/Step2";
 import Step3 from "./Components/Steps/Step3";
 import Step4 from "./Components/Steps/Step4";
 import { useUser } from "@/hooks/redux/useUser";
-import { FormattedMessage } from 'react-intl'; 
+import { FormattedMessage } from "react-intl";
 
 const ConfigAccount = () => {
   const { user } = useUser();
@@ -25,9 +25,9 @@ const ConfigAccount = () => {
 
   React.useEffect(() => {
     if (steps.length > 0 && steps[0] !== currentStep) {
-      setCurrentStep(steps[0]); 
+      setCurrentStep(steps[0]);
     } else if (steps.length === 0 && currentStep !== null) {
-      setCurrentStep(null); 
+      setCurrentStep(null);
     }
   }, [steps, currentStep]);
 

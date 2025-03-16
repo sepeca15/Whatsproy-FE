@@ -1,3 +1,3 @@
-import Perfil from "./Perfil"
+import Perfil from "./Perfil";
 
-export default Perfil
+export default Perfil;

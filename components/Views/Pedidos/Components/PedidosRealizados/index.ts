@@ -1,3 +1,3 @@
 import PedidosRealizados from "./PedidosRealizados";
 
-export default PedidosRealizados
+export default PedidosRealizados;

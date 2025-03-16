@@ -1,3 +1,3 @@
 import OrderChat from "./OrderChat";
 
-export default OrderChat
+export default OrderChat;

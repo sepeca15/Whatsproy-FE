@@ -12,10 +12,10 @@ import api from "@/services/api/admin";
 import { IOrderDetails } from "@/components/Views/OrderDetails/OrderDetailsTypes";
 import { useRouter } from "expo-router";
 import { styles } from "./ItemCalendarStyles";
-import * as moment from 'moment-timezone'
+import * as moment from "moment-timezone";
 import { useUser } from "@/hooks/redux/useUser";
 import Icon from "react-native-vector-icons/Feather";
-import { FormattedMessage } from 'react-intl'; // Importa FormattedMessage
+import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
 
 interface IItemCalendar {
   InfoItem: IInfoItem;
@@ -35,14 +35,14 @@ const ItemCalendar = ({
   deleteOrder,
   confirm,
 }: IItemCalendar) => {
-  const {user} = useUser()
+  const { user } = useUser();
   const router = useRouter();
   const [expanded, setExpanded] = useState<boolean>(false);
   const [dataDetails, setDataDetails] = useState<IDataDetails>({
     info: null,
     loadingApi: true,
   });
-  const keyDeleteType = confirm ? 'pending' : 'finished'
+  const keyDeleteType = confirm ? "pending" : "finished";
   const animationHeight = useRef(new Animated.Value(0)).current;
 
   const toggleLoadingApi = (value: boolean) => {
@@ -84,10 +84,10 @@ const ItemCalendar = ({
   }, [expanded, dataDetails.info]);
 
   const formatDate = (dateString: any) => {
-    const date = moment.tz(dateString, user.timeZone); 
-    const datePart = date.format("DD-MM-YYYY"); 
-    const timePart = date.format("HH:mm"); 
-  
+    const date = moment.tz(dateString, user.timeZone);
+    const datePart = date.format("DD-MM-YYYY");
+    const timePart = date.format("HH:mm");
+
     return `${datePart}, ${timePart}`;
   };
 
@@ -95,7 +95,7 @@ const ItemCalendar = ({
     if (confirm) {
       router.push({
         pathname: "/(tabs)/orderDetails",
-        params: { orderId: InfoItem.orderId, keyDeleteType: keyDeleteType},
+        params: { orderId: InfoItem.orderId, keyDeleteType: keyDeleteType },
       });
     } else {
       confirmOrder(InfoItem.orderId);
@@ -103,14 +103,14 @@ const ItemCalendar = ({
   };
 
   const productsText = () => {
-    let productsText = ''
-    dataDetails.info?.products.map((product,index)=> {
-      const isEnd = dataDetails.info?.products.length === index + 1 
-      productsText += product.productoInfo.nombre + (isEnd ? "" : ', ')
-    } )
+    let productsText = "";
+    dataDetails.info?.products.map((product, index) => {
+      const isEnd = dataDetails.info?.products.length === index + 1;
+      productsText += product.productoInfo.nombre + (isEnd ? "" : ", ");
+    });
 
-    return productsText
-  }
+    return productsText;
+  };
 
   return (
     <View style={{ paddingRight: 10 }}>
@@ -137,11 +137,7 @@ const ItemCalendar = ({
               alignItems={"center"}
               style={{ gap: 4 }}
             >
-              <Ion
-                color={"white"}
-                name='time-outline'
-                size={16}
-              />
+              <Ion color={"white"} name="time-outline" size={16} />
               <Text color={"white"} fontWeight={"500"}>
                 {InfoItem.date}
               </Text>
@@ -172,34 +168,39 @@ const ItemCalendar = ({
                 <View style={styles.rowInfo}>
                   <AntDesign name="user" size={16} color={"white"} />
                   <Text color={"white"}>
-                    {dataDetails.info?.client?.name || <FormattedMessage id="clientName" />}
+                    {dataDetails.info?.client?.name || (
+                      <FormattedMessage id="clientName" />
+                    )}
                   </Text>
                 </View>
                 <View style={styles.rowInfo}>
                   <AntDesign name="phone" size={16} color={"white"} />
                   <Text color={"white"}>
-                    {dataDetails.info?.client?.phone || <FormattedMessage id="clientPhone" />}
+                    {dataDetails.info?.client?.phone || (
+                      <FormattedMessage id="clientPhone" />
+                    )}
                   </Text>
                 </View>
                 <View style={styles.rowInfo}>
                   <MaterialIcons name="access-time" size={16} color={"white"} />
                   <Text color={"white"}>
-                    {dataDetails.info?.estimateTime || <FormattedMessage id="estimateTime" />}{" "}
+                    {dataDetails.info?.estimateTime || (
+                      <FormattedMessage id="estimateTime" />
+                    )}{" "}
                     mn
                   </Text>
                 </View>
                 <View style={styles.rowInfo}>
                   <AntDesign name="calendar" size={16} color={"white"} />
                   <Text color={"white"}>
-                    {formatDate(dataDetails.info?.date) ||
-                      <FormattedMessage id="date" />}
+                    {formatDate(dataDetails.info?.date) || (
+                      <FormattedMessage id="date" />
+                    )}
                   </Text>
                 </View>
                 <View style={styles.rowInfo}>
                   <Icon name="shopping-bag" size={16} color="white" />
-                  <Text color={'white'}>
-                    {productsText()}
-                  </Text>
+                  <Text color={"white"}>{productsText()}</Text>
                 </View>
                 <View style={styles.total}>
                   <Text fontSize={18} fontWeight={"bold"} color={"white"}>
@@ -232,7 +233,11 @@ const ItemCalendar = ({
                     ]}
                   >
                     <Text color={"white"} fontSize={12}>
-                      {confirm ? <FormattedMessage id="viewDetails" /> : <FormattedMessage id="confirmOrder" />}
+                      {confirm ? (
+                        <FormattedMessage id="viewDetails" />
+                      ) : (
+                        <FormattedMessage id="confirmOrder" />
+                      )}
                     </Text>
                   </Pressable>
                 </View>

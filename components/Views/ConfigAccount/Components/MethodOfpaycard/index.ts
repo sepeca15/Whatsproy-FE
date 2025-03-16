@@ -1,3 +1,3 @@
 import MethodOfPayCard from "./MethodOfPayCard";
 
-export default MethodOfPayCard
+export default MethodOfPayCard;

@@ -14,7 +14,7 @@ import { Provider } from "react-redux";
 import { store } from "@/services/redux/store";
 import { ToastProvider } from "@/contexts/ToastContext";
 import { LocalizationProvider } from "./LocalizationContext"; // Importa el proveedor de localización
-import { StatusBar } from 'expo-status-bar';
+import { StatusBar } from "expo-status-bar";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -39,7 +39,9 @@ export default function RootLayout() {
       <LocalizationProvider>
         <NativeBaseProvider>
           <ToastProvider>
-            <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+            <ThemeProvider
+              value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+            >
               <StatusBar style="auto" />
               <Stack screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -52,5 +54,4 @@ export default function RootLayout() {
       </LocalizationProvider>
     </Provider>
   );
-  
 }

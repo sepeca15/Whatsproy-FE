@@ -1,7 +1,7 @@
-import { StyleSheet, Dimensions } from "react-native"
-import { Colors } from "../../../../constants/Colors"
+import { StyleSheet, Dimensions } from "react-native";
+import { Colors } from "../../../../constants/Colors";
 
-const { width } = Dimensions.get("window")
+const { width } = Dimensions.get("window");
 
 export const styles = StyleSheet.create({
   container: {
@@ -77,6 +77,7 @@ export const styles = StyleSheet.create({
     borderColor: "#ddd",
     borderRadius: 8,
     padding: 12,
+    height: 50,
     marginBottom: 16,
     fontSize: 16,
     backgroundColor: "#f9f9f9",
@@ -85,6 +86,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 16,
+    gap: 10,
   },
   column: {
     flex: 1,
@@ -108,6 +110,7 @@ export const styles = StyleSheet.create({
   pickerContainer: {
     borderWidth: 1,
     borderColor: "#ddd",
+    height: 50,
     borderRadius: 8,
     backgroundColor: "#f9f9f9",
   },
@@ -130,5 +133,4 @@ export const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
   },
-})
-
+});

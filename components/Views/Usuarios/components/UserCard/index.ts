@@ -1,3 +1,3 @@
 import UserCard from "./UserCard";
 
-export default UserCard
+export default UserCard;

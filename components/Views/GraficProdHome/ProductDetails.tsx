@@ -1,11 +1,14 @@
-import React from 'react';
-import { View, Text } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
-import GraficProddet from './components/GraficProd';
-import { productData, salesData, categoryData, satisfactionData } from '../GraficProdHome/components/Data';
-import { ProductParams } from '../GraficProdHome/components/types';
-
-
+import React from "react";
+import { View, Text } from "react-native";
+import { useLocalSearchParams } from "expo-router";
+import GraficProddet from "./components/GraficProd";
+import {
+  productData,
+  salesData,
+  categoryData,
+  satisfactionData,
+} from "../GraficProdHome/components/Data";
+import { ProductParams } from "../GraficProdHome/components/types";
 
 const ProductDetails: React.FC = () => {
   // Tipifica los parámetros recibidos
@@ -36,7 +39,6 @@ const ProductDetails: React.FC = () => {
   //   ],
   // };
 
-
   // Construye el objeto `product`
   const product = {
     id: parseInt(params.id, 10),
@@ -47,15 +49,15 @@ const ProductDetails: React.FC = () => {
     description: params.description,
     imageUrl: params.imageUrl,
     category: params.category,
+    currency_id: params?.currency_id,
     rating: parseFloat(params.rating),
     reviews: parseInt(params.reviews, 10),
-    tags: params.tags ? params.tags.split(',') : [],
+    tags: params.tags ? params.tags.split(",") : [],
     daydata: params.daydata,
     monthdata: params.monthdata,
     empresa_id: parseInt(params.empresa_id, 10),
-    disponible: params.disponible === 'true',
+    disponible: params.disponible === "true",
   };
-
 
   return (
     <GraficProddet
@@ -63,8 +65,6 @@ const ProductDetails: React.FC = () => {
       salesData={salesData}
       categoryData={categoryData}
       satisfactionData={satisfactionData}
-     
-    
     />
   );
 };

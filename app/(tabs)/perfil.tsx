@@ -1,12 +1,8 @@
-import * as React from "react"
+import * as React from "react";
 import Perfil from "@/components/Views/Perfil";
 
 const ProfileScreen = () => {
-  
-  return (
-      <Perfil/>
-  );
-}
+  return <Perfil />;
+};
 
-export default ProfileScreen
-
+export default ProfileScreen;

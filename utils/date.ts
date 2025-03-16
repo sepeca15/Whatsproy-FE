@@ -20,7 +20,6 @@ export const removeAmPm = (time: string) => {
   return time.replace(/\s?(AM|PM|am|pm)/g, "").trim();
 };
 
-
 export const filterOnlyHours = (items: any) => {
   return items.filter((item: any) => /^\d{1,2}:\d{2}$/.test(item));
 };

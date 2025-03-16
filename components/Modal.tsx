@@ -22,7 +22,7 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
 }) => {
   return (
     <Modal
-      transparent      
+      transparent
       animationType="slide"
       visible={isVisible}
       style={{ zIndex: 1 }}
@@ -60,7 +60,7 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
                 flexGrow: 1,
                 gap: 8,
                 paddingHorizontal: 20,
-                paddingBottom: 60
+                paddingBottom: 60,
               }}
             >
               {content}
@@ -69,9 +69,7 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
 
           {actions && actions.length > 0 && (
             <View style={styles.footerContent}>
-              <HStack  justifyContent="flex-end">
-                {actions}
-              </HStack>
+              <HStack justifyContent="flex-end">{actions}</HStack>
             </View>
           )}
         </View>

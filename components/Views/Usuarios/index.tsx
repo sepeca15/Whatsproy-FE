@@ -1,3 +1,3 @@
-import Usuarios from "./Usuarios"
+import Usuarios from "./Usuarios";
 
-export default Usuarios
+export default Usuarios;

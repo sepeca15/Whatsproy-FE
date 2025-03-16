@@ -9,18 +9,24 @@ import Toast from "react-native-toast-message";
 import toastConfig from "@/utils/toast";
 
 const Layout: React.FC = () => {
-  const { isAuthenticated, loading, redirecting } = useAuth()
+  const { isAuthenticated, loading, redirecting } = useAuth();
 
   React.useEffect(() => {
     if (isAuthenticated && !loading) {
-      router.push('/(tabs)/home')
+      router.push("/(tabs)/home");
     }
-  }, [isAuthenticated, loading])
+  }, [isAuthenticated, loading]);
 
   if (loading || redirecting) {
-    return <View style={styles.spinner}>
-      <Progress.Circle color={Colors.light.primary} indeterminate={true} size={100} />
-    </View>
+    return (
+      <View style={styles.spinner}>
+        <Progress.Circle
+          color={Colors.light.primary}
+          indeterminate={true}
+          size={100}
+        />
+      </View>
+    );
   }
   return (
     <NativeBaseProvider>

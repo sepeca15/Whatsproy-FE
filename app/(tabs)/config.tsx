@@ -1,12 +1,8 @@
-import * as React from "react"
+import * as React from "react";
 import Settings from "@/components/Views/Config";
 
 const SettingsScreen = () => {
-  
-  return (
-      <Settings/>
-  );
-}
+  return <Settings />;
+};
 
-export default SettingsScreen
-
+export default SettingsScreen;

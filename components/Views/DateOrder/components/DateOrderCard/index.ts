@@ -1,3 +1,3 @@
 import DateOrderCard from "./DateOrderCard";
 
-export default DateOrderCard
+export default DateOrderCard;

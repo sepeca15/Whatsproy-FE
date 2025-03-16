@@ -1,3 +1,3 @@
-import AddPro from "./AddPro"
+import AddPro from "./AddPro";
 
-export default AddPro
+export default AddPro;

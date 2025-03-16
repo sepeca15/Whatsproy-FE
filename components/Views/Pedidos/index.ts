@@ -1,3 +1,3 @@
-import Pedidos from "./Pedidos"
+import Pedidos from "./Pedidos";
 
-export default Pedidos
+export default Pedidos;

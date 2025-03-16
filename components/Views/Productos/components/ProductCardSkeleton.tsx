@@ -5,12 +5,9 @@ const ProductCardSkeleton: React.FC = () => {
   return (
     <View style={styles.container}>
       <View style={styles.card}>
-
         <View style={styles.image} />
 
-
         <View style={styles.content}>
-
           <View style={styles.headerSkeleton}>
             <View style={styles.titleSkeleton} />
             <View style={styles.moreButtonSkeleton} />

@@ -1,3 +1,3 @@
 import ModalCreateUser from "./ModalCreateUser";
 
-export default ModalCreateUser
+export default ModalCreateUser;

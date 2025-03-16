@@ -37,9 +37,17 @@ const LoginScreen: React.FC = () => {
       }
     } catch (error: any) {
       showToast({
-        title: <FormattedMessage id="authErrorTitle" defaultMessage="Authentication Error" />,
+        title: (
+          <FormattedMessage
+            id="authErrorTitle"
+            defaultMessage="Authentication Error"
+          />
+        ),
         description: error.response?.data?.message || (
-          <FormattedMessage id="authErrorDescription" defaultMessage="Error logging in." />
+          <FormattedMessage
+            id="authErrorDescription"
+            defaultMessage="Error logging in."
+          />
         ),
         status: "error",
       });
@@ -50,7 +58,10 @@ const LoginScreen: React.FC = () => {
 
   return (
     <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={styles.scrollView} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        contentContainerStyle={styles.scrollView}
+        keyboardShouldPersistTaps="handled"
+      >
         <Center>
           <VStack space={4} w="90%" maxW="300px">
             <View style={styles.containerImage}>
@@ -65,26 +76,43 @@ const LoginScreen: React.FC = () => {
                   <Text>
                     <FormattedMessage
                       id={`${field}Label`}
-                      defaultMessage={field.charAt(0).toUpperCase() + field.slice(1)}
+                      defaultMessage={
+                        field.charAt(0).toUpperCase() + field.slice(1)
+                      }
                     />
                   </Text>
                 }
-                placeholder={intl.formatMessage({ id: `${field}Placeholder`, defaultMessage: `Enter your ${field}` })}
+                placeholder={intl.formatMessage({
+                  id: `${field}Placeholder`,
+                  defaultMessage: `Enter your ${field}`,
+                })}
                 type={field === "password" ? "password" : "text"}
               />
             ))}
 
             <CustomText style={styles.textPrimary}>
-              <FormattedMessage id="forgotPassword" defaultMessage="Forgot your password?" />
+              <FormattedMessage
+                id="forgotPassword"
+                defaultMessage="Forgot your password?"
+              />
               <CustomText style={styles.textSecondary}>
                 <FormattedMessage id="resetPassword" defaultMessage=" Reset" />
               </CustomText>
             </CustomText>
 
-            <CustomText onPress={() => router.push("/(auth)/sign-up")} style={styles.textPrimary}>
-              <FormattedMessage id="noAccount" defaultMessage="Don't have an account?" />
+            <CustomText
+              onPress={() => router.push("/(auth)/sign-up")}
+              style={styles.textPrimary}
+            >
+              <FormattedMessage
+                id="noAccount"
+                defaultMessage="Don't have an account?"
+              />
               <CustomText style={styles.textSecondary}>
-                <FormattedMessage id="createAccount" defaultMessage=" Create one" />
+                <FormattedMessage
+                  id="createAccount"
+                  defaultMessage=" Create one"
+                />
               </CustomText>
             </CustomText>
 

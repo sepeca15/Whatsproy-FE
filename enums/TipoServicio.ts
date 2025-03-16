@@ -1,4 +1,4 @@
 export const TipoServicio = {
-    DELIVERY: 1,
-    RESERVA: 2,
-}
+  DELIVERY: 1,
+  RESERVA: 2,
+};

@@ -1,3 +1,3 @@
-import EditPro from "./EditPro"
+import EditPro from "./EditPro";
 
-export default EditPro
+export default EditPro;

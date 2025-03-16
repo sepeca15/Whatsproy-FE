@@ -1,12 +1,8 @@
-import * as React from "react"
+import * as React from "react";
 import AddPro from "@/components/Views/Add_Products/AddPro";
 
 const AddUsuarioScreen = () => {
-  
-  return (
-    <AddPro />
-  )
-}
+  return <AddPro />;
+};
 
-export default AddUsuarioScreen
-
+export default AddUsuarioScreen;

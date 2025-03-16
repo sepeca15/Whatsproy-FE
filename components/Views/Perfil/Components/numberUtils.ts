@@ -6,8 +6,6 @@
  * @returns Un número entero
  */
 export const toStrictInteger = (value: number): number => {
-    // Primero redondeamos y luego usamos bitwise OR con 0 para forzar la conversión a entero
-    return Math.round(value) | 0
-  }
-  
-  
+  // Primero redondeamos y luego usamos bitwise OR con 0 para forzar la conversión a entero
+  return Math.round(value) | 0;
+};

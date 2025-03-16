@@ -1,3 +1,3 @@
 import ModalEditUser from "./ModalEditUser";
 
-export default ModalEditUser
+export default ModalEditUser;

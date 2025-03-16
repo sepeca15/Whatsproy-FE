@@ -19,7 +19,7 @@ import GlobalModal from "./Modal";
 const generateTimeSlots = (
   startHour: number,
   endHour: number,
-  interval: number
+  interval: number,
 ) => {
   const times = [];
   for (let hour = startHour; hour < endHour; hour++) {

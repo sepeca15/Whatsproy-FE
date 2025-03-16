@@ -1,3 +1,3 @@
-import LoadQR from "./LoadQR"
+import LoadQR from "./LoadQR";
 
-export default LoadQR
+export default LoadQR;

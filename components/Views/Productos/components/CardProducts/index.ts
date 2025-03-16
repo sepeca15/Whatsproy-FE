@@ -1,3 +1,3 @@
 import ProductCard from "./CardProduct";
 
-export default ProductCard
+export default ProductCard;

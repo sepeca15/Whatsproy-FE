@@ -1,8 +1,7 @@
-import ApiInstances from "@/services/axios/axiosConfig"
+import ApiInstances from "@/services/axios/axiosConfig";
 
+export const getAll = async () => {
+  const { data } = await ApiInstances("global").get("tiposervicio");
 
-export const getAll = async() => {
-    const { data } = await ApiInstances('global').get('tiposervicio')
-
-    return data
-}
+  return data;
+};

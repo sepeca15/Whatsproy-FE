@@ -5,19 +5,19 @@ import CustomText from "@/components/CustomText";
 import api from "@/services/api/admin";
 import { useUser } from "@/hooks/redux/useUser";
 import * as Progress from "react-native-progress";
-import { FormattedMessage } from 'react-intl'; // Importa FormattedMessage
+import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
 
 interface ILoadQR {
-  QRCode: string | null,
-  handleUpdateData: (key:string,value:string)=> void
+  QRCode: string | null;
+  handleUpdateData: (key: string, value: string) => void;
 }
 
-const LoadQR = ({QRCode, handleUpdateData} : ILoadQR) => {
+const LoadQR = ({ QRCode, handleUpdateData }: ILoadQR) => {
   const [loading, setloading] = React.useState<boolean>(false);
   const { user } = useUser();
 
   const LoadQr = async () => {
-    setloading(true)
+    setloading(true);
     try {
       const data = await api.company.loadQR({ id_empresa: user.id_empresa });
       const qrMessage = data?.qr?.message;
@@ -25,26 +25,31 @@ const LoadQR = ({QRCode, handleUpdateData} : ILoadQR) => {
       if (!qrMessage || typeof qrMessage !== "string") {
         throw new Error("El mensaje QR no es válido");
       }
-      handleUpdateData('QRCode',`data:image/png;base64,${qrMessage}` )
+      handleUpdateData("QRCode", `data:image/png;base64,${qrMessage}`);
     } catch (error) {
       console.log("Error al cargar el QR:", error);
-    } finally{
-      setloading(false)
-
+    } finally {
+      setloading(false);
     }
   };
 
   React.useEffect(() => {
-    if(!QRCode) {
+    if (!QRCode) {
       LoadQr();
     }
   }, []);
 
   return (
     <View style={styles.container}>
-      <CustomText><FormattedMessage id="qrCode" /></CustomText>
+      <CustomText>
+        <FormattedMessage id="qrCode" />
+      </CustomText>
       {loading ? (
-        <Progress.Circle style={{marginVertical:20}} indeterminate={true} size={50} />
+        <Progress.Circle
+          style={{ marginVertical: 20 }}
+          indeterminate={true}
+          size={50}
+        />
       ) : QRCode ? (
         <Image
           source={{ uri: QRCode }}
@@ -52,7 +57,9 @@ const LoadQR = ({QRCode, handleUpdateData} : ILoadQR) => {
           style={{ width: 200, height: 200 }}
         />
       ) : (
-        <CustomText><FormattedMessage id="qrCodeError" /></CustomText>
+        <CustomText>
+          <FormattedMessage id="qrCodeError" />
+        </CustomText>
       )}
     </View>
   );

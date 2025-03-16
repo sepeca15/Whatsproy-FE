@@ -1,12 +1,12 @@
-import { StyleSheet, Dimensions } from 'react-native';
-import { Colors } from '../../../../constants/Colors';
+import { StyleSheet, Dimensions } from "react-native";
+import { Colors } from "../../../../constants/Colors";
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
   },
   scrollContent: {
     flexGrow: 1,
@@ -18,34 +18,34 @@ export const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
     color: Colors.light.primary,
   },
   imageUpload: {
-    alignItems: 'center',
+    alignItems: "center",
     marginVertical: 20,
     width: width * 0.9,
     height: width * 0.6,
-    alignSelf: 'center',
+    alignSelf: "center",
     borderRadius: 12,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   uploadedImage: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
   uploadPlaceholder: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
     borderWidth: 2,
     borderColor: Colors.light.primary,
-    borderStyle: 'dashed',
+    borderStyle: "dashed",
     borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
   },
   uploadText: {
     marginTop: 10,
@@ -54,7 +54,7 @@ export const styles = StyleSheet.create({
   },
   formContainer: {
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 12,
     marginHorizontal: 16,
     shadowColor: "#000",
@@ -69,50 +69,52 @@ export const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     marginBottom: 8,
-    color: '#333',
-    fontWeight: '600',
+    color: "#333",
+    fontWeight: "600",
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     borderRadius: 8,
+    height: 50,
     padding: 12,
     marginBottom: 16,
     fontSize: 16,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: "#f9f9f9",
   },
   row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 16,
+    gap: 10,
   },
   column: {
     flex: 1,
   },
   pickerContainer: {
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     borderRadius: 8,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: "#f9f9f9",
+    height: 50,
   },
   picker: {
     height: 50,
   },
   textArea: {
     height: 100,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
   },
   button: {
     backgroundColor: Colors.light.primary,
     padding: 16,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 20,
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
-

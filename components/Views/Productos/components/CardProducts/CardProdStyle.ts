@@ -1,5 +1,5 @@
-import { StyleSheet } from "react-native"
-import Index from '../../../../../app/index';
+import { StyleSheet } from "react-native";
+import Index from "../../../../../app/index";
 
 export const styles = StyleSheet.create({
   container: {
@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-    margin: 10,
+    marginVertical: 8,
     padding: 5,
   },
   card: {
@@ -31,7 +31,6 @@ export const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
-
 
   header: {
     flexDirection: "row",
@@ -94,5 +93,4 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "bold",
   },
-})
-
+});

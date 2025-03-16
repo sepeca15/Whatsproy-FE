@@ -1,7 +1,7 @@
-import React from 'react';
-import { View } from 'react-native';
-import EditProduct from './components/EditProductos';
-import { styles } from './components/EditProductStyle';
+import React from "react";
+import { View } from "react-native";
+import EditProduct from "./components/EditProductos";
+import { styles } from "./components/EditProductStyle";
 import { useLocalSearchParams } from "expo-router";
 
 interface ProductFormData {
@@ -11,11 +11,10 @@ interface ProductFormData {
   currency: string;
   duration: string;
   description: string;
-  imageUrl?: string; 
+  imageUrl?: string;
   disponible: boolean;
   empresa_id: number;
 }
-
 
 interface EditProProps {
   id: number;
@@ -27,28 +26,24 @@ interface EditProProps {
   imageUrl: string;
   disponible: string;
   empresa_id: number;
- 
+  currency_id?: string;
 }
-
-
 
 const EditPro: React.FC = () => {
   const params = useLocalSearchParams();
 
   const editProProps: EditProProps = {
     id: parseInt(params.id as string, 10) || 0,
-    name: params.title as string || '',
-    price: params.price as string || '',
+    name: (params.title as string) || "",
+    price: (params.price as string) || "",
     // currency: params.currency as string || '',
-    duration: params.duration as string || '',
-    description: params.description as string || '',
-    imageUrl: (params.imageUrl as string) ?? '',
-    disponible: (params.disponible as string),
+    duration: (params.duration as string) || "",
+    description: (params.description as string) || "",
+    imageUrl: (params.imageUrl as string) ?? "",
+    disponible: params.disponible as string,
+    currency_id: params.currency_id as string,
     empresa_id: parseInt(params.empresa_id as string, 10) || 0,
-    
   };
-
-  
 
   return (
     <View style={styles.container}>

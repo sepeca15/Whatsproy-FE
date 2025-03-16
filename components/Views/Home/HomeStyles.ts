@@ -1,5 +1,5 @@
-import { StyleSheet } from "react-native"
-import { Colors } from "../../../constants/Colors"
+import { StyleSheet } from "react-native";
+import { Colors } from "../../../constants/Colors";
 
 const styles = StyleSheet.create({
   container: {
@@ -124,7 +124,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-    
   },
   chartTitle: {
     fontSize: 16,
@@ -169,6 +168,6 @@ const styles = StyleSheet.create({
     color: Colors.light.text,
     marginTop: 8,
   },
-})
+});
 
-export default styles
+export default styles;

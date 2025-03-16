@@ -1,38 +1,51 @@
-import React from "react"
-import { View, TouchableOpacity } from "react-native"
-import Icon from "react-native-vector-icons/MaterialCommunityIcons"
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated"
-import { Colors } from "../../../../constants/Colors"
-import CustomText from "./CustomText"
-import styles from "../HomeStyles"
+import React from "react";
+import { View, TouchableOpacity } from "react-native";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
+import { Colors } from "../../../../constants/Colors";
+import CustomText from "./CustomText";
+import styles from "../HomeStyles";
 
-const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity)
+const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
 type LastActivityCardProps = {
-  title: string
-  time: string
-  id: string
-  amount?: string
-  address: string
-  icon: string
-  info?: string
-  onPress?: () => void
-}
+  title: string;
+  time: string;
+  id: string;
+  amount?: string;
+  address: string;
+  icon: string;
+  info?: string;
+  onPress?: () => void;
+};
 
-const LastActivityCard: React.FC<LastActivityCardProps> = ({ title, time, id, amount, address, icon, info, onPress }) => {
-  const scale = useSharedValue(1)
+const LastActivityCard: React.FC<LastActivityCardProps> = ({
+  title,
+  time,
+  id,
+  amount,
+  address,
+  icon,
+  info,
+  onPress,
+}) => {
+  const scale = useSharedValue(1);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
-  }))
+  }));
 
   const handlePressIn = () => {
-    scale.value = withSpring(0.98)
-  }
+    scale.value = withSpring(0.98);
+  };
 
   const handlePressOut = () => {
-    scale.value = withSpring(1)
-  }
+    scale.value = withSpring(1);
+  };
 
   return (
     <AnimatedTouchable
@@ -49,12 +62,16 @@ const LastActivityCard: React.FC<LastActivityCardProps> = ({ title, time, id, am
         <Icon name={icon} size={24} color={Colors.light.primary} />
         <View style={styles.lastActivityInfo}>
           <CustomText style={styles.lastActivityId}>#{address}</CustomText>
-          {amount && <CustomText style={styles.lastActivityAmount}>{amount}</CustomText>}
-          {info && <CustomText style={styles.lastActivityExtra}>{info}</CustomText>}
+          {amount && (
+            <CustomText style={styles.lastActivityAmount}>{amount}</CustomText>
+          )}
+          {info && (
+            <CustomText style={styles.lastActivityExtra}>{info}</CustomText>
+          )}
         </View>
       </View>
     </AnimatedTouchable>
-  )
-}
+  );
+};
 
-export default LastActivityCard
+export default LastActivityCard;

@@ -1,12 +1,8 @@
 import OrderDetails from "@/components/Views/OrderDetails";
-import * as React from "react"
+import * as React from "react";
 
 const orderDetails = () => {
+  return <OrderDetails />;
+};
 
-  return (
-      <OrderDetails/>
-  );
-}
-
-export default orderDetails
-
+export default orderDetails;

@@ -2,10 +2,7 @@ import * as React from "react";
 import Home from "@/components/Views/Home";
 
 const HomeScreen = () => {
-  
-  return (
-      <Home/>
-  );
-}
+  return <Home />;
+};
 
-export default HomeScreen
+export default HomeScreen;

@@ -37,7 +37,7 @@ export default function CalendarView() {
   const [orderPerDays, setOrderPerDays] = useState<OrderPerDays>({});
   const [openAddModal, setOpenAddModal] = useState(false);
   const [selectedDate, setSelectedDate] = useState(
-    new Date().toISOString().split("T")[0]
+    new Date().toISOString().split("T")[0],
   );
   const [loading, setLoading] = useState(true);
 
@@ -61,7 +61,7 @@ export default function CalendarView() {
       if (data.data) {
         setOrderPerDays((prevState) => {
           const updatedOrders = prevState[firstDate].map((order) =>
-            order.orderId === orderId ? { ...order, status: true } : order
+            order.orderId === orderId ? { ...order, status: true } : order,
           );
           return {
             ...prevState,
@@ -83,7 +83,7 @@ export default function CalendarView() {
         setOrderPerDays((prevState) => ({
           ...prevState,
           [firstDate]: prevState[firstDate].filter(
-            (order) => order.orderId !== orderId
+            (order) => order.orderId !== orderId,
           ),
         }));
       }
@@ -140,7 +140,7 @@ export default function CalendarView() {
                 size={50}
               />
             ) : (
-              <View style={{...stylesPending.containerImage, marginTop: 10}}>
+              <View style={{ ...stylesPending.containerImage, marginTop: 10 }}>
                 <Image
                   source={require("../../../assets/images/no-records.png")}
                   style={{ width: 350, height: 250, objectFit: "contain" }}
@@ -165,7 +165,9 @@ export default function CalendarView() {
 
       {openAddModal && selectedDate && (
         <CreateOrderModal
-          currentOrders={orderPerDays[selectedDate] ? orderPerDays[selectedDate] : []}
+          currentOrders={
+            orderPerDays[selectedDate] ? orderPerDays[selectedDate] : []
+          }
           onClose={() => setOpenAddModal(false)}
           defaultDate={selectedDate}
           onSuccess={() => {

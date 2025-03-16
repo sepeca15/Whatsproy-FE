@@ -1,3 +1,3 @@
 import AlertText from "./AlertText";
 
-export default AlertText
+export default AlertText;

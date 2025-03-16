@@ -6,34 +6,53 @@ import { styles } from "./ModalConfirmActionStyles";
 
 interface IModalConfirmAction {
   onContinue: () => void;
-  onClose: () => void
-  isOpen: boolean,
-  message: string,
-  title: string
+  onClose: () => void;
+  isOpen: boolean;
+  message: string;
+  title: string;
 }
-const ModalConfirmAction = ({ isOpen, onClose, onContinue, message, title }: IModalConfirmAction) => {
-
+const ModalConfirmAction = ({
+  isOpen,
+  onClose,
+  onContinue,
+  message,
+  title,
+}: IModalConfirmAction) => {
   const submitAction = () => {
-    onClose()
-    onContinue()    
-  }
+    onClose();
+    onContinue();
+  };
 
-  return <Modal alignSelf={'center'} width={450} onClose={onClose} isOpen={isOpen} style={styles.container}>
-    <Modal.Content>
-      <Modal.Body>
-        <CustomText style={styles.title}>{title}</CustomText>
-        <CustomText style={styles.message}>{message}</CustomText>
-        <View style={styles.footer}>
-          <Button onPress={onClose} style={styles.buttonCancel}>
-            <CustomText style={{ color: 'black', fontWeight: 'bold', fontSize:12 }}>Cancel</CustomText>
-          </Button>
-          <Button onPress={submitAction} style={styles.buttonContinue}>
-            <CustomText style={{ color: 'white', fontSize:12 }}>Continue</CustomText>
-          </Button>
-        </View>
-      </Modal.Body>
-    </Modal.Content>
-  </Modal>
+  return (
+    <Modal
+      alignSelf={"center"}
+      width={450}
+      onClose={onClose}
+      isOpen={isOpen}
+      style={styles.container}
+    >
+      <Modal.Content>
+        <Modal.Body>
+          <CustomText style={styles.title}>{title}</CustomText>
+          <CustomText style={styles.message}>{message}</CustomText>
+          <View style={styles.footer}>
+            <Button onPress={onClose} style={styles.buttonCancel}>
+              <CustomText
+                style={{ color: "black", fontWeight: "bold", fontSize: 12 }}
+              >
+                Cancel
+              </CustomText>
+            </Button>
+            <Button onPress={submitAction} style={styles.buttonContinue}>
+              <CustomText style={{ color: "white", fontSize: 12 }}>
+                Continue
+              </CustomText>
+            </Button>
+          </View>
+        </Modal.Body>
+      </Modal.Content>
+    </Modal>
+  );
 };
 
 export default ModalConfirmAction;

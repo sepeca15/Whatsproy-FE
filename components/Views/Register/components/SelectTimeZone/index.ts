@@ -1,3 +1,3 @@
 import SelectTimeZone from "./SelectTimeZone";
 
-export default SelectTimeZone
+export default SelectTimeZone;

@@ -1,3 +1,3 @@
-import OrdersFinished from "./OrdersFinished"
+import OrdersFinished from "./OrdersFinished";
 
-export default OrdersFinished
+export default OrdersFinished;

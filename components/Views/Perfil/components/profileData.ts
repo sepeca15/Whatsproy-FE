@@ -4,5 +4,4 @@ export const profileData = {
   expiryDate: "30/06/2023",
   usagePercentage: 75,
   // Otros datos de perfil que puedas necesitar
-}
-
+};
