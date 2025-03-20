@@ -18,7 +18,7 @@ import { styles } from "./EditProductStyle";
 import { useRouter } from "expo-router";
 import { availableCurrencies } from "@/hooks/dataProduct";
 import api from "@/services/api/admin";
-import { FormattedMessage, useIntl } from "react-intl"; // Importa FormattedMessage y useIntl
+import { FormattedMessage, useIntl } from "react-intl";
 import { useToastContext } from "@/contexts/ToastContext";
 import { useUser } from "@/hooks/redux/useUser";
 
@@ -26,6 +26,7 @@ interface ProductFormData {
   id: number;
   nombre: string;
   descripcion: string;
+  imagen?: string;
   disponible: boolean;
   empresa_id: number;
   plazoDuracionEstimadoMinutos: number;
@@ -38,6 +39,7 @@ interface EditProductProps {
   name: string;
   price: string;
   currency_id?: string;
+  imagen: string;
   duration: string;
   description: string;
   imageUrl?: string;
@@ -51,11 +53,14 @@ const EditProduct = ({
   price,
   // currency,
   currency_id,
+  imagen,
   duration,
   description,
   imageUrl,
   disponible,
   empresa_id,
+
+
 }: EditProductProps) => {
   const router = useRouter();
   const intl = useIntl(); // Usa useIntl para obtener la instancia de intl
@@ -64,6 +69,7 @@ const EditProduct = ({
     nombre: name,
     descripcion: description,
     disponible: disponible === "true" ? true : false,
+    imagen: imagen ?? "https://theme-assets.getbento.com/sensei/3023e76.sensei/assets/images/catering-item-placeholder-704x520.png",
     empresa_id: empresa_id ?? 0,
     currency_id: currency_id,
     plazoDuracionEstimadoMinutos: Number.parseInt(duration, 10) || 0,
@@ -74,25 +80,60 @@ const EditProduct = ({
   const [selectedImage, setSelectedImage] = useState<string | null>(
     imageUrl ?? null,
   );
+  const [uri, setUri] = useState("");
   const { showToast } = useToastContext();
+
+
+
+
+
+
+
   const pickImage = async () => {
+
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [1, 1],
       quality: 1,
     });
 
-    if (!result.canceled) {
-      setSelectedImage(result.assets[0].uri);
+    if (result.canceled) return;
+
+    const asset = result.assets?.[0];
+
+    if (!asset?.uri) {
+      console.error("Error: No se pudo obtener la URI de la imagen.");
+      return;
     }
+    console.log("se seleccionó bien la imagen...:", asset);
+    
+    setSelectedImage(asset.uri);
+    const file = {
+      uri: result.assets[0].uri,
+      type: result.assets[0].mimeType || "image/png", 
+      name: asset.fileName || `image_${Date.now()}.png`, 
+    };
+
+    const uploadResponse = await api.image.upload(file);
+
+    if (uploadResponse?.url) {
+      setFormData((prevData) => ({ ...prevData, imagen: uploadResponse.url }));
+    } else {
+      console.log("Error al subir la imagen: No se recibió una URL.");
+    }
+
   };
+
+  
+
+
 
   const handleSubmit = async () => {
     try {
-      const Prodnew = { ...formData };
+      const Prodnew = { ...formData, imagen: formData.imagen ?? "" };
       const res = await api.products.update(Prodnew.id, Prodnew);
-
+      alert("Product edited successfully");
       if (res.data.ok) {
         showToast({
           title: "Product edited successfully",

@@ -29,6 +29,7 @@ const AddProduct: React.FC = () => {
     nombre: "",
     precio: 0,
     empresa_id: 0,
+    imagen: "",
     descripcion: "",
     plazoDuracionEstimadoMinutos: 0,
     disponible: false,
@@ -38,19 +39,57 @@ const AddProduct: React.FC = () => {
   const currencies = user?.currencies;
   const [image, setImage] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false); // Estado para el spinner
+  const [uri, setUri] = useState("");
+  // const pickImage = async () => {
+  //   const result = await ImagePicker.launchImageLibraryAsync({
+  //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
+  //     allowsEditing: true,
+  //     aspect: [4, 3],
+  //     quality: 1,
+  //   });
 
+  //   if (!result.canceled) {
+  //     setImage(result.assets[0].uri);
+  //   }
+  // };
   const pickImage = async () => {
+
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [1, 1],
       quality: 1,
     });
 
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
+    if (result.canceled) return;
+
+    const asset = result.assets?.[0];
+
+    if (!asset?.uri) {
+      console.error("Error: No se pudo obtener la URI de la imagen.");
+      return;
     }
+    console.error("se seleccionó bien la imagen...:", asset);
+    setImage(asset.uri);
+
+    const file = {
+      uri: result.assets[0].uri,
+      type: result.assets[0].mimeType || "image/png", 
+      name: asset.fileName || `image_${Date.now()}.png`,
+    };
+
+    const uploadResponse = await api.image.upload(file);
+
+    if (uploadResponse?.url) {
+      setFormData((prevData) => ({ ...prevData, imagen: uploadResponse.url }));
+    } else {
+      console.log("Error al subir la imagen: No se recibió una URL.");
+    }
+
   };
+
+
+  console.log("formData_add_Prod", formData.imagen);
 
   const handleSubmit = () => {
     setLoading(true);

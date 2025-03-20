@@ -49,7 +49,7 @@ const Productos: React.FC = () => {
         const response = await api.products.getAll();
         const productData: ProductBDD[] = response;
         setProducts(productData);
-        console.log("productData", productData);
+        console.log("productData", productData[3]);
       } catch (error) {
         console.error(error);
       } finally {
@@ -82,6 +82,7 @@ const Productos: React.FC = () => {
     )
     .sort((a, b) => a.nombre.localeCompare(b.nombre, locale));
 
+    
   return (
     <View style={styles.container}>
       <View style={styles.searchBarContainer}>

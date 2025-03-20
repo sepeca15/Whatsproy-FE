@@ -62,6 +62,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     (itm: any) => itm?.id === productBDD?.currency_id,
   ) ?? { simbolo: "$", codigo: "USD" };
 
+
   const handleEdit = () => {
     router.push({
       pathname: "/(tabs)/editprod",
@@ -71,7 +72,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         price: productBDD.precio.toString(),
         currency: currenctCurrency?.simbolo,
         description: productBDD.descripcion,
-        imageUrl: product.imageUrl,
+        imageUrl: productBDD?.imagen || "https://theme-assets.getbento.com/sensei/3023e76.sensei/assets/images/catering-item-placeholder-704x520.png",
         duration: product?.duration,
         currency_id: productBDD?.currency_id,
         disponible: productBDD.disponible.toString(),
@@ -89,7 +90,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         currency: currenctCurrency?.simbolo,
         duration: productBDD.plazoDuracionEstimadoMinutos.toString(),
         description: productBDD.descripcion,
-        imageUrl: product.imageUrl,
+        imageUrl: productBDD?.imagen || "https://theme-assets.getbento.com/sensei/3023e76.sensei/assets/images/catering-item-placeholder-704x520.png",
         category: product.category,
         rating: product.rating,
         currency_id: productBDD?.currency_id,
@@ -228,7 +229,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </View>
       )}
       <View style={styles.card}>
-        <Image source={{ uri: product.imageUrl }} style={styles.image} />
+        <Image source={{ uri: productBDD?.imagen }} style={styles.image} />
 
         <View style={styles.content}>
           <View style={styles.header}>
