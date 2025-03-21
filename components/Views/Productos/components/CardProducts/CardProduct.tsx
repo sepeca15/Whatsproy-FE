@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -9,7 +9,10 @@ import {
   TouchableOpacity,
   Modal,
   Alert,
+  ActivityIndicator,
+  Animated,
 } from "react-native";
+import * as Animatable from 'react-native-animatable'; // Importamos la librería
 import Icon from "react-native-vector-icons/Feather";
 import { useRouter } from "expo-router";
 import { styles } from "./CardProdStyle";
@@ -57,11 +60,33 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const [localDisponible, setLocalDisponible] = useState(productBDD.disponible);
   const { showToast } = useToastContext();
   const { user } = useUser();
+
+  const [loading, setLoading] = useState(true);
+  const [imageKey, setImageKey] = useState(0); // Define state for imageKey
+  const animacionAgua = useRef(new Animated.Value(0)).current; // Define animacionAgua as an animated value
+  const scale = useRef(new Animated.Value(1)).current; // Define scale as an animated value
   const currencies = user?.currencies ?? [];
   const currenctCurrency = currencies?.find(
     (itm: any) => itm?.id === productBDD?.currency_id,
   ) ?? { simbolo: "$", codigo: "USD" };
 
+
+
+
+  useEffect(() => {
+    if (loading) {
+      // Inicia la animación del agua cuando el producto está cargando
+      Animated.timing(animacionAgua, {
+        toValue: 100,  // Llena el vaso al 100%
+        duration: 2000,  // 2 segundos de animación
+        useNativeDriver: false,
+      }).start();
+    }
+  }, [loading]);
+
+  const handleImageLoad = () => {
+    setLoading(false);
+  };
 
   const handleEdit = () => {
     router.push({
@@ -219,6 +244,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     );
   };
 
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(scale, { toValue: 1.1, duration: 700, useNativeDriver: true }),
+        Animated.timing(scale, { toValue: 1, duration: 700, useNativeDriver: true }),
+      ])
+    ).start();
+  }, []);
   return (
     <View style={styles.container}>
       {!localDisponible && (
@@ -229,7 +263,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </View>
       )}
       <View style={styles.card}>
-        <Image source={{ uri: productBDD?.imagen }} style={styles.image} />
+        
+        {loading && (
+          <Animated.View style={[styles.imagePlaceholder, { transform: [{ scale }] }]}/>
+        )}
+
+        <Image
+          source={{ uri: productBDD?.imagen }}
+          style={styles.image}
+          onLoad={handleImageLoad} 
+          
+        />
 
         <View style={styles.content}>
           <View style={styles.header}>
@@ -253,6 +297,27 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </Text>
         </View>
       </View>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
       <Modal
         animationType="fade"

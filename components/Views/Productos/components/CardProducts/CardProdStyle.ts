@@ -24,7 +24,6 @@ export const styles = StyleSheet.create({
     height: 100,
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
-
     marginRight: 15,
   },
 
@@ -92,5 +91,35 @@ export const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 12,
     fontWeight: "bold",
+  },
+  
+ 
+  imagenspiner: {
+    width: 100,  // Reduce el tamaño del contenedor
+    height: 100, // Mantiene la proporción
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255,499, 0.8)', // Opcional: Fondo con transparencia
+    borderRadius: 10, // Bordes redondeados
+    position: 'absolute', // Asegura que se superponga a la imagen si es necesario
+    top: '25%',
+    left: '7%',
+    transform: [{ translateX: -25 }, { translateY: -25 }], // Centra correctamente
+  },
+  spinner: {
+    width: 40, // Tamaño del spinner más pequeño
+    height: 40,
+  },
+  imagePlaceholder: {
+    width: 100,  // Reduce el tamaño del contenedor
+    height: 100, // Mantiene la proporción
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: "#ddd",
+    borderRadius: 10, // Bordes redondeados
+    position: 'absolute', // Asegura que se superponga a la imagen si es necesario
+    top: '0%',
+    left: '0%',
+    transform: [{ translateX: -25 }, { translateY: -25 }], // Centra correctamente
   },
 });
