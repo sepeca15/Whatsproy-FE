@@ -19,6 +19,7 @@ import { styles } from "./CardProdStyle";
 import api from "@/services/api/admin";
 import { useLocalization } from "@/app/LocalizationContext";
 import { FormattedMessage, useIntl } from "react-intl";
+import LottieView from "lottie-react-native";
 
 import type {
   Product,
@@ -54,40 +55,22 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onUpdateProduct,
 }) => {
   const router = useRouter();
-  const { locale } = useLocalization();
   const intl = useIntl();
   const [modalVisible, setModalVisible] = useState(false);
   const [localDisponible, setLocalDisponible] = useState(productBDD.disponible);
   const { showToast } = useToastContext();
   const { user } = useUser();
-
   const [loading, setLoading] = useState(true);
-  const [imageKey, setImageKey] = useState(0); // Define state for imageKey
-  const animacionAgua = useRef(new Animated.Value(0)).current; // Define animacionAgua as an animated value
-  const scale = useRef(new Animated.Value(1)).current; // Define scale as an animated value
   const currencies = user?.currencies ?? [];
   const currenctCurrency = currencies?.find(
     (itm: any) => itm?.id === productBDD?.currency_id,
   ) ?? { simbolo: "$", codigo: "USD" };
 
 
-
-
-  useEffect(() => {
-    if (loading) {
-      // Inicia la animación del agua cuando el producto está cargando
-      Animated.timing(animacionAgua, {
-        toValue: 100,  // Llena el vaso al 100%
-        duration: 2000,  // 2 segundos de animación
-        useNativeDriver: false,
-      }).start();
-    }
-  }, [loading]);
-
   const handleImageLoad = () => {
     setLoading(false);
   };
-
+  console.log("productBDD11111", productBDD);
   const handleEdit = () => {
     router.push({
       pathname: "/(tabs)/editprod",
@@ -97,8 +80,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         price: productBDD.precio.toString(),
         currency: currenctCurrency?.simbolo,
         description: productBDD.descripcion,
-        imageUrl: productBDD?.imagen || "https://theme-assets.getbento.com/sensei/3023e76.sensei/assets/images/catering-item-placeholder-704x520.png",
-        duration: product?.duration,
+        imageUrl: productBDD?.imagen || "../errorimage.png",
+        duration: productBDD.plazoDuracionEstimadoMinutos.toString(),
         currency_id: productBDD?.currency_id,
         disponible: productBDD.disponible.toString(),
       },
@@ -115,7 +98,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         currency: currenctCurrency?.simbolo,
         duration: productBDD.plazoDuracionEstimadoMinutos.toString(),
         description: productBDD.descripcion,
-        imageUrl: productBDD?.imagen || "https://theme-assets.getbento.com/sensei/3023e76.sensei/assets/images/catering-item-placeholder-704x520.png",
+        imageUrl: productBDD?.imagen || "../errorimage.png",
         category: product.category,
         rating: product.rating,
         currency_id: productBDD?.currency_id,
@@ -244,15 +227,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     );
   };
 
-
-  useEffect(() => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(scale, { toValue: 1.1, duration: 700, useNativeDriver: true }),
-        Animated.timing(scale, { toValue: 1, duration: 700, useNativeDriver: true }),
-      ])
-    ).start();
-  }, []);
   return (
     <View style={styles.container}>
       {!localDisponible && (
@@ -265,7 +239,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       <View style={styles.card}>
         
         {loading && (
-          <Animated.View style={[styles.imagePlaceholder, { transform: [{ scale }] }]}/>
+           <View style={styles.animationContainer}>
+           <LottieView
+             source={require("../../../../../constants/Animation-1742586349562.json")}
+             autoPlay
+             loop
+             style={styles.animation}
+           />
+         </View>
         )}
 
         <Image

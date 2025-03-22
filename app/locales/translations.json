@@ -239,8 +239,16 @@
     "profile.edit": "Edit profile",
     "sales.period.semanal": "Weekly",
     "sales.period.trimestral": "Quarterly",
-    "sales.period.anual": "Annual"
-    
+    "sales.period.anual": "Annual",
+    "nameRequired": "Name is required",
+    "currencyRequired": "Currency is required",
+    "descriptionRequired": "Description is required",
+    "durationRequired": "Duration is required",
+    "priceRequired": "Price is required",
+    "productEditedSuccess": "Product edited successfully",
+    "errorOccurred": "An error occurred",
+    "imageRequired": "Image is required"
+
   },
   "es": {
     "notAvailable": "No disponible",
@@ -482,7 +490,14 @@
     "profile.edit": "Editar perfil",
     "sales.period.semanal": "Semanal",
     "sales.period.trimestral": "Trimestral",
-    "sales.period.anual": "Anual"
-   
+    "sales.period.anual": "Anual",
+    "nameRequired": "Nombre es requerido",
+    "currencyRequired": "Moneda es requerida",
+    "descriptionRequired": "Descripción es requerida",
+    "durationRequired": "Duración es requerida",
+    "priceRequired": "Precio es requerido",
+    "productEditedSuccess": "Producto editado con éxito",
+    "errorOccurred": "Ocurrió un error",
+    "imageRequired": "Imagen es requerida"
   }
 }

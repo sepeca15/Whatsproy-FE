@@ -8,6 +8,10 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f5f5f5",
   },
+  disabled:{
+    opacity: 0.5,
+
+  },
   scrollContent: {
     flexGrow: 1,
     paddingBottom: 20,

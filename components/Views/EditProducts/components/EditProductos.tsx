@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator,
 } from "react-native";
 import { Colors } from "../../../../constants/Colors";
 import { Switch } from "react-native";
@@ -21,7 +22,8 @@ import api from "@/services/api/admin";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useToastContext } from "@/contexts/ToastContext";
 import { useUser } from "@/hooks/redux/useUser";
-
+import useValidateForm from "../../../../utils/validate_Products/useValidateForm"; 
+import useImagePicker from "../../../../utils/ImagePicker/useImagePicker"; 
 interface ProductFormData {
   id: number;
   nombre: string;
@@ -51,7 +53,6 @@ const EditProduct = ({
   id,
   name,
   price,
-  // currency,
   currency_id,
   imagen,
   duration,
@@ -63,17 +64,17 @@ const EditProduct = ({
 
 }: EditProductProps) => {
   const router = useRouter();
-  const intl = useIntl(); // Usa useIntl para obtener la instancia de intl
+  const intl = useIntl();
   const [formData, setFormData] = useState<ProductFormData>({
     id,
     nombre: name,
     descripcion: description,
-    disponible: disponible === "true" ? true : false,
-    imagen: imagen ?? "https://theme-assets.getbento.com/sensei/3023e76.sensei/assets/images/catering-item-placeholder-704x520.png",
+    disponible: disponible === "true",
+    imagen: imageUrl || "https://via.placeholder.com/150", // Imagen por defecto más clara
     empresa_id: empresa_id ?? 0,
-    currency_id: currency_id,
-    plazoDuracionEstimadoMinutos: Number.parseInt(duration, 10) || 0,
-    precio: Number.parseFloat(price) || 0,
+    currency_id: currency_id ?? null, // Evita conversiones innecesarias
+    plazoDuracionEstimadoMinutos: Number(duration) || 0,
+    precio: Number(price) || 0,
   });
   const { user } = useUser();
   const currencies = user?.currencies;
@@ -82,74 +83,61 @@ const EditProduct = ({
   );
   const [uri, setUri] = useState("");
   const { showToast } = useToastContext();
+  const [loading, setLoading] = useState(false);
 
 
+console.log("EditProductProps", formData);
+
+const validateForm = useValidateForm({
+  ...formData,
+  imagen: formData.imagen || "",
+});
 
 
-
-
-
-  const pickImage = async () => {
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
-
-    if (result.canceled) return;
-
-    const asset = result.assets?.[0];
-
-    if (!asset?.uri) {
-      console.error("Error: No se pudo obtener la URI de la imagen.");
-      return;
-    }
-    console.log("se seleccionó bien la imagen...:", asset);
-    
-    setSelectedImage(asset.uri);
-    const file = {
-      uri: result.assets[0].uri,
-      type: result.assets[0].mimeType || "image/png", 
-      name: asset.fileName || `image_${Date.now()}.png`, 
-    };
-
-    const uploadResponse = await api.image.upload(file);
-
-    if (uploadResponse?.url) {
-      setFormData((prevData) => ({ ...prevData, imagen: uploadResponse.url }));
-    } else {
-      console.log("Error al subir la imagen: No se recibió una URL.");
-    }
-
-  };
-
+const { pickImage } = useImagePicker({
+  toastErrorMessage: "Error al seleccionar la imagen",
+  toastSuccessMessage: "Imagen seleccionada exitosamente",
+  onImagePicked: (uri: string) => {
+    setSelectedImage(uri);
+  },
+});
   
 
+const handleImagePick = async () => {
+  // Llamamos a pickImage y pasamos setFormData como argumento
+  await pickImage(setFormData);
+};
 
 
-  const handleSubmit = async () => {
-    try {
-      const Prodnew = { ...formData, imagen: formData.imagen ?? "" };
-      const res = await api.products.update(Prodnew.id, Prodnew);
-      alert("Product edited successfully");
-      if (res.data.ok) {
-        showToast({
-          title: "Product edited successfully",
-          status: "success",
-        });
-      }
+ const handleSubmit = async () => {
+  if (!validateForm()) return;
 
-      router.back();
-    } catch (error: any) {
-      console.log(error);
+  setLoading(true);
+  try {
+    const res = await api.products.update(formData.id, {
+      ...formData,
+      imagen: formData.imagen || "",
+    });
+    if (res.data?.ok) {
       showToast({
-        title: error.response.data.message,
-        status: "error",
+        title: intl.formatMessage({ id: "productEditedSuccess" }),
+        status: "success",
       });
+      router.back();
+    } else {
+      throw new Error(res.data?.message || intl.formatMessage({ id: "errorOccurred" }));
     }
-  };
+  } catch (error: any) {
+    console.error("Error al actualizar producto:", error);
+    showToast({
+      title: error.message || intl.formatMessage({ id: "errorOccurred" }),
+      status: "error",
+    });
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <KeyboardAvoidingView
@@ -161,7 +149,7 @@ const EditProduct = ({
           <FormattedMessage id="editProduct" />
         </Text>
 
-        <TouchableOpacity style={styles.imageUpload} onPress={pickImage}>
+        <TouchableOpacity style={styles.imageUpload} onPress={handleImagePick}>
           {selectedImage ? (
             <Image
               source={{ uri: selectedImage }}
@@ -185,7 +173,7 @@ const EditProduct = ({
             style={styles.input}
             value={formData.nombre}
             onChangeText={(text) => setFormData({ ...formData, nombre: text })}
-            placeholder={intl.formatMessage({ id: "enterName" })} // Convierte FormattedMessage a cadena
+            placeholder={intl.formatMessage({ id: "enterName" })} 
           />
 
           <View style={styles.row}>
@@ -252,7 +240,7 @@ const EditProduct = ({
               });
             }}
             keyboardType="numeric"
-            placeholder={intl.formatMessage({ id: "enterDurationProd" })} // Convierte FormattedMessage a cadena
+            placeholder={intl.formatMessage({ id: "enterDurationProd" })}
           />
 
           <Text style={styles.label}>
@@ -264,7 +252,7 @@ const EditProduct = ({
             onChangeText={(text) =>
               setFormData({ ...formData, descripcion: text })
             }
-            placeholder={intl.formatMessage({ id: "enterDescriptionProd" })} // Convierte FormattedMessage a cadena
+            placeholder={intl.formatMessage({ id: "enterDescriptionProd" })}
             multiline
             numberOfLines={4}
           />
@@ -303,10 +291,18 @@ const EditProduct = ({
             </Text>
           </View>
 
-          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-            <Text style={styles.buttonText}>
-              <FormattedMessage id="update" />
-            </Text>
+          <TouchableOpacity
+            style={[styles.button, loading && styles.disabled]}
+            onPress={handleSubmit}
+            disabled={loading} 
+          >
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.buttonText}>
+                <FormattedMessage id="update" />
+              </Text>
+            )}
           </TouchableOpacity>
         </View>
       </ScrollView>

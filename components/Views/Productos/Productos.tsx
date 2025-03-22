@@ -102,7 +102,7 @@ const Productos: React.FC = () => {
         style={styles.scrollView}
       >
         {isInitialLoading ? (
-          Array.from({ length: 4 }).map((_, index) => (
+          Array.from({ length: 5 }).map((_, index) => (
             <ProductCardSkeleton key={index} />
           ))
         ) : (

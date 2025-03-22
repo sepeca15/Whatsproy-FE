@@ -8,23 +8,25 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-  ActivityIndicator, // Importa ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import * as ImagePicker from "expo-image-picker";
 import { AntDesign } from "@expo/vector-icons";
 import { styles } from "./AddProductStyle";
 import { useRouter } from "expo-router";
-import { availableCurrencies } from "@/hooks/dataProduct";
 import ProductoTypes from "../../../../services/api/products/types";
 import api from "@/services/api/admin";
-import { FormattedMessage } from "react-intl";
-import { useToastContext } from "@/contexts/ToastContext";
+import { FormattedMessage, useIntl } from "react-intl";
+import { useToastContext, } from "@/contexts/ToastContext";
 import { useUser } from "@/hooks/redux/useUser";
+import useValidateForm from "../../../../utils/validate_Products/useValidateForm";
+import useImagePicker from "../../../../utils/ImagePicker/useImagePicker";
 
 const AddProduct: React.FC = () => {
   const { showToast } = useToastContext();
   const router = useRouter();
+  const intl = useIntl();
   const [formData, setFormData] = useState<ProductoTypes>({
     nombre: "",
     precio: 0,
@@ -37,85 +39,60 @@ const AddProduct: React.FC = () => {
 
   const { user } = useUser();
   const currencies = user?.currencies;
-  const [image, setImage] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false); // Estado para el spinner
-  const [uri, setUri] = useState("");
-  // const pickImage = async () => {
-  //   const result = await ImagePicker.launchImageLibraryAsync({
-  //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
-  //     allowsEditing: true,
-  //     aspect: [4, 3],
-  //     quality: 1,
-  //   });
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  //   if (!result.canceled) {
-  //     setImage(result.assets[0].uri);
-  //   }
-  // };
-  const pickImage = async () => {
+  const [loading, setLoading] = useState<boolean>(false); 
 
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
-
-    if (result.canceled) return;
-
-    const asset = result.assets?.[0];
-
-    if (!asset?.uri) {
-      console.error("Error: No se pudo obtener la URI de la imagen.");
-      return;
-    }
-    console.error("se seleccionó bien la imagen...:", asset);
-    setImage(asset.uri);
-
-    const file = {
-      uri: result.assets[0].uri,
-      type: result.assets[0].mimeType || "image/png", 
-      name: asset.fileName || `image_${Date.now()}.png`,
-    };
-
-    const uploadResponse = await api.image.upload(file);
-
-    if (uploadResponse?.url) {
-      setFormData((prevData) => ({ ...prevData, imagen: uploadResponse.url }));
-    } else {
-      console.log("Error al subir la imagen: No se recibió una URL.");
-    }
-
+  const handleImagePicked = (uri: string) => {
+    setSelectedImage(uri);
   };
 
+  const validateForm = useValidateForm(formData);
 
-  console.log("formData_add_Prod", formData.imagen);
 
-  const handleSubmit = () => {
+  const { pickImage, setImageUri, imageUri } = useImagePicker({
+    toastErrorMessage: "Error al seleccionar la imagen",
+    toastSuccessMessage: "Imagen seleccionada exitosamente",
+    onImagePicked: handleImagePicked, // Aquí pasamos la función handleImagePicked
+  });
+
+ 
+
+ const handleImagePick = async () => {
+  pickImage(setFormData);
+  if (imageUri) {
+    setSelectedImage(imageUri); // Actualizamos selectedImage con la URI de la imagen
+  }
+};
+
+
+  const handleSubmit = async () => {
+    if (!validateForm()) {
+      return;
+    }
     setLoading(true);
-    const newProduct = { ...formData };
 
-    api.products
-      .create(newProduct)
-      .then((response) => {
-        showToast({
-          title: "Porudct created successfully",
-          status: "success",
-        });
-        setLoading(false);
-        router.push("/(tabs)/productos");
-      })
-      .catch((error) => {
-        showToast({
-          title: error.response.data.message || "Error creating product",
-          status: "error",
-        });
-        console.error(
-          "Error al crear el producto:",
-          error.response.data.message,
-        );
-        setLoading(false);
+
+
+    try {
+      const response = await api.products.create({
+        ...formData,
+        precio: parseFloat(formData.precio.toString()),
+        plazoDuracionEstimadoMinutos: parseFloat(formData.plazoDuracionEstimadoMinutos.toString()),
       });
+
+      showToast({ title: "Producto creado con éxito", status: "success" });
+      router.push("/(tabs)/productos");
+    } catch (error) {
+      console.error("Error al crear el producto:", error);
+      if (error instanceof Error && (error as any)?.response?.data?.message) {
+        showToast({ title: (error as any).response.data.message, status: "error" });
+      } else {
+        showToast({ title: "Error al crear el producto", status: "error" });
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -128,9 +105,9 @@ const AddProduct: React.FC = () => {
           <FormattedMessage id="addProduct" />
         </Text>
 
-        <TouchableOpacity style={styles.imageUpload} onPress={pickImage}>
-          {image ? (
-            <Image source={{ uri: image }} style={styles.uploadedImage} />
+        <TouchableOpacity style={styles.imageUpload} onPress={handleImagePick}>
+          {selectedImage ? (
+            <Image source={{ uri: selectedImage }} style={styles.uploadedImage} />
           ) : (
             <View style={styles.uploadPlaceholder}>
               <AntDesign name="camera" size={40} color="gray" />
@@ -159,9 +136,12 @@ const AddProduct: React.FC = () => {
               </Text>
               <TextInput
                 style={styles.input}
-                onChangeText={(text) =>
-                  setFormData({ ...formData, precio: parseFloat(text) })
-                }
+                onChangeText={(text) => {
+                  const value = parseFloat(text);
+                  if (!isNaN(value)) {
+                    setFormData((prev) => ({ ...prev, precio: value }));
+                  }
+                }}
                 keyboardType="numeric"
                 placeholder="0.00"
               />
@@ -201,6 +181,8 @@ const AddProduct: React.FC = () => {
                 plazoDuracionEstimadoMinutos: parseFloat(number),
               })
             }
+            keyboardAppearance="dark"
+            keyboardType="numeric"
             placeholder="Ej: 30 minutos"
           />
 

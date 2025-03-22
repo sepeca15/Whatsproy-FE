@@ -146,12 +146,12 @@ const Home: React.FC = () => {
             >
             Cerrar Sesión
             </CustomText>
-          <CustomText
+          {/* <CustomText
             style={styles.businessName}
             accessibilityLabel="Nombre del negocio"
           >
             Mi Negocio
-          </CustomText>
+          </CustomText> */}
           <CustomText style={styles.dateText} accessibilityLabel="Fecha actual">
             {new Date().toLocaleDateString("es-AR", {
               weekday: "long",
