@@ -60,9 +60,7 @@ const AddProduct: React.FC = () => {
 
  const handleImagePick = async () => {
   pickImage(setFormData);
-  if (imageUri) {
-    setSelectedImage(imageUri); // Actualizamos selectedImage con la URI de la imagen
-  }
+ 
 };
 
 
