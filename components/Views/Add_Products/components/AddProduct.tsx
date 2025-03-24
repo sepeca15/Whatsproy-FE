@@ -43,9 +43,6 @@ const AddProduct: React.FC = () => {
 
   const [loading, setLoading] = useState<boolean>(false); 
 
-  const handleImagePicked = (uri: string) => {
-    setSelectedImage(uri);
-  };
 
   const validateForm = useValidateForm(formData);
 
@@ -53,7 +50,9 @@ const AddProduct: React.FC = () => {
   const { pickImage, setImageUri, imageUri } = useImagePicker({
     toastErrorMessage: "Error al seleccionar la imagen",
     toastSuccessMessage: "Imagen seleccionada exitosamente",
-    onImagePicked: handleImagePicked, // Aquí pasamos la función handleImagePicked
+    onImagePicked: (uri: string) => {
+      setSelectedImage(uri);
+    },
   });
 
  

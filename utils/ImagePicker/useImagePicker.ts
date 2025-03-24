@@ -11,8 +11,7 @@ interface UseImagePickerProps {
 
 const useImagePicker = ({ toastErrorMessage, toastSuccessMessage, onImagePicked }: UseImagePickerProps) => {
   const { showToast } = useToastContext();
-const [imageUri, setImageUri] = useState<string | null>(null); // Renombramos a imageUri
-const [imageResp, setimageResp] = useState<string | null>(null); // Renombramos a imageUri
+const [imageUri, setImageUri] = useState<string | null>(null); 
   const pickImage = async (setFormData: Function) => {
     try {
       const result = await ImagePicker.launchImageLibraryAsync({

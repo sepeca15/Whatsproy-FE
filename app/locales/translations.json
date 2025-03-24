@@ -247,7 +247,8 @@
     "priceRequired": "Price is required",
     "productEditedSuccess": "Product edited successfully",
     "errorOccurred": "An error occurred",
-    "imageRequired": "Image is required"
+    "imageRequired": "Image is required",
+     "profile.logout": "Logout"
 
   },
   "es": {
@@ -498,6 +499,7 @@
     "priceRequired": "Precio es requerido",
     "productEditedSuccess": "Producto editado con éxito",
     "errorOccurred": "Ocurrió un error",
-    "imageRequired": "Imagen es requerida"
+    "imageRequired": "Imagen es requerida",
+    "profile.logout": "Cerrar sesión"
   }
 }
