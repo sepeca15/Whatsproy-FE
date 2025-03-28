@@ -50,8 +50,8 @@ const AddProduct: React.FC = () => {
   const { pickImage, setImageUri, imageUri } = useImagePicker({
     toastErrorMessage: "Error al seleccionar la imagen",
     toastSuccessMessage: "Imagen seleccionada exitosamente",
-    onImagePicked: (uri: string) => {
-      setSelectedImage(uri);
+    onImagePicked: ({ localUri }) => {
+      setSelectedImage(localUri.toString())   ;
     },
   });
 

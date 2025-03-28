@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { Colors } from "../../../../constants/Colors";
-import { Switch } from "react-native";
+import { Switch, Animated } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import * as ImagePicker from "expo-image-picker";
 import { AntDesign } from "@expo/vector-icons";
@@ -22,8 +22,9 @@ import api from "@/services/api/admin";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useToastContext } from "@/contexts/ToastContext";
 import { useUser } from "@/hooks/redux/useUser";
-import useValidateForm from "../../../../utils/validate_Products/useValidateForm"; 
-import useImagePicker from "../../../../utils/ImagePicker/useImagePicker"; 
+import useValidateForm from "../../../../utils/validate_Products/useValidateForm";
+import useImagePicker from "../../../../utils/ImagePicker/useImagePicker";
+
 interface ProductFormData {
   id: number;
   nombre: string;
@@ -81,62 +82,101 @@ const EditProduct = ({
   const [selectedImage, setSelectedImage] = useState<string | null>(
     imageUrl ?? null,
   );
+  const [loadingimage, setLoadingimage] = useState(false);
   const [uri, setUri] = useState("");
   const { showToast } = useToastContext();
   const [loading, setLoading] = useState(false);
 
 
-console.log("EditProductProps", formData);
-
-const validateForm = useValidateForm({
-  ...formData,
-  imagen: formData.imagen || "",
-});
 
 
-const { pickImage } = useImagePicker({
-  toastErrorMessage: "Error al seleccionar la imagen",
-  toastSuccessMessage: "Imagen seleccionada exitosamente",
-  onImagePicked: (uri: string) => {
-    setSelectedImage(uri);
-  },
-});
-  
 
-const handleImagePick = async () => {
-  // Llamamos a pickImage y pasamos setFormData como argumento
-  await pickImage(setFormData);
-};
+  const validateForm = useValidateForm({
+    ...formData,
+    imagen: formData.imagen || "",
 
-
- const handleSubmit = async () => {
-  if (!validateForm()) return;
-
-  setLoading(true);
-  try {
-    const res = await api.products.update(formData.id, {
-      ...formData,
-      imagen: formData.imagen || "",
-    });
-    if (res.data?.ok) {
-      showToast({
-        title: intl.formatMessage({ id: "productEditedSuccess" }),
-        status: "success",
-      });
-      router.back();
-    } else {
-      throw new Error(res.data?.message || intl.formatMessage({ id: "errorOccurred" }));
-    }
-  } catch (error: any) {
-    console.error("Error al actualizar producto:", error);
-    showToast({
-      title: error.message || intl.formatMessage({ id: "errorOccurred" }),
-      status: "error",
-    });
-  } finally {
-    setLoading(false);
   }
-};
+  );
+
+
+  const { pickImage } = useImagePicker({
+    toastErrorMessage: "Error al seleccionar la imagen",
+    onImagePicked: async ({ localUri, apiUrl }) => {
+      // Note: Don't set loadingimage here as it's now handled in handleImagePick
+      if (localUri) {
+        setSelectedImage(localUri.toString());
+      }
+      if (apiUrl) {
+        setFormData((prevData) => ({
+          ...prevData,
+          imagen: apiUrl,
+        }));
+      }
+    },
+  });
+
+  const handleImagePick = async () => {
+    try {
+      setLoadingimage(true);
+      // Await the pickImage function to ensure it completes
+      await pickImage(setFormData);
+      console.log("Imagen seleccionada:", formData);
+    } catch (error) {
+      console.error("Error selecting image:", error);
+      showToast({
+        title: intl.formatMessage({ id: "errorSelectingImage" }),
+        status: "error",
+      });
+    } finally {
+      // Ensure loadingimage is set to false when the process completes
+      setLoadingimage(false);
+    }
+  };
+
+
+
+
+  const handleSubmit = async () => {
+    if (!validateForm()) return;
+
+    if (loadingimage) {
+      showToast({
+        title: intl.formatMessage({ id: "waitForImageUpload" }),
+        status: "warning",
+      });
+      return;
+    }
+    setLoading(true);
+
+
+
+    try {
+      const updatedFormData = {
+        ...formData,
+        imagen: (formData.imagen || "") // Ensure imagen is always a string
+      };
+
+      const res = await api.products.update(formData.id, updatedFormData);
+
+      if (res.data?.ok) {
+        showToast({
+          title: intl.formatMessage({ id: "productEditedSuccess" }),
+          status: "success",
+        });
+        router.back();
+      } else {
+        throw new Error(res.data?.message || intl.formatMessage({ id: "errorOccurred" }));
+      }
+    } catch (error: any) {
+      console.error("Error al actualizar producto:", error);
+      showToast({
+        title: error.message || intl.formatMessage({ id: "errorOccurred" }),
+        status: "error",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
   return (
@@ -152,7 +192,7 @@ const handleImagePick = async () => {
         <TouchableOpacity style={styles.imageUpload} onPress={handleImagePick}>
           {selectedImage ? (
             <Image
-              source={{ uri: selectedImage }}
+              source={{ uri: selectedImage || imageUrl }}
               style={styles.uploadedImage}
             />
           ) : (
@@ -173,7 +213,7 @@ const handleImagePick = async () => {
             style={styles.input}
             value={formData.nombre}
             onChangeText={(text) => setFormData({ ...formData, nombre: text })}
-            placeholder={intl.formatMessage({ id: "enterName" })} 
+            placeholder={intl.formatMessage({ id: "enterName" })}
           />
 
           <View style={styles.row}>
@@ -291,12 +331,13 @@ const handleImagePick = async () => {
             </Text>
           </View>
 
+
           <TouchableOpacity
-            style={[styles.button, loading && styles.disabled]}
+            style={[styles.button, (loading || loadingimage) && styles.disabled]}
             onPress={handleSubmit}
-            disabled={loading} 
+            disabled={loading || loadingimage}
           >
-            {loading ? (
+            {loading || loadingimage ? (
               <ActivityIndicator color="#fff" />
             ) : (
               <Text style={styles.buttonText}>

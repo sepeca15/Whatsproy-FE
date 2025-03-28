@@ -4,15 +4,16 @@ import { useToastContext } from "@/contexts/ToastContext";
 import api from "@/services/api/admin";
 
 interface UseImagePickerProps {
-    toastErrorMessage: string;
-    toastSuccessMessage: string;
-    onImagePicked: (uri: string) => void; 
-  }
-
-const useImagePicker = ({ toastErrorMessage, toastSuccessMessage, onImagePicked }: UseImagePickerProps) => {
+  toastErrorMessage: string;
+ 
+  onImagePicked: (data: { localUri?: string; apiUrl?: string }) => void;
+}
+const useImagePicker = ({ toastErrorMessage, onImagePicked }: UseImagePickerProps) => {
   const { showToast } = useToastContext();
-const [imageUri, setImageUri] = useState<string | null>(null); 
-  const pickImage = async (setFormData: Function) => {
+  const [imageUri, setImageUri] = useState<string | null>(null);
+  const [imageApiUrl, setImageApiUrl] = useState<string | null>(null);
+
+  const pickImage = async (setFormData?: Function) => {
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -21,18 +22,28 @@ const [imageUri, setImageUri] = useState<string | null>(null);
         quality: 1,
       });
 
-      if (result.canceled) return;
+      if (result.canceled || !result.assets?.length) return;
 
-      const asset = result.assets?.[0];
-
-      if (!asset?.uri) {
-        console.error("Error: No se pudo obtener la URI de la imagen.");
+      const asset = result.assets[0];
+      console.log("Imagen seleccionada:", asset.uri);
+      if (!asset.uri) {
         showToast({ title: toastErrorMessage, status: "error" });
         return;
       }
-      onImagePicked(asset.uri);
-      setImageUri(asset.uri);
 
+
+      setImageUri(asset.uri);
+      onImagePicked({ localUri: asset.uri });
+
+      await uploadImage(asset, setFormData);
+    } catch (error) {
+      console.error("Error en pickImage:", error);
+      showToast({ title: toastErrorMessage, status: "error" });
+    }
+  };
+
+  const uploadImage = async (asset: any, setFormData?: Function) => {
+    try {
       const file = {
         uri: asset.uri,
         type: asset.mimeType || "image/png",
@@ -42,15 +53,21 @@ const [imageUri, setImageUri] = useState<string | null>(null);
       const uploadResponse = await api.image.upload(file);
 
       if (uploadResponse?.url) {
-        setFormData((prevData: Record<string, any>) => ({ ...prevData, imagen: uploadResponse.url }));
-        
-        showToast({ title: toastSuccessMessage, status: "success" });
+        setFormData?.((prevData: Record<string, any>) => ({
+          ...prevData,
+          imagen: uploadResponse.url,
+
+        }));
+
+      
+        setImageApiUrl(uploadResponse.url);
+        onImagePicked({ apiUrl:  await uploadResponse.url });
       } else {
         console.error("Error al subir la imagen: No se recibió una URL.");
         showToast({ title: toastErrorMessage, status: "error" });
       }
     } catch (error) {
-      console.error("Error en pickImage:", error);
+      console.error("Error en uploadImage:", error);
       showToast({ title: toastErrorMessage, status: "error" });
     }
   };

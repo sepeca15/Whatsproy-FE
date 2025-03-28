@@ -70,7 +70,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const handleImageLoad = () => {
     setLoading(false);
   };
-  console.log("productBDD11111", productBDD);
+  
   const handleEdit = () => {
     router.push({
       pathname: "/(tabs)/editprod",
