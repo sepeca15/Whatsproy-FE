@@ -249,7 +249,8 @@
     "errorOccurred": "An error occurred",
     "imageRequired": "Image is required",
     "profile.logout": "Logout",
-    "waitForImageUpload": "Waiting for image upload"
+    "waitForImageUpload": "Waiting for image upload",
+    "productDeleted": "Product deleted successfully"
   },
   "es": {
     "notAvailable": "No disponible",
@@ -501,6 +502,7 @@
     "errorOccurred": "Ocurrió un error",
     "imageRequired": "Imagen es requerida",
     "profile.logout": "Cerrar sesión",
-    "waitForImageUpload": "Esperando carga de imagen"
+    "waitForImageUpload": "Esperando carga de imagen",
+    "productDeleted": "Producto eliminado con éxito"
   }
 }

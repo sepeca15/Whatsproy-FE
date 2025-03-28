@@ -209,7 +209,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               if (resp.data.ok) {
                 onUpdateProduct();
                 showToast({
-                  title: "Product created successfully",
+                  title: intl.formatMessage({
+                  id: "productDeleted",
+                  defaultMessage: "Producto eliminado con éxito",
+                  }),
                   status: "success",
                 });
               }
