@@ -24,6 +24,7 @@ import { useToastContext } from "@/contexts/ToastContext";
 import { useUser } from "@/hooks/redux/useUser";
 import useValidateForm from "../../../../utils/validate_Products/useValidateForm";
 import useImagePicker from "../../../../utils/ImagePicker/useImagePicker";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 interface ProductFormData {
   id: number;
@@ -180,10 +181,13 @@ const EditProduct = ({
 
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
+    <KeyboardAwareScrollView
+         style={styles.container}
+         resetScrollToCoords={{ x: 0, y: 0 }}
+         scrollEnabled={true}
+         enableOnAndroid={true} // Específico para Android
+         extraScrollHeight={Platform.OS === 'ios' ? 20 : 50} // Ajuste fino en el desplazamiento
+       >
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Text style={styles.title}>
           <FormattedMessage id="editProduct" />
@@ -347,7 +351,7 @@ const EditProduct = ({
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </KeyboardAvoidingView>
+    </KeyboardAwareScrollView>
   );
 };
 

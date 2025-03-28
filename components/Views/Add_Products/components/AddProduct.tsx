@@ -19,6 +19,7 @@ import ProductoTypes from "../../../../services/api/products/types";
 import api from "@/services/api/admin";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useToastContext, } from "@/contexts/ToastContext";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useUser } from "@/hooks/redux/useUser";
 import useValidateForm from "../../../../utils/validate_Products/useValidateForm";
 import useImagePicker from "../../../../utils/ImagePicker/useImagePicker";
@@ -41,7 +42,7 @@ const AddProduct: React.FC = () => {
   const currencies = user?.currencies;
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  const [loading, setLoading] = useState<boolean>(false); 
+  const [loading, setLoading] = useState<boolean>(false);
 
 
   const validateForm = useValidateForm(formData);
@@ -49,18 +50,21 @@ const AddProduct: React.FC = () => {
 
   const { pickImage, setImageUri, imageUri } = useImagePicker({
     toastErrorMessage: "Error al seleccionar la imagen",
-    toastSuccessMessage: "Imagen seleccionada exitosamente",
+
     onImagePicked: ({ localUri }) => {
-      setSelectedImage(localUri.toString())   ;
+      if (localUri) {
+        setSelectedImage(localUri);
+
+      }
     },
   });
 
- 
 
- const handleImagePick = async () => {
-  pickImage(setFormData);
- 
-};
+
+  const handleImagePick = async () => {
+    pickImage(setFormData);
+
+  };
 
 
   const handleSubmit = async () => {
@@ -93,9 +97,12 @@ const AddProduct: React.FC = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    <KeyboardAwareScrollView
       style={styles.container}
+      resetScrollToCoords={{ x: 0, y: 0 }}
+      scrollEnabled={true}
+      enableOnAndroid={true} // Específico para Android
+      extraScrollHeight={Platform.OS === 'ios' ? 20 : 50} // Ajuste fino en el desplazamiento
     >
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Text style={styles.title}>
@@ -151,6 +158,7 @@ const AddProduct: React.FC = () => {
               <View style={styles.pickerContainer}>
                 <Picker
                   style={styles.picker}
+                  selectedValue={formData.currency_id}
                   onValueChange={(value) => {
                     setFormData({ ...formData, currency_id: value });
                   }}
@@ -211,7 +219,7 @@ const AddProduct: React.FC = () => {
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </KeyboardAvoidingView>
+    </KeyboardAwareScrollView>
   );
 };
 

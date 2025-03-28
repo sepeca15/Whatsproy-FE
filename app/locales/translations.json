@@ -250,7 +250,8 @@
     "imageRequired": "Image is required",
     "profile.logout": "Logout",
     "waitForImageUpload": "Waiting for image upload",
-    "productDeleted": "Product deleted successfully"
+    "productDeleted": "Product deleted successfully",
+    "deletingProduct": "Deleting product..."
   },
   "es": {
     "notAvailable": "No disponible",
@@ -503,6 +504,7 @@
     "imageRequired": "Imagen es requerida",
     "profile.logout": "Cerrar sesión",
     "waitForImageUpload": "Esperando carga de imagen",
-    "productDeleted": "Producto eliminado con éxito"
+    "productDeleted": "Producto eliminado con éxito",
+    "deletingProduct": "Eliminando producto..."
   }
 }

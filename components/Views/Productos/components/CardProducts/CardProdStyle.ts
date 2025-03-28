@@ -13,6 +13,27 @@ export const styles = StyleSheet.create({
     elevation: 3,
     marginVertical: 8,
     padding: 5,
+    
+  },
+  iconConteiner: {
+    
+    backgroundColor: "#fff",
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    marginVertical: 8,
+    padding: 5,
+   
+    height: 100,
+  },
+  icon: {
+    width: "100%",
+    height: "100%",
+    marginRight: 10,
   },
   card: {
     flexDirection: "row",
