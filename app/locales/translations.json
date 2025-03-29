@@ -251,7 +251,13 @@
     "profile.logout": "Logout",
     "waitForImageUpload": "Waiting for image upload",
     "productDeleted": "Product deleted successfully",
-    "deletingProduct": "Deleting product..."
+    "deletingProduct": "Deleting product...",
+    "noProductsFound": "No products found",
+    "noProductsInCategory": "No products in this category",
+    "noProductsMatchSearch": "No products match your search",
+    "addYourFirstProduct": "Add your first product by clicking the + button",
+    "allCategories": "All",
+    "deletedProduct.modal.delete.card": "Product deleted"
   },
   "es": {
     "notAvailable": "No disponible",
@@ -505,6 +511,13 @@
     "profile.logout": "Cerrar sesión",
     "waitForImageUpload": "Esperando carga de imagen",
     "productDeleted": "Producto eliminado con éxito",
-    "deletingProduct": "Eliminando producto..."
+    "deletingProduct": "Eliminando producto...",
+    "noProductsFound": "No se encontraron productos",
+    "noProductsInCategory": "No hay productos en esta categoría",
+    "noProductsMatchSearch": "No hay productos que coincidan con tu búsqueda",
+    "addYourFirstProduct": "Agrega tu primer producto haciendo click en el botón (+)",
+    "allCategories": "Todas",
+    "deletedProduct.modal.delete.card": "Producto eliminado"
+    
   }
 }

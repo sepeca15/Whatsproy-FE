@@ -45,7 +45,10 @@ const Productos: React.FC = () => {
   const { locale } = useLocalization();
   const intl = useIntl();
   const { showToast } = useToastContext();
-  
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [isDeleting, setIsDeleting] = useState(true);
+
   // New state for delete modal
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deletingProductId, setDeletingProductId] = useState<number | null>(null);
@@ -79,49 +82,58 @@ const Productos: React.FC = () => {
     },
     [fadeAnim],
   );
+  useEffect(() => {
+    // Extract unique categories from products
+    if (ProductsBD.length > 0) {
+      const uniqueCategories = Array.from(
+        new Set(ProductsBD.map((product) => product.categoria ? product.categoria : 'food')),
+      );
+      setCategories(uniqueCategories);
+    }
+  }, [ProductsBD]);
+
 
   useEffect(() => {
     allProduct(true);
   }, [allProduct]);
 
-  // Handle product deletion request from child component
   const handleDeleteRequest = useCallback((productId: number) => {
     setDeletingProductId(productId);
     setShowDeleteModal(true);
-    
-    // Perform the actual deletion after animation delay
+    setIsDeleting(true); // Al iniciar, muestra la animación de "eliminando"
+
     setTimeout(async () => {
       try {
         const resp = await api.products.delete(productId);
         if (resp.data.ok) {
-          // Keep the animation visible for a moment after successful deletion
+
+          setIsDeleting(false); // Cambia la animación a "eliminado con éxito"
+
           setTimeout(() => {
             setShowDeleteModal(false);
             setDeletingProductId(null);
-           
             allProduct(false);
-          }, 100);
-          
-         
+          }, 1500); // Espera 1.5s con la animación de éxito antes de cerrar
         }
       } catch (error: any) {
         setShowDeleteModal(false);
         setDeletingProductId(null);
-        
+
         showToast({
           title: error.response?.data?.message || "Error deleting product",
           status: "error",
         });
       }
-    }, 1500);
+    }, 2700);
   }, [allProduct, intl, showToast]);
+
 
   // Render the delete modal
   const renderDeleteModal = () => {
     if (!showDeleteModal) return null;
-    
+
     return (
-      <View 
+      <View
         style={{
           position: 'absolute',
           top: 0,
@@ -134,8 +146,8 @@ const Productos: React.FC = () => {
           zIndex: 50,
         }}
       >
-        <Animatable.View 
-          animation="zoomIn" 
+        <Animatable.View
+          animation="zoomIn"
           duration={400}
           style={{
             width: 300,
@@ -146,10 +158,7 @@ const Productos: React.FC = () => {
             alignItems: 'center',
             padding: 20,
             shadowColor: "#000",
-            shadowOffset: {
-              width: 0,
-              height: 4,
-            },
+            shadowOffset: { width: 0, height: 4 },
             shadowOpacity: 0.3,
             shadowRadius: 4.65,
             elevation: 8,
@@ -157,24 +166,35 @@ const Productos: React.FC = () => {
         >
           <LottieView
             ref={deleteAnimationRef}
-            source={require("../../../constants/Animation-3-trash-robot.json")}
+            source={isDeleting
+              ? require("../../../constants/Animation-black-trash-robot.json") // Animación mientras se elimina
+              : require("../../../constants/Animation-succes-deleted.json") // Animación de éxito
+            }
             autoPlay
-            loop={true}
-            style={{ width: 150, height: 200, position: 'absolute' }}
+            loop={!isDeleting} // Solo se repite si está eliminando
+            style={{
+              width: isDeleting ? 150 : 200,
+              height: isDeleting ? 200 : 150,
+              position: 'absolute',
+              top: isDeleting ? 0 : 0,
+            }}
           />
-          <Animatable.Text 
-            animation="pulse" 
-            iterationCount="infinite" 
-            duration={1500}
-            style={{ 
-              marginTop: 120, 
-              fontWeight: 'bold', 
+          <Animatable.Text
+            animation="pulse"
+            iterationCount="infinite"
+            duration={2000}
+            style={{
+              marginTop: 120,
+              fontWeight: 'bold',
               fontSize: 12,
               color: Colors.light.primary,
-              textAlign: 'center' 
+              textAlign: 'center'
             }}
           >
-            <FormattedMessage id="deletingProduct" defaultMessage="Deleting product..." />
+            <FormattedMessage
+              id={isDeleting ? "deletingProduct" : "deletedProduct.modal.delete.card"}
+              defaultMessage={isDeleting ? "Deleting product..." : "Product deleted!"}
+            />
           </Animatable.Text>
         </Animatable.View>
       </View>
@@ -187,9 +207,13 @@ const Productos: React.FC = () => {
 
   const filteredProducts = (ProductsBD ?? [])
     .filter((product) =>
-      product.nombre.toLowerCase().includes(searchTerm.toLowerCase()),
+      product.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .filter((product) =>
+      selectedCategory ? product.categoria === selectedCategory : true
     )
     .sort((a, b) => a.nombre.localeCompare(b.nombre, locale));
+
 
   return (
     <View style={styles.container}>
@@ -206,6 +230,48 @@ const Productos: React.FC = () => {
           onChangeText={(text) => setSearchTerm(text)}
         />
       </View>
+      {/* <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.categoryContainer}
+      >
+        <TouchableOpacity
+          style={[
+            styles.categoryChip,
+            !selectedCategory && styles.selectedCategoryChip
+          ]}
+          onPress={() => setSelectedCategory(null)}
+        >
+          <Text
+            style={[
+              styles.categoryText,
+              !selectedCategory && styles.selectedCategoryText
+            ]}
+          >
+            <FormattedMessage id="allCategories" defaultMessage="All" />
+          </Text>
+        </TouchableOpacity>
+
+        {categories.map((category) => (
+          <TouchableOpacity
+            key={category}
+            style={[
+              styles.categoryChip,
+              selectedCategory === category && styles.selectedCategoryChip
+            ]}
+            onPress={() => setSelectedCategory(category)}
+          >
+            <Text
+              style={[
+                styles.categoryText,
+                selectedCategory === category && styles.selectedCategoryText
+              ]}
+            >
+              {category}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView> */}
       <ScrollView
         contentContainerStyle={styles.scrollViewContent}
         style={styles.scrollView}
@@ -214,7 +280,7 @@ const Productos: React.FC = () => {
           Array.from({ length: 5 }).map((_, index) => (
             <ProductCardSkeleton key={index} />
           ))
-        ) : (
+        ) : filteredProducts.length > 0 ? (
           <Animated.View style={{ opacity: fadeAnim }}>
             {filteredProducts.map((product) => (
               <ProductCard
@@ -232,6 +298,42 @@ const Productos: React.FC = () => {
               />
             ))}
           </Animated.View>
+        ) : (
+          <Animatable.View animation="fadeIn" style={styles.emptyStateContainer}>
+            <LottieView
+              source={
+                selectedCategory
+                  ? require("../../../constants/Animation-fantasma-empty.json") // Para categoría vacía
+                  : searchTerm
+                    ? require("../../../constants/Animation-screach-empty.json") // Para búsqueda vacía
+                    : require("../../../constants/Animation-empty-box.json") // Para sin productos
+              }
+              autoPlay
+              loop
+              style={styles.emptyStateAnimation}
+            />
+            <Text style={styles.emptyStateTitle}>
+              <FormattedMessage id="noProductsFound" defaultMessage="No hay productos" />
+            </Text>
+            <Text style={styles.emptyStateSubtitle}>
+              {selectedCategory ? (
+                <FormattedMessage
+                  id="noProductsInCategory"
+                  defaultMessage="No products in this category"
+                />
+              ) : searchTerm ? (
+                <FormattedMessage
+                  id="noProductsMatchSearch"
+                  defaultMessage="No products match your search"
+                />
+              ) : (
+                <FormattedMessage
+                  id="addYourFirstProduct"
+                  defaultMessage="Add your first product by clicking the + button"
+                />
+              )}
+            </Text>
+          </Animatable.View>
         )}
       </ScrollView>
       <View style={styles.buttonContainer}>

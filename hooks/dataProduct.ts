@@ -22,6 +22,7 @@ interface ProductBDD {
   plazoDuracionEstimadoMinutos: number;
   precio: number;
   currency_id?: any;
+  categoria: string;
 }
 
 interface SalesData {
