@@ -77,7 +77,9 @@
     "react-redux": "^9.1.2",
     "recharts": "^2.15.0",
     "socket.io-client": "^4.8.1",
-    "victory-native": "^41.16.1"
+    "victory-native": "^41.16.1",
+    "expo-notifications": "~0.29.14",
+    "expo-device": "~7.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

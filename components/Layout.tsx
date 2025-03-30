@@ -9,6 +9,7 @@ import { Colors } from "@/constants/Colors";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { useUser } from "@/hooks/redux/useUser";
 import { TipoServicio } from "@/enums/TipoServicio";
+import { usePushNotifications } from "@/hooks/usePushNotification";
 
 const Pages = (empresaType: number) => {
   return [
@@ -75,6 +76,15 @@ const Layout = ({ children }: any) => {
   const { user } = useUser();
   const [selected, setSelected] = React.useState<string>("");
   const pages = Pages(user.tipo_servicio);
+
+  const pushToken = usePushNotifications();
+
+  React.useEffect(() => {
+    if (user?.id) {
+      console.log("pushToken", pushToken)
+    }
+  }, [pushToken])
+
 
   React.useEffect(() => {
     const existRouter = pages.find(

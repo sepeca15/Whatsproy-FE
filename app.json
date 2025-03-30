@@ -16,14 +16,22 @@
     },
     "ios": {
       "supportsTablet": true,
-      "newArchEnabled": true
+      "newArchEnabled": true,
+      "config": {
+        "usesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "newArchEnabled": true
+      "googleServicesFile": "./assets/google-services.json",
+      "newArchEnabled": true,
+      "permissions": [
+        "NOTIFICATIONS"
+      ],
+      "package": "com.whatsproy"
     },
     "web": {
       "bundler": "metro",

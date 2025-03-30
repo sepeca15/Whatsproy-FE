@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "537085327454",
+    "project_id": "whatsproy-f8c2e",
+    "storage_bucket": "whatsproy-f8c2e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:537085327454:android:295262a39acdbe78411ccf",
+        "android_client_info": {
+          "package_name": "com.whatsproy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIZZ9aTjzIUIPzSsHyO56wck-hk98bmuQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:537085327454:android:26abd4d2336c1acb411ccf",
+        "android_client_info": {
+          "package_name": "whats.proy1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIZZ9aTjzIUIPzSsHyO56wck-hk98bmuQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
