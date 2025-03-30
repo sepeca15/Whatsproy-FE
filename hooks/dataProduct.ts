@@ -16,11 +16,13 @@ interface ProductBDD {
   id: number;
   nombre: string;
   descripcion: string;
+  imagen: string;
   disponible: boolean;
   empresa_id: number;
   plazoDuracionEstimadoMinutos: number;
   precio: number;
   currency_id?: any;
+  categoria: string;
 }
 
 interface SalesData {

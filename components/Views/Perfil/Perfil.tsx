@@ -97,6 +97,7 @@ const Perfil: React.FC = () => {
       const res = await api.perfil.getResumenVentas();
 
       setResumenVentas(res);
+      
     } catch (error) {
       console.error("Error fetching profile data:", error);
     }
@@ -123,7 +124,7 @@ const Perfil: React.FC = () => {
     fetchUser();
   }, []);
 
-  console.log("dataaaaa", resumenVentas);
+  console.log("dataaaaa", salesPeriod);
 
   useEffect(() => {
     if (resumenVentas) {
@@ -258,6 +259,8 @@ const Perfil: React.FC = () => {
               },
             ]}
           />
+
+
           {/* <ProfileStats completionPercentage={75} totalVisits={user?.id_empresa || 28} streak={5} /> */}
           <SubscriptionInfo
             plan={profileData?.plan || "Free"}

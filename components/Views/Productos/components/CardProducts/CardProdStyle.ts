@@ -13,6 +13,27 @@ export const styles = StyleSheet.create({
     elevation: 3,
     marginVertical: 8,
     padding: 5,
+    
+  },
+  iconConteiner: {
+    
+    backgroundColor: "#fff",
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    marginVertical: 8,
+    padding: 5,
+   
+    height: 100,
+  },
+  icon: {
+    width: "100%",
+    height: "100%",
+    marginRight: 10,
   },
   card: {
     flexDirection: "row",
@@ -20,12 +41,11 @@ export const styles = StyleSheet.create({
     height: 100,
   },
   image: {
-    width: 100,
-    height: 100,
+    width: '30%',
+    height: '100%',
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
-
-    marginRight: 15,
+    marginRight: '5%',
   },
 
   content: {
@@ -80,17 +100,66 @@ export const styles = StyleSheet.create({
   },
   disabledLabel: {
     position: "absolute",
-    top: 40,
-    left: "2%",
+    top: "45%",
+    left: "1.3%",
     backgroundColor: "rgba(255, 0, 0, 0.7)",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 4,
     zIndex: 1,
+    width:'30%',
+    alignItems: 'center',
+    
   },
   disabledText: {
     color: "#fff",
     fontSize: 12,
     fontWeight: "bold",
+  },
+  
+ 
+  imagenspiner: {
+    width: 100,  // Reduce el tamaño del contenedor
+    height: 100, // Mantiene la proporción
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255,499, 0.8)', // Opcional: Fondo con transparencia
+    borderRadius: 10, // Bordes redondeados
+    position: 'absolute', // Asegura que se superponga a la imagen si es necesario
+    top: '25%',
+    left: '7%',
+    transform: [{ translateX: -25 }, { translateY: -25 }], // Centra correctamente
+  },
+  spinner: {
+    width: 40, // Tamaño del spinner más pequeño
+    height: 40,
+  },
+  // imagePlaceholder: {
+  //   width: 100,  // Reduce el tamaño del contenedor
+  //   height: 100, // Mantiene la proporción
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   backgroundColor: "#ddd",
+  //   borderRadius: 10, // Bordes redondeados
+  //   position: 'absolute', // Asegura que se superponga a la imagen si es necesario
+  //   top: '0%',
+  //   left: '0%',
+  //   transform: [{ translateX: -25 }, { translateY: -25 }], // Centra correctamente
+  // },
+  animationContainer: {
+    width: 100,  
+    height: 100, 
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255,499, 0.8)',
+    borderRadius: 10, 
+    position: 'absolute', 
+    top: '25%',
+    left: '7%',
+    transform: [{ translateX: -25 }, { translateY: -25 }],
+  },
+  animation: {
+    width: 100,
+    height: 100,
   },
 });

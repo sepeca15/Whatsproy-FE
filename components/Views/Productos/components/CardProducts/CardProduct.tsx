@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -9,13 +9,19 @@ import {
   TouchableOpacity,
   Modal,
   Alert,
+  ActivityIndicator,
+  Animated,
 } from "react-native";
+import * as Animatable from 'react-native-animatable'; // Importamos la librería
 import Icon from "react-native-vector-icons/Feather";
 import { useRouter } from "expo-router";
 import { styles } from "./CardProdStyle";
 import api from "@/services/api/admin";
 import { useLocalization } from "@/app/LocalizationContext";
 import { FormattedMessage, useIntl } from "react-intl";
+import LottieView from "lottie-react-native";
+import { Colors } from "../../../../../constants/Colors";
+
 
 import type {
   Product,
@@ -29,6 +35,7 @@ import type {
 import { useToast } from "native-base";
 import { useToastContext } from "@/contexts/ToastContext";
 import { useUser } from "@/hooks/redux/useUser";
+import { Dimensions } from "react-native";
 
 interface ProductCardProps {
   product: Product;
@@ -39,6 +46,8 @@ interface ProductCardProps {
   monthlySalesData: MonthlySalesData;
   dayslySalesData: DayslySalesData;
   onUpdateProduct: () => void;
+  onDeleteRequest: (productId: number) => void;
+  isBeingDeleted: boolean;
 }
 export const ProductCard: React.FC<ProductCardProps> = ({
   product,
@@ -49,18 +58,57 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   dayslySalesData,
   salesData,
   onUpdateProduct,
+  onDeleteRequest,
+  isBeingDeleted,
 }) => {
   const router = useRouter();
-  const { locale } = useLocalization();
   const intl = useIntl();
   const [modalVisible, setModalVisible] = useState(false);
   const [localDisponible, setLocalDisponible] = useState(productBDD.disponible);
   const { showToast } = useToastContext();
   const { user } = useUser();
+  const [loading, setLoading] = useState(true);
   const currencies = user?.currencies ?? [];
   const currenctCurrency = currencies?.find(
     (itm: any) => itm?.id === productBDD?.currency_id,
   ) ?? { simbolo: "$", codigo: "USD" };
+
+  // Add these state variables and refs inside your component
+  const [isDeleting, setIsDeleting] = useState(false);
+  const slideOutAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const opacityAnim = useRef(new Animated.Value(1)).current;
+  const [showDeleteAnimation, setShowDeleteAnimation] = useState(false);
+  const deleteAnimationRef = useRef(null);
+  const { width, height } = Dimensions.get('window');
+  const cardRef = useRef(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+
+
+  useEffect(() => {
+    if (isBeingDeleted) {
+      // Animate the card out when it's being deleted
+      Animated.parallel([
+        Animated.timing(slideOutAnim, {
+          toValue: 500,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacityAnim, {
+          toValue: 0,
+          duration: 500,
+          useNativeDriver: true,
+        })
+      ]).start();
+    }
+  }, [isBeingDeleted, slideOutAnim, opacityAnim]);
+
+  
+  const handleImageLoad = () => {
+    setLoading(false);
+  };
+  
 
   const handleEdit = () => {
     router.push({
@@ -71,8 +119,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         price: productBDD.precio.toString(),
         currency: currenctCurrency?.simbolo,
         description: productBDD.descripcion,
-        imageUrl: product.imageUrl,
-        duration: product?.duration,
+        imageUrl: productBDD?.imagen || "../errorimage.png",
+        duration: productBDD.plazoDuracionEstimadoMinutos.toString(),
         currency_id: productBDD?.currency_id,
         disponible: productBDD.disponible.toString(),
       },
@@ -89,7 +137,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         currency: currenctCurrency?.simbolo,
         duration: productBDD.plazoDuracionEstimadoMinutos.toString(),
         description: productBDD.descripcion,
-        imageUrl: product.imageUrl,
+        imageUrl: productBDD?.imagen || "../errorimage.png",
         category: product.category,
         rating: product.rating,
         currency_id: productBDD?.currency_id,
@@ -192,24 +240,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         },
         {
           text: intl.formatMessage({ id: "delete", defaultMessage: "Delete" }),
-          onPress: async () => {
+          onPress: () => {
             setModalVisible(false);
-            try {
-              const resp = await api.products.delete(productBDD.id);
-
-              if (resp.data.ok) {
-                onUpdateProduct();
-                showToast({
-                  title: "Product created successfully",
-                  status: "success",
-                });
-              }
-            } catch (error: any) {
-              showToast({
-                title: error.response.data.message || "Error deleting product",
-                status: "error",
-              });
-            }
+            // Call the parent's onDeleteRequest instead of handling deletion here
+            onDeleteRequest(productBDD.id);
           },
           style: "destructive",
         },
@@ -218,8 +252,24 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     );
   };
 
+
+
+
   return (
-    <View style={styles.container}>
+
+   
+   
+    <Animated.View 
+      style={[
+        styles.container,
+        {
+          transform: [
+            { translateX: slideOutAnim },
+          ],
+          opacity: opacityAnim,
+        }
+      ]}
+    >
       {!localDisponible && (
         <View style={styles.disabledLabel}>
           <Text style={styles.disabledText}>
@@ -227,8 +277,26 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </Text>
         </View>
       )}
+
       <View style={styles.card}>
-        <Image source={{ uri: product.imageUrl }} style={styles.image} />
+
+        {loading && (
+          <View style={styles.animationContainer}>
+            <LottieView
+              source={require("../../../../../constants/Animation-1742586349562.json")}
+              autoPlay
+              loop
+              style={styles.animation}
+            />
+          </View>
+        )}
+
+        <Image
+          source={{ uri: productBDD?.imagen }}
+          style={styles.image}
+          onLoad={handleImageLoad}
+
+        />
 
         <View style={styles.content}>
           <View style={styles.header}>
@@ -252,6 +320,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </Text>
         </View>
       </View>
+
+
+
+
 
       <Modal
         animationType="fade"
@@ -299,7 +371,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </View>
         </TouchableOpacity>
       </Modal>
-    </View>
+
+    </Animated.View>
+   
   );
 };
 

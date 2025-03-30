@@ -26,7 +26,7 @@ const Home: React.FC = () => {
   const [dailyRevenue, setDailyRevenue] = useState(0);
   const [lastOrders, setLastOrders] = useState<any[]>([]);
 
-  const isFetching = useRef(false); // Controla las solicitudes en curso
+  const isFetching = useRef(false); 
 
   const getFormattedDate = (): string => new Date().toISOString().split("T")[0];
 
@@ -138,12 +138,14 @@ const Home: React.FC = () => {
     <SafeAreaView style={styles.container}>
       <Animated.View entering={FadeIn} style={styles.header}>
         <View>
-          <CustomText
+
+      
+          {/* <CustomText
             style={styles.businessName}
             accessibilityLabel="Nombre del negocio"
           >
             Mi Negocio
-          </CustomText>
+          </CustomText> */}
           <CustomText style={styles.dateText} accessibilityLabel="Fecha actual">
             {new Date().toLocaleDateString("es-AR", {
               weekday: "long",

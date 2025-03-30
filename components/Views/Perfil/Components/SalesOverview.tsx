@@ -48,7 +48,7 @@ const SalesOverview: React.FC<SalesOverviewProps> = ({
         </Box>
       </HStack>
 
-      <VStack space={4}>
+      <VStack space={1}>
         <Box>
           <Text style={{ fontSize: 12, color: "#666" }}>
             <FormattedMessage
