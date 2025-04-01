@@ -8,7 +8,6 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
-import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import { Colors } from "../../../constants/Colors";
 import CustomText from "./components/CustomText";
 import MetricCard from "./components/MetricCard";
@@ -18,6 +17,7 @@ import styles from "./HomeStyles";
 import { removeData } from "@/storage/localStorage";
 import { router, useRouter } from "expo-router";
 import api from "@/services/api/admin";
+import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 
 const Home: React.FC = () => {
   const [refreshing, setRefreshing] = useState(false);
@@ -128,11 +128,6 @@ const Home: React.FC = () => {
     moneyinday();
   }, [getOrders, getOrdersByDate, moneyinday]);
 
-  const logout = () => {
-    Alert.alert("Logout", "You have been logged out.");
-    removeData("token");
-    router.push("/(auth)/login");
-  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -158,7 +153,7 @@ const Home: React.FC = () => {
 
       <ScrollView
         style={styles.content}
-        showsVerticalScrollIndicator={false}
+        showsVerticalScrollIndicator={true}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
