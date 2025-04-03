@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Feather from "react-native-vector-icons/Feather";
@@ -52,6 +52,7 @@ const Settings = () => {
   const router = useRouter();
   return (
     <Center style={styles.father}>
+      <ScrollView>
       <View style={styles.container}>
         <View style={styles.title}>
           <CustomText
@@ -72,6 +73,7 @@ const Settings = () => {
                 key={index}
                 style={styles.card}
                 onPress={() => router.push(item.href)}
+
               >
                 <View style={styles.row}>
                   <View style={styles.rounded}>{item.icon}</View>
@@ -89,6 +91,7 @@ const Settings = () => {
           })}
         </View>
       </View>
+      </ScrollView>
     </Center>
   );
 };

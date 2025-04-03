@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState, useEffect, useRef,  } from "react";
+import { useState, useEffect, useRef, } from "react";
 import { View, Text, Modal, TouchableOpacity, ScrollView, RefreshControl, ActivityIndicator } from "react-native";
 import { HStack, VStack, Avatar, IconButton, Icon } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
@@ -112,9 +112,13 @@ const Perfil: React.FC = () => {
 
   const handleRefresh = async () => {
     if (isFetching.current) return;
-    setRefreshing(true);
-    await Promise.all([fetchProfileData()]);
-    setRefreshing(false);
+    setRefreshing(true);  // Establece el estado como "en refresco"
+    isFetching.current = true;
+  
+    await Promise.all([fetchProfileData()]);  // Realiza las actualizaciones necesarias
+    
+    setRefreshing(false);  // Restablece el estado de refresco
+    isFetching.current = false;  // Restablece el estado de "en proceso"
   };
 
   useEffect(() => {
@@ -178,10 +182,10 @@ const Perfil: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      {/* barra de arriba */}
-      <ScrollView>
 
+    
 
+        {/* barra de arriba */}
         <Animated.View entering={FadeIn} >
           <HStack
             style={styles.header}
@@ -222,108 +226,112 @@ const Perfil: React.FC = () => {
           />
         ) : (
           <>
-        <ScrollView
-          style={styles.content}
-          showsVerticalScrollIndicator={true}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={handleRefresh}
-              tintColor={Colors.light.primary}
-            />
-          }
-        >
+            <ScrollView
+              style={styles.content}
+              showsVerticalScrollIndicator={true}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={handleRefresh}
+                  tintColor={Colors.light.primary}
+                />
+              }
+            >
 
 
-          <Animated.View entering={FadeInDown.delay(100)}>
+              <Animated.View entering={FadeInDown.delay(100)}>
 
-            <SalesOverview
-              totalSales={pedidos ? pedidos : 0}
-              previousPeriodSales={12500}
-              averageSale={125}
-              currency="$"
-              period={salesPeriod}
-            />
-          </Animated.View>
+                <SalesOverview
+                  totalSales={pedidos ? pedidos : 0}
+                  previousPeriodSales={12500}
+                  averageSale={125}
+                  currency="$"
+                  period={salesPeriod}
+                />
+              </Animated.View>
 
 
-          <Animated.View entering={FadeInDown.delay(200)}>
-            <SalesChart
-              monthlySales={valorPrueba.sales}
-              labels={valorPrueba.labels}
-              period={salesPeriod}
-              onPeriodChange={(value) => setSalesPeriod(value)}
-            />
-          </Animated.View>
+              <Animated.View entering={FadeInDown.delay(200)}>
+                <SalesChart
+                  monthlySales={valorPrueba.sales}
+                  labels={valorPrueba.labels}
+                  period={salesPeriod}
+                  onPeriodChange={(value) => setSalesPeriod(value)}
+                />
+              </Animated.View>
 
-          <Animated.View entering={FadeInDown.delay(300)}>
-            <CategorySales
-              currency="$"
-              totalSales={15750}
-              categories={[
-                {
-                  id: "1",
-                  name: "Hamburguesas",
-                  sales: 5250,
-                  percentage: 33,
-                  color: "#075e54",
-                  icon: "fast-food-outline",
-                },
-                {
-                  id: "2",
-                  name: "Choris",
-                  sales: 4200,
-                  percentage: 27,
-                  color: "#128c7e",
-                  icon: "pizza-outline",
-                },
-                {
-                  id: "3",
-                  name: "Milas",
-                  sales: 3150,
-                  percentage: 20,
-                  color: "#25d366",
-                  icon: "restaurant-outline",
-                },
-                {
-                  id: "4",
-                  name: "Gramajos",
-                  sales: 1575,
-                  percentage: 10,
-                  color: "#34b7f1",
-                  icon: "fast-food-outline",
-                },
-                {
-                  id: "5",
-                  name: "Otros",
-                  sales: 1575,
-                  percentage: 10,
-                  color: "#687076",
-                  icon: "ellipsis-horizontal-outline",
-                },
-              ]}
-            />
-          </Animated.View>
+              <Animated.View entering={FadeInDown.delay(300)}>
+                <CategorySales
+                  currency="$"
+                  totalSales={15750}
+                  categories={[
+                    {
+                      id: "1",
+                      name: "Hamburguesas",
+                      sales: 5250,
+                      percentage: 33,
+                      color: "#075e54",
+                      icon: "fast-food-outline",
+                    },
+                    {
+                      id: "2",
+                      name: "Choris",
+                      sales: 4200,
+                      percentage: 27,
+                      color: "#128c7e",
+                      icon: "pizza-outline",
+                    },
+                    {
+                      id: "3",
+                      name: "Milas",
+                      sales: 3150,
+                      percentage: 20,
+                      color: "#25d366",
+                      icon: "restaurant-outline",
+                    },
+                    {
+                      id: "4",
+                      name: "Gramajos",
+                      sales: 1575,
+                      percentage: 10,
+                      color: "#34b7f1",
+                      icon: "fast-food-outline",
+                    },
+                    {
+                      id: "5",
+                      name: "Otros",
+                      sales: 1575,
+                      percentage: 10,
+                      color: "#687076",
+                      icon: "ellipsis-horizontal-outline",
+                    },
+                  ]}
+                />
+              </Animated.View>
 
-          {/* <ProfileStats completionPercentage={75} totalVisits={user?.id_empresa || 28} streak={5} /> */}
+              {/* no borrar -> componente de Subscription  */}
 
-          <Animated.View entering={FadeInDown.delay(400)}>
-            <SubscriptionInfo
-              plan={profileData?.plan || "Free"}
-              expiryDate="30/06/2023"
-              usagePercentage={75}
-            />
-          </Animated.View>
-          {/* graficas con pedidos mensuale sy pedidos realizados */}
-          {/* <SimpleBarCharts /> */}
+              {/* <ProfileStats completionPercentage={75} totalVisits={user?.id_empresa || 28} streak={5} />  */}
 
-          <Animated.View entering={FadeInDown.delay(500)}>
-            <QuickActions />
-          </Animated.View>
-          {/* <RecentActivity /> */}
-        </ScrollView>
-        </>
-      )}
+              <Animated.View entering={FadeInDown.delay(400)}>
+                <SubscriptionInfo
+                  plan={profileData?.plan || "Free"}
+                  expiryDate="30/06/2023"
+                  usagePercentage={75}
+                />
+              </Animated.View>
+
+
+              {/* graficas con pedidos mensuale sy pedidos realizados */}
+              {/* <SimpleBarCharts />  */}
+
+              <Animated.View entering={FadeInDown.delay(500)}>
+                <QuickActions />
+              </Animated.View>
+              {/* <RecentActivity /> */}
+            </ScrollView>
+          </>
+        )}
 
         <Modal
           animationType="fade"
@@ -347,7 +355,7 @@ const Perfil: React.FC = () => {
         </Modal>
 
 
-      </ScrollView>
+    
 
     </View>
   );
