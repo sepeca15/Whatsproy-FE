@@ -80,9 +80,11 @@ const SalesChart: React.FC<SalesChartProps> = ({
 
   const fontSize = Math.max(10, Math.min(16, 40 / filteredSales.length));
   const maxSale = Math.max(...filteredSales);
-  const chartWidth = Dimensions.get("window").width - 60; 
-  const barWidth = chartWidth / filteredSales.length - 10; 
+  const chartWidth = Dimensions.get("window").width - 60;
+  const barWidth = chartWidth / filteredSales.length - 10;
   console.log("monthlySales", monthlySales);
+
+  console.log("filteredSales", filteredSales);
   return (
     <Box bg="white" borderRadius="lg" p={4} shadow={2} mb={4}>
       <HStack justifyContent="space-between" alignItems="center" mb={20}>
@@ -117,28 +119,29 @@ const SalesChart: React.FC<SalesChartProps> = ({
 
       <Box height={150} mb={4}>
         <HStack
-          justifyContent="space-between"
+          justifyContent={filteredLabels.length < 2 ? "center" : "space-between"}
           height="100%"
           alignItems="flex-end"
         >
           {filteredSales.map((sale, index) => {
-          
+
             const heightPercentage = toStrictInteger((sale / maxSale) * 100);
             const isHighest = sale === maxSale;
 
             return (
-              <VStack key={index} alignItems="center" space={1}>
-                <Text style={{ fontSize, fontWeight: "bold", marginBottom: 2, marginTop: 1}}>
+              <VStack key={index} alignItems="center" space={1}  justifyContent={filteredLabels.length < 2 ? "center" : "space-between"}  >
+                <Text style={{ fontSize, fontWeight: "bold", marginBottom: 2, marginTop: 1 }}>
                   ${sale.toLocaleString()}
                 </Text>
                 <Box
-                  width={barWidth}
+                  width={filteredLabels.length < 2 ? Math.max(barWidth - 200, 10) : barWidth}
                   height={`${heightPercentage}%`}
                   bg={isHighest ? "#075e54" : "#128c7e"}
                   borderRadius="md"
+                  
                 />
                 <Text style={{ fontSize, fontWeight: "bold" }}>
-                  {filteredLabels[index]}
+                  {filteredLabels[index] ?? "N/A"}
                 </Text>
               </VStack>
             );
