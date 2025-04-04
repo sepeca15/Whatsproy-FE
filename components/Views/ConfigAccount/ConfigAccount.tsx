@@ -20,9 +20,9 @@ const ConfigAccount = () => {
     if (!user.greenApiConfigured) stepList.push(4);
     return stepList;
   }, [user]);
-
+  
   const [currentStep, setCurrentStep] = React.useState<number | null>(null);
-
+  
   React.useEffect(() => {
     if (steps.length > 0 && steps[0] !== currentStep) {
       setCurrentStep(steps[0]);

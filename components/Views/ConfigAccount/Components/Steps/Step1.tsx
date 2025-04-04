@@ -27,7 +27,7 @@ const Step1 = () => {
         apellido: formData.apellido,
       });
     } catch (error) {
-      console.log(error);
+      console.log('no se pudo',error);
     }
   };
 

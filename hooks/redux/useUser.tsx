@@ -100,7 +100,7 @@ export const useUser = () => {
       await api.user.update(user.id, userData);
       Dispatch(onUserConfigured({ data: userData }));
     } catch (error: any) {
-      console.log(error.response.data.message);
+      console.log(error.response.message);
     }
   };
 

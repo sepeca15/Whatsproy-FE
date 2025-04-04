@@ -10,6 +10,10 @@ import * as typeServices from "../typeServices/typeServices";
 import * as client from "../clients/clients";
 import * as image from "../image/image";
 import * as perfil from "../perfil/perfil";
+import * as stripe from "../stripe/stripe";
+
+
+
 const api = {
   auth: {
     login: auth.Login,
@@ -71,6 +75,9 @@ const api = {
   perfil: {
     getResumenVentas: perfil.resumenVentas,
   },
+  stripe: {
+    createIntent: stripe.createIntent
+  }
 };
 
 export default api;

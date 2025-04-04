@@ -41,6 +41,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
   ContainerHeader: {
+    position:'relative',
     width: "100%",
     alignSelf: "flex-start",
   },

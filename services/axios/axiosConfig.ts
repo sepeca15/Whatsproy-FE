@@ -10,7 +10,7 @@ type KeysApis = "global" | "current";
 
 const ApiInstances = (key: KeysApis) => {
   const globalApi = axios.create({
-    baseURL: key === "global" ? "https://app.whatsproy.com/" : undefined,
+    baseURL: key === "global" ? "https://fed7-167-62-152-127.ngrok-free.app/" : undefined,
   });
 
   globalApi.interceptors.request.use(
@@ -18,7 +18,7 @@ const ApiInstances = (key: KeysApis) => {
       const state = store.getState();
       const user = selectUser(state);
       config.baseURL =
-        key === "global" ? "https://app.whatsproy.com/" : user?.user.apiUrl;
+        key === "global" ? "https://fed7-167-62-152-127.ngrok-free.app/" : user?.user.apiUrl;
 
       const token = await getData("token");
       if (token) {

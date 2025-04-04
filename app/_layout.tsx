@@ -15,6 +15,7 @@ import { store } from "@/services/redux/store";
 import { ToastProvider } from "@/contexts/ToastContext";
 import { LocalizationProvider } from "./LocalizationContext"; // Importa el proveedor de localización
 import { StatusBar } from "expo-status-bar";
+import { StripeProvider } from "@stripe/stripe-react-native";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -36,22 +37,24 @@ export default function RootLayout() {
 
   return (
     <Provider store={store}>
-      <LocalizationProvider>
-        <NativeBaseProvider>
-          <ToastProvider>
-            <ThemeProvider
-              value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-            >
-              <StatusBar style="auto" />
-              <Stack screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-                <Stack.Screen name="+not-found" />
-              </Stack>
-            </ThemeProvider>
-          </ToastProvider>
-        </NativeBaseProvider>
-      </LocalizationProvider>
+      <StripeProvider publishableKey="pk_test_51R4irgCSKnEqCO5rpO7Q8M1eyJvLZmZRVkYwsWYDEcoiLTqMYkhZCj6J6WsZWVv2WQOF8DCPVICck3Y1ezN10b3800sTbng8ux">
+        <LocalizationProvider>
+          <NativeBaseProvider>
+            <ToastProvider>
+              <ThemeProvider
+                value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+              >
+                <StatusBar style="auto" />
+                <Stack screenOptions={{ headerShown: false }}>
+                  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                  <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+                  <Stack.Screen name="+not-found" />
+                </Stack>
+              </ThemeProvider>
+            </ToastProvider>
+          </NativeBaseProvider>
+        </LocalizationProvider>
+      </StripeProvider>
     </Provider>
   );
 }
