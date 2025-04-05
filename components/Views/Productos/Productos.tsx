@@ -1,6 +1,6 @@
 // Modified Productos.tsx parent component
 
-"use client";
+
 
 import type React from "react";
 import { useState, useEffect, useCallback, useRef } from "react";
@@ -82,6 +82,9 @@ const Productos: React.FC = () => {
     },
     [fadeAnim],
   );
+
+
+  
   useEffect(() => {
     // Extract unique categories from products
     if (ProductsBD.length > 0) {
@@ -131,6 +134,7 @@ const Productos: React.FC = () => {
   // Render the delete modal
   const renderDeleteModal = () => {
     if (!showDeleteModal) return null;
+
 
     return (
       <View

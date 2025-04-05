@@ -54,14 +54,22 @@ const QuickActions: React.FC = () => {
         />
       </Text>
 
-      <HStack flexWrap="wrap" justifyContent="space-between">
-        {actions.map((action) => (
+      <HStack flexWrap="wrap" justifyContent="center">
+        {actions.map((action, index) => (
           <TouchableOpacity
             key={action.id}
-            style={{ width: "48%", marginBottom: 12 }}
+            style={{
+              width: "45%",
+              minWidth: 140, 
+              marginBottom: 12,
+              maxWidth: "50%",
+              alignSelf: actions.length % 2 !== 0 && index === actions.length - 1 ? "center" : "auto",
+              marginRight: "2.5%", 
+              flexShrink: 1, 
+            }}
             onPress={() => {
               if (action.onPress) {
-                action.onPress(); 
+                action.onPress();
               } else {
                 router.push(action.route as any);
               }
@@ -91,6 +99,9 @@ const QuickActions: React.FC = () => {
           </TouchableOpacity>
         ))}
       </HStack>
+
+
+
     </Box>
   );
 };
