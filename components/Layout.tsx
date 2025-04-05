@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Link, usePathname, useRouter } from "expo-router";
-import { View } from "native-base";
+import { Text, View } from "native-base";
 import { Pressable, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
 import IonIcon from "react-native-vector-icons/Ionicons";
@@ -9,7 +9,6 @@ import { Colors } from "@/constants/Colors";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { useUser } from "@/hooks/redux/useUser";
 import { TipoServicio } from "@/enums/TipoServicio";
-import { usePushNotifications } from "@/hooks/usePushNotification";
 
 const Pages = (empresaType: number) => {
   return [
@@ -76,15 +75,6 @@ const Layout = ({ children }: any) => {
   const { user } = useUser();
   const [selected, setSelected] = React.useState<string>("");
   const pages = Pages(user.tipo_servicio);
-
-  const pushToken = usePushNotifications();
-
-  React.useEffect(() => {
-    if (user?.id) {
-      console.log("pushToken", pushToken)
-    }
-  }, [pushToken])
-
 
   React.useEffect(() => {
     const existRouter = pages.find(

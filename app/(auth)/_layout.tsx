@@ -7,9 +7,19 @@ import { Colors } from "@/constants/Colors";
 import { StyleSheet } from "react-native";
 import Toast from "react-native-toast-message";
 import toastConfig from "@/utils/toast";
+import { usePushNotifications } from "@/hooks/usePushNotification";
+import { useUser } from "@/hooks/redux/useUser";
 
 const Layout: React.FC = () => {
   const { isAuthenticated, loading, redirecting } = useAuth();
+  const { user } = useUser();
+  const { loading: loadingFCM, expoPushToken } = usePushNotifications();
+
+  React.useEffect(() => {
+    if (user?.id) {
+      console.log("pushToken", expoPushToken);
+    }
+  }, [user, expoPushToken]);
 
   React.useEffect(() => {
     if (isAuthenticated && !loading) {
@@ -17,7 +27,7 @@ const Layout: React.FC = () => {
     }
   }, [isAuthenticated, loading]);
 
-  if (loading || redirecting) {
+  if (loading || redirecting || loadingFCM) {
     return (
       <View style={styles.spinner}>
         <Progress.Circle

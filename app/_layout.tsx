@@ -15,6 +15,19 @@ import { store } from "@/services/redux/store";
 import { ToastProvider } from "@/contexts/ToastContext";
 import { LocalizationProvider } from "./LocalizationContext"; // Importa el proveedor de localización
 import { StatusBar } from "expo-status-bar";
+import * as Notifications from "expo-notifications";
+import { Platform } from "react-native";
+
+const isAndroid = Platform.OS === "android";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
+
 
 SplashScreen.preventAutoHideAsync();
 
