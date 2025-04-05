@@ -37,6 +37,7 @@ const api = {
     update: user.updateUser,
     findAll: user.findAllUsers,
     find: user.findUser,
+    updateFcm: user.updateFCM,
     delete: user.deleteUser,
   },
   //(INFO-LINES)

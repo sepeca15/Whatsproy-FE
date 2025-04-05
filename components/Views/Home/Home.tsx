@@ -17,20 +17,24 @@ import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import useOrdersData from "../../../hooks/home_functions/useOrdersData";
 
 const Home: React.FC = () => {
-  const { loading, ordersCount, dailyRevenue, lastOrders, refreshData } = useOrdersData();
-  const [refreshing, setRefreshing] = React.useState(false); // ✅ nuevo estado
-
+  const { loading, ordersCount, dailyRevenue, lastOrders, refreshData } =
+    useOrdersData();
+  const [refreshing, setRefreshing] = React.useState(false);
 
   const onRefresh = async () => {
-    setRefreshing(true);
-    await refreshData();
-    setRefreshing(false);
+    try {
+      setRefreshing(true);
+      await refreshData();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setRefreshing(false);
+    }
   };
-
 
   return (
     <SafeAreaView style={styles.container}>
-      <Animated.View entering={FadeIn} style={styles.header}>
+      <Animated.View entering={FadeIn.delay(100)} style={styles.header}>
         <View>
           <CustomText style={styles.dateText} accessibilityLabel="Fecha actual">
             {new Date().toLocaleDateString("es-AR", {
@@ -42,8 +46,6 @@ const Home: React.FC = () => {
         </View>
       </Animated.View>
 
-    
-      
       {loading ? (
         <ActivityIndicator
           size="large"
@@ -52,7 +54,6 @@ const Home: React.FC = () => {
         />
       ) : (
         <>
-
           <ScrollView
             style={styles.content}
             showsVerticalScrollIndicator={true}
@@ -61,9 +62,7 @@ const Home: React.FC = () => {
                 refreshing={refreshing}
                 onRefresh={onRefresh}
                 tintColor={Colors.light.primary}
-
               />
-
             }
           >
             <Animated.View
@@ -74,19 +73,19 @@ const Home: React.FC = () => {
                 icon="cart-outline"
                 title="Pedidos Hoy"
                 value={ordersCount.toString()}
-                onPress={() => { }}
+                onPress={() => {}}
               />
               <MetricCard
                 icon="account-group"
                 title="Clientes"
                 value="120"
-                onPress={() => { }}
+                onPress={() => {}}
               />
               <MetricCard
                 icon="cash-multiple"
                 title="Ingresos"
                 value={`$${dailyRevenue}`}
-                onPress={() => { }}
+                onPress={() => {}}
               />
             </Animated.View>
 
@@ -110,14 +109,16 @@ const Home: React.FC = () => {
                     amount={order.amount || "$0"}
                     icon={order.icon || "receipt"}
                     address="Desconocido"
-                    onPress={() => { }}
+                    onPress={() => {}}
                   />
                 ))
               ) : (
                 <CustomText>No hay pedidos recientes</CustomText>
               )}
 
-              <CustomText style={styles.sectionTitle}>Gestión Rápida</CustomText>
+              <CustomText style={styles.sectionTitle}>
+                Gestión Rápida
+              </CustomText>
               <View style={styles.quickActionsGrid}>
                 <QuickActionButton
                   icon="calendar"
@@ -137,10 +138,8 @@ const Home: React.FC = () => {
             </Animated.View>
           </ScrollView>
         </>
-      )
-      }
-
-    </SafeAreaView >
+      )}
+    </SafeAreaView>
   );
 };
 

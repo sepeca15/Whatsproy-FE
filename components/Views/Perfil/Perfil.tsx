@@ -49,7 +49,7 @@ const Perfil: React.FC = () => {
   } | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const isFetching = useRef(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const [valorPrueba, setValorPrueba] = useState<{
     labels: string[];
@@ -186,7 +186,7 @@ const Perfil: React.FC = () => {
     
 
         {/* barra de arriba */}
-        <Animated.View entering={FadeIn} >
+        <Animated.View entering={FadeIn.delay(100)} >
           <HStack
             style={styles.header}
             alignItems="center"

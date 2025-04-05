@@ -9,17 +9,32 @@ import Toast from "react-native-toast-message";
 import toastConfig from "@/utils/toast";
 import { usePushNotifications } from "@/hooks/usePushNotification";
 import { useUser } from "@/hooks/redux/useUser";
+import api from "@/services/api/admin";
 
 const Layout: React.FC = () => {
   const { isAuthenticated, loading, redirecting } = useAuth();
-  const { user } = useUser();
+  const { user, handleUpdateFCM } = useUser();
   const { loading: loadingFCM, expoPushToken } = usePushNotifications();
 
-  React.useEffect(() => {
-    if (user?.id) {
-      console.log("pushToken", expoPushToken);
+  const handleUpdatePushTOken = async (token: any) => {
+    const userInfo = user;
+    const currentToken = userInfo?.dispositivo?.fcmToken;
+    if (currentToken !== token) {
+      console.log("deberia actualizar")
+      const resp = await api.user.updateFcm(token);
+      if (resp?.fcmToken) {
+        handleUpdateFCM({ ...resp, usuario: null });
+      }
+    } else {
+      console.log("no deberia actualizar")
     }
-  }, [user, expoPushToken]);
+  };
+
+  React.useEffect(() => {
+    if (user?.id && expoPushToken) {
+      handleUpdatePushTOken(expoPushToken);
+    }
+  }, [user?.id, expoPushToken]);
 
   React.useEffect(() => {
     if (isAuthenticated && !loading) {
