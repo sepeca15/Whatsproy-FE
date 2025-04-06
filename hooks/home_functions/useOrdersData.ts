@@ -63,6 +63,7 @@ const useOrdersData = () => {
       const today = getFormattedDate();
       const response = await api.order.getOrdersByDate(today);
       setOrdersCount(response.ordersDay || 0);
+      console.log("Pedidos del día:", response.ordersDay);
     } catch (error) {
       console.error("Error al obtener pedidos por fecha:", error);
     } finally {

@@ -1,10 +1,12 @@
 import React from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   View,
   ScrollView,
   SafeAreaView,
   RefreshControl,
   ActivityIndicator,
+  Text, // Ensure Text is imported from react-native
 } from "react-native";
 import { Colors } from "../../../constants/Colors";
 import CustomText from "./components/CustomText";
@@ -15,12 +17,18 @@ import styles from "./HomeStyles";
 import { router } from "expo-router";
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import useOrdersData from "../../../hooks/home_functions/useOrdersData";
+import LottieView from "lottie-react-native";
+import { useIntl, FormattedMessage } from "react-intl";
+import * as Animatable from "react-native-animatable";
+
+
+
 
 const Home: React.FC = () => {
-  const { loading, ordersCount, dailyRevenue, lastOrders, refreshData } = useOrdersData();
-  const [refreshing, setRefreshing] = React.useState(false); // ✅ nuevo estado
-
-
+  const { loading, ordersCount, dailyRevenue, refreshData } = useOrdersData();
+  const [refreshing, setRefreshing] = React.useState(false);
+  const deleteAnimationRef = useRef(null);
+  const [lastOrders, setLastOrders] = useState<any[]>([]);
   const onRefresh = async () => {
     setRefreshing(true);
     await refreshData();
@@ -42,8 +50,8 @@ const Home: React.FC = () => {
         </View>
       </Animated.View>
 
-    
-      
+
+
       {loading ? (
         <ActivityIndicator
           size="large"
@@ -114,7 +122,19 @@ const Home: React.FC = () => {
                   />
                 ))
               ) : (
-                <CustomText>No hay pedidos recientes</CustomText>
+                <Animatable.View animation="fadeIn" style={styles.emptyStateContainer}>
+                  <LottieView
+                    source={require("../../../constants/Animation-non-order.json") // Para sin productos
+                    }
+                    autoPlay
+                    loop
+                    style={styles.emptyStateAnimation}
+                  />
+                  <Text style={styles.emptyStateTitle}>
+                    <FormattedMessage id="noOrden.home" defaultMessage="No hay productos" />
+                  </Text>
+
+                </Animatable.View>
               )}
 
               <CustomText style={styles.sectionTitle}>Gestión Rápida</CustomText>

@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
 import { Colors } from "../../../constants/Colors";
 
 const styles = StyleSheet.create({
@@ -143,7 +143,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: Colors.light.text,
-    marginBottom: 16,
+    marginBottom: 12,
+    
   },
   quickActionsGrid: {
     flexDirection: "row",
@@ -168,6 +169,29 @@ const styles = StyleSheet.create({
     color: Colors.light.text,
     marginTop: 8,
   },
+   emptyStateContainer: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: 20,
+      height: Dimensions.get('window').height * 0.4,
+    },
+    emptyStateAnimation: {
+      width: 150,
+      height: 150,
+    },
+    emptyStateTitle: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      marginTop: 20,
+      color: Colors.light.primary,
+    },
+    emptyStateSubtitle: {
+      fontSize: 16,
+      color: '#666',
+      textAlign: 'center',
+      marginTop: 10,
+      paddingHorizontal: 20,
+    },
 });
 
 export default styles;
