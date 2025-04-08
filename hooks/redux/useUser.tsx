@@ -10,6 +10,7 @@ import {
   greenApiConfigured,
   onApiConfigured,
   onUserConfigured,
+  onUpdateFcm,
 } from "@/services/redux/Slices/userSlice/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -65,6 +66,15 @@ export const useUser = () => {
     }
   };
 
+  const handleUpdateFCM = async (fcm: any) => {
+    try {
+      Dispatch(onUpdateFcm(fcm));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
   const handleUpdateApiConfigured = async () => {
     try {
       await api.company.update({ apiConfigured: true }, user.id_empresa);
@@ -113,5 +123,6 @@ export const useUser = () => {
     handleUpdateGreenApiConfig,
     handleUpdateApiConfigured,
     user,
+    handleUpdateFCM,
   };
 };

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Link, usePathname, useRouter } from "expo-router";
-import { View } from "native-base";
+import { Text, View } from "native-base";
 import { Pressable, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
 import IonIcon from "react-native-vector-icons/Ionicons";
