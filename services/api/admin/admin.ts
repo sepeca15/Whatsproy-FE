@@ -10,6 +10,8 @@ import * as typeServices from "../typeServices/typeServices";
 import * as client from "../clients/clients";
 import * as image from "../image/image";
 import * as perfil from "../perfil/perfil";
+import * as category from "../category/category";
+
 const api = {
   auth: {
     login: auth.Login,
@@ -72,6 +74,12 @@ const api = {
   perfil: {
     getResumenVentas: perfil.resumenVentas,
   },
+  category: {
+    create: category.createCategory,
+    getAll: category.getAllCategories,
+    getProducts: category.getProductFromCategory,
+    delete: category.deleteCategory,
+  }
 };
 
 export default api;
