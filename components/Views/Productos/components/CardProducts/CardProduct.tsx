@@ -40,23 +40,17 @@ import { Dimensions } from "react-native";
 interface ProductCardProps {
   product: Product;
   productBDD: ProductBDD;
-  salesData: SalesData;
-  categoryData: CategoryData;
-  satisfactionData: SatisfactionData;
   monthlySalesData: MonthlySalesData;
   dayslySalesData: DayslySalesData;
-  onUpdateProduct: () => void;
+  onUpdateProduct: (newProduct: any) => void;
   onDeleteRequest: (productId: number) => void;
   isBeingDeleted: boolean;
 }
 export const ProductCard: React.FC<ProductCardProps> = ({
   product,
   productBDD,
-  categoryData,
-  satisfactionData,
   monthlySalesData,
   dayslySalesData,
-  salesData,
   onUpdateProduct,
   onDeleteRequest,
   isBeingDeleted,
@@ -74,21 +68,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   ) ?? { simbolo: "$", codigo: "USD" };
 
   // Add these state variables and refs inside your component
-  const [isDeleting, setIsDeleting] = useState(false);
   const slideOutAnim = useRef(new Animated.Value(0)).current;
-  const scaleAnim = useRef(new Animated.Value(1)).current;
   const opacityAnim = useRef(new Animated.Value(1)).current;
-  const [showDeleteAnimation, setShowDeleteAnimation] = useState(false);
-  const deleteAnimationRef = useRef(null);
-  const { width, height } = Dimensions.get('window');
-  const cardRef = useRef(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-
-
 
   useEffect(() => {
     if (isBeingDeleted) {
-      // Animate the card out when it's being deleted
       Animated.parallel([
         Animated.timing(slideOutAnim, {
           toValue: 500,
@@ -107,8 +91,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   
   const handleImageLoad = () => {
     setLoading(false);
-  };
-  
+  };  
 
   const handleEdit = () => {
     router.push({
@@ -116,13 +99,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       params: {
         id: productBDD.id.toString(),
         title: productBDD.nombre,
-        price: productBDD.precio.toString(),
+        price: productBDD?.precio?.toString(),
         currency: currenctCurrency?.simbolo,
         description: productBDD.descripcion,
         imageUrl: productBDD?.imagen || "../errorimage.png",
         duration: productBDD.plazoDuracionEstimadoMinutos.toString(),
         currency_id: productBDD?.currency_id,
         disponible: productBDD.disponible.toString(),
+        category: productBDD.category.map((cat)=> (cat.id)).join(','),      
       },
     });
   };
@@ -133,12 +117,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       params: {
         id: productBDD.id.toString(),
         title: productBDD.nombre,
-        price: productBDD.precio.toString(),
+        price: productBDD?.precio?.toString(),
         currency: currenctCurrency?.simbolo,
         duration: productBDD.plazoDuracionEstimadoMinutos.toString(),
         description: productBDD.descripcion,
         imageUrl: productBDD?.imagen || "../errorimage.png",
-        category: product.category,
         rating: product.rating,
         currency_id: productBDD?.currency_id,
         reviews: product.reviews,
@@ -147,11 +130,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         monthdata: JSON.stringify(monthlySalesData),
         disponible: productBDD.disponible.toString(),
         empresa_id: productBDD.empresa_id.toString(),
+        category: productBDD.category
       },
     });
   };
 
-  const toggleAvailability = async () => {
+  const toggleAvailability = async () => {    
     setModalVisible(false);
     if (localDisponible) {
       Alert.alert(
@@ -179,7 +163,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             onPress: async () => {
               const newDisponible = false;
               setLocalDisponible(newDisponible);
-              try {
+              try {                
                 const updatedProduct = {
                   ...productBDD,
                   disponible: newDisponible,
@@ -194,7 +178,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                     title: "Product updated successfully",
                     status: "success",
                   });
-                  onUpdateProduct();
+                  
+                  onUpdateProduct(res.data.data);
                 }
               } catch (error) {
                 showToast({
@@ -214,8 +199,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       setLocalDisponible(newDisponible);
       try {
         const updatedProduct = { ...productBDD, disponible: newDisponible };
-        await api.products.update(productBDD.id, updatedProduct);
-        onUpdateProduct();
+        const {data} = await api.products.update(productBDD.id, updatedProduct);
+
+        if(data.ok) {
+          onUpdateProduct(data.data);
+        }
       } catch (error) {
         console.error("Error al actualizar el producto", error);
         setLocalDisponible(!newDisponible);
@@ -223,7 +211,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     }
   };
 
-  const handleDelete = () => {
+  const handleDelete = () => {    
     Alert.alert(
       intl.formatMessage({
         id: "confirmDelete",
@@ -252,13 +240,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     );
   };
 
-
-
-
   return (
-
-   
-   
     <Animated.View 
       style={[
         styles.container,

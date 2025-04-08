@@ -5,8 +5,6 @@
 import type React from "react";
 import { useState, useEffect, useCallback, useRef } from "react";
 import {
-  View,
-  ScrollView,
   TouchableOpacity,
   Text,
   TextInput,
@@ -34,9 +32,15 @@ import * as Animatable from 'react-native-animatable';
 import LottieView from "lottie-react-native";
 import { Colors } from "../../../constants/Colors";
 import { useToastContext } from "@/contexts/ToastContext";
+import { Image, ScrollView, View, Button } from "native-base";
+import { useUser } from "@/hooks/redux/useUser";
+import { ID_TIPOSERVICIO_DELIVERY } from "@/services/api/tiposervicio/tiposervicio.type";
+import { ICategoryData } from "../Categories/components/CardCategory/CardCategory";
+
 
 const Productos: React.FC = () => {
   const router = useRouter();
+  const { user } = useUser()
   const [ProductsBD, setProducts] = useState<ProductBDD[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isInitialLoading, setIsInitialLoading] = useState(true);
@@ -45,78 +49,89 @@ const Productos: React.FC = () => {
   const { locale } = useLocalization();
   const intl = useIntl();
   const { showToast } = useToastContext();
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [categories, setCategories] = useState<string[]>([]);
   const [isDeleting, setIsDeleting] = useState(true);
+
+  const [allCategories, setAllCategories] = useState<ICategoryData[]>([]);
+  const [selectCategory, setSelectCategory] = useState<number | null>(null);
 
   // New state for delete modal
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deletingProductId, setDeletingProductId] = useState<number | null>(null);
   const deleteAnimationRef = useRef(null);
 
-  const allProduct = useCallback(
-    async (isInitial = false) => {
-      if (isInitial) {
-        setIsInitialLoading(true);
-      } else {
-        setIsUpdating(true);
-      }
-      try {
-        const response = await api.products.getAll();
-        const productData: ProductBDD[] = response;
-        setProducts(productData);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        if (isInitial) {
-          setIsInitialLoading(false);
-        } else {
-          setIsUpdating(false);
+  const loadAllCategories = async () => {
+    try {
+      const resp = await api.category.getAll()
+
+      if (resp.ok) {
+        setAllCategories(resp.data)
+        if (resp.data.length > 0) {
+          setSelectCategory(resp.data[0].id)
         }
-        Animated.timing(fadeAnim, {
-          toValue: 1,
-          duration: 500,
-          useNativeDriver: true,
-        }).start();
       }
-    },
-    [fadeAnim],
-  );
 
+    } catch (error) {
+      console.log(error);
+    } finally {
 
-  
-  useEffect(() => {
-    // Extract unique categories from products
-    if (ProductsBD.length > 0) {
-      const uniqueCategories = Array.from(
-        new Set(ProductsBD.map((product) => product.categoria ? product.categoria : 'food')),
-      );
-      setCategories(uniqueCategories);
     }
-  }, [ProductsBD]);
+  }
 
+  const loadProductsFromCategory = async () => {
+    setIsInitialLoading(true)
+
+    if (!selectCategory) {
+      return;
+    }
+    try {
+      const resp = await api.category.getProducts({ categoryId: selectCategory })
+      
+      if (resp.ok) {                
+        setProducts(resp.data)
+        setIsInitialLoading(false)
+      }
+
+    } catch (error: any) {
+      console.log(error.response.data.message);
+    }
+  }
 
   useEffect(() => {
-    allProduct(true);
-  }, [allProduct]);
+    loadAllCategories();
+  }, []);
+
+  useEffect(() => {
+    if (selectCategory) {
+      loadProductsFromCategory()
+    }
+  }, [selectCategory]);
+
+  useEffect(() => {
+    if (!isInitialLoading) {
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [isInitialLoading]);
 
   const handleDeleteRequest = useCallback((productId: number) => {
     setDeletingProductId(productId);
     setShowDeleteModal(true);
-    setIsDeleting(true); // Al iniciar, muestra la animación de "eliminando"
+    setIsDeleting(true);
 
     setTimeout(async () => {
       try {
         const resp = await api.products.delete(productId);
         if (resp.data.ok) {
-
-          setIsDeleting(false); // Cambia la animación a "eliminado con éxito"
+          onDeleteProduct(productId)
+          setIsDeleting(false);
 
           setTimeout(() => {
             setShowDeleteModal(false);
             setDeletingProductId(null);
-            allProduct(false);
-          }, 1500); // Espera 1.5s con la animación de éxito antes de cerrar
+          }, 1500);
         }
       } catch (error: any) {
         setShowDeleteModal(false);
@@ -128,13 +143,12 @@ const Productos: React.FC = () => {
         });
       }
     }, 2700);
-  }, [allProduct, intl, showToast]);
+  }, [intl]);
 
 
   // Render the delete modal
   const renderDeleteModal = () => {
     if (!showDeleteModal) return null;
-
 
     return (
       <View
@@ -175,7 +189,7 @@ const Productos: React.FC = () => {
               : require("../../../constants/Animation-succes-deleted.json") // Animación de éxito
             }
             autoPlay
-            loop={!isDeleting} // Solo se repite si está eliminando
+            loop={!isDeleting} 
             style={{
               width: isDeleting ? 150 : 200,
               height: isDeleting ? 200 : 150,
@@ -205,20 +219,34 @@ const Productos: React.FC = () => {
     );
   };
 
-  const handleUpdateProduct = useCallback(() => {
-    allProduct(false);
-  }, [allProduct]);
+  const updateProduct = (newProduct : any) => {
+    setProducts((prevState)=> {
+      const prevFilter = prevState.map((prod)=> {
+        if(prod.id === newProduct.id) {
+          return newProduct
+        }
+        return prod;
+      })
+
+      return prevFilter
+    })
+  }
+
+  const onDeleteProduct = (prodId : number) => {
+    setProducts((prevState)=> {
+      const filter = prevState.filter((prod)=> prod.id !== prodId)
+
+      return filter
+    })
+  }
+
 
   const filteredProducts = (ProductsBD ?? [])
     .filter((product) =>
       product.nombre.toLowerCase().includes(searchTerm.toLowerCase())
     )
-    .filter((product) =>
-      selectedCategory ? product.categoria === selectedCategory : true
-    )
     .sort((a, b) => a.nombre.localeCompare(b.nombre, locale));
-
-
+    
   return (
     <View style={styles.container}>
       {renderDeleteModal()}
@@ -234,49 +262,27 @@ const Productos: React.FC = () => {
           onChangeText={(text) => setSearchTerm(text)}
         />
       </View>
-      {/* <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.categoryContainer}
-      >
-        <TouchableOpacity
-          style={[
-            styles.categoryChip,
-            !selectedCategory && styles.selectedCategoryChip
-          ]}
-          onPress={() => setSelectedCategory(null)}
-        >
-          <Text
-            style={[
-              styles.categoryText,
-              !selectedCategory && styles.selectedCategoryText
-            ]}
-          >
-            <FormattedMessage id="allCategories" defaultMessage="All" />
-          </Text>
-        </TouchableOpacity>
+      {
+        allCategories.length > 0 ? <View h={100} w={'full'} >
+          <ScrollView horizontal w={'full'} >
+            {
+              allCategories.map((category, index) => {
+                return <Button onPress={() => setSelectCategory(category.id)} py={1} display={'flex'} flexDir={'row'} alignItems={'center'} justifyContent={'center'} px={4} key={index} bg={'white'} mx={2} h="full" rounded={'md'}>
+                  <Image alt={"image"} width={50} height={50} mr={4} source={{ uri: category.image }} />
+                  <Text>{category.name}</Text>
+                </Button>
+              })
+            }
+          </ScrollView>
+        </View>
+          :
+          <View w={'full'} display={'flex'} flexDir={'row'} alignItems={'center'} justifyContent={'center'} >
+            <Text>There no are categorys created</Text>
+          </View>
+      }
 
-        {categories.map((category) => (
-          <TouchableOpacity
-            key={category}
-            style={[
-              styles.categoryChip,
-              selectedCategory === category && styles.selectedCategoryChip
-            ]}
-            onPress={() => setSelectedCategory(category)}
-          >
-            <Text
-              style={[
-                styles.categoryText,
-                selectedCategory === category && styles.selectedCategoryText
-              ]}
-            >
-              {category}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView> */}
       <ScrollView
+
         contentContainerStyle={styles.scrollViewContent}
         style={styles.scrollView}
       >
@@ -286,31 +292,29 @@ const Productos: React.FC = () => {
           ))
         ) : filteredProducts.length > 0 ? (
           <Animated.View style={{ opacity: fadeAnim }}>
-            {filteredProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={sampleProducts[1]}
-                productBDD={product}
-                salesData={salesData}
-                satisfactionData={satisfactionData}
-                categoryData={categoryData}
-                dayslySalesData={dayslySalesData}
-                monthlySalesData={monthlySalesData}
-                onUpdateProduct={handleUpdateProduct}
-                onDeleteRequest={handleDeleteRequest}
-                isBeingDeleted={deletingProductId === product.id}
-              />
-            ))}
+            {filteredProducts.map((product) => {
+
+              return (
+                <ProductCard
+                  key={product.id}
+                  product={sampleProducts[1]}
+                  productBDD={product}
+                  dayslySalesData={dayslySalesData}
+                  monthlySalesData={monthlySalesData}
+                  onUpdateProduct={updateProduct}
+                  onDeleteRequest={handleDeleteRequest}
+                  isBeingDeleted={deletingProductId === product.id}
+                />
+              )
+            })}
           </Animated.View>
         ) : (
           <Animatable.View animation="fadeIn" style={styles.emptyStateContainer}>
             <LottieView
               source={
-                selectedCategory
-                  ? require("../../../constants/Animation-fantasma-empty.json") // Para categoría vacía
-                  : searchTerm
-                    ? require("../../../constants/Animation-screach-empty.json") // Para búsqueda vacía
-                    : require("../../../constants/Animation-empty-box.json") // Para sin productos
+                searchTerm
+                  ? require("../../../constants/Animation-screach-empty.json")
+                  : require("../../../constants/Animation-empty-box.json")
               }
               autoPlay
               loop
@@ -320,22 +324,18 @@ const Productos: React.FC = () => {
               <FormattedMessage id="noProductsFound" defaultMessage="No hay productos" />
             </Text>
             <Text style={styles.emptyStateSubtitle}>
-              {selectedCategory ? (
-                <FormattedMessage
-                  id="noProductsInCategory"
-                  defaultMessage="No products in this category"
-                />
-              ) : searchTerm ? (
-                <FormattedMessage
-                  id="noProductsMatchSearch"
-                  defaultMessage="No products match your search"
-                />
-              ) : (
-                <FormattedMessage
-                  id="addYourFirstProduct"
-                  defaultMessage="Add your first product by clicking the + button"
-                />
-              )}
+              {
+                searchTerm ? (
+                  <FormattedMessage
+                    id="noProductsMatchSearch"
+                    defaultMessage="No products match your search"
+                  />
+                ) : (
+                  <FormattedMessage
+                    id="addYourFirstProduct"
+                    defaultMessage="Add your first product by clicking the + button"
+                  />
+                )}
             </Text>
           </Animatable.View>
         )}

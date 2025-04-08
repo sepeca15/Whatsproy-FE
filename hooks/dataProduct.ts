@@ -22,7 +22,7 @@ interface ProductBDD {
   plazoDuracionEstimadoMinutos: number;
   precio: number;
   currency_id?: any;
-  categoria: string;
+  category: any[];
 }
 
 interface SalesData {
