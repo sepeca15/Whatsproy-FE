@@ -6,7 +6,9 @@ const getFormattedDate = (): string => new Date().toISOString().split("T")[0];
 const getTimeAgo = (date: string): string => {
   const now = new Date();
   const createdAt = new Date(date);
-  const diffInSeconds = Math.floor((now.getTime() - createdAt.getTime()) / 1000);
+  const diffInSeconds = Math.floor(
+    (now.getTime() - createdAt.getTime()) / 1000
+  );
 
   const minutes = Math.floor(diffInSeconds / 60);
   const hours = Math.floor(minutes / 60);
@@ -22,14 +24,11 @@ const useOrdersData = () => {
   const [ordersCount, setOrdersCount] = useState(0);
   const [dailyRevenue, setDailyRevenue] = useState(0);
   const [lastOrders, setLastOrders] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const isFetching = useRef(false);
+  const isFetching = useRef(true);
 
-  const getOrders = useCallback(async () => {
-    if (isFetching.current) return;
+  const getOrders = async () => {
     try {
       isFetching.current = true;
-      setLoading(true);
       const response = await api.order.lastThreeOrders();
       const formattedOrders = response.data.map((order: any) => {
         let costo = 0;
@@ -52,16 +51,15 @@ const useOrdersData = () => {
       console.error("Error al obtener pedidos:", error);
     } finally {
       isFetching.current = false;
-      setLoading(false);
     }
-  }, []);
+  };
 
-  const getOrdersByDate = useCallback(async () => {
-    if (isFetching.current) return;
+  const getOrdersByDate = async () => {
     try {
       isFetching.current = true;
       const today = getFormattedDate();
       const response = await api.order.getOrdersByDate(today);
+
       setOrdersCount(response.ordersDay || 0);
       console.log("Pedidos del día:", response.ordersDay);
     } catch (error) {
@@ -69,10 +67,9 @@ const useOrdersData = () => {
     } finally {
       isFetching.current = false;
     }
-  }, []);
+  };
 
-  const moneyinday = useCallback(async () => {
-    if (isFetching.current) return;
+  const moneyinday = async () => {
     try {
       isFetching.current = true;
       const today = getFormattedDate();
@@ -83,19 +80,19 @@ const useOrdersData = () => {
     } finally {
       isFetching.current = false;
     }
-  }, []);
+  };
 
   useEffect(() => {
     getOrders();
     getOrdersByDate();
     moneyinday();
-  }, [getOrders, getOrdersByDate, moneyinday]);
+  }, []);
 
   return {
     ordersCount,
     dailyRevenue,
     lastOrders,
-    loading,
+    loading: isFetching.current,
     refreshData: async () => {
       await Promise.all([getOrders(), getOrdersByDate(), moneyinday()]);
     },

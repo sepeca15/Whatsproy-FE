@@ -7,9 +7,34 @@ import { Colors } from "@/constants/Colors";
 import { StyleSheet } from "react-native";
 import Toast from "react-native-toast-message";
 import toastConfig from "@/utils/toast";
+import { usePushNotifications } from "@/hooks/usePushNotification";
+import { useUser } from "@/hooks/redux/useUser";
+import api from "@/services/api/admin";
 
 const Layout: React.FC = () => {
   const { isAuthenticated, loading, redirecting } = useAuth();
+  const { user, handleUpdateFCM } = useUser();
+  const { loading: loadingFCM, expoPushToken } = usePushNotifications();
+
+  const handleUpdatePushTOken = async (token: any) => {
+    const userInfo = user;
+    const currentToken = userInfo?.dispositivo?.fcmToken;
+    if (currentToken !== token) {
+      console.log("deberia actualizar")
+      const resp = await api.user.updateFcm(token);
+      if (resp?.fcmToken) {
+        handleUpdateFCM({ ...resp, usuario: null });
+      }
+    } else {
+      console.log("no deberia actualizar")
+    }
+  };
+
+  React.useEffect(() => {
+    if (user?.id && expoPushToken) {
+      handleUpdatePushTOken(expoPushToken);
+    }
+  }, [user?.id, expoPushToken]);
 
   React.useEffect(() => {
     if (isAuthenticated && !loading) {
@@ -17,7 +42,7 @@ const Layout: React.FC = () => {
     }
   }, [isAuthenticated, loading]);
 
-  if (loading || redirecting) {
+  if (loading || redirecting || loadingFCM) {
     return (
       <View style={styles.spinner}>
         <Progress.Circle
