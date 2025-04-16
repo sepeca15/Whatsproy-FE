@@ -4,29 +4,17 @@ import EditProduct from "./components/EditProductos";
 import { styles } from "./components/EditProductStyle";
 import { useLocalSearchParams } from "expo-router";
 
-interface ProductFormData {
-  id: number;
-  name: string;
-  price: string;
-  currency: string;
-  duration: string;
-  description: string;
-  imageUrl?: string;
-  disponible: boolean;
-  empresa_id: number;
-}
-
 interface EditProProps {
   id: number;
   name: string;
   price: string;
-  // currency: string;
   duration: string;
   description: string;
   imageUrl: string;
   disponible: string;
   empresa_id: number;
   currency_id?: string;
+  categoryIds: any[];
 }
 
 const EditPro: React.FC = () => {
@@ -43,6 +31,7 @@ const EditPro: React.FC = () => {
     disponible: params.disponible as string,
     currency_id: params.currency_id as string,
     empresa_id: parseInt(params.empresa_id as string, 10) || 0,
+    categoryIds: params.category ? (params.category as string).split(',') : [],
   };
 
   return (

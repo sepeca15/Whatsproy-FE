@@ -38,6 +38,9 @@ interface MultiSelectInputProps {
   error?: any;
   initialStateAdd?: itemAdd[];
   actionToAddItem?: (data: any) => void;
+  height?: number;
+  sizeText?: number
+  itemsSelected?: any[];
 }
 
 let timeoutSearch: any = 0;
@@ -55,17 +58,29 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
   onSearch,
   initialStateAdd,
   actionToAddItem,
+  height,
+  sizeText,
+  itemsSelected
 }) => {
   const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
-  const [selectedItemsKeys, setSelectedItemsKeys] = useState<string[]>([]);
+  const [selectedItemsKeys, setSelectedItemsKeys] = useState<any[]>([]);
   const [query, setQuery] = useState("");
   const [loadingApi, setLoadingApi] = useState(false);
   const { showToast } = useToastContext();
   const [formValues, setFormValues] = React.useState<Record<string, string>>(
     {},
   );
+
+  useEffect(() => {
+    if (itemsSelected && Array.isArray(itemsSelected)) {
+      console.log('siii', itemsSelected);
+      
+      setSelectedItemsKeys(itemsSelected);
+      setSelectedItems(itemsSelected)
+    }
+  }, [itemsSelected]);
 
   useEffect(() => {
     if (onSearch) {
@@ -109,21 +124,19 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
   };
 
   const toggleSelectionKeys = (value: string) => {
+    const stringValue = value.toString();
+    let updatedSelected: string[];
+  
     if (!isMultiple) {
-      setItemsSelected([value]);
-      setSelectedItemsKeys([value]);
-      return;
+      updatedSelected = [stringValue];
+    } else {
+      updatedSelected = selectedItemsKeys.includes(stringValue)
+        ? selectedItemsKeys.filter((item) => item !== stringValue)
+        : [...selectedItemsKeys, stringValue];
     }
-    setItemsSelected((prev: any) =>
-      prev.includes(value)
-        ? prev.filter((item: any) => item !== value)
-        : [...prev, value],
-    );
-    setSelectedItemsKeys((prev: any) =>
-      prev.includes(value)
-        ? prev.filter((item: any) => item !== value)
-        : [...prev, value],
-    );
+  
+    setItemsSelected(updatedSelected);
+    setSelectedItemsKeys(updatedSelected);
   };
 
   const areAllFieldsFilled = () => {
@@ -159,6 +172,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
           onPressOut={() => setIsModalOpen(true)}
         >
           <Input
+            style={{ height: height ?? 'auto', fontSize: sizeText ? sizeText : 12 }}
             isReadOnly
             value={selectedItemsKeys
               ?.map((itm) => {
@@ -245,7 +259,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
               {!loading ? (
                 <ScrollView horizontal={false}>
                   {options.map((option, index) => (
-                    <View width={"100%"}>
+                    <View key={index} my={2} width={"100%"}>
                       <Checkbox
                         key={option.value + index}
                         value={option.value}
@@ -254,7 +268,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
                           if (handleProductSelection) {
                             handleProductSelection(option.value, isSelected);
                           }
-                          toggleSelection(option.label);
+                          toggleSelection(option.value);
                           toggleSelectionKeys(option.value);
                         }}
                       >
@@ -322,7 +336,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
                     isLoading={false}
                     onPress={DispatchActionAdd}
                     size="sm"
-                    key="aceptar"
+                    key="accept"
                     backgroundColor={"#2C2C2C"}
                     borderRadius={"6"}
                     fontWeight={700}

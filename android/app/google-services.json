@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1091951711383",
+    "project_id": "learndo-39568",
+    "storage_bucket": "learndo-39568.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1091951711383:android:c28636adc0752e0a3845d2",
+        "android_client_info": {
+          "package_name": "com.whatsproy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1091951711383-qpd2r15b5ah2qnv7gi8u8qbgk2a7hl7q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqXQILUynAOpiwBpt-ZkbmB4rwYAHRYOY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1091951711383-3ntcoh4i5134fg0b6nmpl03oqd1jgp5t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -120,10 +120,10 @@ const GraficProddet: React.FC<ProductDetailProps> = ({
             </Text>
             <Text style={styles.infoValue}>{product.duration}</Text>
           </View>
-          {/* <View style={styles.infoRow}>
+        {/* <View style={styles.infoRow}>
             <Text style={styles.infoLabel}><FormattedMessage id="category" /></Text>
             <Text style={styles.infoValue}>{product.category}</Text>
-          </View> */}
+          </View>  */}
           <Text style={styles.descriptionTitle}>
             <FormattedMessage id="description" />
           </Text>
