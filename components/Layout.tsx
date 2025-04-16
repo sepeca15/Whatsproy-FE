@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Link, usePathname, useRouter } from "expo-router";
-import { Text, View } from "native-base";
+import { View } from "native-base";
 import { Pressable, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
 import IonIcon from "react-native-vector-icons/Ionicons";
@@ -9,7 +9,6 @@ import { Colors } from "@/constants/Colors";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { useUser } from "@/hooks/redux/useUser";
 import { TipoServicio } from "@/enums/TipoServicio";
-import Entypo from "react-native-vector-icons/Entypo";
 
 const Pages = (empresaType: number) => {
   return [
@@ -49,13 +48,6 @@ const Pages = (empresaType: number) => {
       name: "productos",
       path: "/(tabs)/productos",
       icon: (select: boolean) => (
-        empresaType === TipoServicio.RESERVA ?
-        <Entypo 
-          name="shopping-cart"
-          size={24}
-          color={select ? Colors.light.primary : "#717171"}
-        />
-        :
         <IonIcon
           name="fast-food"
           size={24}

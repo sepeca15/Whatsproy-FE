@@ -16,7 +16,6 @@ interface SalesChartProps {
   period: string;
   onPeriodChange: (period: string) => void;
 }
-const currentMonth = new Date().getMonth(); // Mes actual (0 = Enero, 11 = Diciembre)
 
 const SalesChart: React.FC<SalesChartProps> = ({
   monthlySales = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
@@ -33,61 +32,18 @@ const SalesChart: React.FC<SalesChartProps> = ({
     "Oct",
   ],
   period = "mensual",
-  onPeriodChange = () => { },
+  onPeriodChange = () => {},
 }) => {
+  // Encontrar el valor máximo para calcular las alturas relativas
+  const maxSale = Math.max(...monthlySales);
 
+  // Ancho disponible para el gráfico
+  const chartWidth = Dimensions.get("window").width - 60; // Restando padding
+  const barWidth = chartWidth / monthlySales.length - 10; // 10px de espacio entre barras
 
-  // const currentMonth = new Date().getMonth(); // Mes actual (0 = Enero, 11 = Diciembre)
-
-  // const filteredSales = monthlySales.slice(0, currentMonth + 1);
-  // const filteredLabels = labels.slice(0, currentMonth + 1);
-
-  let filteredLabels = labels;
-  let filteredSales = monthlySales;
-
-  switch (period) {
-    case "semanal":
-      // Obtener la semana actual del mes
-      const currentWeek = Math.ceil(new Date().getDate() / 7);
-      filteredLabels = labels.slice(0, currentWeek);
-      filteredSales = monthlySales.slice(0, currentWeek);
-      break;
-
-    case "mensual":
-      // Obtener el mes actual
-      const currentMonth = new Date().getMonth();
-      filteredLabels = labels.slice(0, currentMonth + 1);
-      filteredSales = monthlySales.slice(0, currentMonth + 1);
-      break;
-
-    case "trimestral":
-      // Obtener el trimestre actual
-      const currentQuarter = Math.floor(new Date().getMonth() / 3);
-      filteredLabels = labels.slice(0, (currentQuarter + 1) * 3);
-      filteredSales = monthlySales.slice(0, (currentQuarter + 1) * 3);
-      break;
-
-    case "anual":
-      // Mostrar el año completo
-      filteredLabels = labels;
-      filteredSales = monthlySales;
-      break;
-
-    default:
-      break;
-  }
-
-
-  const fontSize = Math.max(10, Math.min(16, 40 / filteredSales.length));
-  const maxSale = Math.max(...filteredSales);
-  const chartWidth = Dimensions.get("window").width - 60;
-  const barWidth = chartWidth / filteredSales.length - 10;
-  console.log("monthlySales", monthlySales);
-
-  console.log("filteredSales", filteredSales);
   return (
     <Box bg="white" borderRadius="lg" p={4} shadow={2} mb={4}>
-      <HStack justifyContent="space-between" alignItems="center" mb={20}>
+      <HStack justifyContent="space-between" alignItems="center" mb={10}>
         <Text style={{ fontSize: 16, fontWeight: "bold" }}>
           <FormattedMessage
             id="sales.trend"
@@ -119,30 +75,27 @@ const SalesChart: React.FC<SalesChartProps> = ({
 
       <Box height={150} mb={4}>
         <HStack
-          justifyContent={filteredLabels.length < 2 ? "center" : "space-between"}
+          justifyContent="space-between"
           height="100%"
           alignItems="flex-end"
         >
-          {filteredSales.map((sale, index) => {
-
+          {monthlySales.map((sale, index) => {
+            // Asegurarse de que los cálculos de altura para las barras del gráfico también usen enteros
             const heightPercentage = toStrictInteger((sale / maxSale) * 100);
             const isHighest = sale === maxSale;
 
             return (
-              <VStack key={index} alignItems="center" space={1}  justifyContent={filteredLabels.length < 2 ? "center" : "space-between"}  >
-                <Text style={{ fontSize, fontWeight: "bold", marginBottom: 2, marginTop: 1 }}>
+              <VStack key={index} alignItems="center" space={1}>
+                <Text style={{ fontSize: 7, marginBottom: 2 }}>
                   ${sale.toLocaleString()}
                 </Text>
                 <Box
-                  width={filteredLabels.length < 2 ? Math.max(barWidth - 200, 10) : barWidth}
+                  width={barWidth}
                   height={`${heightPercentage}%`}
                   bg={isHighest ? "#075e54" : "#128c7e"}
                   borderRadius="md"
-                  
                 />
-                <Text style={{ fontSize, fontWeight: "bold" }}>
-                  {filteredLabels[index] ?? "N/A"}
-                </Text>
+                <Text style={{ fontSize: 10 }}>{labels[index]}</Text>
               </VStack>
             );
           })}

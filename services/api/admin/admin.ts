@@ -11,7 +11,8 @@ import * as client from "../clients/clients";
 import * as image from "../image/image";
 import * as perfil from "../perfil/perfil";
 import * as stripe from "../stripe/stripe";
-import * as category from "../category/category";
+
+
 
 const api = {
   auth: {
@@ -40,7 +41,6 @@ const api = {
     update: user.updateUser,
     findAll: user.findAllUsers,
     find: user.findUser,
-    updateFcm: user.updateFCM,
     delete: user.deleteUser,
   },
   //(INFO-LINES)
@@ -77,12 +77,6 @@ const api = {
   },
   stripe: {
     createIntent: stripe.createIntent
-  },
-  category: {
-    create: category.createCategory,
-    getAll: category.getAllCategories,
-    getProducts: category.getProductFromCategory,
-    delete: category.deleteCategory,
   }
 };
 

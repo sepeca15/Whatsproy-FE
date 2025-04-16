@@ -6,7 +6,7 @@ import { HStack, Box, Icon } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { FormattedMessage } from "react-intl";
-import { removeData } from "@/storage/localStorage";
+
 const QuickActions: React.FC = () => {
   const router = useRouter();
 
@@ -33,15 +33,11 @@ const QuickActions: React.FC = () => {
       route: "/(tabs)/config",
     },
     {
-      id: "logout",
-      icon: "log-out-outline",
-      label: "profile.logout",
-      defaultMessage: "Cerrar sesión",
-      route: "/(auth)/login",
-      onPress: async () => {
-        await removeData("token");
-        router.replace("/(auth)/login");
-      },
+      id: "help",
+      icon: "help-circle-outline",
+      label: "profile.help",
+      defaultMessage: "Ayuda",
+      route: "/(tabs)/config",
     },
   ];
 
@@ -54,26 +50,12 @@ const QuickActions: React.FC = () => {
         />
       </Text>
 
-      <HStack flexWrap="wrap" justifyContent="center">
-        {actions.map((action, index) => (
+      <HStack flexWrap="wrap" justifyContent="space-between">
+        {actions.map((action) => (
           <TouchableOpacity
             key={action.id}
-            style={{
-              width: "45%",
-              minWidth: 140, 
-              marginBottom: 12,
-              maxWidth: "50%",
-              alignSelf: actions.length % 2 !== 0 && index === actions.length - 1 ? "center" : "auto",
-              marginRight: "2.5%", 
-              flexShrink: 1, 
-            }}
-            onPress={() => {
-              if (action.onPress) {
-                action.onPress();
-              } else {
-                router.push(action.route as any);
-              }
-            }}
+            style={{ width: "48%", marginBottom: 12 }}
+            onPress={() => router.push(action.route as any)}
           >
             <Box
               bg="rgba(7, 94, 84, 0.1)"
@@ -99,9 +81,6 @@ const QuickActions: React.FC = () => {
           </TouchableOpacity>
         ))}
       </HStack>
-
-
-
     </Box>
   );
 };

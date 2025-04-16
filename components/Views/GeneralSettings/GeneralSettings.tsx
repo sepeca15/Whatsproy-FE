@@ -22,7 +22,7 @@ interface IForm {
 
 const GeneralConfig = () => {
   const { handleUpdateCompany, user } = useUser();
-  const intl = useIntl(); 
+  const intl = useIntl(); // Usa useIntl para obtener la instancia de intl
   const [loadingApi, setLoadingApi] = React.useState<boolean>(false);
   const [hasChanges, setHasChanges] = React.useState<boolean>(false);
 

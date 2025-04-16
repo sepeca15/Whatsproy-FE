@@ -21,7 +21,6 @@ import * as Progress from "react-native-progress";
 import { Colors } from "@/constants/Colors";
 
 import CustomText from "@/components/CustomText";
-import { useUser } from "@/hooks/redux/useUser";
 
 if (
   Platform.OS === "android" &&
@@ -40,10 +39,8 @@ export default function CalendarView() {
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split("T")[0],
   );
-  const {user} = useUser()
   const [loading, setLoading] = useState(true);
-  console.log(user);
-  
+
   const onLoadItems = async (selectedDate: string) => {
     setLoading(true);
     try {

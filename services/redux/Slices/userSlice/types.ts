@@ -18,7 +18,6 @@ export interface IUserData {
   tipo_servicio?: number;
   tipo_servicioNombre?: string;
   firstUser?: boolean;
-  dispositivo?: any;
   hora_apertura?: string;
   hora_cierre?: string;
   abierto?: boolean;

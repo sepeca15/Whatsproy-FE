@@ -8,6 +8,7 @@ import { NativeBaseProvider } from "native-base";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import "react-native-reanimated";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Provider } from "react-redux";
 import { store } from "@/services/redux/store";
@@ -15,20 +16,6 @@ import { ToastProvider } from "@/contexts/ToastContext";
 import { LocalizationProvider } from "./LocalizationContext"; // Importa el proveedor de localización
 import { StatusBar } from "expo-status-bar";
 import { StripeProvider } from "@stripe/stripe-react-native";
-import * as Notifications from "expo-notifications";
-import { Platform } from "react-native";
-
-const isAndroid = Platform.OS === "android";
-
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-  }),
-});
-
-b42553224c8c9c4113a30f4568d63e576da3a6ac
 
 SplashScreen.preventAutoHideAsync();
 

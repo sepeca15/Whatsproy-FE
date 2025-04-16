@@ -28,9 +28,6 @@ const userSlice = createSlice({
     onPurchasedPlan: (state) => {
       state.user.paymentMade = true;
     },
-    onUpdateFcm: (state, { payload }) => {
-      state.user.dispositivo = payload;
-    },
     onApiConfigured: (state) => {
       state.user.apiConfigured = true;
     },
@@ -54,7 +51,6 @@ export const {
   onUpdateKeys,
   onApiConfigured,
   onPurchasedPlan,
-  onUpdateFcm
 } = userSlice.actions;
 export const selectUser = (state: { user: IUser }) => state.user;
 

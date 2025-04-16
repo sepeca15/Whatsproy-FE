@@ -1,74 +1,26 @@
 import { StyleSheet } from "react-native";
 
-const styles = StyleSheet.create({
-  father: {
-    flex: 1,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#f8f8f8",
-  },
+const SettingsStyles = StyleSheet.create({
   container: {
     flex: 1,
-    width: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "flex-start",
-    paddingTop: 40,
+    padding: 16,
+    backgroundColor: "#fff",
   },
-  containerItems: {
-    width: "100%",
-    flex: 1,
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "flex-start",
-  },
-  title: {
-    backgroundColor: "black",
-    width: "60%",
-    paddingVertical: 6,
-    paddingHorizontal: 20,
-    borderTopEndRadius: 20,
-    borderTopStartRadius: 20,
-  },
-  card: {
-    backgroundColor: "white",
-    width: "100%",
-    borderBottomWidth: 0.5,
-    borderColor: "#dbdbdb",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 16,
-    paddingHorizontal: 10,
-  },
-  cardText: {
-    fontSize: 18,
-    color: "#333",
+  header: {
+    fontSize: 24,
     fontWeight: "bold",
+    marginBottom: 16,
   },
-  textDesc: {
-    flexWrap: "wrap",
-    maxWidth: "90%",
-    color: "#939393",
+  item: {
+    padding: 10,
+    fontSize: 18,
+    height: 44,
   },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  col: {
-    flex: 1,
-    marginLeft: 12,
-  },
-  rounded: {
-    width: 45,
-    height: 45,
-    borderRadius: 100,
-    backgroundColor: "gray",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
+  separator: {
+    height: 1,
+    width: "100%",
+    backgroundColor: "#CED0CE",
   },
 });
 
-export default styles;
+export default SettingsStyles;

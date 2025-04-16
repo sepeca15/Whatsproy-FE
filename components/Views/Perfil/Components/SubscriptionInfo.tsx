@@ -1,5 +1,5 @@
 import type React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 import { Box, HStack, VStack, Icon } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
 import { FormattedMessage } from "react-intl";
@@ -39,18 +39,13 @@ const SubscriptionInfo: React.FC<SubscriptionProps> = ({
           size="xs"
           color="gray.500"
         />
-        <View style={{ flex: 1, justifyContent:  "space-between" }}>
-        <Text style={{ fontSize: 12, color: "black" }}>
+        <Text style={{ fontSize: 12, color: "#666" }}>
           <FormattedMessage
             id="profile.expiryDate"
             defaultMessage="Expira: {date}"
             values={{ date: expiryDate }}
           />
         </Text>
-        <Text style={{ fontSize: 12, color: "gray" }}>
-          {expiryDate}
-        </Text>
-        </View>
       </HStack>
 
       <VStack space={2}>

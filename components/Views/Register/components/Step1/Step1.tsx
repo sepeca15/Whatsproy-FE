@@ -34,31 +34,27 @@ const Step1 = ({ formData, handleInputChange, errors }: IStep1) => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [1, 1], 
+      aspect: [1, 1],
       quality: 1,
     });
-  
-    if (result.canceled) return;
-  
-    const asset = result.assets?.[0];
-    if (!asset?.uri) {
-      console.error("Error: No se pudo obtener la URI de la imagen.");
-      return;
-    }
-    console.error("se seleccionó bien la imagen...:", asset);
-  
-    const file = {
-      uri: result.assets[0].uri,
-      type: result.assets[0].mimeType || "image/png",
-      name: asset.fileName || `image_${Date.now()}.png`,
-    };
-  
-    setUri(file.uri);
-    const uploadResponse = await api.image.upload(file);
-    handleInputChange("logo", uploadResponse.url);
-  };
 
- 
+    if (!result.canceled) {
+      try {
+        const { uri, fileName } = result.assets[0];
+
+        const file = {
+          uri: result.assets[0].uri,
+          type: "image/png",
+          name: "image.png",
+        };
+        setUri(file.uri);
+        const uploadResponse = await api.image.upload(file);
+        handleInputChange("logo", uploadResponse.url);
+      } catch (error) {
+        console.error("Error al subir la imagen:", error);
+      }
+    }
+  };
 
   return (
     <VStack space={2} style={styles.container}>

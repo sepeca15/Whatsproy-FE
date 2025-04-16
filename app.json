@@ -2,8 +2,6 @@
   "expo": {
     "name": "Whatsproy",
     "slug": "Whatsproy",
-    "appVersion": "1.0.0",
-    "runtimeVersion": "1.0.0",
     "newArchEnabled": true,
     "version": "1.0.0",
     "orientation": "portrait",
@@ -14,49 +12,27 @@
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#128c7e"
+      "backgroundColor": "#ffffff"
     },
     "ios": {
       "supportsTablet": true,
-      "newArchEnabled": true,
-      "config": {
-        "usesNonExemptEncryption": false
-      },
-      "googleServicesFile": "./ios/GoogleService-Info.plist"
+      "newArchEnabled": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/icon.png",
-        "backgroundColor": "#128c7e"
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
       },
-      "googleServicesFile": "./assets/google-services.json",
-      "newArchEnabled": true,
-      "permissions": ["NOTIFICATIONS"],
-      "package": "com.whatsproy",
-      "notification": {
-        "icon": "./assets/images/imageIcon.png",
-        "color": "#128c7e"
-      }
+      "newArchEnabled": true
     },
     "web": {
       "bundler": "metro",
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
-    "plugins": ["expo-router",
-    [
-      "expo-splash-screen",
-      {
-        "backgroundColor": "#128c7e",
-        "image": "./assets/images/splash-icon.png",
-        "dark": {
-          "image": "./assets/images/splash-icon.png",
-          "backgroundColor": "#128c7e"
-        },
-        "imageWidth": 200
-      }
-    ]
-  ],
+    "plugins": [
+      "expo-router"
+    ],
     "experiments": {
       "typedRoutes": true
     },
@@ -67,6 +43,9 @@
       "eas": {
         "projectId": "e40e15d9-921b-4314-a35c-1b33afd386da"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
     },
     "updates": {
       "url": "https://u.expo.dev/e40e15d9-921b-4314-a35c-1b33afd386da"

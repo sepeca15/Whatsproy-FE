@@ -20,7 +20,6 @@ import { useUser } from "@/hooks/redux/useUser";
 import ModalCreateUser from "./components/ModalCreateUser";
 import ModalEditUser from "./components/ModalEditUser";
 import { useIntl } from "react-intl";
-import Usuarios from ".";
 
 const initialValues = {
   data: [],
@@ -35,8 +34,6 @@ const UsuariosEmpresasScreen: React.FC = () => {
     modalCreate: false,
   });
   const [selectedUser, setSelectedUser] = React.useState<any>(undefined);
-
-
 
   const uploadUsers = async () => {
     try {
@@ -86,7 +83,6 @@ const UsuariosEmpresasScreen: React.FC = () => {
   const selectEditUser = (user: IUser) => {
     toggleModalState("modalEdit", true);
     setSelectedUser(user);
-    
   };
 
   const editUserSelected = (userId: number, userData: any) => {
@@ -95,8 +91,6 @@ const UsuariosEmpresasScreen: React.FC = () => {
       data: prevState.data.map((user) =>
         user.id === userId ? { ...user, ...userData } : user,
       ),
-      
-      
     }));
   };
 

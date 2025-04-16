@@ -1,16 +1,14 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Feather from "react-native-vector-icons/Feather";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-
 import IonIcons from "react-native-vector-icons/Ionicons";
 import CustomText from "@/components/CustomText";
 import { Center } from "native-base";
 import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
-import styles from "./SettingsStyles";
+
 const settingsPage = [
   {
     title: "generalSettings",
@@ -48,19 +46,12 @@ const settingsPage = [
     description: "orderDataDescription",
     icon: <IonIcons size={20} color={"white"} name="newspaper-outline" />,
   },
-  {
-    title: "categories",
-    href: "/(tabs)/categories",
-    description: "categoriesDesc",
-    icon: <MaterialCommunityIcons size={20} color={"white"} name="format-list-bulleted-type" />,
-  },
 ];
 
 const Settings = () => {
   const router = useRouter();
   return (
     <Center style={styles.father}>
-      <ScrollView>
       <View style={styles.container}>
         <View style={styles.title}>
           <CustomText
@@ -81,7 +72,6 @@ const Settings = () => {
                 key={index}
                 style={styles.card}
                 onPress={() => router.push(item.href)}
-
               >
                 <View style={styles.row}>
                   <View style={styles.rounded}>{item.icon}</View>
@@ -99,10 +89,79 @@ const Settings = () => {
           })}
         </View>
       </View>
-      </ScrollView>
     </Center>
   );
 };
 
+const styles = StyleSheet.create({
+  father: {
+    flex: 1,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#f8f8f8",
+  },
+  container: {
+    flex: 1,
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    paddingTop: 40,
+  },
+  containerItems: {
+    width: "100%",
+    flex: 1,
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "flex-start",
+  },
+  title: {
+    backgroundColor: "black",
+    width: "60%",
+    paddingVertical: 6,
+    paddingHorizontal: 20,
+    borderTopEndRadius: 20,
+    borderTopStartRadius: 20,
+  },
+  card: {
+    backgroundColor: "white",
+    width: "100%",
+    borderBottomWidth: 0.5,
+    borderColor: "#dbdbdb",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 16,
+    paddingHorizontal: 10,
+  },
+  cardText: {
+    fontSize: 18,
+    color: "#333",
+    fontWeight: "bold",
+  },
+  textDesc: {
+    flexWrap: "wrap",
+    maxWidth: "90%",
+    color: "#939393",
+  },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  col: {
+    flex: 1,
+    marginLeft: 12,
+  },
+  rounded: {
+    width: 45,
+    height: 45,
+    borderRadius: 100,
+    backgroundColor: "gray",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
 
 export default Settings;

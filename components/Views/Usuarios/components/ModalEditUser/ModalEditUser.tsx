@@ -7,8 +7,6 @@ import styles from "./ModalEditUserStyles";
 import api from "@/services/api/admin";
 import CustomButton from "@/components/CustomButton";
 import { useIntl } from "react-intl"; // Importa useIntl
-import useImagePicker from "@/utils/ImagePicker/useImagePicker";
-import { useToastContext } from "@/contexts/ToastContext";
 
 interface IEditUser {
   nombre: string;
@@ -24,12 +22,6 @@ interface IModalCreateUser {
   editUserSelected: (userId: number, userData: any) => void;
 }
 
-interface UseImagePickerProps {
-  toastErrorMessage: string;
- 
-  onImagePicked: (data: { localUri?: string; apiUrl?: string }) => void;
-}
-
 const ModalEditUser = ({
   onToogleModal,
   isOpen,
@@ -40,9 +32,7 @@ const ModalEditUser = ({
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
   const intl = useIntl(); // Usa useIntl para obtener la instancia de intl
-  const { showToast } = useToastContext();
-  
-  const [selectedImage, setSelectedImage] = useState<string | null>();
+
   useEffect(() => {
     if (userInfo) {
       setFormData(userInfo);
@@ -56,39 +46,16 @@ const ModalEditUser = ({
     [],
   );
 
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
 
-  
-  const { pickImage } = useImagePicker({
-    toastErrorMessage: "Error al seleccionar la imagen",
-    onImagePicked: async ({ localUri, apiUrl }) => {
-      // Note: Don't set loadingimage here as it's now handled in handleImagePick
-      if (localUri) {
-        setSelectedImage(localUri.toString());
-      }
-      if (apiUrl) {
-        setFormData((prevData) => ({
-          ...prevData,
-          imagen: apiUrl,
-        }));
-      }
-    },
-  });
-
-  const handleImagePick = async () => {
-    try {
-     
-      // Await the pickImage function to ensure it completes
-      await pickImage(setFormData);
-      console.log("Imagen seleccionada:", formData);
-    } catch (error) {
-      console.error("Error selecting image:", error);
-      showToast({
-        title: intl.formatMessage({ id: "errorSelectingImage" }),
-        status: "error",
-      });
-    } finally {
-      // Ensure loadingimage is set to false when the process completes
-     
+    if (!result.canceled) {
+      handleInputChange("photo", result.assets[0].uri);
     }
   };
 
@@ -135,11 +102,11 @@ const ModalEditUser = ({
         </Modal.Header>
         <Modal.Body>
           <ScrollView contentContainerStyle={styles.scrollContainer}>
-            <TouchableOpacity onPress={handleImagePick} style={styles.imageContainer}>
+            <TouchableOpacity onPress={pickImage} style={styles.imageContainer}>
               <Image
                 source={{
                   uri:
-                    selectedImage ||
+                    formData.photo ||
                     "https://static.vecteezy.com/system/resources/previews/036/280/651/non_2x/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-illustration-vector.jpg",
                 }}
                 style={styles.image}

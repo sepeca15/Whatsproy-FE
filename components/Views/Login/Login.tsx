@@ -33,7 +33,6 @@ const LoginScreen: React.FC = () => {
         StoreData("token", res.access_token);
         const userData = await api.auth.me();
         StoreData("user", JSON.stringify(userData));
-        console.log("User data:", userData);
         router.push("/(tabs)/home");
       }
     } catch (error: any) {      

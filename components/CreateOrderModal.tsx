@@ -263,7 +263,6 @@ const CreateOrderModal = ({
     try {
       setLoadingNextDateAvailable(true);
       const resp = await api.order.getNextDateAvailable();
-      console.log("resp is", resp)
       if (resp) {
         handleChangeValue("fecha", moment(resp).add("hours", 3));
       }
