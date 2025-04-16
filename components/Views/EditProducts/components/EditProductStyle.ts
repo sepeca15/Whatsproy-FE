@@ -8,6 +8,10 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f5f5f5",
   },
+  disabled: {
+    opacity: 0.5,
+
+  },
   scrollContent: {
     flexGrow: 1,
     paddingBottom: 20,
@@ -115,7 +119,11 @@ export const styles = StyleSheet.create({
     backgroundColor: "#f9f9f9",
   },
   picker: {
-    height: 50,
+    height: 55,
+    alignContent: "center",
+    justifyContent: "center",
+    textAlign: "center",
+
   },
   textArea: {
     height: 100,

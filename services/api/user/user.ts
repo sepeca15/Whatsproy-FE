@@ -13,6 +13,14 @@ export const findUser = async (usuarioId: number) => {
   return data;
 };
 
+export const updateFCM = async (fcm: string) => {
+  const { data } = await ApiInstances("global").post(`device/`, {
+    fcmToken: fcm,
+  });
+
+  return data;
+};
+
 export const findAllUsers = async (empresaId: number) => {
   const { data } = await ApiInstances("global").get(`usuario/` + empresaId);
 

@@ -83,6 +83,9 @@ export const styles = StyleSheet.create({
     paddingBottom: 12,
     borderBottomWidth: 1,
     borderBottomColor: "#f0f0f0",
+    marginLeft: 10,
+    marginTop: 2,
+   
   },
   infoLabel: {
     fontSize: 16,
@@ -95,6 +98,7 @@ export const styles = StyleSheet.create({
     color: "#1a1a1a",
     flex: 2,
     textAlign: "right",
+    
   },
   descriptionTitle: {
     fontSize: 18,

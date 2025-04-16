@@ -30,6 +30,8 @@
     "user": "User",
     "notifications": "Notifications",
     "privacySecurity": "Privacy and Security",
+    "categories": "Categories",
+    "categoriesDesc": "Create, edit and delete categories for your products!",
     "membership": "Membership",
     "manageHours": "Manage opening hours, closing hours, intervals between reservations, and open/close your store.",
     "createUsers": "Create users for your company, manage and control them.",
@@ -239,8 +241,25 @@
     "profile.edit": "Edit profile",
     "sales.period.semanal": "Weekly",
     "sales.period.trimestral": "Quarterly",
-    "sales.period.anual": "Annual"
-    
+    "sales.period.anual": "Annual",
+    "nameRequired": "Name is required",
+    "currencyRequired": "Currency is required",
+    "descriptionRequired": "Description is required",
+    "durationRequired": "Duration is required",
+    "priceRequired": "Price is required",
+    "productEditedSuccess": "Product edited successfully",
+    "errorOccurred": "An error occurred",
+    "imageRequired": "Image is required",
+    "profile.logout": "Logout",
+    "waitForImageUpload": "Waiting for image upload",
+    "productDeleted": "Product deleted successfully",
+    "deletingProduct": "Deleting product...",
+    "noProductsFound": "No products found",
+    "noProductsInCategory": "No products in this category",
+    "noProductsMatchSearch": "No products match your search",
+    "addYourFirstProduct": "Add your first product by clicking the + button",
+    "allCategories": "All",
+    "deletedProduct.modal.delete.card": "Product deleted"
   },
   "es": {
     "notAvailable": "No disponible",
@@ -268,6 +287,8 @@
     "date": "Fecha",
     "products": "Productos",
     "total": "Total",
+    "categories": "Categorias",
+    "categoriesDesc": "Maneja las categorias de los productos",
     "deleteOrder": "Eliminar Pedido",
     "viewDetails": "Ver Detalles",
     "confirmOrder": "Confirmar Pedido",
@@ -482,7 +503,25 @@
     "profile.edit": "Editar perfil",
     "sales.period.semanal": "Semanal",
     "sales.period.trimestral": "Trimestral",
-    "sales.period.anual": "Anual"
-   
+    "sales.period.anual": "Anual",
+    "nameRequired": "Nombre es requerido",
+    "currencyRequired": "Moneda es requerida",
+    "descriptionRequired": "Descripción es requerida",
+    "durationRequired": "Duración es requerida",
+    "priceRequired": "Precio es requerido",
+    "productEditedSuccess": "Producto editado con éxito",
+    "errorOccurred": "Ocurrió un error",
+    "imageRequired": "Imagen es requerida",
+    "profile.logout": "Cerrar sesión",
+    "waitForImageUpload": "Esperando carga de imagen",
+    "productDeleted": "Producto eliminado con éxito",
+    "deletingProduct": "Eliminando producto...",
+    "noProductsFound": "No se encontraron productos",
+    "noProductsInCategory": "No hay productos en esta categoría",
+    "noProductsMatchSearch": "No hay productos que coincidan con tu búsqueda",
+    "addYourFirstProduct": "Agrega tu primer producto haciendo click en el botón (+)",
+    "allCategories": "Todas",
+    "deletedProduct.modal.delete.card": "Producto eliminado"
+    
   }
 }
