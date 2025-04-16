@@ -8,6 +8,7 @@ interface UseImagePickerProps {
  
   onImagePicked: (data: { localUri?: string; apiUrl?: string }) => void;
 }
+
 const useImagePicker = ({ toastErrorMessage, onImagePicked }: UseImagePickerProps) => {
   const { showToast } = useToastContext();
   const [imageUri, setImageUri] = useState<string | null>(null);

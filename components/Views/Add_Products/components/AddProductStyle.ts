@@ -99,7 +99,7 @@ export const styles = StyleSheet.create({
     height: 50,
   },
   picker: {
-    height: 55,
+    display:'flex',
     alignContent: "center",
     justifyContent: "center",
     textAlign: "center",

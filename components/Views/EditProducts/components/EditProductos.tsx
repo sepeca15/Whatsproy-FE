@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 import {
-  View,
   Text,
   TextInput,
   TouchableOpacity,
@@ -25,6 +24,9 @@ import { useUser } from "@/hooks/redux/useUser";
 import useValidateForm from "../../../../utils/validate_Products/useValidateForm";
 import useImagePicker from "../../../../utils/ImagePicker/useImagePicker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { ICategoryData } from "../../Categories/components/CardCategory/CardCategory";
+import MultiSelectInput from "@/components/MultiSelectInput";
+import { View } from "native-base";
 
 interface ProductFormData {
   id: number;
@@ -36,6 +38,7 @@ interface ProductFormData {
   plazoDuracionEstimadoMinutos: number;
   precio: number;
   currency_id?: any;
+  categoryIds: any[]
 }
 
 interface EditProductProps {
@@ -43,12 +46,12 @@ interface EditProductProps {
   name: string;
   price: string;
   currency_id?: string;
-  imagen: string;
   duration: string;
   description: string;
   imageUrl?: string;
   disponible?: string;
   empresa_id?: number;
+  categoryIds: any[]
 }
 
 const EditProduct = ({
@@ -56,12 +59,12 @@ const EditProduct = ({
   name,
   price,
   currency_id,
-  imagen,
   duration,
   description,
   imageUrl,
   disponible,
   empresa_id,
+  categoryIds,
 
 
 }: EditProductProps) => {
@@ -72,11 +75,12 @@ const EditProduct = ({
     nombre: name,
     descripcion: description,
     disponible: disponible === "true",
-    imagen: imageUrl || "https://via.placeholder.com/150", // Imagen por defecto más clara
+    imagen: imageUrl || "https://via.placeholder.com/150", 
     empresa_id: empresa_id ?? 0,
-    currency_id: currency_id ?? null, // Evita conversiones innecesarias
+    currency_id: currency_id ?? null, 
     plazoDuracionEstimadoMinutos: Number(duration) || 0,
     precio: Number(price) || 0,
+    categoryIds: categoryIds
   });
   const { user } = useUser();
   const currencies = user?.currencies;
@@ -88,14 +92,27 @@ const EditProduct = ({
   const { showToast } = useToastContext();
   const [loading, setLoading] = useState(false);
 
+  const [allCategories, setAllCategories] = useState<ICategoryData[]>([]);
 
+  React.useEffect(() => {
+    loadAllCategories()
+  }, [])
+  const loadAllCategories = async () => {
+    try {
+      const resp = await api.category.getAll()
 
+      if (resp.ok) {
+        setAllCategories(resp.data)
+      }
 
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const validateForm = useValidateForm({
     ...formData,
     imagen: formData.imagen || "",
-
   }
   );
 
@@ -103,7 +120,6 @@ const EditProduct = ({
   const { pickImage } = useImagePicker({
     toastErrorMessage: "Error al seleccionar la imagen",
     onImagePicked: async ({ localUri, apiUrl }) => {
-      // Note: Don't set loadingimage here as it's now handled in handleImagePick
       if (localUri) {
         setSelectedImage(localUri.toString());
       }
@@ -114,7 +130,7 @@ const EditProduct = ({
         }));
       }
     },
-  });
+  });  
 
   const handleImagePick = async () => {
     try {
@@ -182,12 +198,12 @@ const EditProduct = ({
 
   return (
     <KeyboardAwareScrollView
-         style={styles.container}
-         resetScrollToCoords={{ x: 0, y: 0 }}
-         scrollEnabled={true}
-         enableOnAndroid={true} // Específico para Android
-         extraScrollHeight={Platform.OS === 'ios' ? 20 : 50} // Ajuste fino en el desplazamiento
-       >
+      style={styles.container}
+      resetScrollToCoords={{ x: 0, y: 0 }}
+      scrollEnabled={true}
+      enableOnAndroid={true} // Específico para Android
+      extraScrollHeight={Platform.OS === 'ios' ? 20 : 50} // Ajuste fino en el desplazamiento
+    >
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Text style={styles.title}>
           <FormattedMessage id="editProduct" />
@@ -286,6 +302,37 @@ const EditProduct = ({
             keyboardType="numeric"
             placeholder={intl.formatMessage({ id: "enterDurationProd" })}
           />
+
+          {
+            <View mb={4} style={styles.column}>
+              <Text style={styles.label}>
+                Categoria
+              </Text>
+              <View color={'red.100'} >
+                <MultiSelectInput
+                  sizeText={16}
+                  height={50}
+                  isMultiple
+                  placeholder="Seleccionar categorías"
+                  options={allCategories.map((cat) => ({
+                    label: cat.name,
+                    value: cat.id.toString(),
+                    placeholder: cat.name,
+                  }))}
+                  itemsSelected={formData.categoryIds}
+                  setItemsSelected={(selectedIds: any[]) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      categoryIds: selectedIds,
+                    }));
+                  }}
+
+                  onSearch={(query: string) => {
+                  }}
+                />
+              </View>
+            </View>
+          }
 
           <Text style={styles.label}>
             <FormattedMessage id="description" />

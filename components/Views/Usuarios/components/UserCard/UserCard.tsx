@@ -9,6 +9,7 @@ import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmActi
 import { useUser } from "@/hooks/redux/useUser";
 import { useToastContext } from "@/contexts/ToastContext";
 import { useIntl } from "react-intl"; // Importa useIntl
+import { Image } from "native-base";
 
 interface IUserCard {
   infoUser: IUser;
@@ -59,7 +60,12 @@ const UserCard = ({
       <View style={styles.data}>
         <View style={styles.row}>
           <View style={styles.icon}>
+            {
+              infoUser.photo ?
+              <Image alt="xd" source={{uri: infoUser.photo}} width={20} height={20} />
+              :
             <FatherIcon name="user" size={20} color={"gray"} />
+            }
           </View>
           <View style={styles.Column}>
             <Text style={styles.textName}>
