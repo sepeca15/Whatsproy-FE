@@ -9,17 +9,19 @@ import { selectUser } from "../redux/Slices/userSlice/userSlice";
 type KeysApis = "global" | "current";
 
 const ApiInstances = (key: KeysApis) => {
+  const baseUrl = key === "global" ? "https://app.whatsproy.com/" : undefined;
+
   const globalApi = axios.create({
-    baseURL: key === "global" ? "https://fed7-167-62-152-127.ngrok-free.app/" : undefined,
+    baseURL: baseUrl,
   });
+
+  console.log("baseUrl", baseUrl)
 
   globalApi.interceptors.request.use(
     async (config) => {
       const state = store.getState();
       const user = selectUser(state);
-      config.baseURL =
-        key === "global" ? "https://fed7-167-62-152-127.ngrok-free.app/" : user?.user.apiUrl;
-
+      config.baseURL = key === "global" ? "https://app.whatsproy.com/" : user?.user.apiUrl;
       const token = await getData("token");
       if (token) {
         config.headers["Authorization"] = `Bearer ${token}`;

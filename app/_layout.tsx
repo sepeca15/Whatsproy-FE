@@ -28,8 +28,6 @@ Notifications.setNotificationHandler({
   }),
 });
 
-b42553224c8c9c4113a30f4568d63e576da3a6ac
-
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {

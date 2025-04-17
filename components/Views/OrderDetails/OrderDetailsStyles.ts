@@ -1,12 +1,20 @@
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
+  containerScroll: {
+    flex: 1,
+    backgroundColor: "#f5f5f5",
+  },
   container: {
     flex: 1,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "space-between",
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 20,
   },
   containerSpiner: {
     display: "flex",
