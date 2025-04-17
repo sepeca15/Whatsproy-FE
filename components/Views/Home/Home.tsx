@@ -25,17 +25,9 @@ import * as Animatable from "react-native-animatable";
 
 
 const Home: React.FC = () => {
-<<<<<<< HEAD
-  const { loading, ordersCount, dailyRevenue, refreshData } = useOrdersData();
+  const { loading, ordersCount, dailyRevenue, refreshData, lastOrders } = useOrdersData();
   const [refreshing, setRefreshing] = React.useState(false);
   const deleteAnimationRef = useRef(null);
-  const [lastOrders, setLastOrders] = useState<any[]>([]);
-=======
-  const { loading, ordersCount, dailyRevenue, lastOrders, refreshData } =
-    useOrdersData();
-  const [refreshing, setRefreshing] = React.useState(false);
-
->>>>>>> 235361ee9ec690c1cc6387b152dde561197085d0
   const onRefresh = async () => {
     try {
       setRefreshing(true);
@@ -46,7 +38,8 @@ const Home: React.FC = () => {
       setRefreshing(false);
     }
   };
-
+console.log("ordersCount");
+  console.log("lassssssss", lastOrders);
   return (
     <SafeAreaView style={styles.container}>
       <Animated.View entering={FadeIn.delay(100)} style={styles.header}>
@@ -61,11 +54,8 @@ const Home: React.FC = () => {
         </View>
       </Animated.View>
 
-<<<<<<< HEAD
 
 
-=======
->>>>>>> 235361ee9ec690c1cc6387b152dde561197085d0
       {loading ? (
         <ActivityIndicator
           size="large"
@@ -128,7 +118,7 @@ const Home: React.FC = () => {
                     id={order.id?.toString() || "0"}
                     amount={order.amount || "$0"}
                     icon={order.icon || "receipt"}
-                    address="Desconocido"
+                    address={order.address}
                     onPress={() => {}}
                   />
                 ))

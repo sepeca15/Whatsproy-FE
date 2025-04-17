@@ -5,6 +5,7 @@ import InputField from "@/components/InputField";
 import CustomButton from "@/components/CustomButton";
 import { useUser } from "@/hooks/redux/useUser";
 import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
+import { useIntl } from "react-intl";
 
 const Step1 = () => {
   const { handleUpdateUser } = useUser();
@@ -12,6 +13,7 @@ const Step1 = () => {
     nombre: "",
     apellido: "",
   });
+  const { formatMessage } = useIntl();
 
   const handleChangeInputs = (key: string, value: string) => {
     setFormData((prevState) => ({
@@ -38,7 +40,7 @@ const Step1 = () => {
           marginTop={20}
           type="text"
           label={<FormattedMessage id="enterFirstName" />}
-          placeholder="Name"
+          placeholder={formatMessage({ id: "firstNamePlaceholder" })}
           onChangeText={(text) => handleChangeInputs("nombre", text)}
         />
         <InputField
@@ -54,7 +56,7 @@ const Step1 = () => {
           isDisabled={!formData.nombre || !formData.apellido}
           onPress={saveDataUser}
         >
-          <FormattedMessage id="continue" />
+          {formatMessage({ id: "continue" })}
         </CustomButton>
       </View>
     </View>

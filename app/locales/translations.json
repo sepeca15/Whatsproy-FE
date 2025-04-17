@@ -261,7 +261,8 @@
     "allCategories": "All",
     "deletedProduct.modal.delete.card": "Product deleted",
     "noProductsFoundSubtitle": "No products found",
-    "noOrden.home": "No recent orders"
+    "noOrden.home": "No recent orders",
+    "firstNamePlaceholder": "Enter your first name"
   },
   "es": {
     "notAvailable": "No disponible",
@@ -525,6 +526,8 @@
     "allCategories": "Todas",
     "deletedProduct.modal.delete.card": "Producto eliminado",
     "noProductsFoundSubtitle": "No se encontraron productos",
-    "noOrden.home": "Sin pedidos recientes"
+    "noOrden.home": "Sin pedidos recientes",
+    "firstNamePlaceholder": "Ingrese su nombre"
+
   }
 }
