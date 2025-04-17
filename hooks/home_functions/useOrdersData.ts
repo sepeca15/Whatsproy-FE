@@ -32,9 +32,15 @@ const useOrdersData = () => {
       const response = await api.order.lastThreeOrders();
       const formattedOrders = response.data.map((order: any) => {
         let costo = 0;
+        let addres = "No disponible";
+        let status = "sin status";
+
         try {
           const infoExtra = JSON.parse(order.infoLinesJson);
           costo = infoExtra.Costo || 0;
+          addres = infoExtra.Direccion && infoExtra.Direccion.trim() ? infoExtra.Direccion : "No disponible";
+          status = order.status && order.status.trim() ? order.status.trim() : "sin status";
+
         } catch (error) {
           console.error("Error parsing infoLinesJson:", error);
         }
@@ -44,6 +50,9 @@ const useOrdersData = () => {
           time: getTimeAgo(order.createdAt),
           amount: `$${costo}`,
           icon: "receipt",
+          address: addres,
+          status: order.status,
+
         };
       });
       setLastOrders(formattedOrders);
@@ -61,6 +70,7 @@ const useOrdersData = () => {
       const response = await api.order.getOrdersByDate(today);
 
       setOrdersCount(response.ordersDay || 0);
+      console.log("Pedidos del día:", response.ordersDay);
     } catch (error) {
       console.error("Error al obtener pedidos por fecha:", error);
     } finally {
