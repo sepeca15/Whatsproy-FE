@@ -1,10 +1,12 @@
 import React from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   View,
   ScrollView,
   SafeAreaView,
   RefreshControl,
   ActivityIndicator,
+  Text, // Ensure Text is imported from react-native
 } from "react-native";
 import { Colors } from "../../../constants/Colors";
 import CustomText from "./components/CustomText";
@@ -15,12 +17,17 @@ import styles from "./HomeStyles";
 import { router } from "expo-router";
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import useOrdersData from "../../../hooks/home_functions/useOrdersData";
+import LottieView from "lottie-react-native";
+import { useIntl, FormattedMessage } from "react-intl";
+import * as Animatable from "react-native-animatable";
+
+
+
 
 const Home: React.FC = () => {
-  const { loading, ordersCount, dailyRevenue, lastOrders, refreshData } =
-    useOrdersData();
+  const { loading, ordersCount, dailyRevenue, refreshData, lastOrders } = useOrdersData();
   const [refreshing, setRefreshing] = React.useState(false);
-
+  const deleteAnimationRef = useRef(null);
   const onRefresh = async () => {
     try {
       setRefreshing(true);
@@ -31,7 +38,8 @@ const Home: React.FC = () => {
       setRefreshing(false);
     }
   };
-
+console.log("ordersCount");
+  console.log("lassssssss", lastOrders);
   return (
     <SafeAreaView style={styles.container}>
       <Animated.View entering={FadeIn.delay(100)} style={styles.header}>
@@ -45,6 +53,8 @@ const Home: React.FC = () => {
           </CustomText>
         </View>
       </Animated.View>
+
+
 
       {loading ? (
         <ActivityIndicator
@@ -108,12 +118,24 @@ const Home: React.FC = () => {
                     id={order.id?.toString() || "0"}
                     amount={order.amount || "$0"}
                     icon={order.icon || "receipt"}
-                    address="Desconocido"
+                    address={order.address}
                     onPress={() => {}}
                   />
                 ))
               ) : (
-                <CustomText>No hay pedidos recientes</CustomText>
+                <Animatable.View animation="fadeIn" style={styles.emptyStateContainer}>
+                  <LottieView
+                    source={require("../../../constants/Animation-non-order.json") // Para sin productos
+                    }
+                    autoPlay
+                    loop
+                    style={styles.emptyStateAnimation}
+                  />
+                  <Text style={styles.emptyStateTitle}>
+                    <FormattedMessage id="noOrden.home" defaultMessage="No hay productos" />
+                  </Text>
+
+                </Animatable.View>
               )}
 
               <CustomText style={styles.sectionTitle}>

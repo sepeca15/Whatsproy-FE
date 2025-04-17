@@ -261,7 +261,10 @@
     "noProductsMatchSearch": "No products match your search",
     "addYourFirstProduct": "Add your first product by clicking the + button",
     "allCategories": "All",
-    "deletedProduct.modal.delete.card": "Product deleted"
+    "deletedProduct.modal.delete.card": "Product deleted",
+    "noProductsFoundSubtitle": "No products found",
+    "noOrden.home": "No recent orders",
+    "firstNamePlaceholder": "Enter your first name"
   },
   "es": {
     "accepted": "Aceptado",
@@ -525,7 +528,10 @@
     "noProductsMatchSearch": "No hay productos que coincidan con tu búsqueda",
     "addYourFirstProduct": "Agrega tu primer producto haciendo click en el botón (+)",
     "allCategories": "Todas",
-    "deletedProduct.modal.delete.card": "Producto eliminado"
-    
+    "deletedProduct.modal.delete.card": "Producto eliminado",
+    "noProductsFoundSubtitle": "No se encontraron productos",
+    "noOrden.home": "Sin pedidos recientes",
+    "firstNamePlaceholder": "Ingrese su nombre"
+
   }
 }

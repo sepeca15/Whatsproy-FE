@@ -5,7 +5,7 @@ import IonIcons from 'react-native-vector-icons/Ionicons'
 import ModalCreateCategory from "./components/ModalCreateCategory";
 import SvgEmpty from "@/assets/svgComponents/Empty";
 import CardCategory from "./components/CardCategory";
-import { Row, Grid } from "react-native-easy-grid"; // Importa Grid y Row
+import { Row, Grid } from "react-native-easy-grid"; 
 import { ICategoryData } from "./components/CardCategory/CardCategory";
 
 const Categories = () => {
