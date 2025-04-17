@@ -12,6 +12,8 @@ import * as image from "../image/image";
 import * as perfil from "../perfil/perfil";
 import * as stripe from "../stripe/stripe";
 import * as category from "../category/category";
+import * as estado from "../estado/estado";
+import * as cambioEstado from "../cambioEstado/cambioEstado";
 
 const api = {
   auth: {
@@ -83,6 +85,16 @@ const api = {
     getAll: category.getAllCategories,
     getProducts: category.getProductFromCategory,
     delete: category.deleteCategory,
+  },
+  status: {
+    create: estado.createStatus,
+    find:  estado.findStatus,
+    findAll: estado.findAllStatus,
+    update: estado.updateStatus,
+    delete: estado.deleteStatus
+  },
+  changeStatus: {
+    cambioEstado: cambioEstado.creteStatusChange
   }
 };
 

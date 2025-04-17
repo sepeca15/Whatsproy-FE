@@ -223,6 +223,8 @@
     "sales.trend": "Sales Trend",
     "sales.highest": "Highest",
     "sales.average": "Average",
+    "status": "Estados",
+    "statusDescription": "Crea tus estados personalizados, en los que notificamos al usuario cuando cambia el estado de su pedido",
     "sales.lowest": "Lowest",
     "profile.recentActivity": "Recent Activity",
     "sales.overview": "Sales Overview",
@@ -277,6 +279,8 @@
     "addImage": "Añadir Imagen",
     "productName": "Nombre del Producto",
     "price": "Precio",
+    "status": "Status",
+    "statusDescription": "Create your custom statuses, in which we notify the user when the status of their order changes",
     "currency": "Moneda",
     "estimatedDuration": "Duración Estimada",
     "description": "Descripción",
@@ -526,6 +530,5 @@
     "addYourFirstProduct": "Agrega tu primer producto haciendo click en el botón (+)",
     "allCategories": "Todas",
     "deletedProduct.modal.delete.card": "Producto eliminado"
-    
   }
 }

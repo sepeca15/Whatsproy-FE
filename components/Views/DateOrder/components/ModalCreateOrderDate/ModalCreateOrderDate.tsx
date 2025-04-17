@@ -47,7 +47,7 @@ const ModalCreateOrderDate = ({ data, onClose, updateOrder }: IProps) => {
       ...prevState,
       [key]: value,
     }));
-  };
+  };  
 
   const createOrderData = async () => {
     try {

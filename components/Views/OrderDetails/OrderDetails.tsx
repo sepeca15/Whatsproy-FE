@@ -127,7 +127,7 @@ const OrderDetails = () => {
             <Text style={styles.textEstimateTime}>
               {detailOfOrder.data?.estimateTime}{" "}
               {detailOfOrder?.data?.estimateTime &&
-              detailOfOrder?.data?.estimateTime > 60
+                detailOfOrder?.data?.estimateTime > 60
                 ? "hs"
                 : "mn"}
             </Text>

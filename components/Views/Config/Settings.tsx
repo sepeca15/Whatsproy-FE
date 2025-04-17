@@ -25,6 +25,12 @@ const settingsPage = [
     icon: <FontAwesome5 name="users" size={20} color={"white"} />,
   },
   {
+    title: "status",
+    href: "/(tabs)/status",
+    description: "statusDescription",
+    icon: <MaterialCommunityIcons name="list-status" size={20} color={"white"} />,
+  },
+  {
     title: "notifications",
     href: "",
     description: "notificationsDescription",
@@ -35,12 +41,6 @@ const settingsPage = [
     href: "",
     description: "privacyDescription",
     icon: <Feather size={20} color={"white"} name="shield" />,
-  },
-  {
-    title: "membership",
-    href: "",
-    description: "membershipDescription",
-    icon: <AntDesign name="creditcard" size={20} color={"white"} />,
   },
   {
     title: "orderData",
