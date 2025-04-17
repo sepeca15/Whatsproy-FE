@@ -15,7 +15,6 @@ const ApiInstances = (key: KeysApis) => {
     baseURL: baseUrl,
   });
 
-  console.log("baseUrl", baseUrl)
 
   globalApi.interceptors.request.use(
     async (config) => {
