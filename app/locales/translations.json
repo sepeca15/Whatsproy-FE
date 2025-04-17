@@ -3,6 +3,8 @@
     "notAvailable": "Not available",
     "edit": "Edit",
     "disable": "Disable",
+    "accepted": "Accepted",
+    "orderNumber": "Order Number",
     "enable": "Enable",
     "delete": "Delete",
     "back": "Back",
@@ -262,6 +264,8 @@
     "deletedProduct.modal.delete.card": "Product deleted"
   },
   "es": {
+    "accepted": "Aceptado",
+    "orderNumber": "Numero de Orden",
     "notAvailable": "No disponible",
     "edit": "Editar",
     "disable": "Deshabilitar",
