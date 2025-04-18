@@ -11,9 +11,26 @@ export const styles = StyleSheet.create({
   },
   header: {
     padding: 16,
+    paddingTop: 20,
+    paddingBottom: 20,
     backgroundColor: Colors.light.primary,
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  avatarContainer: {
+    padding: 2,
+    borderRadius: 50,
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
   },
   name: {
     fontSize: 18,

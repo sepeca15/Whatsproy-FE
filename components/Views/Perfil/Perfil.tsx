@@ -152,17 +152,19 @@ const Perfil: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      {/* barra de arriba */}
-      <Animated.View entering={FadeIn.delay(100)}>
-        <HStack style={styles.header} alignItems="center" justifyContent="space-between">
+      {/* Header simplificado pero mejorado */}
+      <Animated.View entering={FadeIn.delay(100)} style={styles.header}>
+        <View style={styles.headerRow}>
           <HStack alignItems="center">
             <TouchableOpacity onPress={() => setModalVisible(true)}>
-              <Avatar
-                size="md"
-                source={{
-                  uri: user?.image,
-                }}
-              />
+              <View style={styles.avatarContainer}>
+                <Avatar
+                  size="md"
+                  source={{
+                    uri: user?.image,
+                  }}
+                />
+              </View>
             </TouchableOpacity>
             <VStack marginLeft={3}>
               <Text style={styles.name}>{user?.nombre || "Usuario"}</Text>
@@ -177,7 +179,7 @@ const Perfil: React.FC = () => {
               router.push("/(tabs)/config")
             }}
           />
-        </HStack>
+        </View>
       </Animated.View>
 
       {loading ? (
@@ -259,21 +261,13 @@ const Perfil: React.FC = () => {
               />
             </Animated.View>
 
-            {/* no borrar -> componente de Subscription  */}
-
-            {/* <ProfileStats completionPercentage={75} totalVisits={user?.id_empresa || 28} streak={5} />  */}
-
             <Animated.View entering={FadeInDown.delay(400)}>
               <SubscriptionInfo plan={profileData?.plan || "Free"} expiryDate="30/06/2023" usagePercentage={75} />
             </Animated.View>
 
-            {/* graficas con pedidos mensuale sy pedidos realizados */}
-            {/* <SimpleBarCharts />  */}
-
             <Animated.View entering={FadeInDown.delay(500)}>
               <QuickActions />
             </Animated.View>
-            {/* <RecentActivity /> */}
           </ScrollView>
         </>
       )}

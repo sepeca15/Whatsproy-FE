@@ -25,13 +25,15 @@ const useOrdersData = () => {
   const [dailyRevenue, setDailyRevenue] = useState(0);
   const [lastOrders, setLastOrders] = useState<any[]>([]);
   const isFetching = useRef(true);
+  const [rawOrders, setRawOrders] = useState<any[]>([]);
+
 
   const getOrders = async () => {
     try {
       isFetching.current = true;
       const response = await api.order.lastThreeOrders();
       console.log('recibo', response.data);
-
+      setRawOrders(response.data);
       const formattedOrders = response.data.map((order: any) => {
         let addres = "No disponible";
         let status = "sin status";
@@ -105,6 +107,7 @@ const useOrdersData = () => {
     refreshData: async () => {
       await Promise.all([getOrders(), getOrdersByDate(), moneyinday()]);
     },
+    rawOrders,
   };
 };
 
