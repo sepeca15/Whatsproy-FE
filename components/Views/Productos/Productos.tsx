@@ -84,8 +84,9 @@ const Productos: React.FC = () => {
       return;
     }
     try {
+      console.log(selectCategory)
       const resp = await api.category.getProducts({ categoryId: selectCategory })
-      
+      console.log("xd1", resp)
       if (resp.ok) {                
         setProducts(resp.data)
         setIsInitialLoading(false)

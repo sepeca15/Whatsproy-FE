@@ -3,6 +3,7 @@
     "notAvailable": "Not available",
     "edit": "Edit",
     "disable": "Disable",
+    "accepted": "Accepted",
     "enable": "Enable",
     "delete": "Delete",
     "back": "Back",
@@ -221,6 +222,8 @@
     "sales.trend": "Sales Trend",
     "sales.highest": "Highest",
     "sales.average": "Average",
+    "status": "Estados",
+    "statusDescription": "Crea tus estados personalizados, en los que notificamos al usuario cuando cambia el estado de su pedido",
     "sales.lowest": "Lowest",
     "profile.recentActivity": "Recent Activity",
     "sales.overview": "Sales Overview",
@@ -266,9 +269,9 @@
     "loading": "Loading...",
     "orderDetails": "Order Details",
     "orderNumber": "Order Number"
-
   },
   "es": {
+    "accepted": "Aceptado",
     "notAvailable": "No disponible",
     "edit": "Editar",
     "disable": "Deshabilitar",
@@ -280,6 +283,8 @@
     "addImage": "Añadir Imagen",
     "productName": "Nombre del Producto",
     "price": "Precio",
+    "status": "Status",
+    "statusDescription": "Create your custom statuses, in which we notify the user when the status of their order changes",
     "currency": "Moneda",
     "estimatedDuration": "Duración Estimada",
     "description": "Descripción",

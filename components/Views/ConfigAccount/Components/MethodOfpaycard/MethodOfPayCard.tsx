@@ -7,45 +7,16 @@ import CustomButton from "@/components/CustomButton";
 import { IPlans } from "./MethodOfPayCardTypes";
 import { useUser } from "@/hooks/redux/useUser";
 import { useToastContext } from "@/contexts/ToastContext";
-import * as moment from "moment-timezone";
-import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
+import { FormattedMessage } from "react-intl";
 
 interface IMethodOfPayCard {
   Plan: IPlans;
+  selectPlan: (plan : IPlans) => void;
 }
 
-const MethodOfPayCard = ({ Plan }: IMethodOfPayCard) => {
-  const { handleAssignUserToPlan, user } = useUser();
-  const { showToast } = useToastContext();
-  const [loadingApi, setloadingApi] = React.useState<boolean>(false);
+const MethodOfPayCard = ({ Plan, selectPlan }: IMethodOfPayCard) => {
   const adventagesArray = Plan.adventages.split(",");
-
-  const assignPlan = async () => {
-    try {
-      if (loadingApi === false) {
-        setloadingApi(true);
-        await handleAssignUserToPlan({
-          fecha_inicio: moment.tz(user.timeZOne).toDate(),
-          id_empresa: user.id_empresa,
-          id_plan: Plan.id,
-        });
-        showToast({
-          title: <FormattedMessage id="planAssignedSuccess" />,
-          status: "success",
-        });
-        setloadingApi(false);
-      }
-    } catch (error: any) {
-      showToast({
-        title:
-          <FormattedMessage id="planAssignedError" /> +
-          error.response.data.message,
-        status: "error",
-      });
-      console.log(error);
-    }
-  };
-
+  
   return (
     <View style={styles.MainContainer}>
       {Plan.mostPoppular && (
@@ -80,11 +51,10 @@ const MethodOfPayCard = ({ Plan }: IMethodOfPayCard) => {
         <View style={styles.ContainerFooter}>
           <CustomButton
             colorSpiner="white"
-            loading={loadingApi}
             style={{ alignContent: "flex-start" }}
             width={"100%"}
             background="#323232"
-            onPress={assignPlan}
+            onPress={() => selectPlan(Plan)}
           >
             <FormattedMessage id="buyNow" />
           </CustomButton>

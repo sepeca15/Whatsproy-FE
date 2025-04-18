@@ -36,7 +36,7 @@ const LoginScreen: React.FC = () => {
         console.log("User data:", userData);
         router.push("/(tabs)/home");
       }
-    } catch (error: any) {
+    } catch (error: any) {      
       showToast({
         title: (
           <FormattedMessage

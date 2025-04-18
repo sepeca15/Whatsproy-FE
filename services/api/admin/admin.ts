@@ -10,7 +10,10 @@ import * as typeServices from "../typeServices/typeServices";
 import * as client from "../clients/clients";
 import * as image from "../image/image";
 import * as perfil from "../perfil/perfil";
+import * as stripe from "../stripe/stripe";
 import * as category from "../category/category";
+import * as estado from "../estado/estado";
+import * as cambioEstado from "../cambioEstado/cambioEstado";
 import * as getchat from "../chat/chatData";	
 const api = {
   auth: {
@@ -74,14 +77,27 @@ const api = {
   perfil: {
     getResumenVentas: perfil.resumenVentas,
   },
+  stripe: {
+    createIntent: stripe.createIntent
+  },
   category: {
     create: category.createCategory,
     getAll: category.getAllCategories,
     getProducts: category.getProductFromCategory,
     delete: category.deleteCategory,
   },
+  status: {
+    create: estado.createStatus,
+    find:  estado.findStatus,
+    findAll: estado.findAllStatus,
+    update: estado.updateStatus,
+    delete: estado.deleteStatus
+  },
   chat: {
     getChatMessages: getchat.getchat,
+  },
+  changeStatus: {
+    cambioEstado: cambioEstado.creteStatusChange
   }
 };
 
