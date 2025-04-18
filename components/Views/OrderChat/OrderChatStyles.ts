@@ -58,6 +58,14 @@ export const styles = StyleSheet.create({
     shadowRadius: 1,
     elevation: 1,
   },
+  backButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(255,255,255,0.15)",
+  },
   agentMessage: {
     alignSelf: "flex-start",
     backgroundColor: "#F1F5F9",

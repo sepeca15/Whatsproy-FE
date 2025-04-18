@@ -2,7 +2,8 @@
 
 import type React from "react"
 import { useEffect, useState } from "react"
-import { useColorMode, 
+import {
+  useColorMode,
   View,
   Text,
   ScrollView,
@@ -16,11 +17,12 @@ import { useColorMode,
   Pressable,
   StatusBar,
 } from "native-base"
-import { useLocalSearchParams } from "expo-router"
-import { MaterialIcons } from "@expo/vector-icons"
+import { useLocalSearchParams, router } from 'expo-router';
+import { AntDesign, MaterialIcons } from "@expo/vector-icons"
 import api from "@/services/api/admin"
 import { styles } from "./OrderChatStyles"
 import { Colors } from "@/constants/Colors"
+import { TouchableOpacity } from "react-native";
 
 interface Message {
   id: number
@@ -142,7 +144,7 @@ const OrderChat: React.FC = () => {
         backgroundColor={colors.background}
       />
 
-      {/* Header con avatar y nombre del cliente */}
+
       <HStack
         space={3}
         alignItems="center"
@@ -153,9 +155,9 @@ const OrderChat: React.FC = () => {
         borderBottomColor={colors.secondary}
         safeAreaTop
       >
-        <Pressable onPress={() => console.log("Volver atrás")}>
-          <Icon as={MaterialIcons} name="arrow-back" size="md" color="white" />
-        </Pressable>
+        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+          <AntDesign name="arrowleft" size={22} color="white" />
+        </TouchableOpacity>
 
         <Avatar size="md" bg={colors.secondary} source={{ uri: "https://cdn-icons-png.freepik.com/512/3607/3607444.png" }}>
           {chatInfo.clientName.substring(0, 2).toUpperCase()}
