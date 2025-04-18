@@ -4,7 +4,6 @@
     "edit": "Edit",
     "disable": "Disable",
     "accepted": "Accepted",
-    "orderNumber": "Order Number",
     "enable": "Enable",
     "delete": "Delete",
     "back": "Back",
@@ -266,11 +265,13 @@
     "deletedProduct.modal.delete.card": "Product deleted",
     "noProductsFoundSubtitle": "No products found",
     "noOrden.home": "No recent orders",
-    "firstNamePlaceholder": "Enter your first name"
+    "firstNamePlaceholder": "Enter your first name",
+    "loading": "Loading...",
+    "orderDetails": "Order Details",
+    "orderNumber": "Order Number"
   },
   "es": {
     "accepted": "Aceptado",
-    "orderNumber": "Numero de Orden",
     "notAvailable": "No disponible",
     "edit": "Editar",
     "disable": "Deshabilitar",
@@ -535,6 +536,11 @@
     "deletedProduct.modal.delete.card": "Producto eliminado",
     "noProductsFoundSubtitle": "No se encontraron productos",
     "noOrden.home": "Sin pedidos recientes",
-    "firstNamePlaceholder": "Ingrese su nombre"
+    "firstNamePlaceholder": "Ingrese su nombre",
+    "loading": "Cargando...",
+    "orderDetails": "Detalles del pedido",
+    "orderNumber": "Número de pedido"
+
+
   }
 }

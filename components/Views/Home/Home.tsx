@@ -1,12 +1,12 @@
-import React from "react";
-import { useState, useEffect, useCallback, useRef } from "react";
+import React, { useRef } from "react";
+
 import {
   View,
   ScrollView,
   SafeAreaView,
   RefreshControl,
   ActivityIndicator,
-  Text, // Ensure Text is imported from react-native
+  Text, 
 } from "react-native";
 import { Colors } from "../../../constants/Colors";
 import CustomText from "./components/CustomText";
@@ -38,8 +38,7 @@ const Home: React.FC = () => {
       setRefreshing(false);
     }
   };
-console.log("ordersCount");
-  console.log("lassssssss", lastOrders);
+
   return (
     <SafeAreaView style={styles.container}>
       <Animated.View entering={FadeIn.delay(100)} style={styles.header}>
