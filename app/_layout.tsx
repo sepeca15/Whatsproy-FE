@@ -13,10 +13,14 @@ import { Provider } from "react-redux";
 import { store } from "@/services/redux/store";
 import { ToastProvider } from "@/contexts/ToastContext";
 import { LocalizationProvider } from "./LocalizationContext"; // Importa el proveedor de localización
-import { StatusBar } from "expo-status-bar";
+import { StatusBar } from "react-native";
 import { StripeProvider } from "@stripe/stripe-react-native";
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
+import { Colors } from "@/constants/Colors"
+import PedidosListener from "../utils/notificaciones/PedidosListener";
+
+
 
 const isAndroid = Platform.OS === "android";
 
@@ -55,7 +59,8 @@ export default function RootLayout() {
               <ThemeProvider
                 value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
               >
-                <StatusBar style="auto" />
+                <StatusBar barStyle="light-content" backgroundColor={Colors.light.primary} />
+                <PedidosListener />
                 <Stack screenOptions={{ headerShown: false }}>
                   <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
                   <Stack.Screen name="(auth)" options={{ headerShown: false }} />

@@ -21,7 +21,7 @@ import api from "@/services/api/admin"
 import { styles } from "./OrderChatStyles"
 import { Colors } from "@/constants/Colors"
 import { TouchableOpacity } from "react-native"
-
+import { FormattedMessage } from "react-intl"
 interface Message {
   id: number
   mensaje: string
@@ -116,7 +116,7 @@ const OrderChat: React.FC = () => {
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: background }]}>      
+    <View style={[styles.container, { backgroundColor: background }]}>
       <StatusBar barStyle="light-content" backgroundColor={primary} />
 
       <HStack
@@ -129,7 +129,7 @@ const OrderChat: React.FC = () => {
         borderBottomColor={secondary}
         safeAreaTop
       >
-        <TouchableOpacity onPress={() => router.back()}>
+        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
           <AntDesign name="arrowleft" size={22} color="white" />
         </TouchableOpacity>
 
@@ -204,7 +204,7 @@ const OrderChat: React.FC = () => {
 
       <Box bg={footerBgColor} p={3} borderTopWidth={1} borderTopColor={dividerColor}>
         <Text fontSize="xs" color={subtextColor} textAlign="center">
-          Este es un historial de chat. La conversacsssssión está cerrada.
+          <FormattedMessage id="orderChat.footerText" defaultMessage="Powered by Your Company" />
         </Text>
       </Box>
     </View>

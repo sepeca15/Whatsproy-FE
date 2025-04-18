@@ -268,7 +268,8 @@
     "firstNamePlaceholder": "Enter your first name",
     "loading": "Loading...",
     "orderDetails": "Order Details",
-    "orderNumber": "Order Number"
+    "orderNumber": "Order Number",
+    "orderChat.footerText": " This is a chat history. The conversation is closed."
   },
   "es": {
     "accepted": "Aceptado",
@@ -539,8 +540,7 @@
     "firstNamePlaceholder": "Ingrese su nombre",
     "loading": "Cargando...",
     "orderDetails": "Detalles del pedido",
-    "orderNumber": "Número de pedido"
-
-
+    "orderNumber": "Número de pedido",
+    "orderChat.footerText": " Este es un historial de chat. La conversación está cerrada."
   }
 }
