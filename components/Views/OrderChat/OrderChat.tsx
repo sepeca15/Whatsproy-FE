@@ -204,7 +204,7 @@ const OrderChat: React.FC = () => {
 
       <Box bg={footerBgColor} p={3} borderTopWidth={1} borderTopColor={dividerColor}>
         <Text fontSize="xs" color={subtextColor} textAlign="center">
-          Este es un historial de chat. La conversación está cerrada.
+          Este es un historial de chat. La conversacsssssión está cerrada.
         </Text>
       </Box>
     </View>

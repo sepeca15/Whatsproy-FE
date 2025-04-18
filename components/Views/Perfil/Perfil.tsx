@@ -20,8 +20,8 @@ import CategorySales from "./components/CategorySales";
 import SalesChart from "./components/SalesChart";
 import api from "@/services/api/admin";
 import { data } from "../Pedidos/components/data";
+import { Colors } from "../../../constants/Colors";
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
-import { Colors } from "@/constants/Colors"
 
 
 const Perfil: React.FC = () => {
@@ -50,7 +50,6 @@ const Perfil: React.FC = () => {
   const [refreshing, setRefreshing] = useState(false);
   const isFetching = useRef(false);
   const [loading, setLoading] = useState(true);
-  const colors = colorMode === "dark" ? Colors.dark : Colors.light
 
   const [valorPrueba, setValorPrueba] = useState<{
     labels: string[];
@@ -189,14 +188,9 @@ const Perfil: React.FC = () => {
         {/* barra de arriba */}
         <Animated.View entering={FadeIn.delay(100)} >
           <HStack
-           space={3}
-           alignItems="center"
-           bg={colors.primary}
-           px={4}
-           py={3}
-           borderBottomWidth={1}
-           borderBottomColor={colors.secondary}
-           safeAreaTop
+            style={styles.header}
+            alignItems="center"
+            justifyContent="space-between"
           >
             <HStack alignItems="center">
               <TouchableOpacity onPress={() => setModalVisible(true)}>
