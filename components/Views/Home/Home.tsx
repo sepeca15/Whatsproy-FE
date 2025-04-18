@@ -115,7 +115,7 @@ const Home: React.FC = () => {
                     title={`Pedido #${order.id}`}
                     time={order.time || "Desconocido"}
                     id={order.id?.toString() || "0"}
-                    amount={order.amount || "$0"}
+                    amount={order.total || "$0"}
                     icon={order.icon || "receipt"}
                     address={order.address}
                     onPress={() => {}}

@@ -8,11 +8,11 @@ import {
   UIManager,
   Image,
 } from "react-native";
-import { styles as stylesPending } from "../Pedidos/components/OrdersPending/OrdersPendingStyles";
+
+import { styles as stylesPending } from '@/components/Views/Pedidos/components/OrdersPending/OrdersPendingStyles' ;
 import { Agenda } from "react-native-calendars";
 import { Ionicons } from "@expo/vector-icons";
 import { styles as productosStyles } from "@/components/Views/Productos/ProductosStyles";
-import CreateOrderModal from "../../CreateOrderModal";
 import { ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
 import api from "@/services/api/admin";
 import ItemCalendar from "./components/ItemCalendar";
@@ -22,6 +22,7 @@ import { Colors } from "@/constants/Colors";
 
 import CustomText from "@/components/CustomText";
 import { useUser } from "@/hooks/redux/useUser";
+import CreateOrderModal from "@/components/CreateOrderModal";
 
 if (
   Platform.OS === "android" &&

@@ -18,7 +18,7 @@ export const findStatus = async (statusId: number) => {
 };
 
 export const updateStatus = async (statusId: any, newData: any) => {
-    const { data } = await ApiInstances("current").put(`estado/` + statusId, newData);
+    const { data } = await ApiInstances("current").patch(`estado/` + statusId, newData);
     return data;
 };
 

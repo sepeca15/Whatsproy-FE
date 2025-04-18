@@ -6,7 +6,7 @@ import api from "@/services/api/admin";
 import { IPlans } from "../MethodOfpaycard/MethodOfPayCardTypes";
 import * as Progress from "react-native-progress";
 import { Colors } from "@/constants/Colors";
-import { ScrollView, Text } from "native-base";
+import { ScrollView } from "native-base";
 import { FormattedMessage } from "react-intl"; 
 import { initPaymentSheet, presentPaymentSheet } from "@stripe/stripe-react-native";
 import { useToastContext } from "@/contexts/ToastContext";

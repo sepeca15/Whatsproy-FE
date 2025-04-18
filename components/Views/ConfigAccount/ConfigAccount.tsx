@@ -2,10 +2,10 @@ import * as React from "react";
 import CustomText from "@/components/CustomText";
 import { View } from "native-base";
 import { styles } from "./ConfigAccountStyles";
-import Step1 from "./Components/Steps/Step1";
-import Step2 from "./Components/Steps/Step2";
-import Step3 from "./Components/Steps/Step3";
-import Step4 from "./Components/Steps/Step4";
+import Step1 from "./components/Steps/Step1";
+import Step2 from "./components/Steps/Step2";
+import Step3 from "./components/Steps/Step3";
+import Step4 from "./components/Steps/Step4";
 import { useUser } from "@/hooks/redux/useUser";
 import { FormattedMessage } from "react-intl";
 
