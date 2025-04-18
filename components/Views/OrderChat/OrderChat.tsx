@@ -116,7 +116,7 @@ const OrderChat: React.FC = () => {
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: background }]}>      
+    <View style={[styles.container, { backgroundColor: background }]}>
       <StatusBar barStyle="light-content" backgroundColor={primary} />
 
       <HStack
@@ -129,7 +129,7 @@ const OrderChat: React.FC = () => {
         borderBottomColor={secondary}
         safeAreaTop
       >
-        <TouchableOpacity onPress={() => router.back()}>
+        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
           <AntDesign name="arrowleft" size={22} color="white" />
         </TouchableOpacity>
 
