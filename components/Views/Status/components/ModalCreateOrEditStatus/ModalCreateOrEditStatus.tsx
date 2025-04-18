@@ -3,11 +3,13 @@ import GlobalModal from "@/components/Modal";
 import { View, Input, Switch, Text, Button } from "native-base"
 import api from '@/services/api/admin';
 import { useUser } from '@/hooks/redux/useUser';
+import { IEstado } from '../../Status';
 
 interface IModalCreateOrEditStatus {
     isOpen: boolean,
     onClose: () => void;
-    addNewStatus: (status: any) => void;
+    addOrEditNewStatus: (status: any, shouldEdit: boolean) => void;
+    selectedItem: IEstado | null;
 }
 
 interface ICreateStatus {
@@ -24,16 +26,32 @@ const initialState: ICreateStatus = {
     order: 0
 }
 
-export const ModalCreateOrEditStatus = ({ isOpen, onClose, addNewStatus }: IModalCreateOrEditStatus) => {
+export const ModalCreateOrEditStatus = ({ isOpen, onClose, addOrEditNewStatus, selectedItem }: IModalCreateOrEditStatus) => {
     const [status, setStatus] = React.useState<ICreateStatus>(initialState)
     const [error, setError] = React.useState<any>({})
+    const [loadingApi, setLoadingApi] = React.useState<any>(false)
+
+    const { user } = useUser()
+
+    React.useEffect(() => {
+        if (isOpen && selectedItem) {
+            setStatus({
+                nombre: selectedItem.nombre,
+                es_defecto: selectedItem.es_defecto,
+                finalizador: selectedItem.finalizador,
+                order: selectedItem.order ?? 0,
+            })
+        } else if (isOpen && !selectedItem) {
+            setStatus(initialState)
+            setError({})
+        }
+    }, [isOpen, selectedItem])
 
     const handleChange = (key: keyof ICreateStatus, value: any) => {
         setStatus(prev => ({ ...prev, [key]: value }))
     }
-    const { user } = useUser()
 
-    const createNewStatus = async () => {
+    const createOrUpdateStatus = async () => {
         const newErrors: any = {}
 
         if (!status.nombre.trim()) {
@@ -46,22 +64,30 @@ export const ModalCreateOrEditStatus = ({ isOpen, onClose, addNewStatus }: IModa
 
         if (Object.keys(newErrors).length > 0) {
             setError(newErrors)
-            return
+            return;
         }
 
         try {
-            console.log('mandare', { ...status });
-            const resp = await api.status.create({ ...status, tipoServicioId: user.tipo_servicio })
+            setLoadingApi(true)
+            const payload = { ...status, tipoServicioId: user.tipo_servicio }
 
-            if (resp.ok) {
+            const resp = selectedItem
+                ? await api.status.update(selectedItem.id, payload)
+                : await api.status.create(payload)
+
+            if (resp) {
                 onClose()
-                addNewStatus(resp.data)
+                addOrEditNewStatus(resp.data, !!selectedItem)
                 setStatus(initialState)
                 setError({})
             }
 
         } catch (error: any) {
-            console.log(error.response.data.message)
+            console.log(error);
+            let newError: any = {};
+            newError.generalError = error.response.data.message
+            setError(newError)
+            setLoadingApi(false)
         }
     }
 
@@ -69,7 +95,7 @@ export const ModalCreateOrEditStatus = ({ isOpen, onClose, addNewStatus }: IModa
         <GlobalModal
             isVisible={isOpen}
             onClose={onClose}
-            label="Create status"
+            label={selectedItem ? "Editar estado" : "Crear estado"}
             content={
                 <View w="full" pb={4}>
                     <View w={'full'} display={'flex'} style={{ gap: 12 }} flexDir={'row'} alignItems={'center'}>
@@ -103,6 +129,9 @@ export const ModalCreateOrEditStatus = ({ isOpen, onClose, addNewStatus }: IModa
                         {error.order && (
                             <Text color="red.500" fontSize="xs">{error.order}</Text>
                         )}
+                        {error.generalError && (
+                            <Text color="red.500" fontSize="xs">{error.generalError}</Text>
+                        )}
                     </View>
 
                     <View flexDir="row" alignItems="center" justifyContent="space-between">
@@ -135,12 +164,14 @@ export const ModalCreateOrEditStatus = ({ isOpen, onClose, addNewStatus }: IModa
                         size="md"
                         backgroundColor={"#2C2C2C"}
                         borderRadius="md"
-                        onPress={createNewStatus}
-                    >
-                        Crear
+                        onPress={createOrUpdateStatus}
+                        isLoading={loadingApi}
+                        >
+                        {selectedItem ? 'Guardar' : 'Crear'}
                     </Button>
                 ]
             ]}
         />
     )
 }
+

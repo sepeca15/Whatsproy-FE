@@ -1,9 +1,13 @@
-import * as React from 'react'
-import { Button, ScrollView, Text, View } from "native-base"
-import api from '@/services/api/admin'
-import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import React, { useEffect, useRef, useState } from 'react';
+import { Box, Button, Pressable, StatusBar, Text, View } from 'native-base';
+import api from '@/services/api/admin';
+import { FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import ModalCreateOrEditStatus from './components/ModalCreateOrEditStatus';
-
+import DraggableFlatList, { RenderItemParams } from 'react-native-draggable-flatlist';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import * as Progress from 'react-native-progress';
+import ModalConfirmAction from '@/components/ModalConfirmAction/ModalConfirmAction';
+import { Colors } from "@/constants/Colors";
 
 export interface IEstado {
     id: number;
@@ -17,85 +21,212 @@ export interface IEstado {
 }
 
 const StatusView = () => {
-    const [status, setStatus] = React.useState<IEstado[]>([])
-    const [loadingApi, setLoadingApi] = React.useState<boolean>(false)
-    const [stateModal, setStateModal] = React.useState<boolean>(false)
+    const [status, setStatus] = useState<IEstado[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedItem, setSelectedItem] = useState<IEstado | null>(null);
+    const [modalDelete, setModalDelete] = useState<IEstado | null>(null);
+    const originalOrderRef = useRef<IEstado[]>([]);
 
-    const toggleMoadl = () => setStateModal((prev) => !prev)
+    useEffect(() => {
+        fetchStatus();
+    }, []);
 
-    const addStatus = (newItem : IEstado) => {
-        setStatus((prev : IEstado[])=> ([...prev,  newItem]))
-    }
-
-    const loadAllStatus = async () => {
-        setLoadingApi(true)
+    const fetchStatus = async () => {
+        setLoading(true);
         try {
-            const resp = await api.status.findAll()
-
-            if (resp.ok) {
-
-                setStatus(resp.data)
-            }
-
-        } catch (error) {
-            console.log(error);
+            const resp = await api.status.findAll();
+            if (resp.ok) setStatus(resp.data);
+        } catch (error: any) {
+            console.error(error.response?.data?.message);
+        } finally {
+            setLoading(false);
         }
-        setLoadingApi(false)
-    }
+    };
+
+    const updateStatus = async (updated: IEstado) => {
+        try {
+            await api.status.update(updated.id, updated);
+            fetchStatus();
+        } catch (error: any) {
+            console.error(error.response?.data?.message);
+        }
+    };
 
 
-    React.useEffect(() => {
-        loadAllStatus()
-    }, [])
+    const deleteStatus = async (id: number) => {
+        try {
+            const resp = await api.status.delete(id);
+            if (resp.ok) fetchStatus();
+        } catch (error: any) {
+            console.error(error.response.data.message);
+        }
+    };
+
+    const handleDragBegin = () => {
+        originalOrderRef.current = [...status];
+    };
+
+    const handleDragEnd = async ({ data, from, to }: { data: IEstado[]; from: number; to: number }) => {
+        if (from === to) return;
+
+        const movedItem = status[from];
+        const newOrder = to + 1;
+
+        try {
+            await updateStatus({ ...movedItem, order: newOrder });
+        } catch (err) {
+            console.error('Error al actualizar el orden', err);
+        }
+    };
+
+    const toggleModal = () => setModalVisible((prev) => !prev);
+    const toggleDeleteModal = () => setModalDelete(null);
+
+    const handleEdit = (item: IEstado) => {
+        setSelectedItem(item);
+        toggleModal();
+    };
+
+    const addOrEditNewStatus = (item: any, shouldEdit: boolean) => {
+        setStatus((prev) => {
+            if (shouldEdit) {
+                return prev.map((element) =>
+                    element.id === item.id ? { ...item } : element
+                );
+            } else {
+                return [...prev, item].sort((a, b) => a.order - b.order);
+            }
+        });
+    };
+
+    const renderItem = ({ item, drag, isActive }: RenderItemParams<IEstado>) => (
+        <Box w="full" flex={1}>
+            <Pressable
+                onLongPress={drag}
+                delayLongPress={1}
+                flexDir="row"
+                alignItems="center"
+                mb={2}
+                px={4}
+                py={4}
+                bg={isActive ? 'gray.400' : 'white'}
+                rounded="xl"
+            >
+                <View flexDir="row" alignItems="center" flex={0.2}>
+                    <FontAwesome name="reorder" color="black" />
+                    <Text ml={2}>{item.order}</Text>
+                </View>
+                <View flex={0.3}>
+                    <Text>{item.nombre}</Text>
+                </View>
+                <View flex={0.25}>
+                    <Text>{item.finalizador ? 'SI' : 'NO'}</Text>
+                </View>
+                <View flex={0.25} flexDir="row" alignItems="center" justifyContent="flex-end" style={{ gap: 4 }}>
+                    <Pressable
+                        rounded="full"
+                        bg="red.500"
+                        p={2.5}
+                        _pressed={{ bg: 'red.600' }}
+                        onPress={() => setModalDelete(item)}
+                    >
+                        <MaterialCommunityIcons name="delete" size={18} color="white" />
+                    </Pressable>
+                    <Pressable
+                        rounded="full"
+                        borderWidth={1}
+                        borderColor="gray.400"
+                        p={2.5}
+                        bg="white"
+                        _pressed={{ bg: 'gray.100' }}
+                        onPress={() => handleEdit(item)}
+                    >
+                        <FontAwesome name="edit" size={18} color="#4A5568" />
+                    </Pressable>
+                </View>
+            </Pressable>
+        </Box>
+    );
 
     return (
-        <View w={'full'} position={'relative'} px={4} py={4} h={'full'} display={'flex'} flexDir={'column'} alignItems={'center'} >
-            <Text fontSize={24}>Estados</Text>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+            <View w={'full'} px={12} py={4} bg={Colors.light.primary}>
+                <StatusBar animated backgroundColor={Colors.light.primary} />
+                <Text color={'white'} fontSize={24}>Estados</Text>
+            </View>
+            <View flex={1} w="full" position="relative" px={4} py={4} alignItems="center">
 
-            <ScrollView w={'full'} mt={4} h={'full'} horizontal={false}>
-                <View px={4} w={'full'} display={'flex'} flexDir={'row'}>
-                    <View flex={0.2}>
-                        <Text>Orden</Text>
-                    </View>
-                    <View flex={0.3}>
-                        <Text>Nombre</Text>
-                    </View>
-                    <View flex={0.25}>
-                        <Text>Finalizador</Text>
-                    </View>
-                    <View flex={0.25}>ss
-                        <Text>Acciones</Text>
-                    </View>
+                <View my={4} w={'full'} borderColor={'blue.600'} borderWidth={1} rounded={'md'} bg={'blue.100'} display={'flex'} alignItems={'center'} justifyContent={'center'} px={4} py={2}>
+                    <Text color={'blue.600'} >Drag and drop elements and create the status for the order you want!</Text>
                 </View>
-                {
-                    status.length > 0 &&
-                    status.map((statusData, index) => {
-                        return <View key={statusData.id} mb={4} display={'flex'} px={4} flexDir={'row'} rounded={'md'} w={'full'} bg={'gray.300'} py={4}>
-                            <View flexDir={'row'} display={'flex'} alignItems={'center'} flex={0.2}>
-                                <FontAwesome name='reorder' color={'black'} />
-                                <Text marginLeft={2}>{statusData.order}</Text>
-                            </View>
-                            <View flex={0.3}>
-                                <Text>{statusData.nombre}</Text>
-                            </View>
-                            <View flex={0.25}>
-                                <Text>{statusData.finalizador === true ? "SI" : "NO"}</Text>
-                            </View>
-                            <View flex={0.25}>
-                                <Text>Acciones</Text>
-                            </View>
+                <View style={{ flex: 1, width: '100%' }}>
+                    {loading ? (
+                        <View h="full" justifyContent="center" alignItems="center">
+                            <Progress.Circle color={Colors.light.primary} indeterminate size={100} />
                         </View>
-                    })
-                }
-            </ScrollView>
+                    ) : status.length > 0 ? (
+                        <View>
+                            <View px={4} flexDir="row">
+                                <View flex={0.2}><Text>Orden</Text></View>
+                                <View flex={0.3}><Text>Nombre</Text></View>
+                                <View flex={0.25}><Text>Finalizador</Text></View>
+                                <View flex={0.25}><Text>Acciones</Text></View>
+                            </View>
+                            <DraggableFlatList
+                                contentContainerStyle={{ paddingBottom: 80, paddingTop: 16 }}
+                                data={status}
+                                keyExtractor={(item) => item.id.toString()}
+                                onDragEnd={handleDragEnd}
+                                onDragBegin={handleDragBegin}
+                                renderItem={renderItem}
+                            />
+                        </View>
+                    ) : (
+                        <View justifyContent="center" alignItems="center">
+                            <Text>No hay estados creados aún.</Text>
+                        </View>
+                    )}
+                </View>
 
-            <Button onPress={toggleMoadl} w={'50px'} h={'50px'} display={'flex'} justifyContent={'center'} alignItems={'center'} bg={'teal.600'} rounded={'full'} position={'absolute'} bottom={4} right={4}>
-                <Ionicons name='add' color={'white'} size={30} />
-            </Button>
+                <Button
+                    onPress={toggleModal}
+                    w="50px"
+                    h="50px"
+                    justifyContent="center"
+                    alignItems="center"
+                    bg="teal.600"
+                    rounded="full"
+                    position="absolute"
+                    bottom={4}
+                    right={4}
+                >
+                    <Ionicons name="add" color="white" size={26} />
+                </Button>
 
-            <ModalCreateOrEditStatus addNewStatus={addStatus} isOpen={stateModal} onClose={toggleMoadl} />
-        </View>
-    )
-}
+                <ModalCreateOrEditStatus
+                    selectedItem={selectedItem}
+                    addOrEditNewStatus={addOrEditNewStatus}
+                    isOpen={modalVisible}
+                    onClose={() => {
+                        toggleModal();
+                        setSelectedItem(null);
+                    }}
+                />
 
-export default StatusView
+                <ModalConfirmAction
+                    isOpen={!!modalDelete}
+                    onClose={toggleDeleteModal}
+                    title="Borrar estado"
+                    message="¿Seguro que deseas eliminar este estado?"
+                    onContinue={() => {
+                        if (modalDelete) deleteStatus(modalDelete.id);
+                        toggleDeleteModal();
+                    }}
+                />
+            </View>
+        </GestureHandlerRootView>
+    );
+};
+
+export default StatusView;

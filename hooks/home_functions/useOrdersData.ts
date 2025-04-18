@@ -30,14 +30,14 @@ const useOrdersData = () => {
     try {
       isFetching.current = true;
       const response = await api.order.lastThreeOrders();
+      console.log('recibo', response.data);
+
       const formattedOrders = response.data.map((order: any) => {
-        let costo = 0;
         let addres = "No disponible";
         let status = "sin status";
 
         try {
           const infoExtra = JSON.parse(order.infoLinesJson);
-          costo = infoExtra.Costo || 0;
           addres = infoExtra.Direccion && infoExtra.Direccion.trim() ? infoExtra.Direccion : "No disponible";
           status = order.status && order.status.trim() ? order.status.trim() : "sin status";
 
@@ -48,7 +48,7 @@ const useOrdersData = () => {
         return {
           id: order.id,
           time: getTimeAgo(order.createdAt),
-          amount: `$${costo}`,
+          amount: `$${order.total}`,
           icon: "receipt",
           address: addres,
           status: order.status,
