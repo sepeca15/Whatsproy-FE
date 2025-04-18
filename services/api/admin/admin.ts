@@ -11,7 +11,7 @@ import * as client from "../clients/clients";
 import * as image from "../image/image";
 import * as perfil from "../perfil/perfil";
 import * as category from "../category/category";
-
+import * as getchat from "../chat/chatData";	
 const api = {
   auth: {
     login: auth.Login,
@@ -79,6 +79,9 @@ const api = {
     getAll: category.getAllCategories,
     getProducts: category.getProductFromCategory,
     delete: category.deleteCategory,
+  },
+  chat: {
+    getChatMessages: getchat.getchat,
   }
 };
 
