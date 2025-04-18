@@ -30,8 +30,7 @@ const useOrdersData = () => {
     try {
       isFetching.current = true;
       const response = await api.order.lastThreeOrders();
-      console.log('recibo', response.data);
-
+      
       const formattedOrders = response.data.map((order: any) => {
         let addres = "No disponible";
         let status = "sin status";
