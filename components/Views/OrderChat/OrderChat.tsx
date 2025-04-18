@@ -3,7 +3,6 @@
 import type React from "react"
 import { useEffect, useState } from "react"
 import {
-  useColorMode,
   View,
   Text,
   ScrollView,
@@ -14,15 +13,14 @@ import {
   Spinner,
   Divider,
   Icon,
-  Pressable,
   StatusBar,
 } from "native-base"
-import { useLocalSearchParams, router } from 'expo-router';
-import { AntDesign, MaterialIcons } from "@expo/vector-icons"
+import { useLocalSearchParams, router } from 'expo-router'
+import { AntDesign } from "@expo/vector-icons"
 import api from "@/services/api/admin"
 import { styles } from "./OrderChatStyles"
 import { Colors } from "@/constants/Colors"
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native"
 
 interface Message {
   id: number
@@ -45,25 +43,18 @@ const OrderChat: React.FC = () => {
     orderNumber: "Orden #0000",
   })
   const [loading, setLoading] = useState(true)
-  const { colorMode } = useColorMode()
 
-  // Usar los colores según el modo actual
-  const colors = colorMode === "dark" ? Colors.dark : Colors.light
-
-  // Colores dinámicos basados en el modo de color
-  const bgColor = colorMode === "dark" ? colors.background : colors.background
-  const textColor = colorMode === "dark" ? colors.text : colors.text
-  const subtextColor = colorMode === "dark" ? "coolGray.400" : "coolGray.500"
-  const dividerColor = colorMode === "dark" ? "coolGray.700" : "coolGray.300"
-  const footerBgColor = colorMode === "dark" ? "coolGray.900" : "coolGray.100"
+  // Colores fijos desde Colors
+  const { primary, secondary, background, text } = Colors.light
+  const subtextColor = "coolGray.500"
+  const dividerColor = "coolGray.300"
+  const footerBgColor = "coolGray.100"
 
   const getMensages = async () => {
     setLoading(true)
     try {
       const response = await api.chat.getChatMessages(Number(chatId))
       if (response.ok) {
-        console.log("Mensajes recibidos =>", response.data)
-
         const fetchedMessages: Message[] = response.data.mensajes.map((msg: any) => ({
           id: msg.id,
           mensaje: msg.mensaje,
@@ -73,7 +64,6 @@ const OrderChat: React.FC = () => {
 
         setMessages(fetchedMessages)
 
-        // Obtener información del cliente si está disponible en la respuesta
         if (response.data.clientInfo) {
           setChatInfo({
             clientName: response.data.clientInfo.name || `Cliente #${chatId}`,
@@ -81,7 +71,6 @@ const OrderChat: React.FC = () => {
             avatarUrl: response.data.clientInfo.avatarUrl,
           })
         } else {
-          // Información por defecto si no hay datos del cliente
           setChatInfo({
             clientName: `Cliente #${chatId}`,
             orderNumber: `Orden #${chatId}`,
@@ -99,67 +88,52 @@ const OrderChat: React.FC = () => {
     getMensages()
   }, [chatId])
 
-  // Agrupar mensajes por fecha
   const groupMessagesByDate = () => {
     const groups: { [date: string]: Message[] } = {}
-
     messages.forEach((message) => {
       const date = new Date(message.createdAt).toLocaleDateString()
-      if (!groups[date]) {
-        groups[date] = []
-      }
+      if (!groups[date]) groups[date] = []
       groups[date].push(message)
     })
-
     return groups
   }
 
   const messageGroups = groupMessagesByDate()
 
-  // Formatear fecha para mostrar
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
     const today = new Date()
     const yesterday = new Date()
     yesterday.setDate(yesterday.getDate() - 1)
 
-    if (date.toDateString() === today.toDateString()) {
-      return "Hoy"
-    } else if (date.toDateString() === yesterday.toDateString()) {
-      return "Ayer"
-    } else {
-      return date.toLocaleDateString()
-    }
+    if (date.toDateString() === today.toDateString()) return "Hoy"
+    if (date.toDateString() === yesterday.toDateString()) return "Ayer"
+    return date.toLocaleDateString()
   }
 
-  // Formatear hora
   const formatTime = (dateString: string) => {
     return new Date(dateString).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: bgColor }]}>
-      <StatusBar
-        barStyle={colorMode === "dark" ? "light-content" : "dark-content"}
-        backgroundColor={colors.background}
-      />
-
+    <View style={[styles.container, { backgroundColor: background }]}>      
+      <StatusBar barStyle="light-content" backgroundColor={primary} />
 
       <HStack
         space={3}
         alignItems="center"
-        bg={colors.primary}
+        bg={primary}
         px={4}
         py={3}
         borderBottomWidth={1}
-        borderBottomColor={colors.secondary}
+        borderBottomColor={secondary}
         safeAreaTop
       >
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+        <TouchableOpacity onPress={() => router.back()}>
           <AntDesign name="arrowleft" size={22} color="white" />
         </TouchableOpacity>
 
-        <Avatar size="md" bg={colors.secondary} source={{ uri: "https://cdn-icons-png.freepik.com/512/3607/3607444.png" }}>
+        <Avatar size="md" bg={secondary} source={{ uri: chatInfo.avatarUrl || undefined }}>
           {chatInfo.clientName.substring(0, 2).toUpperCase()}
         </Avatar>
 
@@ -173,10 +147,9 @@ const OrderChat: React.FC = () => {
         </VStack>
       </HStack>
 
-      {/* Contenido del chat */}
       {loading ? (
         <View flex={1} justifyContent="center" alignItems="center">
-          <Spinner size="lg" color={colors.primary} />
+          <Spinner size="lg" color={primary} />
           <Text mt={2} color={subtextColor}>
             Cargando historial...
           </Text>
@@ -186,21 +159,19 @@ const OrderChat: React.FC = () => {
           {Object.keys(messageGroups).length > 0 ? (
             Object.entries(messageGroups).map(([date, dateMessages]) => (
               <VStack key={date} space={3} mb={6}>
-                {/* Separador de fecha */}
                 <HStack space={2} justifyContent="center" alignItems="center" my={2}>
                   <Divider flex={1} bg={dividerColor} />
-                  <Text fontSize="xs" color={subtextColor} bg={bgColor} px={2}>
+                  <Text fontSize="xs" color={subtextColor} bg={background} px={2}>
                     {formatDate(dateMessages[0].createdAt)}
                   </Text>
                   <Divider flex={1} bg={dividerColor} />
                 </HStack>
 
-                {/* Mensajes del día */}
                 {dateMessages.map((msg) => (
                   <Box
                     key={msg.id}
                     alignSelf={msg.isClient ? "flex-end" : "flex-start"}
-                    bg={msg.isClient ? colors.secondary : footerBgColor}
+                    bg={msg.isClient ? secondary : footerBgColor}
                     px={4}
                     py={2}
                     borderRadius={12}
@@ -209,7 +180,7 @@ const OrderChat: React.FC = () => {
                     borderTopRightRadius={msg.isClient ? 4 : 12}
                     borderTopLeftRadius={msg.isClient ? 12 : 4}
                   >
-                    <Text color={msg.isClient ? "white" : textColor}>{msg.mensaje}</Text>
+                    <Text color={msg.isClient ? "white" : text}>{msg.mensaje}</Text>
                     <Text
                       fontSize="2xs"
                       color={msg.isClient ? "white" : subtextColor}
@@ -231,10 +202,9 @@ const OrderChat: React.FC = () => {
         </ScrollView>
       )}
 
-      {/* Nota informativa */}
       <Box bg={footerBgColor} p={3} borderTopWidth={1} borderTopColor={dividerColor}>
         <Text fontSize="xs" color={subtextColor} textAlign="center">
-          Este es un historial de chat. La conversación está cerrada.
+          Este es un historial de chat. La conversacsssssión está cerrada.
         </Text>
       </Box>
     </View>
