@@ -14,7 +14,7 @@ import * as stripe from "../stripe/stripe";
 import * as category from "../category/category";
 import * as estado from "../estado/estado";
 import * as cambioEstado from "../cambioEstado/cambioEstado";
-
+import * as getchat from "../chat/chatData";	
 const api = {
   auth: {
     login: auth.Login,
@@ -92,6 +92,9 @@ const api = {
     findAll: estado.findAllStatus,
     update: estado.updateStatus,
     delete: estado.deleteStatus
+  },
+  chat: {
+    getChatMessages: getchat.getchat,
   },
   changeStatus: {
     cambioEstado: cambioEstado.creteStatusChange

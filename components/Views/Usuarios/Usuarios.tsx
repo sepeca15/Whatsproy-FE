@@ -41,6 +41,7 @@ const UsuariosEmpresasScreen: React.FC = () => {
   const uploadUsers = async () => {
     try {
       const resp = await api.user.findAll(user.id_empresa);
+      console.log("resp", resp.data);
       setUserData((prevState) => ({
         ...prevState,
         data: resp.data,
@@ -99,7 +100,6 @@ const UsuariosEmpresasScreen: React.FC = () => {
       
     }));
   };
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>

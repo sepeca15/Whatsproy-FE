@@ -1,225 +1,269 @@
-import * as React from "react";
-import { Platform, Pressable, Text, View } from "react-native";
-import { styles } from "./OrderDetailsStyles";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import * as Progress from "react-native-progress";
-import api from "@/services/api/admin";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import Octicons from "react-native-vector-icons/Octicons";
-import IonIcons from "react-native-vector-icons/Ionicons";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { Button, ScrollView } from "native-base";
-import ProductOrderCard from "./components/ProductOrderCard";
-import { IOrderDetails } from "./OrderDetailsTypes";
-import { useOrders } from "@/hooks/redux/useOrders";
-import { useUser } from "@/hooks/redux/useUser";
-import moment from "moment";
-import "moment/locale/es";
-import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import * as React from "react"
+import { View, Text, SafeAreaView, StatusBar, TouchableOpacity, Animated, Dimensions } from "react-native"
+import { styles } from "./OrderDetailsStyles"
+import { useLocalSearchParams, useRouter } from "expo-router"
+import * as Progress from "react-native-progress"
+import api from "@/services/api/admin"
+import AntDesign from "react-native-vector-icons/AntDesign"
+import Octicons from "react-native-vector-icons/Octicons"
+import IonIcons from "react-native-vector-icons/Ionicons"
+import MaterialIcons from "react-native-vector-icons/MaterialIcons"
+import { ScrollView } from "native-base"
+import ProductOrderCard from "./components/ProductOrderCard"
+import type { IOrderDetails } from "./OrderDetailsTypes"
+import { useOrders } from "@/hooks/redux/useOrders"
+import { useUser } from "@/hooks/redux/useUser"
+import moment from "moment"
+import "moment/locale/es"
+import { FormattedMessage } from "react-intl"
+import { Colors } from "@/constants/Colors"
 
 interface IDetailsOrder {
-  loading: boolean;
-  data: IOrderDetails | null;
+  loading: boolean
+  data: IOrderDetails | null
 }
+
 const initialState = {
   loading: true,
   data: null,
-};
+}
 
 const OrderDetails = () => {
-  const { handleDeleteOrder } = useOrders();
-  const router = useRouter();
-  const { user } = useUser();
-  const [detailOfOrder, setDetailOfOrder] =
-    React.useState<IDetailsOrder>(initialState);
-  const { orderId, keyDeleteType } = useLocalSearchParams();
-  const resolvedKeyDeleteType = keyDeleteType as "pending" | "finished";
+  const { handleDeleteOrder } = useOrders()
+  const router = useRouter()
+  const { user } = useUser()
+  const [detailOfOrder, setDetailOfOrder] = React.useState<IDetailsOrder>(initialState)
+  const { orderId, keyDeleteType } = useLocalSearchParams()
+  const resolvedKeyDeleteType = keyDeleteType as "pending" | "finished"
+
+  // Animation values
+  const fadeAnim = React.useRef(new Animated.Value(0)).current
+  const slideAnim = React.useRef(new Animated.Value(30)).current
 
   const loadOrderDetail = async () => {
     try {
-      const orderDetailsData = await api.order.getOrderDetails(orderId);
-      console.log(orderDetailsData);
+      const orderDetailsData = await api.order.getOrderDetails(orderId)
+      console.log(orderDetailsData)
 
       if (orderDetailsData.ok === true) {
-        setDetailOfOrder({ ...detailOfOrder, data: orderDetailsData.data });
+        setDetailOfOrder({ ...detailOfOrder, data: orderDetailsData.data })
       }
     } catch (error: any) {
-      console.log("error", JSON.stringify(error));
+      console.log("error", JSON.stringify(error))
     } finally {
       setDetailOfOrder((prevState) => ({
         ...prevState,
         loading: false,
-      }));
+      }))
     }
-  };
+  }
 
   React.useEffect(() => {
     if (orderId) {
-      loadOrderDetail();
+      loadOrderDetail()
     }
-  }, []);
+  }, [])
+
+  React.useEffect(() => {
+    if (!detailOfOrder.loading) {
+      // Start animations when data is loaded
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 400,
+          useNativeDriver: true,
+        }),
+      ]).start()
+    }
+  }, [detailOfOrder.loading])
 
   const DeleteOrder = async () => {
     if (detailOfOrder.data?.id && keyDeleteType) {
-      await handleDeleteOrder(detailOfOrder.data.id, resolvedKeyDeleteType);
-      router.push("/(tabs)/pedidos");
+      await handleDeleteOrder(detailOfOrder.data.id, resolvedKeyDeleteType)
+      router.push("/(tabs)/pedidos")
     }
-  };
+  }
 
   const handleViewChat = () => {
     if (detailOfOrder.data?.chatId) {
       router.push({
         pathname: "/(tabs)/orderChat",
         params: { chatId: detailOfOrder.data?.chatId.id },
-      });
+      })
     }
-  };
+  }
 
-  return detailOfOrder.loading ? (
-    <View style={styles.containerSpiner}>
-      <Progress.Circle color={"#075e54"} indeterminate={true} size={100} />
-    </View>
-  ) : (
-    <KeyboardAwareScrollView
-      style={styles.containerScroll}
-      resetScrollToCoords={{ x: 0, y: 0 }}
-      scrollEnabled={true}
-      enableOnAndroid={true}
-      extraScrollHeight={Platform.OS === "ios" ? 20 : 50}
-    >
-      <ScrollView contentContainerStyle={styles.scrollContent}></ScrollView>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <View style={styles.columnDate}>
-            <Text style={[styles.textTitle, { fontWeight: "bold" }]}>
-              <FormattedMessage id="orderNumber" defaultMessage="Order #" />
-              {detailOfOrder.data?.id}
-            </Text>
-            <View style={styles.containerDate}>
-              <AntDesign name="calendar" color={"white"} />
-              <Text style={styles.text}>
-                {moment(detailOfOrder.data?.date)
-                  .locale("es")
-                  .format("D [de] MMMM [de] YYYY")}
-              </Text>
-            </View>
-          </View>
-          <Text style={styles.buttonStatus}>
-            {detailOfOrder.data?.confirm ? (
-              <FormattedMessage id="accepted" defaultMessage="Accepted" />
-            ) : (
-              <FormattedMessage id="pending" defaultMessage="Pending" />
-            )}
+  if (detailOfOrder.loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Progress.Circle 
+          color={Colors.light.primary} 
+          indeterminate={true} 
+          size={70} 
+          borderWidth={3} 
+          strokeCap="round" 
+        />
+        <Text style={styles.loadingText}>
+          <FormattedMessage id="loading" defaultMessage="Cargando..." />
+        </Text>
+      </View>
+    )
+  }
+
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar barStyle="light-content" backgroundColor={Colors.light.primary} />
+      <View style={styles.header}>
+        <View style={styles.headerContent}>
+          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+            <AntDesign name="arrowleft" size={22} color="white" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>
+            <FormattedMessage id="orderDetails" defaultMessage="Detalles del Pedido" />
           </Text>
         </View>
-        <View style={styles.body}>
-          <View style={styles.containerEstimateTime}>
-            <View style={styles.containerRowinfoGap}>
-              <AntDesign size={20} name="clockcircleo" />
-              <Text style={styles.textBodyBold}>
-                <FormattedMessage
-                  id="estimatedTime"
-                  defaultMessage="Estimated Time"
-                />
+      </View>
+
+      <ScrollView contentContainerStyle={styles.scrollViewContent} showsVerticalScrollIndicator={false}>
+        <Animated.View
+          style={[
+            styles.orderNumberCard,
+            {
+              opacity: fadeAnim,
+              transform: [{ translateY: slideAnim }],
+            },
+          ]}
+        >
+          <View style={styles.orderNumberContent}>
+            <View>
+              <Text style={styles.orderNumberLabel}>
+                <FormattedMessage id="orderNumber" defaultMessage="Pedido #" />
+              </Text>
+              <Text style={styles.orderNumberValue}>{detailOfOrder.data?.id}</Text>
+            </View>
+            <View style={styles.statusBadge}>
+              <Text style={styles.statusText}>
+                {detailOfOrder.data?.confirm ? (
+                  <FormattedMessage id="accepted" defaultMessage="Aceptado" />
+                ) : (
+                  <FormattedMessage id="pending" defaultMessage="Pendiente" />
+                )}
               </Text>
             </View>
-            <Text style={styles.textEstimateTime}>
-              {detailOfOrder.data?.estimateTime}{" "}
-              {detailOfOrder?.data?.estimateTime &&
-                detailOfOrder?.data?.estimateTime > 60
-                ? "hs"
-                : "mn"}
+          </View>
+          <View style={styles.orderDateContainer}>
+            <AntDesign name="calendar" size={16} color={Colors.light.icon} />
+            <Text style={styles.orderDateText}>
+              {moment(detailOfOrder.data?.date).locale("es").format("D [de] MMMM [de] YYYY")}
             </Text>
           </View>
-          <View style={styles.containerRowinfo}>
-            <Octicons size={20} style={{ marginRight: 6 }} name="person" />
-            <Text style={styles.textBodyBold}>
-              <FormattedMessage id="client" defaultMessage="Client" />:{" "}
-            </Text>
-            <Text style={styles.textBodyBold}>
-              {detailOfOrder.data?.client.name}
+        </Animated.View>
+
+        <Animated.View
+          style={[
+            styles.sectionCard,
+            {
+              opacity: fadeAnim,
+              transform: [{ translateY: slideAnim }],
+            },
+          ]}
+        >
+          <View style={styles.sectionHeader}>
+            <AntDesign name="clockcircleo" size={20} color={Colors.light.primary} />
+            <Text style={styles.sectionTitle}>
+              <FormattedMessage id="estimatedTime" defaultMessage="Tiempo Estimado" />
             </Text>
           </View>
-          <View style={styles.containerRowinfo}>
-            <IonIcons
-              size={20}
-              style={{ marginRight: 6, marginLeft: -2 }}
-              name="location-outline"
-            />
-            <Text style={styles.textlocation}>
+          <Text style={styles.estimateTimeValue}>
+            {detailOfOrder.data?.estimateTime}{" "}
+            <Text style={styles.estimateTimeUnit}>
+              {detailOfOrder?.data?.estimateTime && detailOfOrder?.data?.estimateTime > 60 ? "horas" : "minutos"}
+            </Text>
+          </Text>
+        </Animated.View>
+
+        <Animated.View
+          style={[
+            styles.sectionCard,
+            {
+              opacity: fadeAnim,
+              transform: [{ translateY: slideAnim }],
+            },
+          ]}
+        >
+          <View style={styles.sectionHeader}>
+            <Octicons name="person" size={20} color={Colors.light.primary} />
+            <Text style={styles.sectionTitle}>
+              <FormattedMessage id="client" defaultMessage="Cliente" />
+            </Text>
+          </View>
+          <Text style={styles.clientName}>{detailOfOrder.data?.client.name}</Text>
+
+          <View style={styles.addressContainer}>
+            <IonIcons name="location-outline" size={20} color={Colors.light.icon} />
+            <Text style={styles.addressText}>
               {detailOfOrder.data?.infoLines?.direccion ? (
                 detailOfOrder.data.infoLines.direccion
               ) : (
-                <FormattedMessage id="noAddress" defaultMessage="No address" />
+                <FormattedMessage id="noAddress" defaultMessage="Sin dirección" />
               )}
             </Text>
           </View>
-          <View style={styles.containerProducts}>
-            <Text style={styles.textBodyBig}>
-              <FormattedMessage id="products" defaultMessage="Products" />
-            </Text>
-            <ScrollView horizontal={false} style={styles.products}>
-              {detailOfOrder.data?.products.map((product, index) => {
-                return (
-                  <ProductOrderCard
-                    key={index}
-                    data={product.productoInfo}
-                    cantidad={product.cantidad}
-                  />
-                );
-              })}
-            </ScrollView>
-          </View>
-        </View>
-        <View style={styles.footer}>
-          <View style={styles.containerrColumn}>
-            <View style={styles.containerRow}>
-              <Text style={styles.textBodyBold}>
-                <FormattedMessage id="total" defaultMessage="Total" />
-              </Text>
-              <Text style={styles.textBodyBold}>
-                $ {detailOfOrder.data?.total}
-              </Text>
-            </View>
-            <View style={styles.ContainerButtons}>
-              <Button style={styles.buttonDelete}>
-                <Pressable
-                  onPress={DeleteOrder}
-                  accessibilityRole="button"
-                  style={styles.containerRowinfoGap}
-                >
-                  <MaterialIcons size={16} color={"black"} name="delete" />
-                  <Text style={{ color: "black" }}>
-                    <FormattedMessage id="delete" defaultMessage="Delete" />
-                  </Text>
-                </Pressable>
-              </Button>
-              <Button style={styles.buttonViewChat}>
-                <Pressable
-                  onPress={handleViewChat}
-                  style={styles.containerRowinfoGap}
-                >
-                  <IonIcons
-                    accessibilityRole="button"
-                    size={16}
-                    color={"white"}
-                    name="chatbubble-outline"
-                  />
-                  <Text style={{ color: "white" }}>
-                    <FormattedMessage
-                      id="goToChat"
-                      defaultMessage="Go to chat"
-                    />
-                  </Text>
-                </Pressable>
-              </Button>
-            </View>
-          </View>
-        </View>
-      </View>
-    </KeyboardAwareScrollView>
-  );
-};
+        </Animated.View>
 
-export default OrderDetails;
+        <Animated.View
+          style={[
+            styles.sectionCard,
+            {
+              opacity: fadeAnim,
+              transform: [{ translateY: slideAnim }],
+            },
+          ]}
+        >
+          <View style={styles.sectionHeader}>
+            <MaterialIcons name="shopping-bag" size={20} color={Colors.light.primary} />
+            <Text style={styles.sectionTitle}>
+              <FormattedMessage id="products" defaultMessage="Productos" />
+            </Text>
+          </View>
+
+          <View style={styles.productsList}>
+            {detailOfOrder.data?.products.map((product, index) => (
+              <ProductOrderCard key={index} data={product.productoInfo} cantidad={product.cantidad} />
+            ))}
+          </View>
+
+          <View style={styles.totalContainer}>
+            <Text style={styles.totalLabel}>
+              <FormattedMessage id="total" defaultMessage="Total" />
+            </Text>
+            <Text style={styles.totalValue}>$ {detailOfOrder.data?.total}</Text>
+          </View>
+        </Animated.View>
+
+        <View style={styles.actionsContainer}>
+          <TouchableOpacity style={styles.deleteButton} onPress={DeleteOrder} activeOpacity={0.7}>
+            <MaterialIcons name="delete-outline" size={20} color={Colors.light.text} />
+            <Text style={styles.deleteButtonText}>
+              <FormattedMessage id="delete" defaultMessage="Eliminar" />
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.chatButton} onPress={handleViewChat} activeOpacity={0.7}>
+            <IonIcons name="chatbubble-outline" size={20} color="white" />
+            <Text style={styles.chatButtonText}>
+              <FormattedMessage id="goToChat" defaultMessage="Ir al chat" />
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  )
+}
+
+export default OrderDetails
