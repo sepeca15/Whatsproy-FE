@@ -87,7 +87,7 @@ const useOrdersData = () => {
       const response = await api.order.moneyinday(today);
       setDailyRevenue(response.ganancia ?? 0);
     } catch (error) {
-      console.error("Error al obtener ingresos del día:", error);
+      console.error("Error al obtener ingresos del día:", JSON.stringify(error));
     } finally {
       isFetching.current = false;
     }

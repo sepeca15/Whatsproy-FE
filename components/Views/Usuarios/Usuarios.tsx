@@ -7,7 +7,7 @@ import {
   useColorScheme,
   Animated,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import UserCard from "./components/UserCard";
 import { styles } from "./UsuariosStyles";
@@ -19,8 +19,10 @@ import { Colors } from "@/constants/Colors";
 import { useUser } from "@/hooks/redux/useUser";
 import ModalCreateUser from "./components/ModalCreateUser";
 import ModalEditUser from "./components/ModalEditUser";
-import { useIntl } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import Usuarios from ".";
+import { FadeIn } from "react-native-reanimated";
+import CustomText from "@/components/CustomText";
 
 const initialValues = {
   data: [],
@@ -35,8 +37,7 @@ const UsuariosEmpresasScreen: React.FC = () => {
     modalCreate: false,
   });
   const [selectedUser, setSelectedUser] = React.useState<any>(undefined);
-
-
+  const router = useRouter();
 
   const uploadUsers = async () => {
     try {
@@ -102,9 +103,27 @@ const UsuariosEmpresasScreen: React.FC = () => {
   };
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>
-        {intl.formatMessage({ id: "users", defaultMessage: "Users" })}
-      </Text>
+            <Animated.View style={styles.header}>
+        <View style={styles.headerContent}>
+        <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.back()}
+          >
+            <AntDesign name="arrowleft" size={22} color="white" />
+          </TouchableOpacity>
+          <View style={styles.headerTitle}>
+            <CustomText
+              style={styles.businessName}
+              accessibilityLabel="Pedidos"
+            >
+              <FormattedMessage
+                id="users"
+              />
+            </CustomText>
+          </View>
+        </View>
+      </Animated.View>
+
       {userData.loading === true ? (
         <View style={styles.spinner}>
           <Progress.Circle

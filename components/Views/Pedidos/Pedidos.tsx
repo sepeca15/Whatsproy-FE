@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View, ScrollView, StyleSheet, Text, Pressable } from "react-native";
+import { View, ScrollView, StyleSheet, Text, Pressable, RefreshControl } from "react-native";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons.js";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons.js";
 import OrdersFinished from "./components/OrdersFinished";
@@ -7,12 +7,23 @@ import OrdersPending from "./components/OrdersPending";
 import { useUser } from "@/hooks/redux/useUser";
 import CreateOrderModal from "@/components/CreateOrderModal";
 import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
+import CustomText from "@/components/CustomText";
+import Animated, { FadeIn } from "react-native-reanimated";
+import { Colors } from "@/constants/Colors";
+import { useOrders } from "@/hooks/redux/useOrders";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type pagesOrder = "finished" | "pending";
 
 const PedidosEIngresos: React.FC = () => {
   const [selected, setSelected] = React.useState<pagesOrder>("pending");
   const [openAddModal, setOpenAddModal] = React.useState<boolean>(false);
+  const {
+    loadingApi,
+    ordersFinished,
+    handleLoadOrdersFinished,
+    handleLoadOrdersPending,
+  } = useOrders();
 
   const { user } = useUser();
   const handleSelectPage = (key: pagesOrder) => {
@@ -20,14 +31,27 @@ const PedidosEIngresos: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>
+    <SafeAreaView style={styles.container}>
+      <Animated.View style={styles.header}>
+        <View style={styles.headerContent}>
+          <View style={styles.headerLeft}>
+            <CustomText
+              style={styles.businessName}
+              accessibilityLabel="Pedidos"
+            >
+              <FormattedMessage id="orders" />
+            </CustomText>
+          </View>
+        </View>
+      </Animated.View>
+
+      {/* <Text style={styles.title}>
         {user.tipo_servicioNombre === "Delivery" ? (
           <FormattedMessage id="orders" defaultMessage="Orders" />
         ) : (
           <FormattedMessage id="reservations" defaultMessage="Reservations" />
         )}
-      </Text>
+      </Text> */}
       <View style={styles.tab}>
         {["pending", "finished"].map((key) => (
           <View key={key} style={styles.containerTabItem}>
@@ -60,7 +84,22 @@ const PedidosEIngresos: React.FC = () => {
           </View>
         ))}
       </View>
-      <ScrollView style={styles.orders}>
+      <ScrollView
+       
+        showsVerticalScrollIndicator={true}
+        style={styles.orders}
+        refreshControl={
+          <RefreshControl
+            refreshing={loadingApi}
+            onRefresh={
+              selected === "finished"
+                ? handleLoadOrdersFinished
+                : handleLoadOrdersPending
+            }
+            tintColor={Colors.light.primary}
+          />
+        }
+      >
         {selected === "finished" ? <OrdersFinished /> : <OrdersPending />}
       </ScrollView>
       <View style={styles.buttonContainer}>
@@ -79,11 +118,37 @@ const PedidosEIngresos: React.FC = () => {
           onClose={() => setOpenAddModal((prevState) => !prevState)}
         />
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  header: {
+    padding: 16,
+    paddingTop: 20,
+    paddingBottom: 20,
+    backgroundColor: Colors.light.primary,
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  headerContent: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  headerLeft: {
+    flex: 1,
+  },
+  businessName: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#fff",
+  },
   container: {
     flex: 1,
   },

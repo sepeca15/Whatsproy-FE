@@ -2,11 +2,36 @@ import { StyleSheet, Dimensions } from "react-native";
 import { Colors } from "../../../constants/Colors";
 
 export const styles = StyleSheet.create({
+  header: {
+    padding: 16,
+    paddingTop: 20,
+    paddingBottom: 20,
+    backgroundColor: Colors.light.primary,
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  headerContent: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  headerLeft: {
+    flex: 1,
+  },
+  businessName: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#fff",
+  },
   container: {
     flex: 1,
     backgroundColor: "#f0f0f0",
     width: "100%",
-    paddingHorizontal: 10,
   },
   scrollViewContent: {
     justifyContent: "center",
@@ -55,7 +80,7 @@ export const styles = StyleSheet.create({
     right: 20,
     flexDirection: "row",
     alignItems: "center",
-    zIndex: 1,
+    zIndex: 9999,
   },
   graficButton: {
     backgroundColor: Colors.light.primary,

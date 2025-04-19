@@ -225,7 +225,6 @@ const AddProduct: React.FC = () => {
                       categoryIds: selectedIds,
                     }));
                   }}
-                
                   onSearch={(query: string) => {
                   }}
                 />

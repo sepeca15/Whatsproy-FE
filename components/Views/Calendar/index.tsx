@@ -23,6 +23,8 @@ import { Colors } from "@/constants/Colors";
 import CustomText from "@/components/CustomText";
 import { useUser } from "@/hooks/redux/useUser";
 import CreateOrderModal from "@/components/CreateOrderModal";
+import Animated, { FadeIn } from "react-native-reanimated";
+import { FormattedMessage } from "react-intl";
 
 if (
   Platform.OS === "android" &&
@@ -104,6 +106,18 @@ export default function CalendarView() {
 
   return (
     <View style={styles.container}>
+        <Animated.View style={styles.header}>
+        <View style={styles.headerContent}>
+          <View style={styles.headerLeft}>
+            <CustomText
+              style={styles.businessName}
+              accessibilityLabel="Pedidos"
+            >
+              <FormattedMessage id="calendar" />
+            </CustomText>
+          </View>
+        </View>
+      </Animated.View>
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Eventos del calendario</Text>
         <View style={styles.circleAvaiableContainer}>
@@ -196,6 +210,32 @@ export default function CalendarView() {
 }
 
 const styles = StyleSheet.create({
+  header: {
+    padding: 16,
+    paddingTop: 20,
+    paddingBottom: 20,
+    backgroundColor: Colors.light.primary,
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  headerContent: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  headerLeft: {
+    flex: 1,
+  },
+  businessName: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#fff",
+  },
   container: {
     flex: 1,
     backgroundColor: "#fff",
