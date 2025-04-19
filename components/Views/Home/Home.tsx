@@ -11,16 +11,16 @@ import QuickActionButton from "./components/QuickActionButton"
 import styles from "./HomeStyles"
 import { router } from "expo-router"
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated"
-import useOrdersData from "../../../hooks/home_functions/useOrdersData"
 import LottieView from "lottie-react-native"
 import { FormattedMessage } from "react-intl"
 import * as Animatable from "react-native-animatable"
 import { Ionicons } from "@expo/vector-icons"
 import { Vibration, TouchableOpacity } from "react-native";
 import { saveNotificationPreference, getNotificationPreference } from "../../../utils/notificaciones/notificationsStorage"
+import { useOrdersDashboard } from "@/hooks/home_functions/useOrdersDashboard";
 
 const Home: React.FC = () => {
-  const { loading, ordersCount, dailyRevenue, refreshData, lastOrders } = useOrdersData()
+  const { loading, ordersCount, dailyRevenue, refreshData, lastOrders } = useOrdersDashboard()
   const [refreshing, setRefreshing] = React.useState(false)
   const deleteAnimationRef = useRef(null)
   const [notificationsEnabled, setNotificationsEnabled] = React.useState<boolean>(false);

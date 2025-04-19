@@ -242,6 +242,8 @@ const Productos: React.FC = () => {
   }
 
 
+  
+
   const filteredProducts = (ProductsBD ?? [])
     .filter((product) =>
       product.nombre.toLowerCase().includes(searchTerm.toLowerCase())
