@@ -61,20 +61,21 @@ const Settings = () => {
   const router = useRouter();
   return (
     <Center style={styles.father}>
-      <ScrollView>
+
       <View style={styles.container}>
-      <Animated.View style={styles.header}>
-        <View style={styles.headerContent}>
-          <View style={styles.headerLeft}>
-            <CustomText
-              style={styles.businessName}
-              accessibilityLabel="Pedidos"
-            >
-              <FormattedMessage id="settings" />
-            </CustomText>
+        <Animated.View style={styles.header}>
+          <View style={styles.headerContent}>
+            <View style={styles.headerLeft}>
+              <CustomText
+                style={styles.businessName}
+                accessibilityLabel="Pedidos"
+              >
+                <FormattedMessage id="settings" />
+              </CustomText>
+            </View>
           </View>
-        </View>
-      </Animated.View>
+        </Animated.View>
+        <ScrollView>
         <View style={styles.containerItems}>
           {settingsPage.map((item: any, index) => {
             return (
@@ -99,8 +100,9 @@ const Settings = () => {
             );
           })}
         </View>
+        </ScrollView>
       </View>
-      </ScrollView>
+
     </Center>
   );
 };

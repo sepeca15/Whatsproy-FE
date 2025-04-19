@@ -1,115 +1,94 @@
-// Modified Productos.tsx parent component
+"use client"
 
-import type React from "react";
-import { useState, useEffect, useCallback, useRef } from "react";
-import {
-  TouchableOpacity,
-  Text,
-  TextInput,
-  Animated,
-  Dimensions,
-  RefreshControl,
-} from "react-native";
-import { ProductCard } from "./components/CardProducts/CardProduct";
-import ProductCardSkeleton from "./components/ProductCardSkeleton";
-import {
-  sampleProducts,
-  type ProductBDD,
-  salesData,
-  categoryData,
-  satisfactionData,
-  monthlySalesData,
-  dayslySalesData,
-} from "../../../hooks/dataProduct";
-import { useRouter } from "expo-router";
-import Icon from "react-native-vector-icons/FontAwesome";
-import { styles } from "./ProductosStyles";
-import api from "@/services/api/admin";
-import { useLocalization } from "@/app/LocalizationContext";
-import { useIntl, FormattedMessage } from "react-intl";
-import * as Animatable from "react-native-animatable";
-import LottieView from "lottie-react-native";
-import { Colors } from "../../../constants/Colors";
-import { useToastContext } from "@/contexts/ToastContext";
-import { Image, ScrollView, View, Button } from "native-base";
-import { useUser } from "@/hooks/redux/useUser";
-import { ID_TIPOSERVICIO_DELIVERY } from "@/services/api/tiposervicio/tiposervicio.type";
-import { ICategoryData } from "../Categories/components/CardCategory/CardCategory";
-import AnimatedTwo, { FadeIn } from "react-native-reanimated";
-import CustomText from "@/components/CustomText";
+import type React from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
+import { TouchableOpacity, Text, TextInput, Animated, RefreshControl } from "react-native"
+import { ProductCard } from "./components/CardProducts/CardProduct"
+import ProductCardSkeleton from "./components/ProductCardSkeleton"
+import { sampleProducts, type ProductBDD, monthlySalesData, dayslySalesData } from "../../../hooks/dataProduct"
+import { useRouter } from "expo-router"
+import Icon from "react-native-vector-icons/FontAwesome"
+import { styles } from "./ProductosStyles"
+import api from "@/services/api/admin"
+import { useLocalization } from "@/app/LocalizationContext"
+import { useIntl, FormattedMessage } from "react-intl"
+import * as Animatable from "react-native-animatable"
+import LottieView from "lottie-react-native"
+import { Colors } from "../../../constants/Colors"
+import { useToastContext } from "@/contexts/ToastContext"
+import { Image, ScrollView, View } from "native-base"
+import { useUser } from "@/hooks/redux/useUser"
+import type { ICategoryData } from "../Categories/components/CardCategory/CardCategory"
+import AnimatedTwo from "react-native-reanimated"
+import CustomText from "@/components/CustomText"
 
 const Productos: React.FC = () => {
-  const router = useRouter();
-  const { user } = useUser();
-  const [ProductsBD, setProducts] = useState<ProductBDD[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
-  const [isUpdating, setIsUpdating] = useState(false);
-  const fadeAnim = useState(new Animated.Value(0))[0];
-  const { locale } = useLocalization();
-  const intl = useIntl();
-  const { showToast } = useToastContext();
-  const [isDeleting, setIsDeleting] = useState(true);
+  const router = useRouter()
+  const { user } = useUser()
+  const [ProductsBD, setProducts] = useState<ProductBDD[]>([])
+  const [searchTerm, setSearchTerm] = useState<string>("")
+  const [isInitialLoading, setIsInitialLoading] = useState(true)
+  const [isUpdating, setIsUpdating] = useState(false)
+  const fadeAnim = useState(new Animated.Value(0))[0]
+  const { locale } = useLocalization()
+  const intl = useIntl()
+  const { showToast } = useToastContext()
+  const [isDeleting, setIsDeleting] = useState(true)
 
-  const [allCategories, setAllCategories] = useState<ICategoryData[]>([]);
-  const [loadingCategories, setLoadingCategories] = useState(true);
-  const [selectCategory, setSelectCategory] = useState<number | null>(null);
+  const [allCategories, setAllCategories] = useState<ICategoryData[]>([])
+  const [loadingCategories, setLoadingCategories] = useState(true)
+  const [selectCategory, setSelectCategory] = useState<number | null>(null)
 
   // New state for delete modal
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deletingProductId, setDeletingProductId] = useState<number | null>(
-    null
-  );
-  const deleteAnimationRef = useRef(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [deletingProductId, setDeletingProductId] = useState<number | null>(null)
+  const deleteAnimationRef = useRef(null)
 
   const loadAllCategories = async () => {
     try {
-      setLoadingCategories(true);
-      const resp = await api.category.getAll();
+      setLoadingCategories(true)
+      const resp = await api.category.getAll()
 
       if (resp.ok) {
-        setAllCategories(resp.data);
+        setAllCategories(resp.data)
         if (resp.data.length > 0) {
-          setSelectCategory(resp.data[0].id);
+          setSelectCategory(resp.data[0].id)
         }
       }
     } catch (error) {
-      console.log(error);
+      console.log(error)
     } finally {
-      setLoadingCategories(false);
+      setLoadingCategories(false)
     }
-  };
+  }
 
   const loadProductsFromCategory = async () => {
-    setIsInitialLoading(true);
+    setIsInitialLoading(true)
 
     if (!selectCategory) {
-      return;
+      return
     }
     try {
-      console.log(selectCategory);
-      const resp = await api.category.getProducts({
-        categoryId: selectCategory,
-      });
-      console.log("xd1", resp);
+      const resp = await api.category.getProducts({ categoryId: selectCategory })
       if (resp.ok) {
-        setProducts(resp.data);
-        setIsInitialLoading(false);
+        setProducts(resp.data)
       }
     } catch (error: any) {
-      console.log(error.response.data.message);
+      console.log(error.response?.data?.message)
+    } finally {
+      setIsInitialLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
-    loadAllCategories();
-  }, []);
+    loadAllCategories()
+  }, [])
 
   useEffect(() => {
     if (selectCategory) {
-      loadProductsFromCategory();
+      loadProductsFromCategory()
     }
-  }, [selectCategory]);
+  }, [selectCategory])
 
   useEffect(() => {
     if (!isInitialLoading) {
@@ -117,45 +96,45 @@ const Productos: React.FC = () => {
         toValue: 1,
         duration: 500,
         useNativeDriver: true,
-      }).start();
+      }).start()
     }
-  }, [isInitialLoading]);
+  }, [isInitialLoading])
 
   const handleDeleteRequest = useCallback(
     (productId: number) => {
-      setDeletingProductId(productId);
-      setShowDeleteModal(true);
-      setIsDeleting(true);
+      setDeletingProductId(productId)
+      setShowDeleteModal(true)
+      setIsDeleting(true)
 
       setTimeout(async () => {
         try {
-          const resp = await api.products.delete(productId);
+          const resp = await api.products.delete(productId)
           if (resp.data.ok) {
-            onDeleteProduct(productId);
-            setIsDeleting(false);
+            onDeleteProduct(productId)
+            setIsDeleting(false)
 
             setTimeout(() => {
-              setShowDeleteModal(false);
-              setDeletingProductId(null);
-            }, 1500);
+              setShowDeleteModal(false)
+              setDeletingProductId(null)
+            }, 1500)
           }
         } catch (error: any) {
-          setShowDeleteModal(false);
-          setDeletingProductId(null);
+          setShowDeleteModal(false)
+          setDeletingProductId(null)
 
           showToast({
             title: error.response?.data?.message || "Error deleting product",
             status: "error",
-          });
+          })
         }
-      }, 2700);
+      }, 2700)
     },
-    [intl]
-  );
+    [intl],
+  )
 
   // Render the delete modal
   const renderDeleteModal = () => {
-    if (!showDeleteModal) return null;
+    if (!showDeleteModal) return null
 
     return (
       <View
@@ -218,57 +197,46 @@ const Productos: React.FC = () => {
             }}
           >
             <FormattedMessage
-              id={
-                isDeleting
-                  ? "deletingProduct"
-                  : "deletedProduct.modal.delete.card"
-              }
-              defaultMessage={
-                isDeleting ? "Deleting product..." : "Product deleted!"
-              }
+              id={isDeleting ? "deletingProduct" : "deletedProduct.modal.delete.card"}
+              defaultMessage={isDeleting ? "Deleting product..." : "Product deleted!"}
             />
           </Animatable.Text>
         </Animatable.View>
       </View>
-    );
-  };
+    )
+  }
 
   const updateProduct = (newProduct: any) => {
     setProducts((prevState) => {
       const prevFilter = prevState.map((prod) => {
         if (prod.id === newProduct.id) {
-          return newProduct;
+          return newProduct
         }
-        return prod;
-      });
+        return prod
+      })
 
-      return prevFilter;
-    });
-  };
+      return prevFilter
+    })
+  }
 
   const onDeleteProduct = (prodId: number) => {
     setProducts((prevState) => {
-      const filter = prevState.filter((prod) => prod.id !== prodId);
+      const filter = prevState.filter((prod) => prod.id !== prodId)
 
-      return filter;
-    });
-  };
+      return filter
+    })
+  }
 
   const filteredProducts = (ProductsBD ?? [])
-    .filter((product) =>
-      product.nombre.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    .sort((a, b) => a.nombre.localeCompare(b.nombre, locale));
+    .filter((product) => product.nombre.toLowerCase().includes(searchTerm.toLowerCase()))
+    .sort((a, b) => a.nombre.localeCompare(b.nombre, locale))
 
   return (
     <View style={styles.container}>
       <AnimatedTwo.View style={styles.header}>
         <View style={styles.headerContent}>
           <View style={styles.headerLeft}>
-            <CustomText
-              style={styles.businessName}
-              accessibilityLabel="Pedidos"
-            >
+            <CustomText style={styles.businessName} accessibilityLabel="Pedidos">
               <FormattedMessage id="products" />
             </CustomText>
           </View>
@@ -290,46 +258,29 @@ const Productos: React.FC = () => {
           />
         </View>
         {allCategories.length > 0 ? (
-          <View h={100} w={"full"}>
-            <ScrollView horizontal w={"full"}>
+          <View style={styles.categoryContainer}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {allCategories.map((category, index) => {
+                const isSelected = selectCategory === category.id
                 return (
-                  <Button
+                  <TouchableOpacity
                     onPress={() => setSelectCategory(category.id)}
-                    py={1}
-                    display={"flex"}
-                    flexDir={"row"}
-                    alignItems={"center"}
-                    justifyContent={"center"}
-                    px={4}
                     key={`button-category-${index}`}
-                    bg={"white"}
-                    mx={2}
-                    h="full"
-                    rounded={"md"}
+                    style={[styles.categoryButton, isSelected && styles.selectedCategoryButton]}
+                    activeOpacity={0.7}
                   >
-                    <Image
-                      alt={"image"}
-                      width={50}
-                      height={50}
-                      mr={4}
-                      source={{ uri: category.image }}
-                    />
-                    <Text>{category.name}</Text>
-                  </Button>
-                );
+                    <Image alt={category.name} style={styles.categoryImage} source={{ uri: category.image }} />
+                    <Text style={[styles.categoryText, isSelected && styles.selectedCategoryText]}>
+                      {category.name}
+                    </Text>
+                  </TouchableOpacity>
+                )
               })}
             </ScrollView>
           </View>
         ) : (
           !loadingCategories && (
-            <View
-              w={"full"}
-              display={"flex"}
-              flexDir={"row"}
-              alignItems={"center"}
-              justifyContent={"center"}
-            >
+            <View w={"full"} display={"flex"} flexDir={"row"} alignItems={"center"} justifyContent={"center"}>
               <Text>
                 <FormattedMessage id="nocategories" />
               </Text>
@@ -344,22 +295,20 @@ const Productos: React.FC = () => {
             <RefreshControl
               refreshing={loadingCategories || isInitialLoading}
               onRefresh={() => {
-                loadAllCategories();
-                loadProductsFromCategory();
+                loadAllCategories()
+                loadProductsFromCategory()
               }}
               tintColor={Colors.light.primary}
             />
           }
         >
           {isInitialLoading ? (
-            Array.from({ length: 5 }).map((_, index) => (
-              <ProductCardSkeleton key={`item-${index}`} />
-            ))
+            Array.from({ length: 5 }).map((_, index) => <ProductCardSkeleton key={`item-${index}`} />)
           ) : filteredProducts.length > 0 ? (
             <Animated.View style={{ opacity: fadeAnim }}>
               {filteredProducts.map((product) => {
                 return (
-                  <View style={{ paddingHorizontal: 5 }}>
+                  <View key={product.id} style={{ paddingHorizontal: 5 }}>
                     <ProductCard
                       key={product.id}
                       product={sampleProducts[1]}
@@ -371,14 +320,11 @@ const Productos: React.FC = () => {
                       isBeingDeleted={deletingProductId === product.id}
                     />
                   </View>
-                );
+                )
               })}
             </Animated.View>
           ) : (
-            <Animatable.View
-              animation="fadeIn"
-              style={styles.emptyStateContainer}
-            >
+            <Animatable.View animation="fadeIn" style={styles.emptyStateContainer}>
               <LottieView
                 source={
                   searchTerm
@@ -390,17 +336,11 @@ const Productos: React.FC = () => {
                 style={styles.emptyStateAnimation}
               />
               <Text style={styles.emptyStateTitle}>
-                <FormattedMessage
-                  id="noProductsFound"
-                  defaultMessage="No hay productos"
-                />
+                <FormattedMessage id="noProductsFound" defaultMessage="No hay productos" />
               </Text>
               <Text style={styles.emptyStateSubtitle}>
                 {searchTerm ? (
-                  <FormattedMessage
-                    id="noProductsMatchSearch"
-                    defaultMessage="No products match your search"
-                  />
+                  <FormattedMessage id="noProductsMatchSearch" defaultMessage="No products match your search" />
                 ) : (
                   <FormattedMessage
                     id="addYourFirstProduct"
@@ -416,14 +356,14 @@ const Productos: React.FC = () => {
         <TouchableOpacity
           style={styles.addButton}
           onPress={() => {
-            router.push("/(tabs)/addpro");
+            router.push("/(tabs)/addpro")
           }}
         >
           <Text style={styles.addButtonText}>+</Text>
         </TouchableOpacity>
       </View>
     </View>
-  );
-};
+  )
+}
 
-export default Productos;
+export default Productos

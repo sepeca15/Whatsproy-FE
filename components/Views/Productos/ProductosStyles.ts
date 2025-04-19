@@ -1,5 +1,5 @@
-import { StyleSheet, Dimensions } from "react-native";
-import { Colors } from "../../../constants/Colors";
+import { StyleSheet, Dimensions } from "react-native"
+import { Colors } from "../../../constants/Colors"
 
 export const styles = StyleSheet.create({
   header: {
@@ -115,33 +115,58 @@ export const styles = StyleSheet.create({
     fontSize: 18,
   },
   categoryContainer: {
+    paddingHorizontal: 10,
+    paddingVertical: 12,
+    marginBottom: 5,
+    height: 110,
+  },
+  categoryButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#ffffff",
+    borderRadius: 12,
+    marginHorizontal: 6,
     paddingHorizontal: 16,
     paddingVertical: 12,
-    gap: 8,
+    height: 80,
+    minWidth: 160,
+    maxWidth: 200,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: "#f0f0f0",
   },
-  categoryChip: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: '#f0f0f0',
-    marginRight: 8,
-  },
-  selectedCategoryChip: {
+  selectedCategoryButton: {
     backgroundColor: Colors.light.primary,
+    borderColor: Colors.light.primary,
+    shadowOpacity: 0.2,
+    elevation: 5,
+  },
+  categoryImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 8,
+    marginRight: 12,
   },
   categoryText: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: 15,
+    fontWeight: "500",
+    color: "#333",
+    flex: 1,
+    flexWrap: "wrap",
   },
   selectedCategoryText: {
-    color: '#fff',
-    fontWeight: '600',
+    color: "#ffffff",
+    fontWeight: "600",
   },
   emptyStateContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     padding: 20,
-    height: Dimensions.get('window').height * 0.6,
+    height: "100%",
   },
   emptyStateAnimation: {
     width: 200,
@@ -149,15 +174,15 @@ export const styles = StyleSheet.create({
   },
   emptyStateTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginTop: 20,
     color: Colors.light.primary,
   },
   emptyStateSubtitle: {
     fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
+    color: "#666",
+    textAlign: "center",
     marginTop: 10,
     paddingHorizontal: 20,
   },
-});
+})

@@ -1,50 +1,45 @@
-import { useEffect, useRef } from "react";
-import { Vibration } from "react-native";
-import * as Notifications from "expo-notifications";
-import { getNotificationPreference } from "@/utils/notificaciones/notificationsStorage";
-import useOrdersData from "@/hooks/home_functions/useOrdersData";
+// import { useEffect, useRef } from "react";
+// import { Vibration } from "react-native";
+// import * as Notifications from "expo-notifications";
+// import useOrdersData from "@/hooks/home_functions/useOrdersData";
+// import { useNotificationPreference } from "@/contexts/NotificationPreferenceContext";
 
-let lastOrderCount = 0;
+// const PedidosListener = () => {
+//   const lastOrderCount = useRef(0);
+//   const isMounted = useRef(true);
+//   const { rawOrders, refreshData } = useOrdersData();
+//   const { enabled: isEnabled } = useNotificationPreference();
 
-const PedidosListener = () => {
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const { rawOrders, refreshData } = useOrdersData();
+//   useEffect(() => {
+//     isMounted.current = true;
+//     const poll = async () => {
+//       try {
+//         if (!isEnabled) return; 
+//         await refreshData();
+//         if (!isMounted.current) return;
 
-  useEffect(() => {
-    const checkForNewOrders = async () => {
-      const isEnabled = await getNotificationPreference();
-      if (!isEnabled) return; // Si las notificaciones están desactivadas, no hacemos nada
+//         if (rawOrders.length > lastOrderCount.current) {
+//           const diff = rawOrders.length - lastOrderCount.current;
+//           lastOrderCount.current = rawOrders.length;
+//           Vibration.vibrate();
+//           await Notifications.presentNotificationAsync({
+//             title: "📦 Nuevo pedido",
+//             body: `Tienes ${diff} pedido(s) nuevo(s).`,
+//           });
+//         } else {
+//           lastOrderCount.current = rawOrders.length;
+//         }
+//       } catch (e) {
+//         console.error(e);
+//       } finally {
+//         if (isMounted.current) setTimeout(poll, 100000000);
+//       }
+//     };
+//     poll();
+//     return () => { isMounted.current = false; };
+//   }, [isEnabled]);
 
-      await refreshData(); // Refresca los datos (incluye rawOrders)
+//   return null;
+// };
 
-      if (rawOrders && rawOrders.length > lastOrderCount) {
-        const newOrdersCount = rawOrders.length - lastOrderCount;
-        lastOrderCount = rawOrders.length;
-
-        Vibration.vibrate();
-
-        await Notifications.scheduleNotificationAsync({
-          content: {
-            title: "📦 ¡Nuevo pedido recibido!",
-            body: `Tienes ${newOrdersCount} nuevo(s) pedido(s).`,
-            sound: true,
-            data: { icon: "../../constants/logo.jpeg" }, // Agregar un icono en los datos
-          },
-          trigger: null,
-        });
-      } else if (rawOrders) {
-        lastOrderCount = rawOrders.length;
-      }
-    };
-
-    intervalRef.current = setInterval(checkForNewOrders, 10000); // cada 10 seg
-
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, [rawOrders]);
-
-  return null;
-};
-
-export default PedidosListener;
+// export default PedidosListener;
