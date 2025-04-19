@@ -18,6 +18,7 @@ import { Ionicons } from "@expo/vector-icons"
 import { Vibration, TouchableOpacity } from "react-native";
 import { saveNotificationPreference, getNotificationPreference } from "../../../utils/notificaciones/notificationsStorage"
 import { useOrdersDashboard } from "@/hooks/home_functions/useOrdersDashboard";
+import { useUser } from "@/hooks/redux/useUser"
 
 const Home: React.FC = () => {
   const { loading, ordersCount, dailyRevenue, refreshData, lastOrders } = useOrdersDashboard()
@@ -43,7 +44,12 @@ const Home: React.FC = () => {
       setNotificationsEnabled(enabled)
     }
     fetchPreference()
-  }, [])
+  }, []);
+
+  const { user } = useUser();
+  
+  const empresaName = user?.empresaName ?? "Empresa Name";
+
 
   const toggleNotifications = () => {
     setNotificationsEnabled((prev) => {
@@ -54,11 +60,11 @@ const Home: React.FC = () => {
   }
   return (
     <SafeAreaView style={styles.container}>
-      <Animated.View entering={FadeIn.delay(100)} style={styles.header}>
+      <Animated.View style={styles.header}>
         <View style={styles.headerContent}>
           <View style={styles.headerLeft}>
             <CustomText style={styles.businessName} accessibilityLabel="Nombre del negocio">
-              El Tatin
+              {empresaName}
             </CustomText>
             <CustomText style={styles.dateText} accessibilityLabel="Fecha actual">
               {new Date().toLocaleDateString("es-AR", {

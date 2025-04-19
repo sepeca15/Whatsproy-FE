@@ -20,15 +20,16 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
   onClose,
   actions,
 }) => {
+
   return (
     <Modal
       transparent
-      animationType="slide"
+      animationType="fade"
       visible={isVisible}
       style={{ zIndex: 1 }}
       onRequestClose={onClose}
     >
-      <Pressable onPress={onClose} style={styles.container}>
+      <View style={styles.container}>
         <View
           style={styles.containerContent}
           onStartShouldSetResponder={() => true}
@@ -73,7 +74,7 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
             </View>
           )}
         </View>
-      </Pressable>
+      </View>
     </Modal>
   );
 };

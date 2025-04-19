@@ -7,6 +7,11 @@ import SvgEmpty from "@/assets/svgComponents/Empty";
 import CardCategory from "./components/CardCategory";
 import { Row, Grid } from "react-native-easy-grid"; 
 import { ICategoryData } from "./components/CardCategory/CardCategory";
+import Animated from "react-native-reanimated";
+import { styles } from "../DateOrder/DateOrderStyles";
+import CustomText from "@/components/CustomText";
+import { FormattedMessage } from "react-intl";
+import CustomButton from "@/components/CustomButton";
 
 const Categories = () => {
   const [allCategories, setAllCategories] = React.useState<ICategoryData[]>([])
@@ -41,10 +46,21 @@ const Categories = () => {
     loadAllCategories()
   }, [])
 
-  return <View pb={10} h={'full'} w={'full'} flex={1} display={'flex'} flexDir={'column'} alignItems={'center'} color={'black'}>
-    <View w={'full'} display={'flex'} flexDir={'row'} justifyContent={'center'} alignItems={'center'} bg={'white'} paddingY={'16px'}>
-      <Text fontSize={20} fontWeight={'bold'}>Categories</Text>
-    </View>
+  return <View style={{ flex: 1 }}>
+   <Animated.View style={styles.header}>
+        <View style={styles.headerContent}>
+          <View style={styles.headerLeft}>
+            <CustomText
+              style={styles.businessName}
+              accessibilityLabel="Pedidos"
+            >
+              <FormattedMessage id="categories" />
+            </CustomText>
+          </View>
+        </View>
+      </Animated.View>
+  <View pb={10} h={'full'} w={'full'} flex={1} display={'flex'} flexDir={'column'} alignItems={'center'} color={'black'}>
+   
     <View w={'full'} py={2} flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}>
       {
         loadingApi ? 
@@ -66,11 +82,12 @@ const Categories = () => {
           </View>
       }
     </View>
-    <Button shadow={'5'} background={'black'} display={'flex'} flexDir={'row'} alignItems={'center'} onPress={toggleModal}>
-      Agregar categoria
-    </Button>
+    <CustomButton shadow={'5'} display={'flex'} flexDir={'row'} paddingLeft={5} paddingRight={5} borderRadius={10} paddingTop={2} paddingBottom={3} height={40} fontWeight={"semibold"} alignItems={'center'} onPress={toggleModal}>
+      <FormattedMessage id="addCategorie" />
+    </CustomButton>
     <ModalCreateCategory addCategory={addCategory} onClose={toggleModal} isOpen={stateModal} />
   </View>
+ </View>
 };
 
 export default Categories;

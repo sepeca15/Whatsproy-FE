@@ -11,6 +11,7 @@ import CustomText from "@/components/CustomText";
 import { Center } from "native-base";
 import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
 import styles from "./SettingsStyles";
+import Animated, { FadeIn } from "react-native-reanimated";
 const settingsPage = [
   {
     title: "generalSettings",
@@ -60,20 +61,21 @@ const Settings = () => {
   const router = useRouter();
   return (
     <Center style={styles.father}>
-      <ScrollView>
+
       <View style={styles.container}>
-        <View style={styles.title}>
-          <CustomText
-            style={{
-              textAlign: "center",
-              fontSize: 25,
-              fontWeight: "bold",
-              color: "white",
-            }}
-          >
-            <FormattedMessage id="settings" />
-          </CustomText>
-        </View>
+        <Animated.View style={styles.header}>
+          <View style={styles.headerContent}>
+            <View style={styles.headerLeft}>
+              <CustomText
+                style={styles.businessName}
+                accessibilityLabel="Pedidos"
+              >
+                <FormattedMessage id="settings" />
+              </CustomText>
+            </View>
+          </View>
+        </Animated.View>
+        <ScrollView>
         <View style={styles.containerItems}>
           {settingsPage.map((item: any, index) => {
             return (
@@ -98,8 +100,9 @@ const Settings = () => {
             );
           })}
         </View>
+        </ScrollView>
       </View>
-      </ScrollView>
+
     </Center>
   );
 };

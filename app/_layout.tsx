@@ -49,7 +49,7 @@ export default function RootLayout() {
             <NativeBaseProvider>
               <ToastProvider>
                 <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-                  <StatusBar barStyle="light-content" backgroundColor={Colors.light.primary} />
+                <StatusBar barStyle="light-content" backgroundColor={"#075e54" }/>
                 
 
                   {/* <PedidosListener /> */}

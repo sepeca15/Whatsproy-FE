@@ -11,6 +11,7 @@ import * as Progress from "react-native-progress";
 import { Colors } from "@/constants/Colors";
 import { useToastContext } from "@/contexts/ToastContext";
 import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
+import Animated from "react-native-reanimated";
 
 const ItemsTable = ["Name", "Type", "Required", "isDefect", ""];
 
@@ -82,11 +83,19 @@ const DateOrder: React.FC = () => {
     </View>
   ) : (
     <View style={styles.container}>
-      <View style={styles.ContainerHeader}>
-        <CustomText style={styles.title}>
-          <FormattedMessage id="orderData" />
-        </CustomText>
-      </View>
+      <Animated.View style={styles.header}>
+        <View style={styles.headerContent}>
+          <View style={styles.headerLeft}>
+            <CustomText
+              style={styles.businessName}
+              accessibilityLabel="Pedidos"
+            >
+              <FormattedMessage id="orderData" />
+            </CustomText>
+          </View>
+        </View>
+      </Animated.View>
+
       <View style={styles.message}>
         <MaterialIconss
           style={{ marginTop: 3 }}
