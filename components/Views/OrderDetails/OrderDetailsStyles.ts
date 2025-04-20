@@ -2,15 +2,17 @@ import { StyleSheet, Dimensions, Platform, StatusBar } from "react-native"
 import { RFValue } from "react-native-responsive-fontsize"
 import { Colors } from "@/constants/Colors"
 
-const { width, height } = Dimensions.get("window")
-const isSmallDevice = width < 375
-
 export const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: Colors.light.background,
   },
-
+  pickerContainer: {
+    backgroundColor:Colors.light.secondary,
+    color:'white',
+    width:150,
+    borderRadius:100,
+  },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",

@@ -1,5 +1,5 @@
 import * as React from "react"
-import { View, Text, SafeAreaView, StatusBar, TouchableOpacity, Animated, Dimensions } from "react-native"
+import { View, Text, SafeAreaView, StatusBar, TouchableOpacity, Animated, Dimensions, Pressable } from "react-native"
 import { styles } from "./OrderDetailsStyles"
 import { useLocalSearchParams, useRouter } from "expo-router"
 import * as Progress from "react-native-progress"
@@ -8,7 +8,7 @@ import AntDesign from "react-native-vector-icons/AntDesign"
 import Octicons from "react-native-vector-icons/Octicons"
 import IonIcons from "react-native-vector-icons/Ionicons"
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
-import { ScrollView } from "native-base"
+import { Button, ScrollView } from "native-base"
 import ProductOrderCard from "./components/ProductOrderCard"
 import type { IOrderDetails } from "./OrderDetailsTypes"
 import { useOrders } from "@/hooks/redux/useOrders"
@@ -17,6 +17,10 @@ import moment from "moment"
 import "moment/locale/es"
 import { FormattedMessage } from "react-intl"
 import { Colors } from "@/constants/Colors"
+import { IEstado } from "../Status/Status"
+import { Picker } from "@react-native-picker/picker";
+import orderDetails from "@/app/(tabs)/orderDetails"
+import CustomModalPicker from "./components/ModalPicker"
 
 interface IDetailsOrder {
   loading: boolean
@@ -35,15 +39,21 @@ const OrderDetails = () => {
   const [detailOfOrder, setDetailOfOrder] = React.useState<IDetailsOrder>(initialState)
   const { orderId, keyDeleteType } = useLocalSearchParams()
   const resolvedKeyDeleteType = keyDeleteType as "pending" | "finished"
-
+  const [stateModalStatus, setstateModalStatus] = React.useState<boolean>(false)
   // Animation values
   const fadeAnim = React.useRef(new Animated.Value(0)).current
   const slideAnim = React.useRef(new Animated.Value(30)).current
 
+  const [allStatus, setAllStatus] = React.useState<IEstado[]>([])
+
+  const toggleModalStatus = () => setstateModalStatus((prev) => !prev)
+
+  console.log(stateModalStatus);
+
+
   const loadOrderDetail = async () => {
     try {
       const orderDetailsData = await api.order.getOrderDetails(orderId)
-      console.log(orderDetailsData)
 
       if (orderDetailsData.ok === true) {
         setDetailOfOrder({ ...detailOfOrder, data: orderDetailsData.data })
@@ -58,8 +68,22 @@ const OrderDetails = () => {
     }
   }
 
+  const loadAllStatus = async () => {
+    try {
+      const resp = await api.status.findAll()
+
+      if (resp.ok) {
+        setAllStatus(resp.data)
+      }
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   React.useEffect(() => {
     if (orderId) {
+      loadAllStatus()
       loadOrderDetail()
     }
   }, [])
@@ -98,15 +122,46 @@ const OrderDetails = () => {
     }
   }
 
+  const changeStatusOrder = async (newStatus: IEstado) => {
+    try {
+      if (!detailOfOrder.data?.id || !newStatus.id) {
+        return;
+      }
+
+
+      const resp = await api.changeStatus.cambioEstado({
+        estadoId: newStatus.id,
+        id_user: user.id,
+        pedidoId: detailOfOrder?.data?.id
+      })
+
+      if (resp.ok) {
+        setDetailOfOrder((prev: any) => {
+          return {
+            ...prev,
+            data: {
+              ...prev.data,
+              estadoActual: newStatus
+            }
+          }
+        })
+      }
+
+    } catch (error) {
+      console.log(error);
+    }
+
+  }
+
   if (detailOfOrder.loading) {
     return (
       <View style={styles.loadingContainer}>
-        <Progress.Circle 
-          color={Colors.light.primary} 
-          indeterminate={true} 
-          size={70} 
-          borderWidth={3} 
-          strokeCap="round" 
+        <Progress.Circle
+          color={Colors.light.primary}
+          indeterminate={true}
+          size={70}
+          borderWidth={3}
+          strokeCap="round"
         />
         <Text style={styles.loadingText}>
           <FormattedMessage id="loading" defaultMessage="Cargando..." />
@@ -146,15 +201,13 @@ const OrderDetails = () => {
               </Text>
               <Text style={styles.orderNumberValue}>{detailOfOrder.data?.id}</Text>
             </View>
-            <View style={styles.statusBadge}>
+            <Button onPress={toggleModalStatus} style={styles.statusBadge}>
               <Text style={styles.statusText}>
-                {detailOfOrder.data?.confirm ? (
-                  <FormattedMessage id="accepted" defaultMessage="Aceptado" />
-                ) : (
-                  <FormattedMessage id="pending" defaultMessage="Pendiente" />
-                )}
+                {detailOfOrder.data?.estadoActual &&
+                  detailOfOrder.data.estadoActual.nombre
+                }
               </Text>
-            </View>
+            </Button>
           </View>
           <View style={styles.orderDateContainer}>
             <AntDesign name="calendar" size={16} color={Colors.light.icon} />
@@ -261,6 +314,7 @@ const OrderDetails = () => {
             </Text>
           </TouchableOpacity>
         </View>
+        <CustomModalPicker createOrderDate={detailOfOrder?.data?.date ?? 'No date'} changeStatusOrder={changeStatusOrder} lastStatusOrder={detailOfOrder.data?.estadoActual?.order ?? 0} elements={allStatus} isVisible={stateModalStatus} onClose={toggleModalStatus} />
       </ScrollView>
     </SafeAreaView>
   )

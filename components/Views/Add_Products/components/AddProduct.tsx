@@ -10,7 +10,6 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import * as ImagePicker from "expo-image-picker";
 import { AntDesign } from "@expo/vector-icons";
 import { styles } from "./AddProductStyle";
 import { useRouter } from "expo-router";
@@ -88,7 +87,7 @@ const AddProduct: React.FC = () => {
       return;
     }
     setLoading(true);
-    try {      
+    try {
       const response = await api.products.create({
         ...formData,
         precio: parseFloat(formData.precio.toString()),
@@ -108,7 +107,7 @@ const AddProduct: React.FC = () => {
       setLoading(false);
     }
   };
-  
+
   return (
     <KeyboardAwareScrollView
       style={styles.container}
@@ -176,7 +175,7 @@ const AddProduct: React.FC = () => {
                     setFormData({ ...formData, currency_id: value });
                   }}
                 >
-                  {currencies.map((currency: any, index : number) => (
+                  {currencies.map((currency: any, index: number) => (
                     <Picker.Item
                       key={index}
                       label={`${currency?.codigo} (${currency?.simbolo})`}
@@ -225,7 +224,7 @@ const AddProduct: React.FC = () => {
                       categoryIds: selectedIds,
                     }));
                   }}
-                
+
                   onSearch={(query: string) => {
                   }}
                 />

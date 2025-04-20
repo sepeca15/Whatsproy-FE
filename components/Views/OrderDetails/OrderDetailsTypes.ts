@@ -1,3 +1,5 @@
+import { IEstado } from "../Status/Status";
+
 interface IClient {
   name: string;
   phone: string;
@@ -37,4 +39,6 @@ export interface IOrderDetails {
   estimateTime: number;
   total: number;
   infoLines: any;
+  cambiosEstado: any[]
+  estadoActual: IEstado
 }
