@@ -62,3 +62,29 @@ This project uses several useful libraries to enhance the development experience
 - [React Native Paper](https://callstack.github.io/react-native-paper/): A Material Design component library for React Native that helps you implement designs that adhere to Material Design standards in your applications.
 
 - [React Native Vector Icons](https://oblador.github.io/react-native-vector-icons/): A library that allows you to use custom icons in your application, featuring a wide variety of icons available from different collections.
+
+
+
+
+
+## RUN PROJECT on android device
+
+
+npx expo start:android
+
+
+
+## RUN LOCAL BUILD WITHOUT UPLOAD TO EXPO:
+
+```
+NODE_ENV=production npx eas build --platform android --profile production --local
+```
+
+## RUN BUILD AND UPLOAD TO EXPO
+
+```
+npx eas build --platform android --profile production
+```
+
+We can change 'platform' and 'profile', on this case is production to android, and that will generate `.aab` file
+
