@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, Text, View } from "native-base";
+import { Pressable, ScrollView, Spinner, Text, View } from "native-base";
 import { Modal } from "react-native";
 import { styles } from './CustomModalPickerStyles'
 import { FormattedMessage } from "react-intl";
@@ -15,12 +15,14 @@ interface ICustomModalPicker {
     lastStatusOrder: number;
     changeStatusOrder: (newStatus: IEstado) => void;
     createOrderDate: string;
+    changeStatus: any;
+    loading: boolean
 
 }
 
-const CustomModalPicker = ({ isVisible, onClose, elements, lastStatusOrder, changeStatusOrder, createOrderDate }: ICustomModalPicker) => {      
-    const {user} = useUser()
-    
+const CustomModalPicker = ({ isVisible, onClose, elements, lastStatusOrder, changeStatusOrder, createOrderDate, changeStatus, loading }: ICustomModalPicker) => {
+    const { user } = useUser()
+
     return (
         <Modal
             transparent
@@ -37,16 +39,34 @@ const CustomModalPicker = ({ isVisible, onClose, elements, lastStatusOrder, chan
                         </Text>
                     </View>
 
+                    {loading && (
+                        <View
+                            style={{
+                                position: 'absolute',
+                                backgroundColor: 'rgba(0,0,0,0.3)',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                zIndex: 2,
+                                width: '100%',
+                                height: '100%',
+                                borderRadius: 10,
+                            }}
+                        >
+                            <Spinner color="white" size="lg" />
+                        </View>
+                    )}
+
                     <ScrollView style={styles.elements}>
                         {
                             elements.map((item, index) => {
                                 const isStatusFinished = item.order <= lastStatusOrder
+                                const findCambioEstado = changeStatus.find((itm: any) => itm.estado.id === item.id)
                                 return <Pressable onPress={() => changeStatusOrder(item)} backgroundColor={isStatusFinished ? 'gray.200' : 'white'} style={styles.element} key={index}>
                                     <View display={'flex'} flexDir={'column'} alignItems={'flex-start'}>
                                         <Text fontWeight={'bold'} color={isStatusFinished ? 'gray.400' : 'black'} >{item.nombre}</Text>
                                         {
                                             isStatusFinished &&
-                                            <Text marginLeft={4} color={'black'}>{moment.tz(createOrderDate, user.timeZone).format('D [de] MMMM, YYYY, HH:MM').toString()}</Text>
+                                            <Text marginLeft={4} color={'black'}>{moment.tz((index === 0 ? createOrderDate : findCambioEstado?.createdAt), user.timeZone).format('D [de] MMMM, YYYY, HH:MM').toString()}</Text>
                                         }
                                     </View>
                                     {

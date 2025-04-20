@@ -45,11 +45,9 @@ const OrderDetails = () => {
   const slideAnim = React.useRef(new Animated.Value(30)).current
 
   const [allStatus, setAllStatus] = React.useState<IEstado[]>([])
+  const [sendingChangeStatus, setSendingChangeStatus] = React.useState<boolean>(false)
 
   const toggleModalStatus = () => setstateModalStatus((prev) => !prev)
-
-  console.log(stateModalStatus);
-
 
   const loadOrderDetail = async () => {
     try {
@@ -90,7 +88,6 @@ const OrderDetails = () => {
 
   React.useEffect(() => {
     if (!detailOfOrder.loading) {
-      // Start animations when data is loaded
       Animated.parallel([
         Animated.timing(fadeAnim, {
           toValue: 1,
@@ -123,11 +120,16 @@ const OrderDetails = () => {
   }
 
   const changeStatusOrder = async (newStatus: IEstado) => {
+    setSendingChangeStatus(true);
+    const currentOrder = detailOfOrder?.data?.estadoActual?.order;
+    const newOrder = newStatus.order
     try {
       if (!detailOfOrder.data?.id || !newStatus.id) {
         return;
       }
-
+      if(newOrder && currentOrder &&  (newOrder <= currentOrder)) {
+        return;
+      }      
 
       const resp = await api.changeStatus.cambioEstado({
         estadoId: newStatus.id,
@@ -141,14 +143,20 @@ const OrderDetails = () => {
             ...prev,
             data: {
               ...prev.data,
-              estadoActual: newStatus
+              estadoActual: newStatus,
+              cambiosEstado: [
+                ...prev.data.cambiosEstado,
+                resp.data
+              ]
             }
           }
         })
       }
 
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      console.log(error.response.data.message);
+    } finally {
+      setSendingChangeStatus(false)
     }
 
   }
@@ -314,7 +322,7 @@ const OrderDetails = () => {
             </Text>
           </TouchableOpacity>
         </View>
-        <CustomModalPicker createOrderDate={detailOfOrder?.data?.date ?? 'No date'} changeStatusOrder={changeStatusOrder} lastStatusOrder={detailOfOrder.data?.estadoActual?.order ?? 0} elements={allStatus} isVisible={stateModalStatus} onClose={toggleModalStatus} />
+        <CustomModalPicker loading={sendingChangeStatus} changeStatus = {detailOfOrder.data?.cambiosEstado} createOrderDate={detailOfOrder?.data?.date ?? 'No date'} changeStatusOrder={changeStatusOrder} lastStatusOrder={detailOfOrder.data?.estadoActual?.order ?? 0} elements={allStatus} isVisible={stateModalStatus} onClose={toggleModalStatus} />
       </ScrollView>
     </SafeAreaView>
   )

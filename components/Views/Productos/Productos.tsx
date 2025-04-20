@@ -1,5 +1,3 @@
-"use client"
-
 import type React from "react"
 import { useState, useEffect, useCallback, useRef } from "react"
 import { TouchableOpacity, Text, TextInput, Animated, RefreshControl } from "react-native"
@@ -17,18 +15,15 @@ import LottieView from "lottie-react-native"
 import { Colors } from "../../../constants/Colors"
 import { useToastContext } from "@/contexts/ToastContext"
 import { Image, ScrollView, View } from "native-base"
-import { useUser } from "@/hooks/redux/useUser"
 import type { ICategoryData } from "../Categories/components/CardCategory/CardCategory"
 import AnimatedTwo from "react-native-reanimated"
 import CustomText from "@/components/CustomText"
 
 const Productos: React.FC = () => {
   const router = useRouter()
-  const { user } = useUser()
   const [ProductsBD, setProducts] = useState<ProductBDD[]>([])
   const [searchTerm, setSearchTerm] = useState<string>("")
   const [isInitialLoading, setIsInitialLoading] = useState(true)
-  const [isUpdating, setIsUpdating] = useState(false)
   const fadeAnim = useState(new Animated.Value(0))[0]
   const { locale } = useLocalization()
   const intl = useIntl()
@@ -131,8 +126,6 @@ const Productos: React.FC = () => {
     },
     [intl],
   )
-
-  // Render the delete modal
   const renderDeleteModal = () => {
     if (!showDeleteModal) return null
 

@@ -115,8 +115,7 @@ export const styles = StyleSheet.create({
     fontSize: 18,
   },
   categoryContainer: {
-    paddingHorizontal: 10,
-    paddingVertical: 12,
+    paddingTop: 12,
     marginBottom: 5,
     height: 110,
   },
@@ -130,7 +129,6 @@ export const styles = StyleSheet.create({
     paddingVertical: 12,
     height: 80,
     minWidth: 160,
-    maxWidth: 200,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,

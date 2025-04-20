@@ -1,13 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Box, Button, Pressable, StatusBar, Text, View } from 'native-base';
 import api from '@/services/api/admin';
-import { FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { AntDesign, FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import ModalCreateOrEditStatus from './components/ModalCreateOrEditStatus';
 import DraggableFlatList, { RenderItemParams } from 'react-native-draggable-flatlist';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as Progress from 'react-native-progress';
 import ModalConfirmAction from '@/components/ModalConfirmAction/ModalConfirmAction';
 import { Colors } from "@/constants/Colors";
+import Animated from 'react-native-reanimated';
+import { TouchableOpacity } from 'react-native';
+import { styles } from './StatusStyles';
+import { FormattedMessage } from 'react-intl';
+import { router } from 'expo-router';
+import CustomText from '@/components/CustomText';
 
 export interface IEstado {
     id: number;
@@ -88,16 +94,8 @@ const StatusView = () => {
         toggleModal();
     };
 
-    const addOrEditNewStatus = (item: any, shouldEdit: boolean) => {
-        setStatus((prev) => {
-            if (shouldEdit) {
-                return prev.map((element) =>
-                    element.id === item.id ? { ...item } : element
-                );
-            } else {
-                return [...prev, item].sort((a, b) => a.order - b.order);
-            }
-        });
+    const addOrEditNewStatus = () => {
+        fetchStatus()
     };
 
     const renderItem = ({ item, drag, isActive }: RenderItemParams<IEstado>) => (
@@ -151,13 +149,28 @@ const StatusView = () => {
 
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
-            <View w={'full'} px={12} py={4} bg={Colors.light.primary}>
-                <StatusBar animated backgroundColor={Colors.light.primary} />
-                <Text color={'white'} fontSize={24}>Estados</Text>
-            </View>
-            <View flex={1} w="full" position="relative" px={4} py={4} alignItems="center">
-
-                <View my={4} w={'full'} borderColor={'blue.600'} borderWidth={1} rounded={'md'} bg={'blue.100'} display={'flex'} alignItems={'center'} justifyContent={'center'} px={4} py={2}>
+            <Animated.View style={styles.header}>
+                <View style={styles.headerContent}>
+                    <TouchableOpacity
+                        style={styles.backButton}
+                        onPress={() => router.back()}
+                    >
+                        <AntDesign name="arrowleft" size={22} color="white" />
+                    </TouchableOpacity>
+                    <View style={styles.headerTitle}>
+                        <CustomText
+                            style={styles.businessName}
+                            accessibilityLabel="Pedidos"
+                        >
+                            <FormattedMessage
+                                id="statusTitlePage"
+                            />
+                        </CustomText>
+                    </View>
+                </View>
+            </Animated.View>
+            <View flex={1} w="full" position="relative" px={4} py={2} alignItems="center">
+                <View mb={4} w={'full'} borderColor={'blue.600'} borderWidth={1} rounded={'md'} bg={'blue.100'} display={'flex'} alignItems={'center'} justifyContent={'center'} px={4} py={2}>
                     <Text color={'blue.600'} >Drag and drop elements and create the status for the order you want!</Text>
                 </View>
                 <View style={{ flex: 1, width: '100%' }}>

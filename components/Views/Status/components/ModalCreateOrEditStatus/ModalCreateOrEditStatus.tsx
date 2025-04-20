@@ -17,13 +17,15 @@ interface ICreateStatus {
     es_defecto: boolean
     finalizador: boolean
     order: number;
+    mensaje: string
 }
 
 const initialState: ICreateStatus = {
     nombre: '',
     es_defecto: false,
     finalizador: false,
-    order: 0
+    order: 0,
+    mensaje: ''
 }
 
 export const ModalCreateOrEditStatus = ({ isOpen, onClose, addOrEditNewStatus, selectedItem }: IModalCreateOrEditStatus) => {
@@ -40,6 +42,7 @@ export const ModalCreateOrEditStatus = ({ isOpen, onClose, addOrEditNewStatus, s
                 es_defecto: selectedItem.es_defecto,
                 finalizador: selectedItem.finalizador,
                 order: selectedItem.order ?? 0,
+                mensaje: ''
             })
         } else if (isOpen && !selectedItem) {
             setStatus(initialState)
@@ -76,10 +79,11 @@ export const ModalCreateOrEditStatus = ({ isOpen, onClose, addOrEditNewStatus, s
                 : await api.status.create(payload)
 
             if (resp) {
-                onClose()
                 addOrEditNewStatus(resp.data, !!selectedItem)
                 setStatus(initialState)
                 setError({})
+                onClose()
+                setLoadingApi(false)
             }
 
         } catch (error: any) {
@@ -122,6 +126,7 @@ export const ModalCreateOrEditStatus = ({ isOpen, onClose, addOrEditNewStatus, s
                             />
                         </View>
                     </View>
+
                     <View w={'full'} display={'flex'} flexDir={'column'} style={{ gap: 4 }}>
                         {error.nombre && (
                             <Text color="red.500" fontSize="xs">{error.nombre}</Text>
@@ -132,6 +137,21 @@ export const ModalCreateOrEditStatus = ({ isOpen, onClose, addOrEditNewStatus, s
                         {error.generalError && (
                             <Text color="red.500" fontSize="xs">{error.generalError}</Text>
                         )}
+                    </View>
+
+                    <View flex={1} display={'flex'} mb={2} flexDir={'column'} alignItems={'flex-start'}>
+                        <Text>Message</Text>
+                        <Input
+                            mt={1}
+                            placeholder="Message"
+                            value={status.mensaje}
+                            onChangeText={(text) => handleChange('mensaje', text)}
+                            w={'full'}
+                        />
+                    </View>
+
+                    <View my={1} w={'full'} borderColor={'blue.600'} borderWidth={1} rounded={'md'} bg={'blue.100'} display={'flex'} alignItems={'center'} justifyContent={'center'} px={2} py={2}>
+                        <Text fontSize={12} color={'blue.600'} >Este mensaje le enviaremos al usuario cuando el estado cambie.</Text>
                     </View>
 
                     <View flexDir="row" alignItems="center" justifyContent="space-between">
@@ -166,7 +186,7 @@ export const ModalCreateOrEditStatus = ({ isOpen, onClose, addOrEditNewStatus, s
                         borderRadius="md"
                         onPress={createOrUpdateStatus}
                         isLoading={loadingApi}
-                        >
+                    >
                         {selectedItem ? 'Guardar' : 'Crear'}
                     </Button>
                 ]

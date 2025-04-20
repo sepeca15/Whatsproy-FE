@@ -273,7 +273,8 @@
     "nocategories": "No hay categorias para mostrar",
     "calendar": "Calendar",
     "addCategorie": "Add Category",
-    "uploadPhoto": "Upload Photo"
+    "uploadPhoto": "Upload Photo",
+    "statusTitlePage": "Status"
   },
   "es": {
     "accepted": "Aceptado",
@@ -379,6 +380,7 @@
     "reviews": "reseñas",
     "duration": "Duración",
     "category": "Categoría",
+    "statusTitlePage": "Estados",
     "sales": "Ventas",
     "viewMonthly": "Ver Mensual",
     "viewDaily": "Ver Diario",
