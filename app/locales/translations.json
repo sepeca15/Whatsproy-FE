@@ -113,7 +113,6 @@
     "satisfaction": "Satisfaction",
     "rating": "Rating",
     "logout": "Logout",
-    "calendar": "Calendar",
     "authErrorTitle": "Authentication Error",
     "authErrorDescription": "Error logging in.",
     "emailLabel": "Email",
@@ -270,7 +269,11 @@
     "loading": "Loading...",
     "orderDetails": "Order Details",
     "orderNumber": "Order Number",
-    "orderChat.footerText": " This is a chat history. The conversation is closed."
+    "orderChat.footerText": " This is a chat history. The conversation is closed.",
+    "nocategories": "No hay categorias para mostrar",
+    "calendar": "Calendar",
+    "addCategorie": "Add Category",
+    "uploadPhoto": "Upload Photo"
   },
   "es": {
     "accepted": "Aceptado",
@@ -543,6 +546,9 @@
     "loading": "Cargando...",
     "orderDetails": "Detalles del pedido",
     "orderNumber": "Número de pedido",
-    "orderChat.footerText": " Este es un historial de chat. La conversación está cerrada."
+    "orderChat.footerText": " Este es un historial de chat. La conversación está cerrada.",
+    "nocategories": "There are no categories created",
+    "addCategorie": "Agregar categoria",
+    "uploadPhoto": "Subir Imagen"
   }
 }

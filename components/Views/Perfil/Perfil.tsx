@@ -153,7 +153,7 @@ const Perfil: React.FC = () => {
   return (
     <View style={styles.container}>
       {/* Header simplificado pero mejorado */}
-      <Animated.View entering={FadeIn.delay(100)} style={styles.header}>
+      <Animated.View style={styles.header}>
         <View style={styles.headerRow}>
           <HStack alignItems="center">
             <TouchableOpacity onPress={() => setModalVisible(true)}>
