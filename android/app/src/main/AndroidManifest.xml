@@ -30,6 +30,7 @@
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="myapp"/>
         <data android:scheme="com.whatsproy"/>
+        <data android:scheme="exp+whatsproy"/>
       </intent-filter>
     </activity>
   </application>

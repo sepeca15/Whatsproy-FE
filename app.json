@@ -22,7 +22,16 @@
       "config": {
         "usesNonExemptEncryption": false
       },
-      "googleServicesFile": "./ios/GoogleService-Info.plist"
+      "googleServicesFile": "./assets/GoogleService-Info.plist",
+      "bundleIdentifier": "com.whatsproy",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/icon.png",
+        "backgroundColor": "#128c7e"
+      },
+      "notification": {
+        "icon": "./assets/images/imageIcon.png",
+        "color": "#128c7e"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -31,7 +40,9 @@
       },
       "googleServicesFile": "./assets/google-services.json",
       "newArchEnabled": true,
-      "permissions": ["NOTIFICATIONS"],
+      "permissions": [
+        "NOTIFICATIONS"
+      ],
       "package": "com.whatsproy",
       "notification": {
         "icon": "./assets/images/imageIcon.png",
@@ -43,20 +54,22 @@
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
-    "plugins": ["expo-router",
-    [
-      "expo-splash-screen",
-      {
-        "backgroundColor": "#128c7e",
-        "image": "./assets/images/splash-icon.png",
-        "dark": {
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#128c7e",
           "image": "./assets/images/splash-icon.png",
-          "backgroundColor": "#128c7e"
-        },
-        "imageWidth": 200
-      }
-    ]
-  ],
+          "dark": {
+            "image": "./assets/images/splash-icon.png",
+            "backgroundColor": "#128c7e"
+          },
+          "imageWidth": 200
+        }
+      ],
+      "react-native-iap"
+    ],
     "experiments": {
       "typedRoutes": true
     },
@@ -70,6 +83,19 @@
     },
     "updates": {
       "url": "https://u.expo.dev/e40e15d9-921b-4314-a35c-1b33afd386da"
+    }
+  },
+  "build": {
+    "preview": {
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "production": {
+      "android": {
+        "buildType": "aab",
+        "flavor": "play"
+      }
     }
   }
 }
