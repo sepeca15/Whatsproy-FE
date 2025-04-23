@@ -1,51 +1,71 @@
-import { StyleSheet } from "react-native";
-import { Colors } from "../../../constants/Colors";
-import { RFValue } from "react-native-responsive-fontsize";
+import { StyleSheet, Dimensions } from "react-native"
+import { Colors } from "../../../constants/Colors"
+
+const { width } = Dimensions.get("window")
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#f8f9fa",
+  },
+  headerGradient: {
+    paddingTop: 40,
+    paddingBottom: 20,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+   
+  
+   
+  
+    
+    marginBottom: 20,
   },
   header: {
     padding: 16,
-    paddingTop: 20,
+    paddingTop: 40,
     paddingBottom: 20,
     backgroundColor: Colors.light.primary,
-    borderBottomLeftRadius: 15,
-    borderBottomRightRadius: 15,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+   
     marginBottom: 20,
   },
   headerContent: {
     flexDirection: "row",
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
     alignItems: "center",
+    paddingHorizontal: 16,
   },
   headerLeft: {
     flex: 1,
   },
   businessName: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: "bold",
     color: "#fff",
+    textShadowColor: "rgba(0, 0, 0, 0.2)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   backButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.15)",
+    backgroundColor: "rgba(255,255,255,0.2)",
+  },
+  searchButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(255,255,255,0.2)",
   },
   headerTitle: {
-    color: "white",
-    fontSize: RFValue(17),
-    fontWeight: "600",
-    marginLeft: 15,
+    flex: 1,
+    alignItems: "center",
   },
   title: {
     fontSize: 32,
@@ -53,6 +73,16 @@ export const styles = StyleSheet.create({
     marginBottom: 24,
     color: Colors.light.text,
     textAlign: "center",
+  },
+  contentContainer: {
+    flex: 1,
+    paddingHorizontal: 16,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollViewContent: {
+    paddingBottom: 100,
   },
   listContent: {
     paddingBottom: 80,
@@ -103,25 +133,55 @@ export const styles = StyleSheet.create({
     position: "absolute",
     right: 24,
     bottom: 24,
-    backgroundColor: Colors.light.primary,
     width: 60,
     height: 60,
     borderRadius: 30,
     justifyContent: "center",
     alignItems: "center",
-    elevation: 8,
-    shadowColor: "#000",
+    shadowColor: Colors.light.primary,
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
+    shadowOpacity: 0.5,
+    shadowRadius: 8,
+    elevation: 10,
+  },
+  addButtonGradient: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
   },
   spinner: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: Colors.light.primary,
+    fontWeight: "500",
+  },
   buttonCreate: {
     backgroundColor: Colors.light.primary,
     borderRadius: 4,
   },
-});
+  emptyState: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 40,
+  },
+  emptyStateText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#555",
+    marginTop: 16,
+  },
+  emptyStateSubtext: {
+    fontSize: 16,
+    color: "#888",
+    textAlign: "center",
+    marginTop: 8,
+  },
+})
