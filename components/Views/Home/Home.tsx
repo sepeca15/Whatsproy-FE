@@ -26,6 +26,7 @@ const Home: React.FC = () => {
   const deleteAnimationRef = useRef(null)
   const [notificationsEnabled, setNotificationsEnabled] = React.useState<boolean>(false);
   const prevOrdersCount = React.useRef<number>(ordersCount);
+  const [selectedLayout, setSelectedLayout] = React.useState("classic");
 
   const onRefresh = async () => {
     try {
@@ -47,7 +48,7 @@ const Home: React.FC = () => {
   }, []);
 
   const { user } = useUser();
-  
+
   const empresaName = user?.empresaName ?? "Empresa Name";
 
 
@@ -108,7 +109,16 @@ const Home: React.FC = () => {
               <MetricCard icon="account-group" title="Clientes" value="120" onPress={() => { }} />
               <MetricCard icon="cash-multiple" title="Ingresos" value={`$${dailyRevenue}`} onPress={() => { }} />
             </Animated.View>
-
+            {/* <TouchableOpacity
+                onPress={() => {
+                
+                  router.push("/(tabs)/designSelector");
+                }}
+                style={styles.iconButton}
+                accessibilityLabel="Cambiar diseño de inicio"
+              >
+                <Ionicons name="grid-outline" size={24} color="black" />
+              </TouchableOpacity> */}
             <Animated.View entering={FadeInDown.delay(200)} style={styles.lastActivitiesContainer}>
               <CustomText style={styles.sectionTitle} accessibilityLabel="Últimos 3 pedidos">
                 Últimos 3 Pedidos
@@ -158,7 +168,11 @@ const Home: React.FC = () => {
                     router.push("/(tabs)/generalSettings")
                   }}
                 />
+
+
               </View>
+
+              
             </Animated.View>
           </ScrollView>
         </>
