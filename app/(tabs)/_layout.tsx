@@ -12,7 +12,11 @@ import ConfigAccount from "@/components/Views/ConfigAccount";
 const TabLayout: React.FC = () => {
   const { user } = useUser();
   const {userConfigured, paymentMade, apiConfigured, greenApiConfigured } = user;
+  // const globalConfig = false // testing  borrar
+
+
   const globalConfig = userConfigured && paymentMade && apiConfigured && greenApiConfigured  
+
   
   return (
     <NativeBaseProvider>

@@ -1,7 +1,7 @@
 import type React from "react";
 import { Text, Dimensions } from "react-native";
 import { Box, HStack, VStack, Select, Icon } from "native-base";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl} from "react-intl"
 import { Ionicons } from "@expo/vector-icons";
 // Importar la función de utilidad
 import { toStrictInteger } from "./numberUtils";
@@ -77,7 +77,7 @@ const SalesChart: React.FC<SalesChartProps> = ({
       break;
   }
 
-
+  const intl = useIntl()
   const fontSize = Math.max(10, Math.min(16, 40 / filteredSales.length));
   const maxSale = Math.max(...filteredSales);
   const chartWidth = Dimensions.get("window").width - 60;
@@ -110,10 +110,22 @@ const SalesChart: React.FC<SalesChartProps> = ({
             ),
           }}
         >
-          <Select.Item label="Semanal" value="semanal" />
-          <Select.Item label="Mensual" value="mensual" />
-          <Select.Item label="Trimestral" value="trimestral" />
-          <Select.Item label="Anual" value="anual" />
+          <Select.Item
+            label={intl.formatMessage({ id: "period.weekly", defaultMessage: "Semanal" })}
+            value="semanal"
+          />
+          <Select.Item
+            label={intl.formatMessage({ id: "period.monthly", defaultMessage: "Mensual" })}
+            value="mensual"
+          />
+          <Select.Item
+            label={intl.formatMessage({ id: "period.quarterly", defaultMessage: "Trimestral" })}
+            value="trimestral"
+          />
+          <Select.Item
+            label={intl.formatMessage({ id: "period.annual", defaultMessage: "Anual" })}
+            value="anual"
+          />
         </Select>
       </HStack>
 
@@ -129,7 +141,7 @@ const SalesChart: React.FC<SalesChartProps> = ({
             const isHighest = sale === maxSale;
 
             return (
-              <VStack key={index} alignItems="center" space={1}  justifyContent={filteredLabels.length < 2 ? "center" : "space-between"}  >
+              <VStack key={index} alignItems="center" space={1} justifyContent={filteredLabels.length < 2 ? "center" : "space-between"}  >
                 <Text style={{ fontSize, fontWeight: "bold", marginBottom: 2, marginTop: 1 }}>
                   ${sale.toLocaleString()}
                 </Text>
@@ -138,7 +150,7 @@ const SalesChart: React.FC<SalesChartProps> = ({
                   height={`${heightPercentage}%`}
                   bg={isHighest ? "#075e54" : "#128c7e"}
                   borderRadius="md"
-                  
+
                 />
                 <Text style={{ fontSize, fontWeight: "bold" }}>
                   {filteredLabels[index] ?? "N/A"}

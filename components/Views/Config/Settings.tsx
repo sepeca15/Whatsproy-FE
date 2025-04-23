@@ -1,111 +1,100 @@
-import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
-import { useRouter } from "expo-router";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import Feather from "react-native-vector-icons/Feather";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-
-import IonIcons from "react-native-vector-icons/Ionicons";
-import CustomText from "@/components/CustomText";
-import { Center } from "native-base";
-import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
-import styles from "./SettingsStyles";
-import Animated, { FadeIn } from "react-native-reanimated";
-const settingsPage = [
-  {
-    title: "generalSettings",
-    href: "/(tabs)/generalSettings",
-    description: "manageHours",
-    icon: <Feather size={20} color={"white"} name="settings" />,
-  },
-  {
-    title: "user",
-    href: "/(tabs)/usuarios",
-    description: "createUsers",
-    icon: <FontAwesome5 name="users" size={20} color={"white"} />,
-  },
-  {
-    title: "status",
-    href: "/(tabs)/status",
-    description: "statusDescription",
-    icon: <MaterialCommunityIcons name="list-status" size={20} color={"white"} />,
-  },
-  {
-    title: "notifications",
-    href: "",
-    description: "notificationsDescription",
-    icon: <IonIcons name="notifications-outline" size={20} color={"white"} />,
-  },
-  {
-    title: "privacySecurity",
-    href: "",
-    description: "privacyDescription",
-    icon: <Feather size={20} color={"white"} name="shield" />,
-  },
-  {
-    title: "orderData",
-    href: "/(tabs)/datosPedido",
-    description: "orderDataDescription",
-    icon: <IonIcons size={20} color={"white"} name="newspaper-outline" />,
-  },
-  {
-    title: "categories",
-    href: "/(tabs)/categories",
-    description: "categoriesDesc",
-    icon: <MaterialCommunityIcons size={20} color={"white"} name="format-list-bulleted-type" />,
-  },
-];
+import { View, Text, StatusBar, FlatList } from "react-native"
+import { useRouter } from "expo-router"
+import Feather from "react-native-vector-icons/Feather"
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5"
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
+import IonIcons from "react-native-vector-icons/Ionicons"
+import { FormattedMessage, useIntl } from "react-intl"
+import { useColorScheme } from "react-native"
+import { Colors } from "@/constants/Colors"
+import Animated, { FadeIn } from "react-native-reanimated"
+import styles from "./SettingsStyles"
+import SettingCard from "@/hooks/settingsCards/SettingCard"
 
 const Settings = () => {
-  const router = useRouter();
+  const intl = useIntl()
+  const router = useRouter()
+  const colorScheme = useColorScheme()
+  const isDark = colorScheme === "dark"
+  const colors = isDark ? Colors.dark : Colors.light
+
+  const settingsPage = [
+    {
+      title: intl.formatMessage({ id: "generalSettings ", defaultMessage: "General Settings" }),
+      href: "/(tabs)/generalSettings",
+      description: intl.formatMessage({ id: "manageHours", defaultMessage: "Manage your working hours and preferences" }),
+      icon: <Feather size={22} color={"white"} name="settings" />,
+    },
+    {
+      title: intl.formatMessage({ id: "users", defaultMessage: "Users" }),
+      href: "/(tabs)/usuarios",
+      description: intl.formatMessage({ id: "createUsers", defaultMessage: "Create and manage users" }),
+      icon: <FontAwesome5 name="users" size={22} color={"white"} />,
+    },
+    {
+      title: intl.formatMessage({ id: "status", defaultMessage: "Status" }),
+      href: "/(tabs)/status",
+      description: intl.formatMessage({ id: "statusDescription", defaultMessage: "View and manage statuses" }),
+      icon: <MaterialCommunityIcons name="list-status" size={22} color={"white"} />,
+    },
+    {
+      title: intl.formatMessage({ id: "notifications", defaultMessage: "Notifications" }),
+      href: "",
+      description: intl.formatMessage({ id: "notificationsDescription", defaultMessage: "Manage notification preferences" }),
+      icon: <IonIcons name="notifications-outline" size={22} color={"white"} />,
+    },
+    {
+      title: intl.formatMessage({ id: "privacySecurity", defaultMessage: "Privacy & Security" }),
+      href: "",
+      description: intl.formatMessage({ id: "privacyDescription", defaultMessage: "Adjust privacy and security settings" }),
+      icon: <Feather size={22} color={"white"} name="shield" />,
+    },
+    {
+      title: intl.formatMessage({ id: "orderData", defaultMessage: "Order Data" }),
+      href: "/(tabs)/datosPedido",
+      description: intl.formatMessage({ id: "orderDataDescription", defaultMessage: "Manage order-related data" }),
+      icon: <IonIcons size={22} color={"white"} name="newspaper-outline" />,
+    },
+    {
+      title: intl.formatMessage({ id: "categories", defaultMessage: "Categories" }),
+      href: "/(tabs)/categories",
+      description: intl.formatMessage({ id: "categoriesDesc", defaultMessage: "Organize and manage categories" }),
+      icon: <MaterialCommunityIcons size={22} color={"white"} name="format-list-bulleted-type" />,
+    },
+  ]
+
   return (
-    <Center style={styles.father}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <StatusBar barStyle={isDark ? "light-content" : "dark-content"} backgroundColor={colors.primary} />
 
-      <View style={styles.container}>
-        <Animated.View style={styles.header}>
-          <View style={styles.headerContent}>
-            <View style={styles.headerLeft}>
-              <CustomText
-                style={styles.businessName}
-                accessibilityLabel="Pedidos"
-              >
-                <FormattedMessage id="settings" />
-              </CustomText>
-            </View>
-          </View>
-        </Animated.View>
-        <ScrollView>
-        <View style={styles.containerItems}>
-          {settingsPage.map((item: any, index) => {
-            return (
-              <TouchableOpacity
-                key={index}
-                style={styles.card}
-                onPress={() => router.push(item.href)}
-
-              >
-                <View style={styles.row}>
-                  <View style={styles.rounded}>{item.icon}</View>
-                  <View style={styles.col}>
-                    <Text style={styles.cardText}>
-                      <FormattedMessage id={item.title} />
-                    </Text>
-                    <CustomText style={styles.textDesc}>
-                      <FormattedMessage id={item.description} />
-                    </CustomText>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            );
-          })}
+      {/* Header */}
+      <Animated.View entering={FadeIn.duration(500)} style={[styles.header, { backgroundColor: colors.primary }]}>
+        <View style={styles.headerContent}>
+          <Text style={styles.headerTitle}>
+            <FormattedMessage id="settings" />
+          </Text>
         </View>
-        </ScrollView>
-      </View>
+      </Animated.View>
 
-    </Center>
-  );
-};
+      {/* Lista de Ajustes */}
+      <FlatList
+        data={settingsPage}
+        keyExtractor={(item, index) => item.href || index.toString()}
+        renderItem={({ item, index }) => (
+          <SettingCard
+            item={item}
+            index={index}
+            isDark={isDark}
+            colors={colors}
+            onNavigate={(href) => router.push(href as any)}
+          />
+        )}
+        contentContainerStyle={styles.scrollContent}
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      />
+    </View>
+  )
+}
 
-
-export default Settings;
+export default Settings

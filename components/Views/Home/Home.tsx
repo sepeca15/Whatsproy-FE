@@ -1,4 +1,4 @@
-"use client"
+
 
 import React, { useRef } from "react"
 
@@ -12,7 +12,7 @@ import styles from "./HomeStyles"
 import { router } from "expo-router"
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated"
 import LottieView from "lottie-react-native"
-import { FormattedMessage } from "react-intl"
+import { FormattedMessage, useIntl} from "react-intl"
 import * as Animatable from "react-native-animatable"
 import { Ionicons } from "@expo/vector-icons"
 import { Vibration, TouchableOpacity } from "react-native";
@@ -21,6 +21,7 @@ import { useOrdersDashboard } from "@/hooks/home_functions/useOrdersDashboard";
 import { useUser } from "@/hooks/redux/useUser"
 
 const Home: React.FC = () => {
+  const intl = useIntl()
   const { loading, ordersCount, dailyRevenue, refreshData, lastOrders } = useOrdersDashboard()
   const [refreshing, setRefreshing] = React.useState(false)
   const deleteAnimationRef = useRef(null)
@@ -50,7 +51,11 @@ const Home: React.FC = () => {
   const { user } = useUser();
 
   const empresaName = user?.empresaName ?? "Empresa Name";
+  
+if (empresaName){
+  console.log("Nombre de la empresa:", empresaName);
 
+}
 
   const toggleNotifications = () => {
     setNotificationsEnabled((prev) => {
@@ -68,11 +73,13 @@ const Home: React.FC = () => {
               {empresaName}
             </CustomText>
             <CustomText style={styles.dateText} accessibilityLabel="Fecha actual">
-              {new Date().toLocaleDateString("es-AR", {
-                weekday: "long",
-                day: "numeric",
-                month: "long",
-              })}
+              <FormattedMessage
+              id="currentDate"
+              defaultMessage="{date, date, ::EEEE, d 'de' MMMM}"
+              values={{
+                date: new Date(),
+              }}
+              />
             </CustomText>
           </View>
           <TouchableOpacity
@@ -105,9 +112,24 @@ const Home: React.FC = () => {
             }
           >
             <Animated.View entering={FadeInDown.delay(100)} style={styles.metricsContainer}>
-              <MetricCard icon="cart-outline" title="Pedidos Hoy" value={ordersCount.toString()} onPress={() => { }} />
-              <MetricCard icon="account-group" title="Clientes" value="120" onPress={() => { }} />
-              <MetricCard icon="cash-multiple" title="Ingresos" value={`$${dailyRevenue}`} onPress={() => { }} />
+            <MetricCard
+              icon="cart-outline"
+              title={intl.formatMessage({ id: "ordersToday.home", defaultMessage: "Peeeedidos Hoy" })}
+              value={ordersCount.toString()}
+              onPress={() => { }}
+              />
+              <MetricCard
+              icon="account-group"
+              title={intl.formatMessage({ id: "clients.home", defaultMessage: "Clientes" })}
+              value="120"
+              onPress={() => { }}
+              />
+              <MetricCard
+              icon="cash-multiple"
+              title={intl.formatMessage({ id: "revenue.home", defaultMessage: "Ingresos" })}
+              value={`$${dailyRevenue}`}
+              onPress={() => { }}
+              />
             </Animated.View>
             {/* <TouchableOpacity
                 onPress={() => {
@@ -121,13 +143,13 @@ const Home: React.FC = () => {
               </TouchableOpacity> */}
             <Animated.View entering={FadeInDown.delay(200)} style={styles.lastActivitiesContainer}>
               <CustomText style={styles.sectionTitle} accessibilityLabel="Últimos 3 pedidos">
-                Últimos 3 Pedidos
+                <FormattedMessage id="lastOrders.home" defaultMessage="Últimos 3 pedidos" />
               </CustomText>
               {lastOrders.length > 0 ? (
                 lastOrders.map((order) => (
                   <LastActivityCard
                     key={order.id}
-                    title={`Pedido #${order.id}`}
+                    title={`${intl.formatMessage({ id: "pedido.card.home", defaultMessage: "pedido" })} #${order.id}`}
                     time={order.time || "Desconocido"}
                     id={order.id?.toString() || "0"}
                     amount={order.amount || "$0"}
@@ -140,7 +162,7 @@ const Home: React.FC = () => {
                 <Animatable.View animation="fadeIn" style={styles.emptyStateContainer}>
                   <LottieView
                     source={
-                      require("../../../constants/Animation-non-order.json") // Para sin productos
+                      require("../../../constants/Animation-non-order.json") 
                     }
                     autoPlay
                     loop
@@ -152,19 +174,21 @@ const Home: React.FC = () => {
                 </Animatable.View>
               )}
 
-              <CustomText style={styles.sectionTitle}>Gestión Rápida</CustomText>
+                <CustomText style={styles.sectionTitle}>  
+                 <FormattedMessage id="quickActions.home" defaultMessage="Quick Actions" />
+                 </CustomText>
               <View style={styles.quickActionsGrid}>
                 <QuickActionButton
                   icon="calendar"
-                  title="Reservas"
+                  title={intl.formatMessage({ id: "pedidos.home", defaultMessage: "Pedidos" })}
                   onPress={() => {
                     router.push("/(tabs)/pedidos")
-                  }}
-                />
-                <QuickActionButton
-                  icon="cog"
-                  title="Ajustes"
-                  onPress={() => {
+                    }}
+                  />
+                  <QuickActionButton
+                    icon="cog"
+                    title={intl.formatMessage({ id: "settings.schedule", defaultMessage: "Settings" })}
+                    onPress={() => {
                     router.push("/(tabs)/generalSettings")
                   }}
                 />
