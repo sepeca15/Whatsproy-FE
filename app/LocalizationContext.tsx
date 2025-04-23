@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { IntlProvider } from "react-intl";
 import translations from "./locales/translations.json";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface Messages extends Record<string, string> {
   notAvailable: string;
@@ -36,28 +37,51 @@ interface LocalizationProviderProps {
 export const LocalizationProvider: React.FC<LocalizationProviderProps> = ({
   children,
 }) => {
-  const [locale, setLocale] = useState<keyof Translations>("en");
+  const [locale, setLocaleState] = useState<keyof Translations>("en");
+
+  const setLocale = async (newLocale: keyof Translations) => {
+    setLocaleState(newLocale);
+    await AsyncStorage.setItem("locale", newLocale);
+  };
 
   useEffect(() => {
-    const userLocale = Intl.DateTimeFormat()
-      .resolvedOptions()
-      .locale.split("-")[0];
+    const loadLocale = async () => {
+      try {
+        const storedLocale = await AsyncStorage.getItem("locale");
 
-    // Mapea la configuración regional a los idiomas soportados
-    const supportedLocales: Record<string, keyof Translations> = {
-      en: "en",
-      es: "es",
-      "es-UY": "es", // Mapea es-UY a es
-      // Agrega más mapeos según sea necesario
+        if (storedLocale === "en" || storedLocale === "es") {
+          setLocaleState(storedLocale);
+        } else {
+          const userLocale = Intl.DateTimeFormat().resolvedOptions().locale.split("-")[0];
+          const supportedLocales: Record<string, keyof Translations> = {
+            en: "en",
+            es: "es",
+            "es-UY": "es",
+          };
+
+          const mappedLocale = supportedLocales[userLocale] || "en";
+          setLocaleState(mappedLocale);
+          await AsyncStorage.setItem("locale", mappedLocale);
+        }
+      } catch (error) {
+        console.warn("Error loading locale", error);
+      }
     };
 
-    const mappedLocale = supportedLocales[userLocale] || "en";
-    setLocale(mappedLocale);
+    loadLocale();
   }, []);
 
   return (
     <LocalizationContext.Provider value={{ locale, setLocale }}>
-      <IntlProvider locale={locale} messages={messages[locale]}>
+      <IntlProvider
+        locale={locale}
+        messages={messages[locale]}
+        onError={(err) => {
+          if (__DEV__) {
+            console.warn("Missing translation:", err.message);
+          }
+        }}
+      >
         {children}
       </IntlProvider>
     </LocalizationContext.Provider>
@@ -66,5 +90,4 @@ export const LocalizationProvider: React.FC<LocalizationProviderProps> = ({
 
 export const useLocalization = () => useContext(LocalizationContext);
 
-// Exporta LocalizationProvider por defecto
 export default LocalizationProvider;
