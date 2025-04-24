@@ -6,6 +6,7 @@
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo run:android",
+    "android:play": "expo run:android --variant playDebug",
     "ios": "expo run:ios",
     "web": "expo start --web",
     "test": "jest --watchAll",
