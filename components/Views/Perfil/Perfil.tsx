@@ -93,7 +93,6 @@ const Perfil: React.FC = () => {
   }
 
   useEffect(() => {
-    console.log("Fetching profile data...")
     fetchProfileData()
 
     const fetchUser = async () => {

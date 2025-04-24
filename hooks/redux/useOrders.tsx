@@ -89,7 +89,6 @@ export const useOrders = () => {
   };
 
   const handleAddNewOrderPending = (newOrder: any) => {
-    console.log("new order", newOrder);
     Dispatch(onAddOrderPending(newOrder));
   };
 

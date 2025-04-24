@@ -76,19 +76,14 @@ const ModalEditUser = ({
 
   const handleImagePick = async () => {
     try {
-     
-      // Await the pickImage function to ensure it completes
-      await pickImage(setFormData);
-      console.log("Imagen seleccionada:", formData);
+           await pickImage(setFormData);
     } catch (error) {
       console.error("Error selecting image:", error);
       showToast({
         title: intl.formatMessage({ id: "errorSelectingImage" }),
         status: "error",
       });
-    } finally {
-      // Ensure loadingimage is set to false when the process completes
-     
+    } finally {     
     }
   };
 

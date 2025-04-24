@@ -45,7 +45,6 @@ export default function CalendarView() {
   );
   const {user} = useUser()
   const [loading, setLoading] = useState(true);
-  console.log(user);
   
   const onLoadItems = async (selectedDate: string) => {
     setLoading(true);
@@ -76,7 +75,7 @@ export default function CalendarView() {
         });
       }
     } catch (error: any) {
-      console.log(error.response.data.message, "xddddddddd");
+      console.log(error.response.data.message);
     }
   };
 
@@ -94,7 +93,7 @@ export default function CalendarView() {
         }));
       }
     } catch (error: any) {
-      console.log(error.response.data.message, "xddddddddd");
+      console.log(error.response.data.message);
     }
   };
 

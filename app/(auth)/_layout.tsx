@@ -20,13 +20,10 @@ const Layout: React.FC = () => {
     const userInfo = user;
     const currentToken = userInfo?.dispositivo?.fcmToken;
     if (currentToken !== token) {
-      console.log("deberia actualizar")
       const resp = await api.user.updateFcm(token);
       if (resp?.fcmToken) {
         handleUpdateFCM({ ...resp, usuario: null });
       }
-    } else {
-      console.log("no deberia actualizar")
     }
   };
 

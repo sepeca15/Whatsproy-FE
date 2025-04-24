@@ -111,7 +111,6 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
   };
 
   const toggleSelectionKeys = (value: string) => {
-    console.log("xd");
     const stringValue = value.toString();
     let updatedSelected: string[];
 
@@ -136,8 +135,6 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
 
     setItemsSelected(newKeysSelected);
   };
-
-  console.log("selectedItemsKeys", selectedItemsKeys);
 
   const areAllFieldsFilled = () => {
     return (

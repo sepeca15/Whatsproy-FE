@@ -102,7 +102,7 @@ const StatusView = () => {
         <Box w="full" flex={1}>
             <Pressable
                 onLongPress={drag}
-                delayLongPress={1}
+                delayLongPress={200}
                 flexDir="row"
                 alignItems="center"
                 mb={2}

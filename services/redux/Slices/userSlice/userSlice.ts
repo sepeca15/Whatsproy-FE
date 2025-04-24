@@ -10,7 +10,6 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     mostrarMensaje: (state, { payload }) => {
-      console.log(payload);
     },
     onAddUserData: (state, { payload }) => {
       state.user = payload;

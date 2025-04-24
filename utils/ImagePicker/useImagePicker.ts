@@ -26,7 +26,6 @@ const useImagePicker = ({ toastErrorMessage, onImagePicked }: UseImagePickerProp
       if (result.canceled || !result.assets?.length) return;
 
       const asset = result.assets[0];
-      console.log("Imagen seleccionada:", asset.uri);
       if (!asset.uri) {
         showToast({ title: toastErrorMessage, status: "error" });
         return;

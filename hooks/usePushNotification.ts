@@ -35,7 +35,6 @@ export const usePushNotifications = () => {
 
       const token = (await Notifications.getDevicePushTokenAsync()).data;
       setExpoPushToken(token);
-      console.log("Token de Expo Push:", token);
     } catch (error) {
       console.error("Error al obtener el token de push:", error);
     } finally {
@@ -89,7 +88,6 @@ export const usePushNotifications = () => {
         },
         trigger: null,
       });
-      console.log("Notificación programada.");
     } catch (error) {
       console.error("Error al programar la notificación:", error);
     }

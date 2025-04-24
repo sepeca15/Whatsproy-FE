@@ -82,9 +82,7 @@ const SalesChart: React.FC<SalesChartProps> = ({
   const maxSale = Math.max(...filteredSales);
   const chartWidth = Dimensions.get("window").width - 60;
   const barWidth = chartWidth / filteredSales.length - 10;
-  console.log("monthlySales", monthlySales);
 
-  console.log("filteredSales", filteredSales);
   return (
     <Box bg="white" borderRadius="lg" p={4} shadow={2} mb={4}>
       <HStack justifyContent="space-between" alignItems="center" mb={20}>

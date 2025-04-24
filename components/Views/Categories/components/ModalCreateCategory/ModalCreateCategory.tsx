@@ -58,8 +58,6 @@ const ModalCreateCategory = ({
   });
 
   const validData = () => {
-    console.log(formData);
-
     if (!formData.imagen) {
       setErrors((prevState: any) => ({
         ...prevState,

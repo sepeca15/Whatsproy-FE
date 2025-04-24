@@ -14,7 +14,6 @@ export const Login = async ({
     });
     return data;
   } catch (error) {
-    console.log("aca 12", error)
   }
 };
 

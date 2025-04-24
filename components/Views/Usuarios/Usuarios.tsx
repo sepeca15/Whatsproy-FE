@@ -42,7 +42,6 @@ const UsuariosEmpresasScreen: React.FC = () => {
   const uploadUsers = async () => {
     try {
       const resp = await api.user.findAll(user.id_empresa);
-      console.log("resp", resp.data);
       setUserData((prevState) => ({
         ...prevState,
         data: resp.data,
@@ -88,7 +87,7 @@ const UsuariosEmpresasScreen: React.FC = () => {
   const selectEditUser = (user: IUser) => {
     toggleModalState("modalEdit", true);
     setSelectedUser(user);
-    
+
   };
 
   const editUserSelected = (userId: number, userData: any) => {
@@ -97,15 +96,15 @@ const UsuariosEmpresasScreen: React.FC = () => {
       data: prevState.data.map((user) =>
         user.id === userId ? { ...user, ...userData } : user,
       ),
-      
-      
+
+
     }));
   };
   return (
     <View style={styles.container}>
-            <Animated.View style={styles.header}>
+      <Animated.View style={styles.header}>
         <View style={styles.headerContent}>
-        <TouchableOpacity
+          <TouchableOpacity
             style={styles.backButton}
             onPress={() => router.back()}
           >

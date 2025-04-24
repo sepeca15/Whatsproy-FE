@@ -13,9 +13,7 @@ interface ICardCategory {
     data : ICategoryData
 }
 
-const CardCategory = ({data} : ICardCategory ) => {
-    console.log(data.image);
-    
+const CardCategory = ({data} : ICardCategory ) => {    
     return (
         <View m={2} h={130} w={120} py={2} bg={'white'} rounded={'md'} alignItems={'center'}>
             {

@@ -15,7 +15,6 @@ const CheckoutScreen = () => {
     
     try {
       const resp = await api.stripe.createIntent({ amount: 100, currency: 'usd' });
-      console.log('resp', resp);
       
       const { paymentIntent, ephemeralKey, customer } = resp
 
@@ -25,9 +24,7 @@ const CheckoutScreen = () => {
         customer
       }
       
-    } catch (error: any) {
-      console.log(error.response.data.message);
-      
+    } catch (error: any) {      
       showToast({ title: 'Error', description: 'Error obteniendo clientSecret', status: 'error' });
       return {
         paymentIntent: '',
@@ -50,10 +47,7 @@ const CheckoutScreen = () => {
         defaultBillingDetails: {
           name: 'jose'
         }
-      })
-
-      console.log('todo ok');
-      
+      })      
 
     } catch (error) {
       console.log(error);

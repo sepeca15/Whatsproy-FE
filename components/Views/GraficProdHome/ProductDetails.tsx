@@ -14,7 +14,6 @@ const ProductDetails: React.FC = () => {
   // Tipifica los parámetros recibidos
   const rawParams = useLocalSearchParams();
   const params = rawParams as unknown as ProductParams;
-  // console.log('params', params)
   // const monthdatasets = params.monthdatasets ? JSON.parse(params.monthdatasets) : [];
   // const simpleMonthData = monthdatasets.map((dataset: { data: number[] }) => dataset.data).flat();
 

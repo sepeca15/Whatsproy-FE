@@ -137,7 +137,6 @@ const EditProduct = ({
       setLoadingimage(true);
       // Await the pickImage function to ensure it completes
       await pickImage(setFormData);
-      console.log("Imagen seleccionada:", formData);
     } catch (error) {
       console.error("Error selecting image:", error);
       showToast({
