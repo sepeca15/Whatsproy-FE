@@ -58,39 +58,6 @@ const UserCard = ({ infoUser, deleteUser, selectEditUser, allowManage }: IUserCa
     setStateModal((prevState) => !prevState)
   }
 
-  const handlePressIn = () => {
-    // Scale animation can use native driver
-    Animated.spring(scaleAnim, {
-      toValue: 0.98,
-      useNativeDriver: true,
-    }).start()
-
-    // Shadow animation must use JS driver
-    Animated.timing(shadowAnim, {
-      toValue: 1,
-      duration: 150,
-      useNativeDriver: false,
-    }).start()
-  }
-
-  const handlePressOut = () => {
-    // Scale animation can use native driver
-    Animated.spring(scaleAnim, {
-      toValue: 1,
-      friction: 5,
-      tension: 40,
-      useNativeDriver: true,
-    }).start()
-
-    // Shadow animation must use JS driver
-    Animated.timing(shadowAnim, {
-      toValue: 2,
-      duration: 200,
-      useNativeDriver: false,
-    }).start()
-  }
-
-  // Dynamic shadow style based on animation
   const animatedShadowStyle = {
     shadowOffset: { width: 0, height: shadowAnim },
     shadowOpacity: shadowAnim.interpolate({
@@ -132,8 +99,8 @@ const UserCard = ({ infoUser, deleteUser, selectEditUser, allowManage }: IUserCa
         <View style={styles.data}>
           <View style={styles.row}>
             <View style={styles.avatarContainer}>
-              {infoUser.photo ? (
-                <Image alt="User avatar" source={{ uri: infoUser.photo }} style={styles.avatarImage} />
+              {infoUser.image ? (
+                <Image alt="User avatar" source={{ uri: infoUser.image }} style={styles.avatarImage} />
               ) : (
                 <LinearGradient colors={[Colors.light.primary, Colors.light.secondary]} style={styles.avatarGradient}>
                   <Text style={styles.avatarText}>{infoUser.nombre.charAt(0).toUpperCase()}</Text>
