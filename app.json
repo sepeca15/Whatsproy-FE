@@ -2,10 +2,10 @@
   "expo": {
     "name": "Whatsproy",
     "slug": "Whatsproy",
-    "appVersion": "1.0.0",
-    "runtimeVersion": "1.0.0",
+    "appVersion": "1.1.0",
+    "runtimeVersion": "1.1.0",
     "newArchEnabled": true,
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -41,7 +41,8 @@
       "googleServicesFile": "./assets/google-services.json",
       "newArchEnabled": true,
       "permissions": [
-        "NOTIFICATIONS"
+        "NOTIFICATIONS",
+        "CAMERA"
       ],
       "package": "com.whatsproy",
       "notification": {
@@ -95,6 +96,13 @@
       "android": {
         "buildType": "aab",
         "flavor": "play"
+      }
+    },
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
       }
     }
   }

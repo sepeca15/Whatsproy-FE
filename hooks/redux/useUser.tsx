@@ -34,6 +34,10 @@ export const useUser = () => {
     }
   };
 
+  const handlePayOk = () => {
+    Dispatch(onPurchasedPlan());
+  }
+
   const handleAssignUserToPlan = async ({
     id_empresa,
     id_plan,
@@ -124,5 +128,6 @@ export const useUser = () => {
     handleUpdateApiConfigured,
     user,
     handleUpdateFCM,
+    handlePayOk,
   };
 };

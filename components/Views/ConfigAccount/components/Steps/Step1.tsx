@@ -7,6 +7,7 @@ import { useUser } from "@/hooks/redux/useUser";
 import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
 import { useIntl } from "react-intl";
 
+
 const Step1 = () => {
   const { handleUpdateUser } = useUser();
   const [formData, setFormData] = React.useState({
@@ -15,12 +16,15 @@ const Step1 = () => {
   });
   const { formatMessage } = useIntl();
 
+
   const handleChangeInputs = (key: string, value: string) => {
     setFormData((prevState) => ({
       ...prevState,
       [key]: value,
     }));
   };
+
+ 
 
   const saveDataUser = async () => {
     try {

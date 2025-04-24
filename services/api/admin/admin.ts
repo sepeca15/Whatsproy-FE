@@ -14,7 +14,9 @@ import * as stripe from "../stripe/stripe";
 import * as category from "../category/category";
 import * as estado from "../estado/estado";
 import * as cambioEstado from "../cambioEstado/cambioEstado";
-import * as getchat from "../chat/chatData";	
+import * as getchat from "../chat/chatData";
+import * as payments from "../payments/payment";
+
 const api = {
   auth: {
     login: auth.Login,
@@ -26,6 +28,10 @@ const api = {
     update: products.update,
     delete: products.deletProd,
     create: products.create,
+  },
+  payments: {
+    createInitial: payments.createInitial,
+    verifyPaymentIsOk: payments.verifyPaymentIsOk,
   },
   plans: {
     getAll: plan.getAllPlans,
@@ -78,7 +84,7 @@ const api = {
     getResumenVentas: perfil.resumenVentas,
   },
   stripe: {
-    createIntent: stripe.createIntent
+    createIntent: stripe.createIntent,
   },
   category: {
     create: category.createCategory,
@@ -88,17 +94,17 @@ const api = {
   },
   status: {
     create: estado.createStatus,
-    find:  estado.findStatus,
+    find: estado.findStatus,
     findAll: estado.findAllStatus,
     update: estado.updateStatus,
-    delete: estado.deleteStatus
+    delete: estado.deleteStatus,
   },
   chat: {
     getChatMessages: getchat.getchat,
   },
   changeStatus: {
-    cambioEstado: cambioEstado.creteStatusChange
-  }
+    cambioEstado: cambioEstado.creteStatusChange,
+  },
 };
 
 export default api;

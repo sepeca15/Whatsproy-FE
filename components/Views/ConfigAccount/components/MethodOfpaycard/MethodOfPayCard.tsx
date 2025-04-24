@@ -4,41 +4,50 @@ import { styles } from "./MethodOfPayCardStyles";
 import CustomText from "@/components/CustomText";
 import ComunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import CustomButton from "@/components/CustomButton";
-import { IPlans } from "./MethodOfPayCardTypes";
-import { useUser } from "@/hooks/redux/useUser";
-import { useToastContext } from "@/contexts/ToastContext";
 import { FormattedMessage } from "react-intl";
+import { Subscription } from "react-native-iap";
 
 interface IMethodOfPayCard {
-  Plan: IPlans;
-  selectPlan: (plan : IPlans) => void;
+  Plan: any;
+  selectPlan: (plan: Subscription) => void;
 }
 
+const subscriptionBenefits: any = {
+  basicsubscriptionmeasy2025:
+    "Mensajes ilimitados,Respuesta rapida,Cierre provisorio, Multiples cuentas,Calendario",
+};
+
 const MethodOfPayCard = ({ Plan, selectPlan }: IMethodOfPayCard) => {
-  const adventagesArray = Plan.adventages.split(",");
-  
+  const getPrice = () => {
+    if (Plan?.subscriptionOfferDetails?.length > 0) {
+      const offerDetails = Plan.subscriptionOfferDetails[0];
+      if (offerDetails?.pricingPhases?.pricingPhaseList?.length > 0) {
+        const pricingPhase = offerDetails?.pricingPhases?.pricingPhaseList[0];
+      }
+    }
+    return "Precio no disponible";
+  };
+
+  const price = getPrice();
+  const benefits = subscriptionBenefits[Plan?.productId];
+  const adventagesArray = benefits ? benefits?.split(",") : [];
+
   return (
     <View style={styles.MainContainer}>
-      {Plan.mostPoppular && (
-        <View style={styles.ContainerMostPopular}>
-          <CustomText style={styles.WhiteTextBold}>
-            <FormattedMessage id="mostPopular" />
-          </CustomText>
-        </View>
-      )}
       <View style={styles.containerCardMethodOfPay}>
         <View style={styles.ContainerHeader}>
-          <CustomText style={styles.WhiteTextBold}>{Plan.nombre}</CustomText>
+          <CustomText style={styles.WhiteTextBold}>{Plan?.name}</CustomText>
           <View style={styles.ContainerRow}>
+            {/* Aquí mostramos el precio correctamente */}
             <CustomText style={[styles.WhiteTextBold, { fontSize: 25 }]}>
-              USD {Plan.costoUSD}
+              {price}
             </CustomText>
             <CustomText style={[styles.WhiteText, { fontSize: 20 }]}>
               /mo
             </CustomText>
           </View>
           <View style={styles.ContainerAdvantages}>
-            {adventagesArray.map((advantage, index) => (
+            {adventagesArray.map((advantage: string, index: number) => (
               <View key={index} style={styles.ContainerRowAdventage}>
                 <View style={styles.ContainerCircle}>
                   <ComunityIcons name="check" color={"black"} size={10} />
@@ -54,7 +63,7 @@ const MethodOfPayCard = ({ Plan, selectPlan }: IMethodOfPayCard) => {
             style={{ alignContent: "flex-start" }}
             width={"100%"}
             background="#323232"
-            onPress={() => selectPlan(Plan)}
+            onPress={() => selectPlan(Plan)} // Aquí estamos enviando el Plan entero
           >
             <FormattedMessage id="buyNow" />
           </CustomButton>
