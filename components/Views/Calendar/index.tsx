@@ -118,16 +118,16 @@ export default function CalendarView() {
         </View>
       </Animated.View>
       <View style={styles.headerContainer}>
-        <Text style={styles.headerTitle}>Eventos del calendario</Text>
+        <Text style={styles.headerTitle}> <FormattedMessage id="events.calendar" defaultMessage="Eventos del calendario" /></Text>
         <View style={styles.circleAvaiableContainer}>
           <View style={[styles.circleAvaiable, { backgroundColor: "green" }]} />
-          <Text style={styles.headerDescription}>Confirmados</Text>
+          <Text style={styles.headerDescription}><FormattedMessage id="confirmed" defaultMessage="confirmados" /></Text>
         </View>
         <View style={[styles.circleAvaiableContainer]}>
           <View
             style={[styles.circleAvaiable, { backgroundColor: "gray" }]}
           ></View>
-          <Text style={styles.headerDescription}>Sin Confirmar</Text>
+          <Text style={styles.headerDescription}><FormattedMessage id="not.confirmed" defaultMessage="no comfirmados" /></Text>
         </View>
       </View>
       <Agenda

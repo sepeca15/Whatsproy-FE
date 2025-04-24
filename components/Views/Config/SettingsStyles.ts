@@ -2,100 +2,82 @@ import { Colors } from "@/constants/Colors";
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#F7F9FC",
+  },
   header: {
-    padding: 16,
-    paddingTop: 20,
-    width: "100%",
+    paddingTop: 60,
     paddingBottom: 20,
-    backgroundColor: Colors.light.primary,
-    borderBottomLeftRadius: 15,
-    borderBottomRightRadius: 15,
+    paddingHorizontal: 20,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
+    shadowRadius: 8,
+    elevation: 5,
+    zIndex: 10,
   },
   headerContent: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  headerLeft: {
-    flex: 1,
-  },
-  businessName: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#fff",
-  },
-  father: {
-    flex: 1,
-    display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#f8f8f8",
   },
-  container: {
+  headerTitle: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "white",
+    textAlign: "center",
+  },
+  scrollView: {
     flex: 1,
-    width: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "flex-start",
+    marginTop: 10,
   },
-  containerItems: {
-    width: "100%",
-    flex: 1,
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "flex-start",
-  },
-  title: {
-    backgroundColor: "black",
-    width: "60%",
-    paddingVertical: 6,
-    paddingHorizontal: 20,
-    borderTopEndRadius: 20,
-    borderTopStartRadius: 20,
+  scrollContent: {
+    paddingHorizontal: 16,
+    paddingTop: 10,
+    paddingBottom: 30,
   },
   card: {
-    backgroundColor: "white",
-    width: "100%",
-    borderBottomWidth: 0.5,
-    borderColor: "#dbdbdb",
-    display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 16,
-    paddingHorizontal: 10,
+    padding: 16,
+    marginBottom: 12,
+    borderRadius: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  cardText: {
-    fontSize: 18,
-    color: "#333",
-    fontWeight: "bold",
-  },
-  textDesc: {
-    flexWrap: "wrap",
-    maxWidth: "90%",
-    color: "#939393",
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  col: {
-    flex: 1,
-    marginLeft: 12,
-  },
-  rounded: {
-    width: 45,
-    height: 45,
-    borderRadius: 100,
-    backgroundColor: "gray",
-    display: "flex",
-    alignItems: "center",
+  iconContainer: {
+    width: 50,
+    height: 50,
+    borderRadius: 15,
     justifyContent: "center",
+    alignItems: "center",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 3,
   },
-});
+  textContainer: {
+    flex: 1,
+    marginLeft: 16,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: 4,
+  },
+  description: {
+    fontSize: 13,
+    opacity: 0.7,
+  },
+  chevron: {
+    marginLeft: 8,
+  },
+})
 
 export default styles;

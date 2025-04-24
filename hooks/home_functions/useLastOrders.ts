@@ -1,22 +1,6 @@
-//  ← Últimos 3 pedidos, formateados
-
 import { useEffect, useState } from "react";
 import api from "@/services/api/admin";
-
-const getTimeAgo = (date: string): string => {
-  const now = new Date();
-  const createdAt = new Date(date);
-  const diff = Math.floor((now.getTime() - createdAt.getTime()) / 1000);
-
-  const minutes = Math.floor(diff / 60);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
-
-  if (days > 0) return `hace ${days} día${days > 1 ? "s" : ""}`;
-  if (hours > 0) return `hace ${hours} hora${hours > 1 ? "s" : ""}`;
-  if (minutes > 0) return `hace ${minutes} minuto${minutes > 1 ? "s" : ""}`;
-  return "hace unos segundos";
-};
+import { useIntl } from "react-intl";
 
 interface Order {
   id: number;
@@ -39,6 +23,35 @@ export const useLastOrders = () => {
   const [lastOrders, setLastOrders] = useState<FormattedOrder[]>([]);
   const [rawOrders, setRawOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
+  const intl = useIntl();
+
+  const getTimeAgo = (date: string): string => {
+    const now = new Date();
+    const createdAt = new Date(date);
+    const diff = Math.floor((now.getTime() - createdAt.getTime()) / 1000);
+
+    const minutes = Math.floor(diff / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (days > 0)
+      return intl.formatMessage(
+        { id: "orders.daysAgo" },
+        { count: days, plural: days > 1 ? "s" : "" }
+      );
+    if (hours > 0)
+      return intl.formatMessage(
+        { id: "orders.hoursAgo" },
+        { count: hours, plural: hours > 1 ? "s" : "" }
+      );
+    if (minutes > 0)
+      return intl.formatMessage(
+        { id: "orders.minutesAgo" },
+        { count: minutes, plural: minutes > 1 ? "s" : "" }
+      );
+
+    return intl.formatMessage({ id: "orders.justNow" });
+  };
 
   const refreshLastOrders = async () => {
     setLoading(true);
@@ -48,13 +61,13 @@ export const useLastOrders = () => {
       setRawOrders(orders);
 
       const formatted = orders.map((order: Order) => {
-        let address = "No disponible";
-        let status = "sin status";
+        let address = intl.formatMessage({ id: "orders.noAddress" });
+        let status = intl.formatMessage({ id: "orders.noStatus" });
 
         try {
           const info = JSON.parse(order.infoLinesJson);
-          address = info.Direccion?.trim() || "No disponible";
-          status = order.status?.trim() || "sin status";
+          address = info.Direccion?.trim() || address;
+          status = order.status?.trim() || status;
         } catch (error) {
           console.error("Error al parsear infoLinesJson", error);
         }
@@ -62,7 +75,7 @@ export const useLastOrders = () => {
         return {
           id: order.id,
           time: getTimeAgo(order.createdAt),
-          amount: `$${order.total}`,
+          amount: intl.formatMessage({ id: "orders.currencyPrefix" }, { amount: order.total }),
           icon: "receipt",
           address,
           status,

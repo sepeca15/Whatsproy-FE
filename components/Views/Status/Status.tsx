@@ -1,193 +1,233 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Box, Button, Pressable, StatusBar, Text, View } from 'native-base';
-import api from '@/services/api/admin';
-import { AntDesign, FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import ModalCreateOrEditStatus from './components/ModalCreateOrEditStatus';
-import DraggableFlatList, { RenderItemParams } from 'react-native-draggable-flatlist';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import * as Progress from 'react-native-progress';
-import ModalConfirmAction from '@/components/ModalConfirmAction/ModalConfirmAction';
-import { Colors } from "@/constants/Colors";
-import Animated from 'react-native-reanimated';
-import { TouchableOpacity } from 'react-native';
-import { styles } from './StatusStyles';
-import { FormattedMessage } from 'react-intl';
-import { router } from 'expo-router';
-import CustomText from '@/components/CustomText';
+import { useEffect, useRef, useState } from "react"
+import { View, Text, TouchableOpacity } from "react-native"
+import { AntDesign, FontAwesome, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
+import DraggableFlatList, { type RenderItemParams } from "react-native-draggable-flatlist"
+import { GestureHandlerRootView } from "react-native-gesture-handler"
+import * as Progress from "react-native-progress"
+import { Colors } from "@/constants/Colors"
+import Animated, { FadeIn, FadeInDown } from "react-native-reanimated"
+import { router } from "expo-router"
+import { FormattedMessage } from "react-intl"
+import CustomText from "@/components/CustomText"
+import api from "@/services/api/admin"
+import ModalCreateOrEditStatus from "./components/ModalCreateOrEditStatus"
+import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmAction"
+import { useColorScheme } from "react-native"
+import { styles } from "./StatusStyles"
 
 export interface IEstado {
-    id: number;
-    nombre: string;
-    es_defecto: boolean;
-    finalizador: boolean;
-    tipoServicioId: number;
-    order: number | null;
-    createdAt: string;
-    updatedAt: string;
+    id: number
+    nombre: string
+    es_defecto: boolean
+    finalizador: boolean
+    tipoServicioId: number
+    order: number | null
+    createdAt: string
+    updatedAt: string
 }
 
 const StatusView = () => {
-    const [status, setStatus] = useState<IEstado[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [modalVisible, setModalVisible] = useState(false);
-    const [selectedItem, setSelectedItem] = useState<IEstado | null>(null);
-    const [modalDelete, setModalDelete] = useState<IEstado | null>(null);
-    const originalOrderRef = useRef<IEstado[]>([]);
+    const [status, setStatus] = useState<IEstado[]>([])
+    const [loading, setLoading] = useState(true)
+    const [modalVisible, setModalVisible] = useState(false)
+    const [selectedItem, setSelectedItem] = useState<IEstado | null>(null)
+    const [modalDelete, setModalDelete] = useState<IEstado | null>(null)
+    const originalOrderRef = useRef<IEstado[]>([])
+    const colorScheme = useColorScheme()
+    const isDark = colorScheme === "dark"
+    const colors = isDark ? Colors.dark : Colors.light
 
     useEffect(() => {
-        fetchStatus();
-    }, []);
+        fetchStatus()
+    }, [])
 
     const fetchStatus = async () => {
-        setLoading(true);
+        setLoading(true)
         try {
-            const resp = await api.status.findAll();
-            if (resp.ok) setStatus(resp.data);
+            const resp = await api.status.findAll()
+            if (resp.ok) setStatus(resp.data)
         } catch (error: any) {
-            console.error(error.response?.data?.message);
+            console.error(error.response?.data?.message)
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
-    };
+    }
 
     const updateStatus = async (updated: IEstado) => {
         try {
-            await api.status.update(updated.id, updated);
-            fetchStatus();
+            await api.status.update(updated.id, updated)
+            fetchStatus()
         } catch (error: any) {
-            console.error(error.response?.data?.message);
+            console.error(error.response?.data?.message)
         }
-    };
-
+    }
 
     const deleteStatus = async (id: number) => {
         try {
-            const resp = await api.status.delete(id);
-            if (resp.ok) fetchStatus();
+            const resp = await api.status.delete(id)
+            if (resp.ok) fetchStatus()
         } catch (error: any) {
-            console.error(error.response.data.message);
+            console.error(error.response.data.message)
         }
-    };
+    }
 
     const handleDragBegin = () => {
-        originalOrderRef.current = [...status];
-    };
+        originalOrderRef.current = [...status]
+    }
 
     const handleDragEnd = async ({ data, from, to }: { data: IEstado[]; from: number; to: number }) => {
-        if (from === to) return;
+        if (from === to) return
 
-        const movedItem = status[from];
-        const newOrder = to + 1;
+        const movedItem = status[from]
+        const newOrder = to + 1
 
         try {
-            await updateStatus({ ...movedItem, order: newOrder });
+            await updateStatus({ ...movedItem, order: newOrder })
         } catch (err) {
-            console.error('Error al actualizar el orden', err);
+            console.error("Error al actualizar el orden", err)
         }
-    };
+    }
 
-    const toggleModal = () => setModalVisible((prev) => !prev);
-    const toggleDeleteModal = () => setModalDelete(null);
+    const toggleModal = () => setModalVisible((prev) => !prev)
+    const toggleDeleteModal = () => setModalDelete(null)
 
     const handleEdit = (item: IEstado) => {
-        setSelectedItem(item);
-        toggleModal();
-    };
+        setSelectedItem(item)
+        toggleModal()
+    }
 
     const addOrEditNewStatus = () => {
         fetchStatus()
-    };
+    }
 
     const renderItem = ({ item, drag, isActive }: RenderItemParams<IEstado>) => (
-        <Box w="full" flex={1}>
-            <Pressable
-                onLongPress={drag}
-                delayLongPress={200}
-                flexDir="row"
-                alignItems="center"
-                mb={2}
-                px={4}
-                py={4}
-                bg={isActive ? 'gray.400' : 'white'}
-                rounded="xl"
-            >
-                <View flexDir="row" alignItems="center" flex={0.2}>
-                    <FontAwesome name="reorder" color="black" />
-                    <Text ml={2}>{item.order}</Text>
+        <Animated.View
+            entering={FadeInDown.duration(300)}
+            style={[
+                styles.itemContainer,
+                {
+                    backgroundColor: isActive ? (isDark ? "#2A2D30" : "#E8EDF2") : isDark ? "#1E2022" : "white",
+                    borderColor: isActive ? colors.primary : isDark ? "#2A2D30" : "#E8EDF2",
+                },
+            ]}
+        >
+            <TouchableOpacity onLongPress={drag} delayLongPress={200} style={styles.itemContent} activeOpacity={0.7}>
+                <View style={styles.orderColumn}>
+                    <View style={styles.dragHandle}>
+                        <FontAwesome name="bars" size={16} color={isDark ? "#9BA1A6" : "#687076"} />
+                    </View>
+                    <Text style={[styles.orderText, { color: colors.text }]}>{item.order}</Text>
                 </View>
-                <View flex={0.3}>
-                    <Text>{item.nombre}</Text>
+                <View style={styles.nameColumn}>
+                    <Text style={[styles.nameText, { color: colors.text }]} numberOfLines={1}>
+                        {item.nombre}
+                    </Text>
                 </View>
-                <View flex={0.25}>
-                    <Text>{item.finalizador ? 'SI' : 'NO'}</Text>
-                </View>
-                <View flex={0.25} flexDir="row" alignItems="center" justifyContent="flex-end" style={{ gap: 4 }}>
-                    <Pressable
-                        rounded="full"
-                        bg="red.500"
-                        p={2.5}
-                        _pressed={{ bg: 'red.600' }}
-                        onPress={() => setModalDelete(item)}
+
+                <View style={styles.finalizerColumn}>
+                    <View
+                        style={[
+                            styles.finalizerBadge,
+                            {
+                                backgroundColor: item.finalizador
+                                    ? isDark
+                                        ? "rgba(18, 140, 126, 0.2)"
+                                        : "rgba(18, 140, 126, 0.1)"
+                                    : isDark
+                                        ? "rgba(150, 150, 150, 0.2)"
+                                        : "rgba(150, 150, 150, 0.1)",
+                            },
+                        ]}
                     >
-                        <MaterialCommunityIcons name="delete" size={18} color="white" />
-                    </Pressable>
-                    <Pressable
-                        rounded="full"
-                        borderWidth={1}
-                        borderColor="gray.400"
-                        p={2.5}
-                        bg="white"
-                        _pressed={{ bg: 'gray.100' }}
+                        <Text
+                            style={[
+                                styles.finalizerText,
+                                {
+                                    color: item.finalizador ? colors.secondary : isDark ? "#9BA1A6" : "#687076",
+                                },
+                            ]}
+                        >
+                            {item.finalizador ? "SI" : "NO"}
+                        </Text>
+                    </View>
+                </View>
+
+                <View style={styles.actionsColumn}>
+                    <TouchableOpacity style={[styles.actionButton, styles.deleteButton]} onPress={() => setModalDelete(item)}>
+                        <MaterialCommunityIcons name="delete-outline" size={18} color="white" />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={[styles.actionButton, styles.editButton, { borderColor: isDark ? "#2A2D30" : "#E8EDF2" }]}
                         onPress={() => handleEdit(item)}
                     >
-                        <FontAwesome name="edit" size={18} color="#4A5568" />
-                    </Pressable>
+                        <FontAwesome name="edit" size={16} color={colors.primary} />
+                    </TouchableOpacity>
                 </View>
-            </Pressable>
-        </Box>
-    );
+            </TouchableOpacity>
+        </Animated.View>
+    )
 
     return (
-        <GestureHandlerRootView style={{ flex: 1 }}>
-            <Animated.View style={styles.header}>
+        <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.background }}>
+            {/* Header */}
+            <Animated.View entering={FadeIn.duration(500)} style={[styles.header, { backgroundColor: colors.primary }]}>
                 <View style={styles.headerContent}>
-                    <TouchableOpacity
-                        style={styles.backButton}
-                        onPress={() => router.back()}
-                    >
+                    <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
                         <AntDesign name="arrowleft" size={22} color="white" />
                     </TouchableOpacity>
-                    <View style={styles.headerTitle}>
-                        <CustomText
-                            style={styles.businessName}
-                            accessibilityLabel="Pedidos"
-                        >
-                            <FormattedMessage
-                                id="statusTitlePage"
-                            />
+                    <View style={styles.headerTitleContainer}>
+                        <CustomText style={styles.headerTitle}>
+                            <FormattedMessage id="statusTitlePage" />
                         </CustomText>
                     </View>
                 </View>
             </Animated.View>
-            <View flex={1} w="full" position="relative" px={4} py={2} alignItems="center">
-                <View mb={4} w={'full'} borderColor={'blue.600'} borderWidth={1} rounded={'md'} bg={'blue.100'} display={'flex'} alignItems={'center'} justifyContent={'center'} px={4} py={2}>
-                    <Text color={'blue.600'} >Drag and drop elements and create the status for the order you want!</Text>
-                </View>
-                <View style={{ flex: 1, width: '100%' }}>
+
+            <View style={styles.container}>
+                {/* Info Banner */}
+                <Animated.View
+                    entering={FadeInDown.duration(500)}
+                    style={[
+                        styles.infoBanner,
+                        { backgroundColor: isDark ? "rgba(18, 140, 126, 0.15)" : "rgba(18, 140, 126, 0.08)" },
+                    ]}
+                >
+                    <Ionicons name="information-circle-outline" size={20} color={colors.secondary} style={styles.infoIcon} />
+                    <Text style={[styles.infoText, { color: colors.secondary }]}>
+                        Drag and drop elements and create the status for the order you want!
+                    </Text>
+                </Animated.View>
+
+                {/* Table Content */}
+                <View style={styles.contentContainer}>
                     {loading ? (
-                        <View h="full" justifyContent="center" alignItems="center">
-                            <Progress.Circle color={Colors.light.primary} indeterminate size={100} />
+                        <View style={styles.loadingContainer}>
+                            <Progress.Circle color={colors.primary} indeterminate size={50} />
                         </View>
                     ) : status.length > 0 ? (
                         <View>
-                            <View px={4} flexDir="row">
-                                <View flex={0.2}><Text>Orden</Text></View>
-                                <View flex={0.3}><Text>Nombre</Text></View>
-                                <View flex={0.25}><Text>Finalizador</Text></View>
-                                <View flex={0.25}><Text>Acciones</Text></View>
-                            </View>
+                            <Animated.View
+                                entering={FadeInDown.delay(100).duration(500)}
+                                style={[styles.tableHeader, { backgroundColor: isDark ? "#2A2D30" : "#F5F7FA" }]}
+                            >
+                                <Text style={[styles.headerCell, styles.orderColumn, { color: isDark ? "#9BA1A6" : "#687076" }]}>
+                                    Orden
+                                </Text>
+                                <Text style={[styles.headerCell, styles.nameColumn, { color: isDark ? "#9BA1A6" : "#687076" }]}>
+                                    Nombre
+                                </Text>
+                                <Text style={[styles.headerCell, styles.finalizerColumn, { color: isDark ? "#9BA1A6" : "#687076" }]}>
+                                    Finalizador
+                                </Text>
+                                <Text style={[styles.headerCell, styles.actionsColumn, { color: isDark ? "#9BA1A6" : "#687076" }]}>
+                                    Acciones
+                                </Text>
+                            </Animated.View>
+
+                            {/* Draggable List */}
                             <DraggableFlatList
-                                contentContainerStyle={{ paddingBottom: 80, paddingTop: 16 }}
+                                contentContainerStyle={styles.listContent}
                                 data={status}
                                 keyExtractor={(item) => item.id.toString()}
                                 onDragEnd={handleDragEnd}
@@ -196,34 +236,32 @@ const StatusView = () => {
                             />
                         </View>
                     ) : (
-                        <View justifyContent="center" alignItems="center">
-                            <Text>No hay estados creados aún.</Text>
+                        <View style={styles.emptyContainer}>
+                            <MaterialCommunityIcons name="format-list-text" size={60} color={isDark ? "#2A2D30" : "#E8EDF2"} />
+                            <Text style={[styles.emptyText, { color: isDark ? "#9BA1A6" : "#687076" }]}>
+                                No hay estados creados aún.
+                            </Text>
                         </View>
                     )}
                 </View>
 
-                <Button
+                {/* Floating Action Button */}
+                <TouchableOpacity
                     onPress={toggleModal}
-                    w="50px"
-                    h="50px"
-                    justifyContent="center"
-                    alignItems="center"
-                    bg="teal.600"
-                    rounded="full"
-                    position="absolute"
-                    bottom={4}
-                    right={4}
+                    style={[styles.fab, { backgroundColor: colors.secondary }]}
+                    activeOpacity={0.8}
                 >
                     <Ionicons name="add" color="white" size={26} />
-                </Button>
+                </TouchableOpacity>
 
+                {/* Modals */}
                 <ModalCreateOrEditStatus
                     selectedItem={selectedItem}
                     addOrEditNewStatus={addOrEditNewStatus}
                     isOpen={modalVisible}
                     onClose={() => {
-                        toggleModal();
-                        setSelectedItem(null);
+                        toggleModal()
+                        setSelectedItem(null)
                     }}
                 />
 
@@ -233,13 +271,13 @@ const StatusView = () => {
                     title="Borrar estado"
                     message="¿Seguro que deseas eliminar este estado?"
                     onContinue={() => {
-                        if (modalDelete) deleteStatus(modalDelete.id);
-                        toggleDeleteModal();
+                        if (modalDelete) deleteStatus(modalDelete.id)
+                        toggleDeleteModal()
                     }}
                 />
             </View>
         </GestureHandlerRootView>
-    );
-};
+    )
+}
 
-export default StatusView;
+export default StatusView
