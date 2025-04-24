@@ -293,14 +293,19 @@
     "settings.schedule": "Schedule",
     "events.calendar": "Calendar Events",
     "confirmed": "Confirmed",
+    "currentDate":"XD",
     "not.confirmed": "Unconfirmed",
     "period.weekly": "Weekly",
     "period.monthly": "Monthly",
     "period.yearly": "Yearly",
     "period.custom": "Custom",
-    "period.annual": "Annual"
+    "period.annual": "Annual",
+    "statusUpdatedOrderDetails": "Status Updated",
+    "userChangeStatusDetailsMessagge": "A user has changed the status of their order to:"
   },
   "es": {
+    "userChangeStatusDetailsMessagge": "Un usuario ha cambiado el estado de su orden a :",
+    "statusUpdatedOrderDetails": "Estado actualizado",
     "accepted": "Aceptado",
     "notAvailable": "No disponible",
     "edit": "Editar",
@@ -385,6 +390,7 @@
     "editProduct": "Editar Producto",
     "available": "Disponible",
     "update": "Actualizar",
+    "currentDate":"XD",
     "enterDescriptionProd": "Ej: Minalesa de pollo",
     "enterDurationProd": "Ej: 30 minutos",
     "enterPriceProd": "Ej: 1000",
