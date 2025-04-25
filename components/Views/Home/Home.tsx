@@ -12,7 +12,7 @@ import styles from "./HomeStyles"
 import { router } from "expo-router"
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated"
 import LottieView from "lottie-react-native"
-import { FormattedMessage, useIntl} from "react-intl"
+import { FormattedMessage, useIntl } from "react-intl"
 import * as Animatable from "react-native-animatable"
 import { Ionicons } from "@expo/vector-icons"
 import { Vibration, TouchableOpacity } from "react-native";
@@ -24,10 +24,7 @@ const Home: React.FC = () => {
   const intl = useIntl()
   const { loading, ordersCount, dailyRevenue, refreshData, lastOrders } = useOrdersDashboard()
   const [refreshing, setRefreshing] = React.useState(false)
-  const deleteAnimationRef = useRef(null)
   const [notificationsEnabled, setNotificationsEnabled] = React.useState<boolean>(false);
-  const prevOrdersCount = React.useRef<number>(ordersCount);
-  const [selectedLayout, setSelectedLayout] = React.useState("classic");
 
   const onRefresh = async () => {
     try {
@@ -51,11 +48,12 @@ const Home: React.FC = () => {
   const { user } = useUser();
 
   const empresaName = user?.empresaName ?? "Empresa Name";
-  
-if (empresaName){
-  console.log("Nombre de la empresa:", empresaName);
 
-}
+  if (empresaName) {
+    console.log("Nombre de la empresa:", empresaName);
+
+  }
+
 
   const toggleNotifications = () => {
     setNotificationsEnabled((prev) => {
@@ -74,11 +72,11 @@ if (empresaName){
             </CustomText>
             <CustomText style={styles.dateText} accessibilityLabel="Fecha actual">
               <FormattedMessage
-              id="currentDate"
-              defaultMessage="{date, date, ::EEEE, d 'de' MMMM}"
-              values={{
-                date: new Date(),
-              }}
+                id="currentDate"
+                defaultMessage="{date, date, ::EEEE, d 'de' MMMM}"
+                values={{
+                  date: new Date(),
+                }}
               />
             </CustomText>
           </View>
@@ -112,35 +110,25 @@ if (empresaName){
             }
           >
             <Animated.View entering={FadeInDown.delay(100)} style={styles.metricsContainer}>
-            <MetricCard
-              icon="cart-outline"
-              title={intl.formatMessage({ id: "ordersToday.home", defaultMessage: "Peeeedidos Hoy" })}
-              value={ordersCount.toString()}
-              onPress={() => { }}
+              <MetricCard
+                icon="cart-outline"
+                title={intl.formatMessage({ id: "ordersToday.home", defaultMessage: "Peeeedidos Hoy" })}
+                value={ordersCount.toString()}
+                onPress={() => { }}
               />
               <MetricCard
-              icon="account-group"
-              title={intl.formatMessage({ id: "clients.home", defaultMessage: "Clientes" })}
-              value="120"
-              onPress={() => { }}
+                icon="account-group"
+                title={intl.formatMessage({ id: "clients.home", defaultMessage: "Clientes" })}
+                value="120"
+                onPress={() => { }}
               />
               <MetricCard
-              icon="cash-multiple"
-              title={intl.formatMessage({ id: "revenue.home", defaultMessage: "Ingresos" })}
-              value={`$${dailyRevenue}`}
-              onPress={() => { }}
+                icon="cash-multiple"
+                title={intl.formatMessage({ id: "revenue.home", defaultMessage: "Ingresos" })}
+                value={`$${dailyRevenue}`}
+                onPress={() => { }}
               />
             </Animated.View>
-            {/* <TouchableOpacity
-                onPress={() => {
-                
-                  router.push("/(tabs)/designSelector");
-                }}
-                style={styles.iconButton}
-                accessibilityLabel="Cambiar diseño de inicio"
-              >
-                <Ionicons name="grid-outline" size={24} color="black" />
-              </TouchableOpacity> */}
             <Animated.View entering={FadeInDown.delay(200)} style={styles.lastActivitiesContainer}>
               <CustomText style={styles.sectionTitle} accessibilityLabel="Últimos 3 pedidos">
                 <FormattedMessage id="lastOrders.home" defaultMessage="Últimos 3 pedidos" />
@@ -155,14 +143,14 @@ if (empresaName){
                     amount={order.amount || "$0"}
                     icon={order.icon || "receipt"}
                     address={order.address}
-                    onPress={() => { }}
+                    onPress={() => { router.push({pathname:'/(tabs)/orderDetails', params: { orderId: order.id }} )}}
                   />
                 ))
               ) : (
                 <Animatable.View animation="fadeIn" style={styles.emptyStateContainer}>
                   <LottieView
                     source={
-                      require("../../../constants/Animation-non-order.json") 
+                      require("../../../constants/Animation-non-order.json")
                     }
                     autoPlay
                     loop
@@ -174,29 +162,25 @@ if (empresaName){
                 </Animatable.View>
               )}
 
-                <CustomText style={styles.sectionTitle}>  
-                 <FormattedMessage id="quickActions.home" defaultMessage="Quick Actions" />
-                 </CustomText>
+              <CustomText style={styles.sectionTitle}>
+                <FormattedMessage id="quickActions.home" defaultMessage="Quick Actions" />
+              </CustomText>
               <View style={styles.quickActionsGrid}>
                 <QuickActionButton
                   icon="calendar"
                   title={intl.formatMessage({ id: "pedidos.home", defaultMessage: "Pedidos" })}
                   onPress={() => {
                     router.push("/(tabs)/pedidos")
-                    }}
-                  />
-                  <QuickActionButton
-                    icon="cog"
-                    title={intl.formatMessage({ id: "settings.schedule", defaultMessage: "Settings" })}
-                    onPress={() => {
+                  }}
+                />
+                <QuickActionButton
+                  icon="cog"
+                  title={intl.formatMessage({ id: "settings.schedule", defaultMessage: "Settings" })}
+                  onPress={() => {
                     router.push("/(tabs)/generalSettings")
                   }}
                 />
-
-
               </View>
-
-              
             </Animated.View>
           </ScrollView>
         </>

@@ -123,6 +123,7 @@ export const styles = StyleSheet.create({
   orderDateContainer: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent:'flex-start',
     marginTop: 15,
     paddingTop: 15,
     borderTopWidth: 1,

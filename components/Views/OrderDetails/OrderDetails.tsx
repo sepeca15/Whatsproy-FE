@@ -21,6 +21,7 @@ import { IEstado } from "../Status/Status"
 import CustomModalPicker from "./components/ModalPicker"
 import { io } from "socket.io-client"
 import { useToastContext } from "@/contexts/ToastContext"
+import { Entypo } from "@expo/vector-icons"
 
 interface IDetailsOrder {
   loading: boolean
@@ -123,18 +124,16 @@ const OrderDetails = () => {
   }
 
   const handleChangeStatusOrder = async (newStatus: IEstado) => {
-    console.log('a');
-
     setSendingChangeStatus(true);
     const currentOrder = detailOfOrder?.data?.estadoActual?.order;
     const newOrder = newStatus.order
     try {
-      // if (!detailOfOrder.data?.id || !newStatus.id) {
-      //   return;
-      // }
-      // if(newOrder && currentOrder &&  (newOrder <= currentOrder)) {
-      //   return;
-      // }      
+      if (!detailOfOrder.data?.id || !newStatus.id) {
+        return;
+      }
+      if (newOrder && currentOrder && (newOrder <= currentOrder)) {
+        return;
+      }
 
       const resp = await api.changeStatus.cambioEstado({
         estadoId: newStatus.id,
@@ -171,22 +170,26 @@ const OrderDetails = () => {
   }
 
   React.useEffect(() => {
-    const socketIo = io("https://4e09-2800-a4-c084-c200-f42d-bd7f-273b-ed39.ngrok-free.app");
+    const socketIo = io(user.apiUrl);
 
     socketIo.on("connect", () => {
-      console.log('entro aa');
-
+      console.log('conectado');
+      
       socketIo.emit('listenChangeOrder', { orderId });
     });
 
     socketIo.on("changeStatusOrder", (data) => {
-      changeStatusOrder(data.estado, data)
+      console.log('jejeje');
+      
+      if (data.id_user !== user.id) {
+        changeStatusOrder(data.estado, data)
 
-      showToast({
-        title: <FormattedMessage id="statusUpdatedOrderDetails" />,
-        description: <FormattedMessage id="userChangeStatusDetailsMessagge" /> + data.estado.nombre,
-        status: "success",
-      });
+        showToast({
+          title: <FormattedMessage id="statusUpdatedOrderDetails" />,
+          description: <FormattedMessage id="userChangeStatusDetailsMessagge" /> + data.estado.nombre,
+          status: "success",
+        });
+      }
     })
 
     return () => {
@@ -280,35 +283,13 @@ const OrderDetails = () => {
             </Text>
           </Text>
         </Animated.View>
-
-        <Animated.View
-          style={[
-            styles.sectionCard,
-            {
-              opacity: fadeAnim,
-              transform: [{ translateY: slideAnim }],
-            },
-          ]}
-        >
-          <View style={styles.sectionHeader}>
-            <Octicons name="person" size={20} color={Colors.light.primary} />
-            <Text style={styles.sectionTitle}>
-              <FormattedMessage id="client" defaultMessage="Cliente" />
-            </Text>
-          </View>
-          <Text style={styles.clientName}>{detailOfOrder.data?.client.name}</Text>
-
-          <View style={styles.addressContainer}>
-            <IonIcons name="location-outline" size={20} color={Colors.light.icon} />
-            <Text style={styles.addressText}>
-              {detailOfOrder.data?.infoLines?.direccion ? (
-                detailOfOrder.data.infoLines.direccion
-              ) : (
-                <FormattedMessage id="noAddress" defaultMessage="Sin dirección" />
-              )}
-            </Text>
-          </View>
-        </Animated.View>
+        {
+          Object.keys(detailOfOrder.data?.infoLines).map((key, index) => {
+            return (
+              <RenderInfoLine key={index} keyItem={key} value={detailOfOrder.data?.infoLines[key]} />
+            )
+          })
+        }
 
         <Animated.View
           style={[
@@ -362,3 +343,21 @@ const OrderDetails = () => {
 }
 
 export default OrderDetails
+
+const RenderInfoLine = ({ keyItem, value }: { keyItem: string, value: any }) => {
+  return (
+    <View style={styles.sectionCard}>
+      <View style={styles.sectionHeader}>
+        <Entypo name="archive" size={20} color={Colors.light.primary} />
+        <Text style={styles.sectionTitle}>
+          {keyItem.toUpperCase()}
+        </Text>
+      </View>
+      <View style={styles.addressContainer}>
+        <Text style={styles.addressText}>
+          {value}
+        </Text>
+      </View>
+    </View>
+  )
+}

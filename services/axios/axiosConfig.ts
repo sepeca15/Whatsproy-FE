@@ -20,7 +20,7 @@ const ApiInstances = (key: KeysApis) => {
     async (config) => {
       const state = store.getState();
       const user = selectUser(state);
-      config.baseURL = key === "global" ? "https://app.whatsproy.com/" : "https://9f0f-2800-ac-4040-a9c3-79cc-4d09-40a0-ae8d.ngrok-free.app";
+      config.baseURL = key === "global" ? "https://app.whatsproy.com/" : user?.user.apiUrl;
       const token = await getData("token");
       if (token) {
         config.headers["Authorization"] = `Bearer ${token}`;

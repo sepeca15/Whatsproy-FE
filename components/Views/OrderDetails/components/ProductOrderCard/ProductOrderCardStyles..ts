@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
-    padding: 10,
+    padding: 5,
     flex: 1,
     display: "flex",
     flexDirection: "row",
@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
     backgroundColor: "gray",
   },
   info: {
-    marginLeft: 20,
+    marginLeft: 12,
     flexGrow: 1,
     display: "flex",
     flexDirection: "column",

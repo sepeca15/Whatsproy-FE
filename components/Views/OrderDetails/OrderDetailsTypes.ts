@@ -14,6 +14,7 @@ export interface IProductoInfo {
   descripcion: string;
   plazoDuracionEstimadoMinutos: number;
   disponible: boolean;
+  imagen: string;
 }
 
 interface IProduct {
