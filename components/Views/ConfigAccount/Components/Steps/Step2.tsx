@@ -58,7 +58,8 @@ const Step2 = () => {
               offerToken: offerToken,
             },
           ],
-        })) as any;
+          developerPayload: user?.id_empresa,
+        } as any)) as any;
 
         if (purchase?.purchaseToken) {
           showToast({

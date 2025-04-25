@@ -2,10 +2,10 @@
   "expo": {
     "name": "Whatsproy",
     "slug": "Whatsproy",
-    "appVersion": "1.1.0",
-    "runtimeVersion": "1.1.0",
+    "appVersion": "1.5.0",
+    "runtimeVersion": "1.5.0",
     "newArchEnabled": true,
-    "version": "1.1.0",
+    "version": "1.5.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -23,17 +23,10 @@
         "usesNonExemptEncryption": false
       },
       "googleServicesFile": "./assets/GoogleService-Info.plist",
-      "bundleIdentifier": "com.whatsproy",
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/icon.png",
-        "backgroundColor": "#128c7e"
-      },
-      "notification": {
-        "icon": "./assets/images/imageIcon.png",
-        "color": "#128c7e"
-      }
+      "bundleIdentifier": "com.whatsproy"
     },
     "android": {
+      "versionCode": 10500,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#128c7e"
@@ -41,8 +34,7 @@
       "googleServicesFile": "./assets/google-services.json",
       "newArchEnabled": true,
       "permissions": [
-        "NOTIFICATIONS",
-        "CAMERA"
+        "NOTIFICATIONS"
       ],
       "package": "com.whatsproy",
       "notification": {
@@ -69,7 +61,13 @@
           "imageWidth": 200
         }
       ],
-      "react-native-iap"
+      "react-native-iap",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Necesitamos acceder a la camara para subir archivos."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

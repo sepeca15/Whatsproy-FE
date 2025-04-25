@@ -14,7 +14,7 @@ interface IMethodOfPayCard {
 
 const subscriptionBenefits: any = {
   basicsubscriptionmeasy2025:
-    "Mensajes ilimitados,Respuesta rapida,Cierre provisorio, Multiples cuentas,Calendario",
+    "Mensajes ilimitados,Respuesta rapida,Cierre provisorio,Multiples cuentas,Calendario",
 };
 
 const MethodOfPayCard = ({ Plan, selectPlan }: IMethodOfPayCard) => {
@@ -23,6 +23,7 @@ const MethodOfPayCard = ({ Plan, selectPlan }: IMethodOfPayCard) => {
       const offerDetails = Plan.subscriptionOfferDetails[0];
       if (offerDetails?.pricingPhases?.pricingPhaseList?.length > 0) {
         const pricingPhase = offerDetails?.pricingPhases?.pricingPhaseList[0];
+        return pricingPhase?.formattedPrice;
       }
     }
     return "Precio no disponible";

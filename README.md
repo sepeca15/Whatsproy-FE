@@ -91,3 +91,8 @@ We can change 'platform' and 'profile', on this case is production to android, a
 
 ## RUN LOCAL BUILD TO TEST PAYMENTS IN APP:
 eas build -p android --profile development
+
+
+## internal testing generate APK:
+
+npx eas build --platform android --profile internal --local --clear-cache 
