@@ -142,10 +142,10 @@ const ItemCalendar = ({
                 {InfoItem.date}
               </Text>
             </Container>
-            <Pressable onPress={toggleExpand}>
+            <Pressable style={{padding:3}} onPress={toggleExpand}>
               <EvilIcons
                 color={"white"}
-                size={24}
+                size={30}
                 name={expanded ? "chevron-up" : "chevron-down"}
               />
             </Pressable>

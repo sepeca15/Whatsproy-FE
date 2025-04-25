@@ -18,9 +18,10 @@ import "moment/locale/es"
 import { FormattedMessage } from "react-intl"
 import { Colors } from "@/constants/Colors"
 import { IEstado } from "../Status/Status"
-import { Picker } from "@react-native-picker/picker";
-import orderDetails from "@/app/(tabs)/orderDetails"
 import CustomModalPicker from "./components/ModalPicker"
+import { io } from "socket.io-client"
+import { useToastContext } from "@/contexts/ToastContext"
+import { Entypo } from "@expo/vector-icons"
 
 interface IDetailsOrder {
   loading: boolean
@@ -40,12 +41,15 @@ const OrderDetails = () => {
   const { orderId, keyDeleteType } = useLocalSearchParams()
   const resolvedKeyDeleteType = keyDeleteType as "pending" | "finished"
   const [stateModalStatus, setstateModalStatus] = React.useState<boolean>(false)
+  const { showToast } = useToastContext();
+  const [allStatus, setAllStatus] = React.useState<IEstado[]>([])
+  const [sendingChangeStatus, setSendingChangeStatus] = React.useState<boolean>(false)
+
   // Animation values
+
   const fadeAnim = React.useRef(new Animated.Value(0)).current
   const slideAnim = React.useRef(new Animated.Value(30)).current
 
-  const [allStatus, setAllStatus] = React.useState<IEstado[]>([])
-  const [sendingChangeStatus, setSendingChangeStatus] = React.useState<boolean>(false)
 
   const toggleModalStatus = () => setstateModalStatus((prev) => !prev)
 
@@ -119,7 +123,7 @@ const OrderDetails = () => {
     }
   }
 
-  const changeStatusOrder = async (newStatus: IEstado) => {
+  const handleChangeStatusOrder = async (newStatus: IEstado) => {
     setSendingChangeStatus(true);
     const currentOrder = detailOfOrder?.data?.estadoActual?.order;
     const newOrder = newStatus.order
@@ -127,30 +131,18 @@ const OrderDetails = () => {
       if (!detailOfOrder.data?.id || !newStatus.id) {
         return;
       }
-      if(newOrder && currentOrder &&  (newOrder <= currentOrder)) {
+      if (newOrder && currentOrder && (newOrder <= currentOrder)) {
         return;
-      }      
+      }
 
       const resp = await api.changeStatus.cambioEstado({
         estadoId: newStatus.id,
         id_user: user.id,
-        pedidoId: detailOfOrder?.data?.id
+        pedidoId: detailOfOrder?.data?.id ?? 1
       })
 
       if (resp.ok) {
-        setDetailOfOrder((prev: any) => {
-          return {
-            ...prev,
-            data: {
-              ...prev.data,
-              estadoActual: newStatus,
-              cambiosEstado: [
-                ...prev.data.cambiosEstado,
-                resp.data
-              ]
-            }
-          }
-        })
+        changeStatusOrder(newStatus, resp.data)
       }
 
     } catch (error: any) {
@@ -160,6 +152,50 @@ const OrderDetails = () => {
     }
 
   }
+
+  const changeStatusOrder = (newStatus: any, newChangeStatus: any) => {
+    setDetailOfOrder((prev: any) => {
+      return {
+        ...prev,
+        data: {
+          ...prev.data,
+          estadoActual: newStatus,
+          cambiosEstado: [
+            ...prev.data.cambiosEstado,
+            newChangeStatus
+          ]
+        }
+      }
+    })
+  }
+
+  React.useEffect(() => {
+    const socketIo = io(user.apiUrl);
+
+    socketIo.on("connect", () => {
+      console.log('conectado');
+      
+      socketIo.emit('listenChangeOrder', { orderId });
+    });
+
+    socketIo.on("changeStatusOrder", (data) => {
+      console.log('jejeje');
+      
+      if (data.id_user !== user.id) {
+        changeStatusOrder(data.estado, data)
+
+        showToast({
+          title: <FormattedMessage id="statusUpdatedOrderDetails" />,
+          description: <FormattedMessage id="userChangeStatusDetailsMessagge" /> + data.estado.nombre,
+          status: "success",
+        });
+      }
+    })
+
+    return () => {
+      socketIo.disconnect();
+    };
+  }, [])
 
   if (detailOfOrder.loading) {
     return (
@@ -247,35 +283,13 @@ const OrderDetails = () => {
             </Text>
           </Text>
         </Animated.View>
-
-        <Animated.View
-          style={[
-            styles.sectionCard,
-            {
-              opacity: fadeAnim,
-              transform: [{ translateY: slideAnim }],
-            },
-          ]}
-        >
-          <View style={styles.sectionHeader}>
-            <Octicons name="person" size={20} color={Colors.light.primary} />
-            <Text style={styles.sectionTitle}>
-              <FormattedMessage id="client" defaultMessage="Cliente" />
-            </Text>
-          </View>
-          <Text style={styles.clientName}>{detailOfOrder.data?.client.name}</Text>
-
-          <View style={styles.addressContainer}>
-            <IonIcons name="location-outline" size={20} color={Colors.light.icon} />
-            <Text style={styles.addressText}>
-              {detailOfOrder.data?.infoLines?.direccion ? (
-                detailOfOrder.data.infoLines.direccion
-              ) : (
-                <FormattedMessage id="noAddress" defaultMessage="Sin dirección" />
-              )}
-            </Text>
-          </View>
-        </Animated.View>
+        {
+          Object.keys(detailOfOrder.data?.infoLines).map((key, index) => {
+            return (
+              <RenderInfoLine key={index} keyItem={key} value={detailOfOrder.data?.infoLines[key]} />
+            )
+          })
+        }
 
         <Animated.View
           style={[
@@ -322,10 +336,28 @@ const OrderDetails = () => {
             </Text>
           </TouchableOpacity>
         </View>
-        <CustomModalPicker loading={sendingChangeStatus} changeStatus = {detailOfOrder.data?.cambiosEstado} createOrderDate={detailOfOrder?.data?.date ?? 'No date'} changeStatusOrder={changeStatusOrder} lastStatusOrder={detailOfOrder.data?.estadoActual?.order ?? 0} elements={allStatus} isVisible={stateModalStatus} onClose={toggleModalStatus} />
+        <CustomModalPicker loading={sendingChangeStatus} changeStatus={detailOfOrder.data?.cambiosEstado} createOrderDate={detailOfOrder?.data?.date ?? 'No date'} changeStatusOrder={handleChangeStatusOrder} lastStatusOrder={detailOfOrder.data?.estadoActual?.order ?? 0} elements={allStatus} isVisible={stateModalStatus} onClose={toggleModalStatus} />
       </ScrollView>
     </SafeAreaView>
   )
 }
 
 export default OrderDetails
+
+const RenderInfoLine = ({ keyItem, value }: { keyItem: string, value: any }) => {
+  return (
+    <View style={styles.sectionCard}>
+      <View style={styles.sectionHeader}>
+        <Entypo name="archive" size={20} color={Colors.light.primary} />
+        <Text style={styles.sectionTitle}>
+          {keyItem.toUpperCase()}
+        </Text>
+      </View>
+      <View style={styles.addressContainer}>
+        <Text style={styles.addressText}>
+          {value}
+        </Text>
+      </View>
+    </View>
+  )
+}
