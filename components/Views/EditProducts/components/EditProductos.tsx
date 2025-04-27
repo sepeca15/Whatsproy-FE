@@ -200,8 +200,8 @@ const EditProduct = ({
       style={styles.container}
       resetScrollToCoords={{ x: 0, y: 0 }}
       scrollEnabled={true}
-      enableOnAndroid={true} // Específico para Android
-      extraScrollHeight={Platform.OS === 'ios' ? 20 : 50} // Ajuste fino en el desplazamiento
+      enableOnAndroid={true} 
+      extraScrollHeight={Platform.OS === 'ios' ? 20 : 50} 
     >
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Text style={styles.title}>

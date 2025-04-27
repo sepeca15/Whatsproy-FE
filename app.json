@@ -2,10 +2,10 @@
   "expo": {
     "name": "Whatsproy",
     "slug": "Whatsproy",
-    "appVersion": "1.5.0",
-    "runtimeVersion": "1.5.0",
+    "appVersion": "1.6.7",
+    "runtimeVersion": "1.6.7",
     "newArchEnabled": true,
-    "version": "1.5.0",
+    "version": "1.6.7",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -26,7 +26,7 @@
       "bundleIdentifier": "com.whatsproy"
     },
     "android": {
-      "versionCode": 10500,
+      "versionCode": 10607,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#128c7e"
@@ -101,6 +101,11 @@
       "distribution": "internal",
       "android": {
         "buildType": "apk"
+      }
+    },
+    "internal": {
+      "version": {
+        "source": "local"
       }
     }
   }

@@ -95,4 +95,6 @@ eas build -p android --profile development
 
 ## internal testing generate APK:
 
+npx expo prebuild
+
 npx eas build --platform android --profile internal --local --clear-cache 
