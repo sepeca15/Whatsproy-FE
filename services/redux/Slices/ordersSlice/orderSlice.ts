@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   ordersFinished: [] as any[],
   ordersPending: [] as any[],
+  ordersActive: [] as any[],
   loadingApi: false,
 };
 
@@ -19,17 +20,22 @@ const orderSlice = createSlice({
 
       state.loadingApi = false;
     },
+    odLoadOrdersActive: (state, { payload }) => {
+      state.ordersActive = payload;
+
+      state.loadingApi = false;
+    },
     onConfirmOrder: (state, { payload }) => {
       const newOrderConfirmed = payload;
       const newStateOrdersPending = state.ordersPending.filter(
         (order: any) => order.orderId !== newOrderConfirmed.orderId,
       );
-      const newStateOrdersFinished = [
-        ...state.ordersFinished,
+      const newStateOrdersActive = [
+        ...state.ordersActive,
         newOrderConfirmed,
       ];
       state.ordersPending = newStateOrdersPending;
-      state.ordersFinished = newStateOrdersFinished;
+      state.ordersActive = newStateOrdersActive;
     },
     onDeleteOrder: (state, { payload }) => {
       const { key, orderId } = payload;
@@ -66,6 +72,7 @@ export const {
   onLoadingApi,
   onFinishLoadingApi,
   onAddOrderPending,
+  odLoadOrdersActive,
 } = orderSlice.actions;
 
 export default orderSlice;

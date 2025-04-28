@@ -41,5 +41,6 @@ export interface IOrderDetails {
   total: number;
   infoLines: any;
   cambiosEstado: any[]
-  estadoActual: IEstado
+  estadoActual: IEstado,
+  detalle: string | null
 }

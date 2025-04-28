@@ -303,9 +303,13 @@
     "statusUpdatedOrderDetails": "Status Updated",
     "userChangeStatusDetailsMessagge": "A user has changed the status of their order to:",
     "procesingPayment": "Procesing Payment",
-    "procesingPaymentDesc": "We are processing your payment. This may take a few moments. Please wait."
+    "procesingPaymentDesc": "We are processing your payment. This may take a few moments. Please wait.",
+    "activeOrdersTitle": "Actives",
+    "noDetailsInOrdersDetails": "Did not give details."
   },
   "es": {
+    "activeOrdersTitle": "Activos",
+    "noDetailsInOrdersDetails": "No dio detalles.",
     "userChangeStatusDetailsMessagge": "Un usuario ha cambiado el estado de su orden a :",
     "statusUpdatedOrderDetails": "Estado actualizado",
     "accepted": "Aceptado",

@@ -12,8 +12,10 @@ import Animated, { FadeIn } from "react-native-reanimated";
 import { Colors } from "@/constants/Colors";
 import { useOrders } from "@/hooks/redux/useOrders";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Feather } from "@expo/vector-icons";
+import OrdersActive from "./components/OrdersActive";
 
-type pagesOrder = "finished" | "pending";
+type pagesOrder = "finished" | "pending" | "active";
 
 const PedidosEIngresos: React.FC = () => {
   const [selected, setSelected] = React.useState<pagesOrder>("pending");
@@ -23,6 +25,7 @@ const PedidosEIngresos: React.FC = () => {
     ordersFinished,
     handleLoadOrdersFinished,
     handleLoadOrdersPending,
+    handleLoadingOrdersActive,
   } = useOrders();
 
   const { user } = useUser();
@@ -45,15 +48,8 @@ const PedidosEIngresos: React.FC = () => {
         </View>
       </Animated.View>
 
-      {/* <Text style={styles.title}>
-        {user.tipo_servicioNombre === "Delivery" ? (
-          <FormattedMessage id="orders" defaultMessage="Orders" />
-        ) : (
-          <FormattedMessage id="reservations" defaultMessage="Reservations" />
-        )}
-      </Text> */}
       <View style={styles.tab}>
-        {["pending", "finished"].map((key) => (
+        {["pending",  "active", "finished"].map((key) => (
           <View key={key} style={styles.containerTabItem}>
             <Pressable
               onPress={() => handleSelectPage(key as pagesOrder)}
@@ -64,18 +60,27 @@ const PedidosEIngresos: React.FC = () => {
                 <View style={styles.row}>
                   {key === "pending" ? (
                     <MaterialCommunityIcons size={16} name="camera-timer" />
-                  ) : (
-                    <SimpleLineIcons size={16} name="notebook" />
-                  )}
+                  ) : key === 'finished' ? (
+                    <Feather size={16} name="check-square" />
+                  )
+                    :
+                    <Feather name="activity" size={16} />
+                  }
                   <Text style={styles.text}>
                     {key === "pending" ? (
                       <FormattedMessage id="pending" defaultMessage="Pending" />
-                    ) : (
+                    ) : key === 'finished' ? (
                       <FormattedMessage
                         id="finished"
                         defaultMessage="Finished"
                       />
-                    )}
+                    )
+                      :
+                      <FormattedMessage
+                        id="activeOrdersTitle"
+                        defaultMessage="Active"
+                      />
+                    }
                   </Text>
                 </View>
                 {selected === key && <View style={styles.selected} />}
@@ -85,7 +90,7 @@ const PedidosEIngresos: React.FC = () => {
         ))}
       </View>
       <ScrollView
-       
+
         showsVerticalScrollIndicator={true}
         style={styles.orders}
         refreshControl={
@@ -100,7 +105,7 @@ const PedidosEIngresos: React.FC = () => {
           />
         }
       >
-        {selected === "finished" ? <OrdersFinished /> : <OrdersPending />}
+        {selected === "finished" ? <OrdersFinished /> : selected === "pending" ? <OrdersPending /> : <OrdersActive/>}
       </ScrollView>
       <View style={styles.buttonContainer}>
         <Pressable
