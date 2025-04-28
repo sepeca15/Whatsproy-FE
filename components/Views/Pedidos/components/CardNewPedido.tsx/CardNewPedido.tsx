@@ -31,7 +31,7 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
   const keyDeleteType = pending ? "pending" : "finished";
   const { clientName, direccion, numberSender, orderId, total } = orderData;
   const intl = useIntl(); // Usa useIntl para obtener el texto traducido
-
+  
   const handleSendPageDetails = () => {
     router.push({
       pathname: "/(tabs)/orderDetails",
