@@ -1,15 +1,11 @@
-"use client"
-
 import React, { useRef } from "react"
 import { View, Text, Animated, TouchableOpacity } from "react-native"
 import styles from "./UserCardStyles"
 import FatherIcon from "react-native-vector-icons/Feather"
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 import { IUser } from "../../UsuariosType";
-import api from "@/services/api/admin"
 import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmAction"
 import { useUser } from "@/hooks/redux/useUser"
-import { useToastContext } from "@/contexts/ToastContext"
 import { useIntl } from "react-intl"
 import { Image } from "native-base"
 import { LinearGradient } from "expo-linear-gradient"
@@ -25,49 +21,13 @@ interface IUserCard {
 const UserCard = ({ infoUser, deleteUser, selectEditUser, allowManage }: IUserCard) => {
   const [stateModal, setStateModal] = React.useState<boolean>(false)
   const { user } = useUser()
-  const { showToast } = useToastContext()
   const intl = useIntl()
 
-  // Animation references
   const scaleAnim = useRef(new Animated.Value(1)).current
   const shadowAnim = useRef(new Animated.Value(2)).current
 
-  const onDeleteUser = async () => {
-    try {
-      const resp = await api.user.delete(infoUser.id)
-      if (resp.ok) {
-        deleteUser(infoUser.id)
-        showToast({
-          title: intl.formatMessage({
-            id: "userDeleted",
-            defaultMessage: "User deleted successfully",
-          }),
-          status: "success",
-        })
-      }
-    } catch (error: any) {
-      console.log("error")
-      showToast({
-        title: error.response.data.message,
-        status: "error",
-      })
-    }
-  }
-
   const toggleModal = () => {
     setStateModal((prevState) => !prevState)
-  }
-
-  const animatedShadowStyle = {
-    shadowOffset: { width: 0, height: shadowAnim },
-    shadowOpacity: shadowAnim.interpolate({
-      inputRange: [1, 2],
-      outputRange: [0.1, 0.2],
-    }),
-    shadowRadius: shadowAnim.interpolate({
-      inputRange: [1, 2],
-      outputRange: [2, 4],
-    }),
   }
 
   const isActive = infoUser.activo
@@ -155,7 +115,7 @@ const UserCard = ({ infoUser, deleteUser, selectEditUser, allowManage }: IUserCa
 
       <ModalConfirmAction
         isOpen={stateModal}
-        onContinue={onDeleteUser}
+        onContinue={()=> deleteUser(infoUser.id)}
         onClose={toggleModal}
         message={intl.formatMessage({
           id: "confirmDeleteUser",

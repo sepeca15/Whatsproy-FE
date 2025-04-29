@@ -5,6 +5,7 @@ import { Button, Image, Text, View } from "native-base";
 import useImagePicker from "@/utils/ImagePicker/useImagePicker";
 import api from "@/services/api/admin";
 import { FormattedMessage } from "react-intl";
+import { MaterialIcons } from "@expo/vector-icons";
 
 interface IModalCreateCategory {
   onClose: () => void;
@@ -25,7 +26,7 @@ const ModalCreateCategory = ({
 }: IModalCreateCategory) => {
   const [formData, setFormData] = React.useState(initialState);
   const [errors, setErrors] = React.useState<any>({});
-
+  const [loadingApi, setLoadingApi] = React.useState<boolean>(false)
   const [selectedImage, setSelectedImage] = React.useState<any>(null);
 
   React.useEffect(() => {
@@ -58,6 +59,8 @@ const ModalCreateCategory = ({
   });
 
   const validData = () => {
+    setLoadingApi(true)
+
     if (!formData.imagen) {
       setErrors((prevState: any) => ({
         ...prevState,
@@ -83,6 +86,7 @@ const ModalCreateCategory = ({
   };
 
   const onSubmit = async () => {
+    setLoadingApi(true)
     try {
       const resp = await api.category.create({
         ...formData,
@@ -95,6 +99,8 @@ const ModalCreateCategory = ({
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoadingApi(false)
     }
   };
 
@@ -115,6 +121,7 @@ const ModalCreateCategory = ({
               bg={"gray.100"}
               rounded={"full"}
               alignItems={"center"}
+              shadow={'2'}
             >
               {selectedImage && (
                 <Image
@@ -126,8 +133,13 @@ const ModalCreateCategory = ({
                 />
               )}
             </View>
-            <Button size={"sm"} mt={4} bg={"black"} onPress={handleImagePick}>
-              <FormattedMessage id="uploadPhoto" />
+            <Button size={"sm"} mt={4} bg={"gray.800"} onPress={handleImagePick}>
+              <View style={{gap:8}} display={'flex'} flexDir={'row'} alignItems={'center'} >
+                <MaterialIcons name="photo" size={20} color={'white'}/>
+                <Text color={'white'}>
+                  <FormattedMessage id="uploadPhoto" />
+                </Text>
+              </View>
             </Button>
             {errors.imagen && (
               <Text color={"red.400"} my={1}>
@@ -170,6 +182,7 @@ const ModalCreateCategory = ({
           <Text color={"gray.500"}>Cancel</Text>
         </Button>,
         <Button
+          isLoading={loadingApi}
           key="Accept"
           size="md"
           backgroundColor={"#2C2C2C"}

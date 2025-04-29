@@ -24,12 +24,6 @@ interface IModalCreateUser {
   editUserSelected: (userId: number, userData: any) => void;
 }
 
-interface UseImagePickerProps {
-  toastErrorMessage: string;
- 
-  onImagePicked: (data: { localUri?: string; apiUrl?: string }) => void;
-}
-
 const ModalEditUser = ({
   onToogleModal,
   isOpen,
@@ -39,9 +33,9 @@ const ModalEditUser = ({
   const [formData, setFormData] = useState<IEditUser>(userInfo);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
-  const intl = useIntl(); // Usa useIntl para obtener la instancia de intl
+  const intl = useIntl(); 
   const { showToast } = useToastContext();
-  
+
   const [selectedImage, setSelectedImage] = useState<string | null>();
   useEffect(() => {
     if (userInfo) {
@@ -55,20 +49,20 @@ const ModalEditUser = ({
     },
     [],
   );
-
-
   
+
   const { pickImage } = useImagePicker({
     toastErrorMessage: "Error al seleccionar la imagen",
     onImagePicked: async ({ localUri, apiUrl }) => {
-      // Note: Don't set loadingimage here as it's now handled in handleImagePick
       if (localUri) {
         setSelectedImage(localUri.toString());
       }
+      console.log('apiurl', apiUrl);
+      
       if (apiUrl) {
         setFormData((prevData) => ({
           ...prevData,
-          imagen: apiUrl,
+          image: apiUrl,
         }));
       }
     },
@@ -76,14 +70,14 @@ const ModalEditUser = ({
 
   const handleImagePick = async () => {
     try {
-           await pickImage(setFormData);
+      await pickImage(setFormData);
     } catch (error) {
       console.error("Error selecting image:", error);
       showToast({
         title: intl.formatMessage({ id: "errorSelectingImage" }),
         status: "error",
       });
-    } finally {     
+    } finally {
     }
   };
 
@@ -103,19 +97,18 @@ const ModalEditUser = ({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async () => {
-    if (!validate()) return;
-    setLoading(true);
-    try {
-      const { nombre, apellido, photo, activo } = formData;
-      await api.user.update(userInfo.id, { nombre, apellido, photo, activo });
-      onToogleModal();
-      editUserSelected(userInfo.id, formData);
-    } catch (error) {
-      console.error("Error updating user:", error);
-    } finally {
-      setLoading(false);
-    }
+  const handleSubmit = async () => {    
+    console.log(validate());
+    
+      if (!validate()) return;
+      setLoading(true);
+      try {                
+        await editUserSelected(userInfo.id, formData);
+      } catch (error) {
+        console.error("Error updating user:", error);
+      } finally {
+        setLoading(false);
+      }
   };
 
   return (

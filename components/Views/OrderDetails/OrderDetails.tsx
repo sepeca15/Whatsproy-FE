@@ -303,7 +303,7 @@ const OrderDetails = () => {
             </Text>
           </View>
           <Text>
-            {detailOfOrder.data?.detalle ?? <FormattedMessage id="noDetailsInOrdersDetails"/>}
+            {detailOfOrder.data?.detalle ?? <FormattedMessage id="noDetailsInOrdersDetails" />}
           </Text>
         </Animated.View>
 
