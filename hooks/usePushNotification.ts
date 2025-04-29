@@ -49,7 +49,6 @@ export const usePushNotifications = () => {
       const foregroundSubscription =
         Notifications.addNotificationReceivedListener((notification) => {
           console.log("Notificación recibida en primer plano:", notification);
-          // setReceivedNotification(notification);
         });
 
       const responseListener =
@@ -59,21 +58,7 @@ export const usePushNotifications = () => {
             "Respuesta a la notificación (notificación abierta):",
             notification
           );
-          // Aquí podrías realizar alguna acción, como navegar o abrir un modal.
         });
-
-      // Escucha de notificaciones en segundo plano o cuando la app está cerrada.
-      Notifications.setNotificationHandler({
-        handleNotification: async (notification) => {
-          console.log("Notificación recibida en segundo plano o cerrada:", notification);
-          // Opcionalmente, podrías devolver un valor para mostrar la notificación en la bandeja de notificaciones
-          return {
-            shouldShowAlert: true,
-            shouldPlaySound: true,
-            shouldSetBadge: false,
-          };
-        },
-      });
 
       return () => {
         foregroundSubscription.remove();
