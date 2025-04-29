@@ -8,15 +8,17 @@ import {
   onLoadingApi,
   onLoadOrdersFinished,
   onLoadOrdersPending,
+  odLoadOrdersActive
 } from "@/services/redux/Slices/ordersSlice/orderSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 export const useOrders = () => {
   const Dispatch = useDispatch();
-  const { loadingApi, ordersFinished, ordersPending } = useSelector(
+  const { loadingApi, ordersFinished, ordersPending, ordersActive } = useSelector(
     (state: any) => state.orders,
   );
   const { showToast } = useToastContext();
+
   const handleLoadOrdersFinished = async () => {
     Dispatch(onLoadingApi());
     try {
@@ -39,6 +41,21 @@ export const useOrders = () => {
 
       if (data.ok === true && data.data.length > 0) {
         Dispatch(onLoadOrdersPending(data.data));
+      }
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      Dispatch(onFinishLoadingApi());
+    }
+  };
+
+  const handleLoadingOrdersActive = async () => {
+    Dispatch(onLoadingApi());
+    try {
+      const data = await api.order.getActive();
+
+      if (data.ok === true && data.data.length > 0) {
+        Dispatch(odLoadOrdersActive(data.data));
       }
     } catch (error) {
       console.log("error", error);
@@ -96,10 +113,12 @@ export const useOrders = () => {
     loadingApi,
     ordersFinished,
     ordersPending,
+    ordersActive,
     handleLoadOrdersFinished,
     handleLoadOrdersPending,
     confirmOrder,
     handleDeleteOrder,
     handleAddNewOrderPending,
+    handleLoadingOrdersActive
   };
 };

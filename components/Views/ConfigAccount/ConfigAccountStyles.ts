@@ -53,6 +53,7 @@ export const styles = StyleSheet.create({
   test: {
     width: "100%",
     display: "flex",
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",

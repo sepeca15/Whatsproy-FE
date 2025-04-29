@@ -5,7 +5,6 @@ import { useLocalSearchParams, useRouter } from "expo-router"
 import * as Progress from "react-native-progress"
 import api from "@/services/api/admin"
 import AntDesign from "react-native-vector-icons/AntDesign"
-import Octicons from "react-native-vector-icons/Octicons"
 import IonIcons from "react-native-vector-icons/Ionicons"
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import { Button, ScrollView } from "native-base"
@@ -13,7 +12,7 @@ import ProductOrderCard from "./components/ProductOrderCard"
 import type { IOrderDetails } from "./OrderDetailsTypes"
 import { useOrders } from "@/hooks/redux/useOrders"
 import { useUser } from "@/hooks/redux/useUser"
-import moment from "moment"
+import moment from "moment-timezone"
 import "moment/locale/es"
 import { FormattedMessage } from "react-intl"
 import { Colors } from "@/constants/Colors"
@@ -21,7 +20,7 @@ import { IEstado } from "../Status/Status"
 import CustomModalPicker from "./components/ModalPicker"
 import { io } from "socket.io-client"
 import { useToastContext } from "@/contexts/ToastContext"
-import { Entypo } from "@expo/vector-icons"
+import { Entypo, SimpleLineIcons } from "@expo/vector-icons"
 
 interface IDetailsOrder {
   loading: boolean
@@ -45,11 +44,8 @@ const OrderDetails = () => {
   const [allStatus, setAllStatus] = React.useState<IEstado[]>([])
   const [sendingChangeStatus, setSendingChangeStatus] = React.useState<boolean>(false)
 
-  // Animation values
-
   const fadeAnim = React.useRef(new Animated.Value(0)).current
   const slideAnim = React.useRef(new Animated.Value(30)).current
-
 
   const toggleModalStatus = () => setstateModalStatus((prev) => !prev)
 
@@ -174,13 +170,13 @@ const OrderDetails = () => {
 
     socketIo.on("connect", () => {
       console.log('conectado');
-      
+
       socketIo.emit('listenChangeOrder', { orderId });
     });
 
     socketIo.on("changeStatusOrder", (data) => {
       console.log('jejeje');
-      
+
       if (data.id_user !== user.id) {
         changeStatusOrder(data.estado, data)
 
@@ -256,7 +252,7 @@ const OrderDetails = () => {
           <View style={styles.orderDateContainer}>
             <AntDesign name="calendar" size={16} color={Colors.light.icon} />
             <Text style={styles.orderDateText}>
-              {moment(detailOfOrder.data?.date).locale("es").format("D [de] MMMM [de] YYYY")}
+              {moment(detailOfOrder.data?.date).tz(user.timeZone).format("D [de] MMMM [de] YYYY, HH,MM")}
             </Text>
           </View>
         </Animated.View>
@@ -290,6 +286,26 @@ const OrderDetails = () => {
             )
           })
         }
+
+        <Animated.View
+          style={[
+            styles.sectionCard,
+            {
+              opacity: fadeAnim,
+              transform: [{ translateY: slideAnim }],
+            },
+          ]}
+        >
+          <View style={styles.sectionHeader}>
+            <SimpleLineIcons name="notebook" size={20} color={Colors.light.primary} />
+            <Text style={styles.sectionTitle}>
+              <FormattedMessage id="detailOfOrder" defaultMessage="Detalles del pedido" />
+            </Text>
+          </View>
+          <Text>
+            {detailOfOrder.data?.detalle ?? <FormattedMessage id="noDetailsInOrdersDetails"/>}
+          </Text>
+        </Animated.View>
 
         <Animated.View
           style={[

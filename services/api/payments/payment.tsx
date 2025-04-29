@@ -4,6 +4,7 @@ export const createInitial = async (info: {
   empresaId: string;
   purcheaseToken: string;
   sku: string;
+  purchease: any;
 }) => {
   const { data } = await ApiInstances("global").post(
     "payments/createInitial",

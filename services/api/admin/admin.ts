@@ -60,6 +60,7 @@ const api = {
   order: {
     getCalendarOrders: order.getOrderForCalendar,
     getOrderDetails: order.getDetailsOfOrder,
+    getActive: order.getAllActive,
     getFinished: order.getAllFinished,
     getPending: order.getAllPending,
     remove: order.removeOrder,
