@@ -143,6 +143,8 @@
     "deleteOrderTitle": "Delete order",
     "deleteOrderMessage": "If you delete this order, you will not see it here but it will affect your company's statistics.",
     "noOrdersAvailable": "No orders available",
+    "noOrdersAvailable.index": "No events for this day",
+    "priceNotAvailable": "Price not available",
     "completedOrders": "Completed Orders",
     "salesTrendByCategory": "Sales Trend by Category",
     "value": "Value",
@@ -293,7 +295,7 @@
     "settings.schedule": "Schedule",
     "events.calendar": "Calendar Events",
     "confirmed": "Confirmed",
-    "currentDate":"XD",
+    "currentDate": "XD",
     "not.confirmed": "Unconfirmed",
     "period.weekly": "Weekly",
     "period.monthly": "Monthly",
@@ -301,7 +303,8 @@
     "period.custom": "Custom",
     "period.annual": "Annual",
     "statusUpdatedOrderDetails": "Status Updated",
-    "userChangeStatusDetailsMessagge": "A user has changed the status of their order to:"
+    "userChangeStatusDetailsMessagge": "A user has changed the status of their order to:",
+    "period.quarterly": "Quarterly"
   },
   "es": {
     "userChangeStatusDetailsMessagge": "Un usuario ha cambiado el estado de su orden a :",
@@ -322,6 +325,7 @@
     "status": "Estados",
     "statusDescription": "Create your custom statuses, in which we notify the user when the status of their order changes",
     "currency": "Moneda",
+    "priceNotAvailable": "Precio no disponible",
     "estimatedDuration": "Duración Estimada",
     "description": "Descripción",
     "createProduct": "Crear Producto",
@@ -390,7 +394,7 @@
     "editProduct": "Editar Producto",
     "available": "Disponible",
     "update": "Actualizar",
-    "currentDate":"XD",
+    "currentDate": "XD",
     "enterDescriptionProd": "Ej: Minalesa de pollo",
     "enterDurationProd": "Ej: 30 minutos",
     "enterPriceProd": "Ej: 1000",
@@ -454,6 +458,7 @@
     "deleteOrderTitle": "Eliminar orden",
     "deleteOrderMessage": "Si eliminas esta orden, no la verás aquí pero afectará las estadísticas de tu empresa.",
     "noOrdersAvailable": "No hay órdenes disponibles",
+    "noOrdersAvailable.index": "No hay eventos para este día",
     "completedOrders": "Pedidos realizados",
     "salesTrendByCategory": "Tendencia de Ventas por Categoría",
     "value": "Valor",
@@ -605,6 +610,7 @@
     "period.monthly": "Monthly",
     "period.yearly": "Yearly",
     "period.custom": "Custom",
-    "period.annual": "Anual"
+    "period.annual": "Anual",
+    "period.quarterly": "Trimestral"
   }
 }

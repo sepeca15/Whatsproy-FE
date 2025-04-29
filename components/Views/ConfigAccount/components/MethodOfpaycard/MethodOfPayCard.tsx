@@ -26,7 +26,7 @@ const MethodOfPayCard = ({ Plan, selectPlan }: IMethodOfPayCard) => {
         return pricingPhase?.formattedPrice;
       }
     }
-    return "Precio no disponible";
+    return <FormattedMessage id="priceNotAvailable" defaultMessage="Precio no disponible" />;
   };
 
   const price = getPrice();
@@ -39,7 +39,7 @@ const MethodOfPayCard = ({ Plan, selectPlan }: IMethodOfPayCard) => {
         <View style={styles.ContainerHeader}>
           <CustomText style={styles.WhiteTextBold}>{Plan?.name}</CustomText>
           <View style={styles.ContainerRow}>
-            {/* Aquí mostramos el precio correctamente */}
+           
             <CustomText style={[styles.WhiteTextBold, { fontSize: 25 }]}>
               {price}
             </CustomText>
@@ -64,7 +64,7 @@ const MethodOfPayCard = ({ Plan, selectPlan }: IMethodOfPayCard) => {
             style={{ alignContent: "flex-start" }}
             width={"100%"}
             background="#323232"
-            onPress={() => selectPlan(Plan)} // Aquí estamos enviando el Plan entero
+            onPress={() => selectPlan(Plan)} 
           >
             <FormattedMessage id="buyNow" />
           </CustomButton>

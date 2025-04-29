@@ -1,7 +1,6 @@
 
 
 import React, { useRef } from "react"
-
 import { View, ScrollView, SafeAreaView, RefreshControl, ActivityIndicator, Text } from "react-native"
 import { Colors } from "../../../constants/Colors"
 import CustomText from "./components/CustomText"
