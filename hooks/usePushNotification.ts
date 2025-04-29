@@ -46,14 +46,12 @@ export const usePushNotifications = () => {
     if (user?.id) {
       registerForPushNotifications();
 
-      // Enfoque para manejar las notificaciones cuando la app está en primer plano.
       const foregroundSubscription =
         Notifications.addNotificationReceivedListener((notification) => {
           console.log("Notificación recibida en primer plano:", notification);
           // setReceivedNotification(notification);
         });
 
-      // Enfoque para manejar la respuesta a la notificación (cuando la app está en segundo plano o cerrada)
       const responseListener =
         Notifications.addNotificationResponseReceivedListener((response) => {
           const { notification } = response;
