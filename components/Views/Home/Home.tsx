@@ -50,8 +50,6 @@ const Home: React.FC = () => {
   const empresaName = user?.empresaName ?? "Empresa Name";
 
   if (empresaName) {
-    console.log("Nombre de la empresa:", empresaName);
-
   }
 
 
