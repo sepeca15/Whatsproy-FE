@@ -16,8 +16,6 @@ import { Colors } from "@/constants/Colors";
 // import PedidosListener from "../utils/notificaciones/PedidosListener";
 // import { NotificationProvider } from "@/contexts/NotificationPreferenceContext";
 
-const isAndroid = Platform.OS === "android";
-
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,

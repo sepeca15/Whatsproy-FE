@@ -15,6 +15,7 @@ import ModalEditUser from "./components/ModalEditUser"
 import { FormattedMessage, useIntl } from "react-intl"
 import CustomText from "@/components/CustomText"
 import { useToastContext } from "@/contexts/ToastContext"
+import { globalStyles } from "@/components/globalStyles"
 
 const initialValues = {
   data: [],
@@ -222,7 +223,7 @@ const UsuariosEmpresasScreen: React.FC = () => {
       )}
 
       <TouchableOpacity
-        style={styles.addButton}
+        style={globalStyles.addButton}
         onPress={() => toggleModalState("modalCreate", true)}
         activeOpacity={0.8}
       >

@@ -437,81 +437,99 @@ const CreateOrderModal = ({
               return {
                 label: (
                   <View
-                  display="flex"
-                  flexDirection="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  width="100%"
-                  style={{ paddingBottom: 10 }}
-                >
-                  <View
-                    style={{ gap: 5 }}
+                    display="flex"
                     flexDirection="row"
+                    justifyContent="space-between"
                     alignItems="center"
-                    flex={1}
-                    minWidth={0}
+                    width="100%"
+                    style={{ paddingBottom: 10, paddingRight: 4 }}
                   >
                     <View
-                      width={36}
-                      height={36}
-                      borderRadius={6}
-                      backgroundColor="gray.400"
-                    />
-                    <View
-                      flexDirection="column"
-                      justifyContent="flex-start"
+                      style={{ gap: 5 }}
+                      flexDirection="row"
+                      alignItems="center"
                       flex={1}
                       minWidth={0}
                     >
-                      <Text
-                        color="gray.800"
-                        fontSize={16}
-                        fontWeight="medium"
-                        numberOfLines={1}
-                        ellipsizeMode="tail"
+                      <View
+                        width={36}
+                        height={36}
+                        borderRadius={6}
+                        backgroundColor="gray.400"
+                      />
+                      <View
+                        flexDirection="column"
+                        justifyContent="flex-start"
+                        flex={1}
+                        minWidth={0}
                       >
-                        {prod?.nombre ?? ""}
-                        {cantidad && " x" + cantidad}
-                      </Text>
+                        <Text
+                          color="gray.800"
+                          fontSize={16}
+                          fontWeight="medium"
+                          numberOfLines={1}
+                          ellipsizeMode="tail"
+                        >
+                          {prod?.nombre ?? ""}
+                          {cantidad && " x" + cantidad}
+                        </Text>
+                        <Text
+                          fontSize={12}
+                          color="gray.600"
+                          numberOfLines={2}
+                          ellipsizeMode="tail"
+                        >
+                          {prod?.descripcion ?? ""}
+                        </Text>
+                      </View>
+                    </View>
+
+                    <View
+                      flexDirection="row"
+                      alignItems="center"
+                      justifyContent="flex-end"
+                      paddingLeft={5}
+                    >
                       <Text
-                        fontSize={12}
-                        color="gray.600"
-                        numberOfLines={2}
-                        ellipsizeMode="tail"
+                        marginRight={2}
+                        fontWeight="semibold"
+                        color="yellow.800"
+                        fontSize={14}
                       >
-                        {prod?.descripcion ?? ""}
+                        ${prod?.precio}
                       </Text>
+
+                      {selectedProductsIds.includes(`${prod?.id ?? ""}`) && (
+                        <View
+                          flexDirection="column"
+                          alignItems="center"
+                          justifyContent="center"
+                          borderWidth={1}
+                          borderColor="gray.300"
+                          borderRadius={8}
+                          padding={1}
+                          marginLeft={2}
+                        >
+                          <IconButton
+                            onPress={() => addCantForProduct(prod?.id, "more")}
+                            icon={<SimpleLineIcons size={14} name="arrow-up" />}
+                            _icon={{ color: "green.600" }}
+                            size="sm"
+                            variant="ghost"
+                          />
+                          <IconButton
+                            onPress={() => addCantForProduct(prod?.id, "less")}
+                            icon={
+                              <SimpleLineIcons size={14} name="arrow-down" />
+                            }
+                            _icon={{ color: "red.600" }}
+                            size="sm"
+                            variant="ghost"
+                          />
+                        </View>
+                      )}
                     </View>
                   </View>
-                
-                  <View
-                    flexDirection="row"
-                    alignItems="center"
-                    justifyContent="flex-end"
-                    paddingLeft={5}
-                  >
-                    <Text
-                      marginRight={1}
-                      fontWeight="semibold"
-                      color="yellow.800"
-                    >
-                      ${prod?.precio}
-                    </Text>
-                    {selectedProductsIds.includes(`${prod?.id ?? ""}`) && (
-                      <View flexDirection="column" alignItems="center">
-                        <IconButton
-                          onPress={() => addCantForProduct(prod?.id, "more")}
-                          icon={<SimpleLineIcons size={12} name="arrow-up" />}
-                        />
-                        <IconButton
-                          onPress={() => addCantForProduct(prod?.id, "less")}
-                          icon={<SimpleLineIcons size={12} name="arrow-down" />}
-                        />
-                      </View>
-                    )}
-                  </View>
-                </View>
-                
                 ),
                 placeholder: prod?.nombre,
                 value: prod?.id ?? "",

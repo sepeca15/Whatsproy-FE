@@ -97,4 +97,4 @@ eas build -p android --profile development
 
 npx expo prebuild
 
-npx eas build --platform android --profile internal --local --clear-cache 
+npx eas build --platform android --profile internal --local --clear-cache

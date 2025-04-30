@@ -32,13 +32,12 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
       <View style={styles.container}>
         <View
           style={styles.containerContent}
-          onStartShouldSetResponder={() => true}
         >
           <View style={styles.headerContent}>
             <View style={styles.decorateDiv}></View>
             <View style={styles.containerCreate}>
               <View style={styles.containerTitle}>
-                <Pressable onPress={onClose}>
+                <Pressable accessibilityLabel={`Cerrar Modal`} onPress={onClose}>
                   <EvilIcons name="close" size={25} color={"white"} />
                 </Pressable>
                 <CustomText style={{ color: "white", fontSize: 20 }}>
@@ -52,6 +51,7 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
             <ScrollView
               flexDirection={"column"}
               display={"flex"}
+              keyboardShouldPersistTaps="handled"
               horizontal={false}
               width={"100%"}
               showsVerticalScrollIndicator
