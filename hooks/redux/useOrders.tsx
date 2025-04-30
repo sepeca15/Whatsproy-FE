@@ -8,13 +8,16 @@ import {
   onLoadingApi,
   onLoadOrdersFinished,
   onLoadOrdersPending,
-  odLoadOrdersActive
+  odLoadOrdersActive,
+  onLoadingApiAction,
+onFinishLoadingApiAction,
+finishOrderActive
 } from "@/services/redux/Slices/ordersSlice/orderSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 export const useOrders = () => {
   const Dispatch = useDispatch();
-  const { loadingApi, ordersFinished, ordersPending, ordersActive } = useSelector(
+  const { loadingApi, ordersFinished, ordersPending, ordersActive, loadingApiAction } = useSelector(
     (state: any) => state.orders,
   );
   const { showToast } = useToastContext();
@@ -33,6 +36,15 @@ export const useOrders = () => {
       Dispatch(onFinishLoadingApi());
     }
   };
+
+  const handleFinishOrderActive = (order: any) => {
+    try {
+      Dispatch(finishOrderActive(order))
+      
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const handleLoadOrdersPending = async () => {
     Dispatch(onLoadingApi());
@@ -65,6 +77,8 @@ export const useOrders = () => {
   };
 
   const confirmOrder = async (infoOrder: any) => {
+    Dispatch(onLoadingApiAction());
+
     try {
       const data = await api.order.confirm(infoOrder.orderId);
 
@@ -82,10 +96,13 @@ export const useOrders = () => {
         status: "error",
       });
       console.log("error", error);
+    } finally {
+      Dispatch(onFinishLoadingApiAction());
     }
   };
 
   const handleDeleteOrder = async (id: number, key: "pending" | "finished") => {
+    Dispatch(onLoadingApiAction());
     try {
       const data = await api.order.remove(id);
 
@@ -102,6 +119,8 @@ export const useOrders = () => {
         description: error.response.data.message,
         status: "error",
       });
+    } finally {
+      Dispatch(onFinishLoadingApiAction());
     }
   };
 
@@ -110,6 +129,7 @@ export const useOrders = () => {
   };
 
   return {
+    loadingApiAction,
     loadingApi,
     ordersFinished,
     ordersPending,
@@ -119,6 +139,7 @@ export const useOrders = () => {
     confirmOrder,
     handleDeleteOrder,
     handleAddNewOrderPending,
-    handleLoadingOrdersActive
+    handleLoadingOrdersActive,
+    handleFinishOrderActive
   };
 };

@@ -1,5 +1,3 @@
-"use client"
-
 import React from "react"
 import { View, Text, TouchableOpacity, Animated } from "react-native"
 import { AntDesign, Ionicons, MaterialIcons } from "@expo/vector-icons"
@@ -8,15 +6,15 @@ import UserCard from "./components/UserCard"
 import { styles } from "./UsuariosStyles"
 import api from "@/services/api/admin"
 import type { IUser, IUserInfo } from "./UsuariosType"
-import { ScrollView } from "native-base"
+import { Input, ScrollView } from "native-base"
 import * as Progress from "react-native-progress"
 import { Colors } from "@/constants/Colors"
 import { useUser } from "@/hooks/redux/useUser"
 import ModalCreateUser from "./components/ModalCreateUser"
 import ModalEditUser from "./components/ModalEditUser"
 import { FormattedMessage, useIntl } from "react-intl"
-
 import CustomText from "@/components/CustomText"
+import { useToastContext } from "@/contexts/ToastContext"
 import { globalStyles } from "@/components/globalStyles"
 
 const initialValues = {
@@ -25,17 +23,26 @@ const initialValues = {
 }
 
 const UsuariosEmpresasScreen: React.FC = () => {
+  const intlRef = useIntl()
+
   const { user } = useUser()
-  const intl = useIntl()
   const [userData, setUserData] = React.useState<IUserInfo>(initialValues)
   const [stateModal, setStateModal] = React.useState({
     modalEdit: false,
     modalCreate: false,
   })
+  const [stateSearchValue, setStateSearchValue] = React.useState<boolean>(false)
+  const [valueSearch, setValueSearch] = React.useState<string>('')
   const [selectedUser, setSelectedUser] = React.useState<any>(undefined)
+
+  const { showToast } = useToastContext()
   const router = useRouter()
   const fadeAnim = React.useRef(new Animated.Value(0)).current
   const scaleAnim = React.useRef(new Animated.Value(0.95)).current
+
+  const toggleSearchValue = () => {
+    setStateSearchValue((prev) => !prev)
+  }
 
   const uploadUsers = async () => {
     try {
@@ -45,15 +52,12 @@ const UsuariosEmpresasScreen: React.FC = () => {
         data: resp.data,
       }))
 
-      // Separate animations to avoid mixing native and JS drivers
-      // Fade animation with native driver
       Animated.timing(fadeAnim, {
         toValue: 1,
         duration: 500,
         useNativeDriver: true,
       }).start()
 
-      // Scale animation with native driver
       Animated.timing(scaleAnim, {
         toValue: 1,
         duration: 400,
@@ -73,6 +77,7 @@ const UsuariosEmpresasScreen: React.FC = () => {
     uploadUsers()
   }, [])
 
+
   const toggleModalState = (key: "modalEdit" | "modalCreate", value: boolean) => {
     setStateModal((prev) => ({
       ...prev,
@@ -87,34 +92,67 @@ const UsuariosEmpresasScreen: React.FC = () => {
     }))
   }
 
-  const deleteUser = (userId: number) => {
-    setUserData((prevState) => ({
-      ...prevState,
-      data: prevState.data.filter((data) => data.id !== userId),
-    }))
-  }
-
   const selectEditUser = (user: IUser) => {
     toggleModalState("modalEdit", true);
     setSelectedUser(user);
   };
-  const editUserSelected = (userId: number, userData: any) => {
-    setUserData((prevState) => ({
-      ...prevState,
-      data: prevState.data.map((user) =>
-        user.id === userId ? { ...user, ...userData } : user,
-      ),
 
+  const editUserSelected = async (userId: number, userData: any) => {
+    try {
+      const resp = await api.user.update(userId, userData)
+      if (resp) {
+        console.log('respondio', resp.data);
 
-    }));
+        setUserData((prevState) => ({
+          ...prevState,
+          data: prevState.data.map((user) =>
+            user.id === userId ? resp : user,
+          ),
+        }));
+        toggleModalState("modalEdit", false)
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
+  const onDeleteUser = async (userId: number) => {
+    try {
+      const resp = await api.user.delete(userId)
+      if (resp.ok) {
+        setUserData((prevState) => ({
+          ...prevState,
+          data: prevState.data.filter((data) => data.id !== userId),
+        }))
+
+        showToast({
+          title: intlRef.formatMessage({
+            id: "userDeleted",
+            defaultMessage: "User deleted successfully",
+          }),
+          status: "success",
+        })
+      }
+    } catch (error: any) {
+      console.log("error")
+      showToast({
+        title: error.response.data.message,
+        status: "error",
+      })
+    }
+  }
+
+  const filteredUsers = React.useMemo(() => {
+    return userData.data.filter((user) =>
+      user.nombre.toLowerCase().includes(valueSearch.toLocaleLowerCase())
+    );
+  }, [userData.data, valueSearch]);
+  
   return (
     <View style={styles.container}>
       <View style={[styles.headerGradient, { backgroundColor: Colors.light.primary }]}>
         <View style={styles.headerContent}>
           <TouchableOpacity style={styles.backButton} onPress={() => router.back()} activeOpacity={0.7}>
-
             <AntDesign name="arrowleft" size={22} color="white" />
           </TouchableOpacity>
           <View style={styles.headerTitle}>
@@ -122,10 +160,16 @@ const UsuariosEmpresasScreen: React.FC = () => {
               <FormattedMessage id="users" />
             </CustomText>
           </View>
-          <TouchableOpacity style={styles.searchButton} activeOpacity={0.7}>
+          <TouchableOpacity onPress={toggleSearchValue} style={styles.searchButton} activeOpacity={0.7}>
             <MaterialIcons name="search" size={22} color="white" />
           </TouchableOpacity>
         </View>
+        {
+          stateSearchValue &&
+          <View style={styles.inputContainer}>
+            <Input onChangeText={(text: string)=> setValueSearch(text)} placeholder="Search user" variant="unstyled" style={styles.input} value={valueSearch} ></Input>
+          </View>
+        }
       </View>
 
       {userData.loading ? (
@@ -135,13 +179,12 @@ const UsuariosEmpresasScreen: React.FC = () => {
             indeterminate={true}
             size={60}
             borderWidth={3}
-
           />
           <Text style={styles.loadingText}>
             <FormattedMessage id="loading" defaultMessage="Loading users..." />
           </Text>
         </View>
-      ) : userData.data.length > 0 ? (
+      ) : filteredUsers.length > 0 ? (
         <Animated.View
           style={[
             styles.contentContainer,
@@ -156,11 +199,11 @@ const UsuariosEmpresasScreen: React.FC = () => {
             contentContainerStyle={styles.scrollViewContent}
             showsVerticalScrollIndicator={false}
           >
-            {userData.data.map((infoUser, index) => (
+            {filteredUsers.map((infoUser, index) => (
               <UserCard
                 allowManage={user.firstUser}
                 selectEditUser={selectEditUser}
-                deleteUser={deleteUser}
+                deleteUser={onDeleteUser}
                 key={index}
                 infoUser={infoUser}
               />

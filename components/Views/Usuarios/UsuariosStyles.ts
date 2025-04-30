@@ -13,11 +13,11 @@ export const styles = StyleSheet.create({
     paddingBottom: 20,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
-   
-  
-   
-  
-    
+
+
+
+
+
     marginBottom: 20,
   },
   header: {
@@ -27,7 +27,7 @@ export const styles = StyleSheet.create({
     backgroundColor: Colors.light.primary,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
-   
+
     marginBottom: 20,
   },
   headerContent: {
@@ -184,4 +184,18 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 8,
   },
+  inputContainer: {
+    paddingHorizontal: 20,
+    paddingTop: 20
+  },
+  input: {
+    borderBottomColor: 'rgba(255,255,255,0.6)',
+    borderBottomWidth: 1,
+    fontSize: 18,
+    color: 'white',
+    paddingVertical: 8,
+    paddingHorizontal: 4,
+    backgroundColor: 'transparent',
+  },
+
 })

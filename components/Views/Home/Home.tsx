@@ -35,8 +35,10 @@ const Home: React.FC = () => {
   const [refreshing, setRefreshing] = React.useState(false);
   const [notificationsEnabled, setNotificationsEnabled] =
     React.useState<boolean>(false);
+  const lottieRef = React.useRef<LottieView>(null);
 
-  const onRefresh = async () => {
+
+  const onRefresh = async () => {    
     try {
       setRefreshing(true);
       await refreshData();
@@ -48,6 +50,7 @@ const Home: React.FC = () => {
   };
 
   React.useEffect(() => {
+    let isMounted = true;
     const fetchPreference = async () => {
       const enabled = await getNotificationPreference();
       setNotificationsEnabled(enabled);
@@ -59,35 +62,33 @@ const Home: React.FC = () => {
 
   const empresaName = user?.empresaName ?? "Empresa Name";
 
+  React.useEffect(() => {
+    return () => {
+      lottieRef.current?.reset(); 
+    };
+  }, []);
+
   const toggleNotifications = () => {
     setNotificationsEnabled((prev) => {
-      const newValue = !prev;
-      saveNotificationPreference(newValue);
-      return newValue;
-    });
-  };
+      const newValue = !prev
+      saveNotificationPreference(newValue)
+      return newValue
+    })
+  }
+  
   return (
     <SafeAreaView style={styles.container}>
       <Animated.View style={styles.header}>
         <View style={styles.headerContent}>
           <View style={styles.headerLeft}>
-            <CustomText
-              style={styles.businessName}
-              accessibilityLabel="Nombre del negocio"
-            >
+            <View w={20} h={20} borderRadius={100} background={'gray.200'} >
+              {
+                user.logo && 
+                <Image w={'full'} h={'full'} alt="logo" rounded={'full'} source={{uri:user.logo}}/>
+              }
+            </View>
+            <CustomText style={styles.businessName} accessibilityLabel="Nombre del negocio">
               {empresaName}
-            </CustomText>
-            <CustomText
-              style={styles.dateText}
-              accessibilityLabel="Fecha actual"
-            >
-              <FormattedMessage
-                id="currentDate"
-                defaultMessage="{date, date, ::EEEE, d 'de' MMMM}"
-                values={{
-                  date: new Date(),
-                }}
-              />
             </CustomText>
           </View>
           <TouchableOpacity
@@ -194,6 +195,10 @@ const Home: React.FC = () => {
                   style={styles.emptyStateContainer}
                 >
                   <LottieView
+                    ref={lottieRef}
+                    source={
+                      require("../../../constants/Animation-non-order.json")
+                    }
                     source={require("../../../constants/Animation-non-order.json")}
                     autoPlay
                     loop
@@ -245,3 +250,5 @@ const Home: React.FC = () => {
 };
 
 export default Home;
+
+

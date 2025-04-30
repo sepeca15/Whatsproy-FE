@@ -33,7 +33,7 @@ const initialState = {
 }
 
 const OrderDetails = () => {
-  const { handleDeleteOrder } = useOrders()
+  const { handleDeleteOrder, handleFinishOrderActive } = useOrders()
   const router = useRouter()
   const { user } = useUser()
   const [detailOfOrder, setDetailOfOrder] = React.useState<IDetailsOrder>(initialState)
@@ -139,6 +139,9 @@ const OrderDetails = () => {
 
       if (resp.ok) {
         changeStatusOrder(newStatus, resp.data)
+        if(newStatus.finalizador === true) {
+          handleFinishOrderActive(detailOfOrder.data)
+        }
       }
 
     } catch (error: any) {
@@ -303,7 +306,7 @@ const OrderDetails = () => {
             </Text>
           </View>
           <Text>
-            {detailOfOrder.data?.detalle ?? <FormattedMessage id="noDetailsInOrdersDetails"/>}
+            {detailOfOrder.data?.detalle ?? <FormattedMessage id="noDetailsInOrdersDetails" />}
           </Text>
         </Animated.View>
 

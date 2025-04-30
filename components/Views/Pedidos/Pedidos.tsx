@@ -15,7 +15,7 @@ import { useUser } from "@/hooks/redux/useUser";
 import CreateOrderModal from "@/components/CreateOrderModal";
 import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
 import CustomText from "@/components/CustomText";
-import Animated, { FadeIn } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 import { Colors } from "@/constants/Colors";
 import { useOrders } from "@/hooks/redux/useOrders";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -30,7 +30,6 @@ const PedidosEIngresos: React.FC = () => {
   const [openAddModal, setOpenAddModal] = React.useState<boolean>(false);
   const {
     loadingApi,
-    ordersFinished,
     handleLoadOrdersFinished,
     handleLoadOrdersPending,
     handleLoadingOrdersActive,
