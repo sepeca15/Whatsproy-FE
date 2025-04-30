@@ -1,12 +1,8 @@
-import React, { useRef } from "react";
-
+import React from "react";
 import {
-  View,
-  ScrollView,
   SafeAreaView,
   RefreshControl,
   ActivityIndicator,
-  Text,
 } from "react-native";
 import { Colors } from "../../../constants/Colors";
 import CustomText from "./components/CustomText";
@@ -15,18 +11,19 @@ import LastActivityCard from "./components/LastActivityCard";
 import QuickActionButton from "./components/QuickActionButton";
 import styles from "./HomeStyles";
 import { router } from "expo-router";
-import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 import LottieView from "lottie-react-native";
 import { FormattedMessage, useIntl } from "react-intl";
 import * as Animatable from "react-native-animatable";
 import { Ionicons } from "@expo/vector-icons";
-import { Vibration, TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native";
 import {
   saveNotificationPreference,
   getNotificationPreference,
 } from "../../../utils/notificaciones/notificationsStorage";
 import { useOrdersDashboard } from "@/hooks/home_functions/useOrdersDashboard";
 import { useUser } from "@/hooks/redux/useUser";
+import { Image, View } from "native-base";
 
 const Home: React.FC = () => {
   const intl = useIntl();
@@ -199,7 +196,6 @@ const Home: React.FC = () => {
                     source={
                       require("../../../constants/Animation-non-order.json")
                     }
-                    source={require("../../../constants/Animation-non-order.json")}
                     autoPlay
                     loop
                     style={styles.emptyStateAnimation}
