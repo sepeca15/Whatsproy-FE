@@ -44,7 +44,7 @@ const ModalConfirmAction = ({
                 Cancel
               </CustomText>
             </Button>
-            <Button isLoading={loading} onPress={submitAction} style={styles.buttonContinue}>
+            <Button background={'red.600'} isLoading={loading} onPress={submitAction} style={styles.buttonContinue}>
               <CustomText style={{ color: "white", fontSize: 12 }}>
                 Continue
               </CustomText>
