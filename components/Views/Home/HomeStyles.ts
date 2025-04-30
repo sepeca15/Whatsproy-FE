@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f5f5f5",
   },
   header: {
-    padding: 16,
+    padding: 12,
     paddingTop: 20,
     paddingBottom: 20,
     backgroundColor: Colors.light.primary,
@@ -25,10 +25,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   headerLeft: {
-    flex: 1,
+    display:'flex',
+    flexDirection:'row',
+    alignItems:'center',
+    gap:12
   },
   businessName: {
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: "bold",
     color: "#fff",
   },

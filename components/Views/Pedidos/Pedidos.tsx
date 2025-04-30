@@ -1,6 +1,5 @@
 import * as React from "react";
 import { View, ScrollView, StyleSheet, Text, Pressable, RefreshControl } from "react-native";
-import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons.js";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons.js";
 import OrdersFinished from "./components/OrdersFinished";
 import OrdersPending from "./components/OrdersPending";
@@ -8,7 +7,7 @@ import { useUser } from "@/hooks/redux/useUser";
 import CreateOrderModal from "@/components/CreateOrderModal";
 import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
 import CustomText from "@/components/CustomText";
-import Animated, { FadeIn } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 import { Colors } from "@/constants/Colors";
 import { useOrders } from "@/hooks/redux/useOrders";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -22,7 +21,6 @@ const PedidosEIngresos: React.FC = () => {
   const [openAddModal, setOpenAddModal] = React.useState<boolean>(false);
   const {
     loadingApi,
-    ordersFinished,
     handleLoadOrdersFinished,
     handleLoadOrdersPending,
     handleLoadingOrdersActive,
@@ -49,7 +47,7 @@ const PedidosEIngresos: React.FC = () => {
       </Animated.View>
 
       <View style={styles.tab}>
-        {["pending",  "active", "finished"].map((key) => (
+        {["pending", "active", "finished"].map((key) => (
           <View key={key} style={styles.containerTabItem}>
             <Pressable
               onPress={() => handleSelectPage(key as pagesOrder)}
@@ -99,13 +97,16 @@ const PedidosEIngresos: React.FC = () => {
             onRefresh={
               selected === "finished"
                 ? handleLoadOrdersFinished
-                : handleLoadOrdersPending
+                :
+                selected === 'active'
+                  ? handleLoadingOrdersActive
+                  : handleLoadOrdersPending
             }
             tintColor={Colors.light.primary}
           />
         }
       >
-        {selected === "finished" ? <OrdersFinished /> : selected === "pending" ? <OrdersPending /> : <OrdersActive/>}
+        {selected === "finished" ? <OrdersFinished /> : selected === "pending" ? <OrdersPending /> : <OrdersActive />}
       </ScrollView>
       <View style={styles.buttonContainer}>
         <Pressable

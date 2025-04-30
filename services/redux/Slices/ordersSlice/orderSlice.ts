@@ -5,6 +5,7 @@ const initialState = {
   ordersPending: [] as any[],
   ordersActive: [] as any[],
   loadingApi: false,
+  loadingApiAction: false
 };
 
 const orderSlice = createSlice({
@@ -22,7 +23,6 @@ const orderSlice = createSlice({
     },
     odLoadOrdersActive: (state, { payload }) => {
       state.ordersActive = payload;
-
       state.loadingApi = false;
     },
     onConfirmOrder: (state, { payload }) => {
@@ -52,8 +52,37 @@ const orderSlice = createSlice({
         state.ordersFinished = newState;
       }
     },
+    finishOrderActive: (state, { payload }) => {
+      const newOrder = payload;
+      let findOrder;
+
+      const newStateOrdersActive = state.ordersPending.filter(
+        (order: any) => {
+          if (order.orderId === newOrder.id) {
+            findOrder = order
+            return;
+          }
+          return order
+        },
+      );
+      const newStateOrdersFinished = [
+        ...state.ordersFinished,
+        findOrder,
+      ];
+      state.ordersActive = newStateOrdersActive;
+      state.ordersFinished = newStateOrdersFinished;
+
+    },
     onLoadingApi: (state) => {
       state.loadingApi = true;
+    },
+    onLoadingApiAction: (state) => {
+      state.loadingApiAction = true;
+    },
+    onFinishLoadingApiAction: (state) => {
+      console.log('se llamo');
+
+      state.loadingApiAction = false;
     },
     onFinishLoadingApi: (state) => {
       state.loadingApi = false;
@@ -73,6 +102,9 @@ export const {
   onFinishLoadingApi,
   onAddOrderPending,
   odLoadOrdersActive,
+  onLoadingApiAction,
+  onFinishLoadingApiAction,
+  finishOrderActive
 } = orderSlice.actions;
 
 export default orderSlice;

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
 import { styles } from "./CardNewPedidoStyles";
 import CustomText from "@/components/CustomText";
 import AntDesign from "react-native-vector-icons/AntDesign";
@@ -9,7 +9,8 @@ import MaterialIconss from "react-native-vector-icons/MaterialCommunityIcons";
 import { useOrders } from "@/hooks/redux/useOrders";
 import { useRouter } from "expo-router";
 import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmAction";
-import { useIntl } from "react-intl"; // Importa useIntl
+import { useIntl } from "react-intl";
+import { Button, Pressable, Spinner } from "native-base";
 
 interface IOrderData {
   clientName: string;
@@ -25,13 +26,24 @@ interface ICardNewPedido {
 }
 
 const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
+  const [loading, setLoading] = React.useState({
+    deleteState: false,
+    confirmState: false
+  })
   const router = useRouter();
   const [statusModalDelete, setStateModalDelete] = useState<boolean>(false);
-  const { handleDeleteOrder, confirmOrder } = useOrders();
+  const { handleDeleteOrder, confirmOrder, loadingApiAction } = useOrders();
   const keyDeleteType = pending ? "pending" : "finished";
   const { clientName, direccion, numberSender, orderId, total } = orderData;
-  const intl = useIntl(); // Usa useIntl para obtener el texto traducido
-  
+  const intl = useIntl();
+
+  const toggleOptionLoading = (key: string) => {
+    setLoading((prev: any) => ({
+      ...prev,
+      [key]: !prev[key]
+    }))
+  }
+
   const handleSendPageDetails = () => {
     router.push({
       pathname: "/(tabs)/orderDetails",
@@ -42,6 +54,30 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
   const handleModal = (value: boolean) => {
     setStateModalDelete(value);
   };
+
+  const handleConfirmOrder = async () => {
+    toggleOptionLoading('confirmState')
+    try {
+      await confirmOrder(orderData)
+    } catch (error) {
+
+    } finally {
+      toggleOptionLoading('confirmState')
+    }
+  }
+
+
+  const handleDeleteEntryOrder = async() => {
+    toggleOptionLoading('deleteState')
+    try {
+      await handleDeleteOrder(orderId, keyDeleteType)
+    } catch (error) {
+
+    } finally {
+      toggleOptionLoading('deleteState')
+
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -82,14 +118,25 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
           </Pressable>
           {pending === true ? (
             <View style={styles.buttons}>
-              <Pressable
-                onPress={() => handleDeleteOrder(orderId, keyDeleteType)}
+              <Button
+                isLoading={loading.deleteState}
+                isDisabled={loadingApiAction}
+                onPress={handleDeleteEntryOrder}
+                style={styles.buttonTransparent}
+                spinner={<Spinner color="black" />}
               >
-                <EvilIcons color={"black"} name="close" size={20} />
-              </Pressable>
-              <Pressable onPress={() => confirmOrder(orderData)}>
+                {!loadingApiAction && (
+                  <EvilIcons color={"black"} name="close" size={22} />
+                )}
+              </Button>
+              <Button
+                style={styles.buttonTransparent}
+                onPress={handleConfirmOrder}
+                isLoading={loading.deleteState}
+                spinner={<Spinner color="black" />}
+              >
                 <IonIcons color={"black"} name="checkmark-done" size={20} />
-              </Pressable>
+              </Button>
             </View>
           ) : (
             <Pressable
@@ -101,20 +148,25 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
           )}
         </View>
       </View>
-      <ModalConfirmAction
-        onContinue={() => handleDeleteOrder(orderData.orderId, keyDeleteType)}
-        title={intl.formatMessage({
-          id: "deleteOrderTitle",
-          defaultMessage: "Delete order",
-        })}
-        message={intl.formatMessage({
-          id: "deleteOrderMessage",
-          defaultMessage:
-            "If you delete this order, you will not see it here but it will affect your company's statistics.",
-        })}
-        onClose={() => handleModal(false)}
-        isOpen={statusModalDelete}
-      />
+      {
+        statusModalDelete &&
+        <ModalConfirmAction
+          loading={loading.deleteState}
+          onContinue={handleDeleteEntryOrder}
+          title={intl.formatMessage({
+            id: "deleteOrderTitle",
+            defaultMessage: "Delete order",
+          })}
+          message={intl.formatMessage({
+            id: "deleteOrderMessage",
+            defaultMessage:
+              "If you delete this order, you will not see it here but it will affect your company's statistics.",
+          })}
+          onClose={() => handleModal(false)}
+          isOpen={statusModalDelete}
+        />
+
+      }
     </View>
   );
 };

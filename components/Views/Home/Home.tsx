@@ -1,8 +1,7 @@
 
 
-import React, { useRef } from "react"
-
-import { View, ScrollView, SafeAreaView, RefreshControl, ActivityIndicator, Text } from "react-native"
+import React from "react"
+import { ScrollView, SafeAreaView, RefreshControl, ActivityIndicator, Text, TouchableOpacity } from "react-native"
 import { Colors } from "../../../constants/Colors"
 import CustomText from "./components/CustomText"
 import MetricCard from "./components/MetricCard"
@@ -15,18 +14,19 @@ import LottieView from "lottie-react-native"
 import { FormattedMessage, useIntl } from "react-intl"
 import * as Animatable from "react-native-animatable"
 import { Ionicons } from "@expo/vector-icons"
-import { Vibration, TouchableOpacity } from "react-native";
 import { saveNotificationPreference, getNotificationPreference } from "../../../utils/notificaciones/notificationsStorage"
 import { useOrdersDashboard } from "@/hooks/home_functions/useOrdersDashboard";
 import { useUser } from "@/hooks/redux/useUser"
+import { Image, View } from "native-base"
 
 const Home: React.FC = () => {
   const intl = useIntl()
   const { loading, ordersCount, dailyRevenue, refreshData, lastOrders } = useOrdersDashboard()
   const [refreshing, setRefreshing] = React.useState(false)
   const [notificationsEnabled, setNotificationsEnabled] = React.useState<boolean>(false);
+  const lottieRef = React.useRef<LottieView>(null);
 
-  const onRefresh = async () => {
+  const onRefresh = async () => {    
     try {
       setRefreshing(true)
       await refreshData()
@@ -38,22 +38,28 @@ const Home: React.FC = () => {
   }
 
   React.useEffect(() => {
+    let isMounted = true;
     const fetchPreference = async () => {
-      const enabled = await getNotificationPreference()
-      setNotificationsEnabled(enabled)
+      const enabled = await getNotificationPreference();
+      if (isMounted) {
+        setNotificationsEnabled(enabled);
+      }
     }
-    fetchPreference()
+    fetchPreference();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const { user } = useUser();
 
   const empresaName = user?.empresaName ?? "Empresa Name";
 
-  if (empresaName) {
-    console.log("Nombre de la empresa:", empresaName);
-
-  }
-
+  React.useEffect(() => {
+    return () => {
+      lottieRef.current?.reset(); 
+    };
+  }, []);
 
   const toggleNotifications = () => {
     setNotificationsEnabled((prev) => {
@@ -62,22 +68,20 @@ const Home: React.FC = () => {
       return newValue
     })
   }
+
   return (
     <SafeAreaView style={styles.container}>
       <Animated.View style={styles.header}>
         <View style={styles.headerContent}>
           <View style={styles.headerLeft}>
+            <View w={20} h={20} borderRadius={100} background={'gray.200'} >
+              {
+                user.logo && 
+                <Image w={'full'} h={'full'} alt="logo" rounded={'full'} source={{uri:user.logo}}/>
+              }
+            </View>
             <CustomText style={styles.businessName} accessibilityLabel="Nombre del negocio">
               {empresaName}
-            </CustomText>
-            <CustomText style={styles.dateText} accessibilityLabel="Fecha actual">
-              <FormattedMessage
-                id="currentDate"
-                defaultMessage="{date, date, ::EEEE, d 'de' MMMM}"
-                values={{
-                  date: new Date(),
-                }}
-              />
             </CustomText>
           </View>
           <TouchableOpacity
@@ -129,7 +133,7 @@ const Home: React.FC = () => {
                 onPress={() => { }}
               />
             </Animated.View>
-            <Animated.View entering={FadeInDown.delay(200)} style={styles.lastActivitiesContainer}>
+            <Animated.View  entering={FadeInDown.delay(200)} style={styles.lastActivitiesContainer}>
               <CustomText style={styles.sectionTitle} accessibilityLabel="Últimos 3 pedidos">
                 <FormattedMessage id="lastOrders.home" defaultMessage="Últimos 3 pedidos" />
               </CustomText>
@@ -149,6 +153,7 @@ const Home: React.FC = () => {
               ) : (
                 <Animatable.View animation="fadeIn" style={styles.emptyStateContainer}>
                   <LottieView
+                    ref={lottieRef}
                     source={
                       require("../../../constants/Animation-non-order.json")
                     }
