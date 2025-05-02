@@ -1,7 +1,7 @@
 import type React from "react";
-import { Text, Dimensions } from "react-native";
+import { Text, Dimensions, View } from "react-native";
 import { Box, HStack, VStack, Select, Icon } from "native-base";
-import { FormattedMessage, useIntl} from "react-intl"
+import { FormattedMessage, useIntl } from "react-intl"
 import { Ionicons } from "@expo/vector-icons";
 // Importar la función de utilidad
 import { toStrictInteger } from "./numberUtils";
@@ -84,120 +84,132 @@ const SalesChart: React.FC<SalesChartProps> = ({
   const barWidth = chartWidth / filteredSales.length - 10;
 
   return (
-    
-    <Box bg="white" borderRadius="lg" p={4}  mb={4}>
-      <HStack justifyContent="space-between" alignItems="center" mb={20}>
-        <Text style={{ fontSize: 16, fontWeight: "bold" }}>
-          <FormattedMessage
-            id="sales.trend"
-            defaultMessage="Tendencia de ventas"
-          />
-        </Text>
+    <View style={{ width: '100%', marginBottom: 20 }}>
 
-        <Select
-          selectedValue={period}
-          minWidth={120}
-          accessibilityLabel="Seleccionar periodo"
-          placeholder="Seleccionar periodo"
-          onValueChange={onPeriodChange}
-          fontSize={12}
-          borderColor="#075e54"
-          _selectedItem={{
-            bg: `rgba(7, 94, 84, 0.1)`,
-            endIcon: (
-              <Icon as={Ionicons} name="checkmark" size="xs" color="#075e54" />
-            ),
-          }}
-        >
-          <Select.Item
-            label={intl.formatMessage({ id: "period.weekly", defaultMessage: "Semanal" })}
-            value="semanal"
-          />
-          <Select.Item
-            label={intl.formatMessage({ id: "period.monthly", defaultMessage: "Mensual" })}
-            value="mensual"
-          />
-          <Select.Item
-            label={intl.formatMessage({ id: "period.quarterly", defaultMessage: "Trimestral" })}
-            value="trimestral"
-          />
-          <Select.Item
-            label={intl.formatMessage({ id: "period.annual", defaultMessage: "Anual" })}
-            value="anual"
-          />
-        </Select>
-      </HStack>
 
-      <Box height={150} mb={4}>
-        <HStack
-          justifyContent={filteredLabels.length < 2 ? "center" : "space-between"}
-          height="100%"
-          alignItems="flex-end"
-        >
-          {filteredSales.map((sale, index) => {
+      <Shadow
+        distance={5}
+        startColor={'rgba(0, 0, 0, 0.05)'}
+        endColor={'rgba(0, 0, 0, 0.01)'}
+        offset={[0, 2]}
+        style={{ width: '100%', }}
+      >
 
-            const heightPercentage = toStrictInteger((sale / maxSale) * 100);
-            const isHighest = sale === maxSale;
+        <Box bg="white" borderRadius="lg" p={4} >
+          <HStack justifyContent="space-between" alignItems="center" mb={20}>
+            <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+              <FormattedMessage
+                id="sales.trend"
+                defaultMessage="Tendencia de ventas"
+              />
+            </Text>
 
-            return (
-              <VStack key={index} alignItems="center" space={1} justifyContent={filteredLabels.length < 2 ? "center" : "space-between"}  >
-                <Text style={{ fontSize, fontWeight: "bold", marginBottom: 2, marginTop: 1 }}>
-                  ${sale.toLocaleString()}
-                </Text>
-                <Box
-                  width={filteredLabels.length < 2 ? Math.max(barWidth - 200, 10) : barWidth}
-                  height={`${heightPercentage}%`}
-                  bg={isHighest ? "#075e54" : "#128c7e"}
-                  borderRadius="md"
+            <Select
+              selectedValue={period}
+              minWidth={120}
+              accessibilityLabel="Seleccionar periodo"
+              placeholder="Seleccionar periodo"
+              onValueChange={onPeriodChange}
+              fontSize={12}
+              borderColor="#075e54"
+              _selectedItem={{
+                bg: `rgba(7, 94, 84, 0.1)`,
+                endIcon: (
+                  <Icon as={Ionicons} name="checkmark" size="xs" color="#075e54" />
+                ),
+              }}
+            >
+              <Select.Item
+                label={intl.formatMessage({ id: "period.weekly", defaultMessage: "Semanal" })}
+                value="semanal"
+              />
+              <Select.Item
+                label={intl.formatMessage({ id: "period.monthly", defaultMessage: "Mensual" })}
+                value="mensual"
+              />
+              <Select.Item
+                label={intl.formatMessage({ id: "period.quarterly", defaultMessage: "Trimestral" })}
+                value="trimestral"
+              />
+              <Select.Item
+                label={intl.formatMessage({ id: "period.annual", defaultMessage: "Anual" })}
+                value="anual"
+              />
+            </Select>
+          </HStack>
 
+          <Box height={150} mb={4}>
+            <HStack
+              justifyContent={filteredLabels.length < 2 ? "center" : "space-between"}
+              height="100%"
+              alignItems="flex-end"
+            >
+              {filteredSales.map((sale, index) => {
+
+                const heightPercentage = toStrictInteger((sale / maxSale) * 100);
+                const isHighest = sale === maxSale;
+
+                return (
+                  <VStack key={index} alignItems="center" space={1} justifyContent={filteredLabels.length < 2 ? "center" : "space-between"}  >
+                    <Text style={{ fontSize, fontWeight: "bold", marginBottom: 2, marginTop: 1 }}>
+                      ${sale.toLocaleString()}
+                    </Text>
+                    <Box
+                      width={filteredLabels.length < 2 ? Math.max(barWidth - 200, 10) : barWidth}
+                      height={`${heightPercentage}%`}
+                      bg={isHighest ? "#075e54" : "#128c7e"}
+                      borderRadius="md"
+
+                    />
+                    <Text style={{ fontSize, fontWeight: "bold" }}>
+                      {filteredLabels[index] ?? "N/A"}
+                    </Text>
+                  </VStack>
+                );
+              })}
+            </HStack>
+          </Box>
+
+          <HStack justifyContent="space-between">
+            <VStack>
+              <Text style={{ fontSize: 12, color: "#666" }}>
+                <FormattedMessage
+                  id="sales.highest"
+                  defaultMessage="Venta más alta"
                 />
-                <Text style={{ fontSize, fontWeight: "bold" }}>
-                  {filteredLabels[index] ?? "N/A"}
-                </Text>
-              </VStack>
-            );
-          })}
-        </HStack>
-      </Box>
+              </Text>
+              <Text style={{ fontSize: 14, fontWeight: "bold" }}>
+                ${Math.max(...monthlySales).toLocaleString()}
+              </Text>
+            </VStack>
 
-      <HStack justifyContent="space-between">
-        <VStack>
-          <Text style={{ fontSize: 12, color: "#666" }}>
-            <FormattedMessage
-              id="sales.highest"
-              defaultMessage="Venta más alta"
-            />
-          </Text>
-          <Text style={{ fontSize: 14, fontWeight: "bold" }}>
-            ${Math.max(...monthlySales).toLocaleString()}
-          </Text>
-        </VStack>
+            <VStack>
+              <Text style={{ fontSize: 12, color: "#666" }}>
+                <FormattedMessage id="sales.average" defaultMessage="Promedio" />
+              </Text>
+              <Text style={{ fontSize: 14, fontWeight: "bold" }}>
+                $
+                {toStrictInteger(
+                  monthlySales.reduce((a, b) => a + b, 0) / monthlySales.length,
+                ).toLocaleString()}
+              </Text>
+            </VStack>
 
-        <VStack>
-          <Text style={{ fontSize: 12, color: "#666" }}>
-            <FormattedMessage id="sales.average" defaultMessage="Promedio" />
-          </Text>
-          <Text style={{ fontSize: 14, fontWeight: "bold" }}>
-            $
-            {toStrictInteger(
-              monthlySales.reduce((a, b) => a + b, 0) / monthlySales.length,
-            ).toLocaleString()}
-          </Text>
-        </VStack>
-
-        <VStack>
-          <Text style={{ fontSize: 12, color: "#666" }}>
-            <FormattedMessage
-              id="sales.lowest"
-              defaultMessage="Venta más baja"
-            />
-          </Text>
-          <Text style={{ fontSize: 14, fontWeight: "bold" }}>
-            ${Math.min(...monthlySales).toLocaleString()}
-          </Text>
-        </VStack>
-      </HStack>
-    </Box>
+            <VStack>
+              <Text style={{ fontSize: 12, color: "#666" }}>
+                <FormattedMessage
+                  id="sales.lowest"
+                  defaultMessage="Venta más baja"
+                />
+              </Text>
+              <Text style={{ fontSize: 14, fontWeight: "bold" }}>
+                ${Math.min(...monthlySales).toLocaleString()}
+              </Text>
+            </VStack>
+          </HStack>
+        </Box>
+      </Shadow>
+    </View>
   );
 };
 

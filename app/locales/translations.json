@@ -308,7 +308,12 @@
     "procesingPaymentDesc": "We are processing your payment. This may take a few moments. Please wait.",
     "activeOrdersTitle": "Actives",
     "noDetailsInOrdersDetails": "Did not give details.",
-    "period.quarterly": "Quarterly"
+    "period.quarterly": "Quarterly",
+    "noSpecifications": "No specifications",
+    "customerSpecifications": "Customer specifications",
+    "currentStatus": "Current status",
+    "showMore": "Show more",
+    "orderDate": "Order date"
   },
   "es": {
     "activeOrdersTitle": "Activos",
@@ -619,8 +624,20 @@
     "period.yearly": "Yearly",
     "period.custom": "Custom",
     "period.annual": "Anual",
-    "period.quarterly": "Trimestral"
+    "period.quarterly": "Trimestral",
+    "noSpecifications": "No hay especificaciones",
+    "customerSpecifications": "Especificaciones del cliente",
+    "currentStatus": "Estado actual",
+    "showMore": "Mostrar más",
+    "orderDate": "Fecha del pedido"
+
   },
+
+
+
+
+
+
   "pt": {
     "activeOrdersTitle": "Ativos",
     "noDetailsInOrdersDetails": "Nenhum detalhe fornecido.",

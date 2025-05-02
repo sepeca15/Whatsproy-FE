@@ -33,9 +33,18 @@ const SalesOverview: React.FC<SalesOverviewProps> = ({
   };
 
   return (
-    
-      <View style={{ backgroundColor: "white", borderRadius: 8, padding: 16, maxHeight: "100%", minHeight: 150,  borderWidth: 1,
-        borderColor: "rgba(255, 255, 255, 0.1)",}} >
+  
+    <Shadow
+      distance={5}
+      startColor={'rgba(0, 0, 0, 0.05)'}
+      endColor={'rgba(0, 0, 0, 0.01)'}
+      offset={[0, 2]}
+      style={{ width: '100%',  }}
+    >
+      <View style={{
+        backgroundColor: "white", borderRadius: 8, padding: 16, maxHeight: "100%", minHeight: 150, borderWidth: 1,
+        borderColor: "rgba(255, 255, 255, 0.1)",
+      }} >
         <HStack justifyContent="space-between" alignItems="center" mb={3}>
           <Text style={styles.title}>
             <FormattedMessage
@@ -116,7 +125,8 @@ const SalesOverview: React.FC<SalesOverviewProps> = ({
           </HStack>
         </VStack>
       </View>
-   
+    </Shadow>
+ 
   );
 };
 

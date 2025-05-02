@@ -189,6 +189,7 @@ const Perfil: React.FC = () => {
         <>
           <ScrollView
             style={styles.content}
+            contentContainerStyle={[styles.contentContainer, { paddingBottom: 20 }]} // no demasiado grande
             showsVerticalScrollIndicator={true}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor={Colors.light.primary} />
@@ -202,13 +203,7 @@ const Perfil: React.FC = () => {
                 entering={FadeInDown.delay(100)}
                 style={{ minHeight: 200 }} // ajustar a lo necesario
               >
-                <Shadow
-                  distance={5}
-                  startColor={'rgba(0, 0, 0, 0.05)'}
-                  endColor={'rgba(0, 0, 0, 0.01)'}
-                  offset={[0, 2]}
-                  style={{ width: '100%', marginBottom: 12 }}
-                >
+               
                   <SalesOverview
                     totalSales={pedidos ? pedidos : 0}
                     previousPeriodSales={12500}
@@ -216,8 +211,8 @@ const Perfil: React.FC = () => {
                     currency="$"
                     period={salesPeriod}
                   />
-                </Shadow>
-                
+             
+
               </Animated.View>
 
               <Animated.View entering={FadeInDown.delay(200)}>
@@ -250,6 +245,7 @@ const Perfil: React.FC = () => {
                       color: Colors.light.secondary,
                       icon: "pizza-outline",
                     },
+                    
                     {
                       id: "3",
                       name: "Milas",
@@ -258,6 +254,7 @@ const Perfil: React.FC = () => {
                       color: "#25d366",
                       icon: "restaurant-outline",
                     },
+
                     {
                       id: "4",
                       name: "Gramajos",
@@ -266,6 +263,7 @@ const Perfil: React.FC = () => {
                       color: "#34b7f1",
                       icon: "fast-food-outline",
                     },
+
                     {
                       id: "5",
                       name: "Otros",

@@ -71,10 +71,10 @@ export const styles = StyleSheet.create({
   },
   metricsContainer: {
     padding: 16,
-    
+
   },
   contentContainer: {
     flexGrow: 1,
-    marginBottom: 16,
+    paddingBottom: 12, // o menos, según necesidad
   },
 })

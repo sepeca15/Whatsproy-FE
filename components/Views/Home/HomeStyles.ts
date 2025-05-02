@@ -73,7 +73,9 @@ const styles = StyleSheet.create({
     // Nota: React Native no soporta múltiples sombras, así que esto es una aproximación
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.1)",
+    elevation: 2,
   },
+  
   metricValue: {
     fontSize: 20,
     fontWeight: "bold",

@@ -23,6 +23,7 @@ type MetricCardProps = {
   value: string | number;
   subtitle?: string;
   onPress?: () => void;
+  style?: any; // podés tiparlo mejor con `StyleProp<ViewStyle>` si querés
 };
 
 const MetricCard: React.FC<MetricCardProps> = ({
@@ -31,6 +32,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
   value,
   subtitle,
   onPress,
+  style,
 }) => {
   const scale = useSharedValue(1);
 
@@ -55,7 +57,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
       style={{ width: '100%', marginBottom: 12 }}
     >
       <AnimatedTouchable
-        style={[styles.metricCard, animatedStyle]}
+        style={[styles.metricCard, style, animatedStyle]} // <- aplicás el estilo externo
         onPress={onPress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
@@ -68,6 +70,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
         )}
       </AnimatedTouchable>
     </Shadow>
+
   );
 };
 
