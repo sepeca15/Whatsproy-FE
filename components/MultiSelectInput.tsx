@@ -18,13 +18,46 @@ import InputField from "./InputField";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 import { useToastContext } from "@/contexts/ToastContext";
-import { TouchableOpacity } from "react-native";
+import { FlatList, TouchableOpacity } from "react-native";
 import TapSensitiveInput from "./TapSensitiveInput/TapSensitiveInput";
 
 interface itemAdd {
   name: string;
   type: string;
 }
+
+const RenderItem = React.memo(
+  ({ item, isSelected, toggleSelectionKeys, handleProductSelection }: any) => {
+    const itemValue = String(item.value);
+
+    return (
+      <TouchableOpacity
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          marginVertical: 10,
+          gap: 10,
+          width: "100%",
+          paddingVertical: 10,
+        }}
+        onPress={() => {
+          toggleSelectionKeys(item.value);
+          handleProductSelection?.(item.value, !isSelected);
+        }}
+      >
+        <Checkbox
+          value={itemValue}
+          isChecked={isSelected}
+          onChange={(isSelected) => {
+            handleProductSelection?.(item.value, isSelected);
+            toggleSelectionKeys(item.value);
+          }}
+        />
+        <Text style={{ flex: 1 }}>{item.label}</Text>
+      </TouchableOpacity>
+    );
+  }
+);
 
 interface MultiSelectInputProps {
   placeholder?: string;
@@ -110,31 +143,26 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
     setFormValues((prev) => ({ ...prev, [name]: value }));
   };
 
-  const toggleSelectionKeys = (value: string) => {
-    const stringValue = value.toString();
-    let updatedSelected: string[];
+  const toggleSelectionKeys = React.useCallback(
+    (value: string) => {
+      console.log("xd");
+      const stringValue = value.toString();
+      let updatedSelected: string[];
 
-    if (!isMultiple) {
-      updatedSelected = [stringValue];
+      if (!isMultiple) {
+        updatedSelected = [stringValue];
+      } else {
+        updatedSelected = selectedItemsKeys.includes(stringValue)
+          ? selectedItemsKeys.filter((key) => key !== stringValue)
+          : [...selectedItemsKeys, stringValue];
+      }
+
       setSelectedItemsKeys(updatedSelected);
       setItemsSelected(updatedSelected);
-      return;
-    }
-
-    let newKeysSelected: string[] = [];
-    setSelectedItemsKeys((prevValue) => {
-      let oldItems = [];
-      if (prevValue?.includes(stringValue)) {
-        oldItems = prevValue?.filter((itm) => itm != stringValue);
-      } else {
-        oldItems = [...prevValue, stringValue];
-      }
-      newKeysSelected = oldItems;
-      return oldItems;
-    });
-
-    setItemsSelected(newKeysSelected);
-  };
+      console.log("xd3");
+    },
+    [selectedItemsKeys, setItemsSelected, isMultiple]
+  );
 
   const areAllFieldsFilled = () => {
     return (
@@ -160,19 +188,21 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
   return (
     <VStack space={4}>
       <TapSensitiveInput
-       label={label}
-       error={error}
-       isRequired={isRequired}
-       height={height}
-       sizeText={sizeText}
-       placeholder={placeholder}
-       setIsModalOpen={setIsModalOpen}
-       value={selectedItemsKeys
-        ?.map((itm) => {
-          const option = options?.find((item) => item?.value === itm);
-          return option?.placeholder ?? "";
-        })
-        .join(", ")}
+        label={label}
+        error={error}
+        isRequired={isRequired}
+        height={height}
+        sizeText={sizeText}
+        placeholder={placeholder}
+        setIsModalOpen={setIsModalOpen}
+        value={selectedItemsKeys
+          ?.map((itm) => {
+            const option = options?.find(
+              (item) => `${item?.value}` === `${itm}`
+            );
+            return option?.placeholder ?? "";
+          })
+          .join(", ")}
       />
 
       {selectedItemsKeys?.length > 0 && (
@@ -187,7 +217,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
             const itm = options?.find((itm) => `${itm?.value}` === item);
             return (
               <Badge
-                key={index}
+                key={`badge-${index}`}
                 colorScheme="teal"
                 color={"white"}
                 variant="solid"
@@ -223,6 +253,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
             backgroundColor={"#2C2C2C"}
             borderRadius={"6"}
             fontWeight={700}
+            accessibilityLabel={`Aceptar ${label}`}
           >
             <Text fontWeight={500} color={"white"}>
               Aceptar
@@ -246,51 +277,41 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
               />
             )}
 
-            <View>
-              {!loading ? (
-                options.map((option, index) => (
-                  <View
-                    key={option.value + index}
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      marginVertical: 10,
-                      gap: 10,
-                      width: "100%",
-                    }}
-                  >
-                    <Checkbox
-                      value={option.value}
-                      isChecked={selectedItemsKeys.includes(
-                        option.value.toString()
-                      )}
-                      onChange={(isSelected) => {
-                        handleProductSelection?.(option.value, isSelected);
-                        toggleSelectionKeys(option.value);
-                      }}
-                    />
-                    <Text style={{ flex: 1 }}>{option.label}</Text>
-                  </View>
-                ))
-              ) : (
-                <Spinner size="lg" />
-              )}
-            </View>
+            <FlatList
+              data={options}
+              keyExtractor={(item, index) => `option-${index}`}
+              extraData={selectedItemsKeys}
+              renderItem={({ item }) => {
+                const itemValue = String(item.value);
+                const isSelected = selectedItemsKeys.includes(itemValue);
 
-            {withAdd && <Pressable
-              onPress={() => setIsModalOpenAdd(true)}
-              alignSelf="center"
-              flexDirection="row"
-              alignItems="center"
-            >
-              <Ionicons
-                name="add-circle"
-                size={24}
-                color={Colors.light.primary}
-              />
-              <Text ml={2}>Agregar {label}</Text>
-            </Pressable>
-}
+                return (
+                  <RenderItem
+                    item={item}
+                    isSelected={isSelected}
+                    toggleSelectionKeys={toggleSelectionKeys}
+                    handleProductSelection={handleProductSelection}
+                  />
+                );
+              }}
+            />
+
+            {withAdd && (
+              <Pressable
+                onPress={() => setIsModalOpenAdd(true)}
+                alignSelf="center"
+                flexDirection="row"
+                alignItems="center"
+                accessibilityLabel={`Agregar ${label}`}
+              >
+                <Ionicons
+                  name="add-circle"
+                  size={24}
+                  color={Colors.light.primary}
+                />
+                <Text ml={2}>Agregar {label}</Text>
+              </Pressable>
+            )}
             {isModalOpenAdd && withAdd && (
               <GlobalModal
                 key="addAction"
@@ -323,10 +344,12 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
                     key="accept"
                     backgroundColor="#2C2C2C"
                     borderRadius={6}
+                    accessibilityLabel={`Crear ${label}`}
                     fontWeight={700}
                   >
                     {loadingApi ? (
                       <Spinner
+                        accessibilityElementsHidden={true}
                         style={{ marginTop: 10, marginBottom: 10 }}
                         color="white"
                         size={20}

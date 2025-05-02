@@ -25,6 +25,7 @@ import { useUser } from "@/hooks/redux/useUser";
 import CreateOrderModal from "@/components/CreateOrderModal";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { FormattedMessage } from "react-intl";
+import { globalStyles } from "@/components/globalStyles";
 
 if (
   Platform.OS === "android" &&
@@ -199,14 +200,14 @@ export default function CalendarView() {
         />
       )}
 
-      <View style={productosStyles.buttonContainer}>
+      <View style={globalStyles.buttonContainer}>
         <TouchableOpacity
-          style={productosStyles.addButton}
+          style={globalStyles.addButton}
           onPress={() => {
             setOpenAddModal(!openAddModal);
           }}
         >
-          <Text style={productosStyles.addButtonText}>+</Text>
+          <Text style={globalStyles.addButtonText}>+</Text>
         </TouchableOpacity>
       </View>
     </View>

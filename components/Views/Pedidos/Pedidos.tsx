@@ -1,5 +1,12 @@
 import * as React from "react";
-import { View, ScrollView, StyleSheet, Text, Pressable, RefreshControl } from "react-native";
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  Text,
+  Pressable,
+  RefreshControl,
+} from "react-native";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons.js";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons.js";
 import OrdersFinished from "./components/OrdersFinished";
@@ -8,12 +15,13 @@ import { useUser } from "@/hooks/redux/useUser";
 import CreateOrderModal from "@/components/CreateOrderModal";
 import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
 import CustomText from "@/components/CustomText";
-import Animated, { FadeIn } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 import { Colors } from "@/constants/Colors";
 import { useOrders } from "@/hooks/redux/useOrders";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
 import OrdersActive from "./components/OrdersActive";
+import { globalStyles } from "@/components/globalStyles";
 
 type pagesOrder = "finished" | "pending" | "active";
 
@@ -22,7 +30,6 @@ const PedidosEIngresos: React.FC = () => {
   const [openAddModal, setOpenAddModal] = React.useState<boolean>(false);
   const {
     loadingApi,
-    ordersFinished,
     handleLoadOrdersFinished,
     handleLoadOrdersPending,
     handleLoadingOrdersActive,
@@ -32,6 +39,7 @@ const PedidosEIngresos: React.FC = () => {
   const handleSelectPage = (key: pagesOrder) => {
     setSelected(key);
   };
+  const [refreshing, setRefreshing] = React.useState(false);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -49,7 +57,7 @@ const PedidosEIngresos: React.FC = () => {
       </Animated.View>
 
       <View style={styles.tab}>
-        {["pending",  "active", "finished"].map((key) => (
+        {["pending", "active", "finished"].map((key) => (
           <View key={key} style={styles.containerTabItem}>
             <Pressable
               onPress={() => handleSelectPage(key as pagesOrder)}
@@ -60,27 +68,25 @@ const PedidosEIngresos: React.FC = () => {
                 <View style={styles.row}>
                   {key === "pending" ? (
                     <MaterialCommunityIcons size={16} name="camera-timer" />
-                  ) : key === 'finished' ? (
+                  ) : key === "finished" ? (
                     <Feather size={16} name="check-square" />
-                  )
-                    :
+                  ) : (
                     <Feather name="activity" size={16} />
-                  }
+                  )}
                   <Text style={styles.text}>
                     {key === "pending" ? (
                       <FormattedMessage id="pending" defaultMessage="Pending" />
-                    ) : key === 'finished' ? (
+                    ) : key === "finished" ? (
                       <FormattedMessage
                         id="finished"
                         defaultMessage="Finished"
                       />
-                    )
-                      :
+                    ) : (
                       <FormattedMessage
                         id="activeOrdersTitle"
                         defaultMessage="Active"
                       />
-                    }
+                    )}
                   </Text>
                 </View>
                 {selected === key && <View style={styles.selected} />}
@@ -90,26 +96,42 @@ const PedidosEIngresos: React.FC = () => {
         ))}
       </View>
       <ScrollView
-
         showsVerticalScrollIndicator={true}
         style={styles.orders}
         refreshControl={
           <RefreshControl
-            refreshing={loadingApi}
-            onRefresh={
-              selected === "finished"
-                ? handleLoadOrdersFinished
-                : handleLoadOrdersPending
-            }
+            refreshing={refreshing}
+            onRefresh={async () => {
+              try {
+                setRefreshing(true);
+                if (selected === "finished") {
+                  await handleLoadOrdersFinished();
+                } else if (selected === "active") {
+                  await handleLoadingOrdersActive();
+                } else {
+                  await handleLoadOrdersPending();
+                }
+              } catch (error) {
+                
+              } finally {
+                setRefreshing(false);
+              }
+            }}
             tintColor={Colors.light.primary}
           />
         }
       >
-        {selected === "finished" ? <OrdersFinished /> : selected === "pending" ? <OrdersPending /> : <OrdersActive/>}
+        {selected === "finished" ? (
+          <OrdersFinished />
+        ) : selected === "pending" ? (
+          <OrdersPending />
+        ) : (
+          <OrdersActive />
+        )}
       </ScrollView>
-      <View style={styles.buttonContainer}>
+      <View style={globalStyles.buttonContainer}>
         <Pressable
-          style={styles.addButton}
+          style={globalStyles.addButton}
           onPress={() => {
             setOpenAddModal((prevState) => !prevState);
           }}
@@ -226,23 +248,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 4,
-  },
-  buttonContainer: {
-    position: "absolute",
-    bottom: 20,
-    right: 20,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 1,
-  },
-  addButton: {
-    backgroundColor: "#075e54",
-    width: 45,
-    height: 45,
-    borderRadius: 60,
-    justifyContent: "center",
-    alignItems: "center",
   },
   addButtonText: {
     color: "#ffffff",

@@ -18,8 +18,9 @@ const Layout: React.FC = () => {
 
   const handleUpdatePushTOken = async (token: any) => {
     const userInfo = user;
-    const currentToken = userInfo?.dispositivo?.fcmToken;
-    if (currentToken !== token) {
+    const currentTokens = userInfo?.dispositivos ?? [];
+    const existsFCMToken = currentTokens?.find((itm: any) => itm?.fcmToken === token)
+    if (!existsFCMToken) {
       const resp = await api.user.updateFcm(token);
       if (resp?.fcmToken) {
         handleUpdateFCM({ ...resp, usuario: null });

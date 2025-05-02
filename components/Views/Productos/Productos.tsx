@@ -18,6 +18,7 @@ import { Image, ScrollView, View } from "native-base"
 import type { ICategoryData } from "../Categories/components/CardCategory/CardCategory"
 import AnimatedTwo from "react-native-reanimated"
 import CustomText from "@/components/CustomText"
+import { globalStyles } from "@/components/globalStyles"
 
 const Productos: React.FC = () => {
   const router = useRouter()
@@ -38,6 +39,7 @@ const Productos: React.FC = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [deletingProductId, setDeletingProductId] = useState<number | null>(null)
   const deleteAnimationRef = useRef(null)
+  const [refreshing, setRefreshing] = useState(false);
 
   const loadAllCategories = async () => {
     try {
@@ -286,10 +288,17 @@ const Productos: React.FC = () => {
           style={styles.scrollView}
           refreshControl={
             <RefreshControl
-              refreshing={loadingCategories || isInitialLoading}
-              onRefresh={() => {
-                loadAllCategories()
-                loadProductsFromCategory()
+              refreshing={refreshing}
+              onRefresh={ async () => {
+                try {
+                  setRefreshing(true);
+                  await loadAllCategories()
+                await loadProductsFromCategory()
+                } catch (error) {
+                  
+                } finally {
+                  setRefreshing(false);
+                }
               }}
               tintColor={Colors.light.primary}
             />
@@ -345,14 +354,14 @@ const Productos: React.FC = () => {
           )}
         </ScrollView>
       </View>
-      <View style={styles.buttonContainer}>
+      <View style={globalStyles.buttonContainer}>
         <TouchableOpacity
-          style={styles.addButton}
+          style={globalStyles.addButton}
           onPress={() => {
             router.push("/(tabs)/addpro")
           }}
         >
-          <Text style={styles.addButtonText}>+</Text>
+          <Text style={globalStyles.addButtonText}>+</Text>
         </TouchableOpacity>
       </View>
     </View>

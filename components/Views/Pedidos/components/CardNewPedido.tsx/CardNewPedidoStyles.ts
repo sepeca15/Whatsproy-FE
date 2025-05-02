@@ -85,6 +85,9 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
+  buttonTransparent: {
+    backgroundColor:'transparent'
+  },
   separator: {
     marginTop: 10,
   },
