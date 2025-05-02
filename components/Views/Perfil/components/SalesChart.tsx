@@ -5,7 +5,7 @@ import { FormattedMessage, useIntl} from "react-intl"
 import { Ionicons } from "@expo/vector-icons";
 // Importar la función de utilidad
 import { toStrictInteger } from "./numberUtils";
-
+import { Shadow } from 'react-native-shadow-2';
 // Nota: En una implementación real, importarías una biblioteca de gráficos como
 // react-native-chart-kit, react-native-svg-charts, o victory-native
 // Aquí simulamos un gráfico simple con barras usando View
@@ -84,7 +84,8 @@ const SalesChart: React.FC<SalesChartProps> = ({
   const barWidth = chartWidth / filteredSales.length - 10;
 
   return (
-    <Box bg="white" borderRadius="lg" p={4} shadow={2} mb={4}>
+    
+    <Box bg="white" borderRadius="lg" p={4}  mb={4}>
       <HStack justifyContent="space-between" alignItems="center" mb={20}>
         <Text style={{ fontSize: 16, fontWeight: "bold" }}>
           <FormattedMessage

@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback, use
 import { IntlProvider } from "react-intl";
 import translations from "./locales/translations.json";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { View, ActivityIndicator } from "react-native";
 
 // Runtime validation for translation shape
 type Messages = Record<string, string> & {
@@ -14,17 +15,13 @@ type Messages = Record<string, string> & {
   somethingHere: string;
 };
 
-interface Translations {
-  en: Messages;
-  es: Messages;
-}
-
-function isValidTranslations(obj: any): obj is Translations {
+function isValidTranslations(obj: any): obj is Record<string, Messages> {
   if (typeof obj !== 'object' || obj == null) return false;
-  for (const locale of ['en', 'es']) {
-    if (typeof obj[locale] !== 'object' || obj[locale] == null) return false;
-    for (const key of ['notAvailable','edit','disable','enable','delete','back','somethingHere']) {
-      if (typeof obj[locale][key] !== 'string') return false;
+  for (const locale in obj) {
+    const messages = obj[locale];
+    if (typeof messages !== 'object' || messages == null) return false;
+    for (const key of ['notAvailable', 'edit', 'disable', 'enable', 'delete', 'back', 'somethingHere']) {
+      if (typeof messages[key] !== 'string') return false;
     }
   }
   return true;
@@ -34,9 +31,9 @@ if (!isValidTranslations(translations)) {
   throw new Error('Invalid translations.json format');
 }
 
-const messages: Translations = translations;
+const messages: Record<string, Messages> = translations;
 
-type LocaleKey = keyof Translations;
+type LocaleKey = keyof typeof messages;
 
 interface LocalizationContextProps {
   locale: LocaleKey;
@@ -69,14 +66,16 @@ export const LocalizationProvider: React.FC<LocalizationProviderProps> = ({ chil
     (async () => {
       try {
         const stored = await AsyncStorage.getItem("locale");
-        if (stored === 'en' || stored === 'es') {
-          setLocaleState(stored);
+        if (stored && stored in messages) {
+          setLocaleState(stored as LocaleKey);
+          console.log("Idioma detectado desde AsyncStorage:", stored); // Imprime el idioma almacenado
         } else {
-          const sys = Intl.DateTimeFormat().resolvedOptions().locale.split('-')[0];
-          const supported: Record<string, LocaleKey> = { en: 'en', es: 'es', 'es-UY': 'es' };
-          const detected = (supported[sys] as LocaleKey) || 'en';
-          setLocaleState(detected);
-          await AsyncStorage.setItem("locale", detected);
+          const sysLocale = Intl.DateTimeFormat().resolvedOptions().locale.split('-')[0];
+          const fallbackLocale = (Object.keys(messages).includes(sysLocale) ? sysLocale : 'en') as LocaleKey;
+          setLocaleState(fallbackLocale);
+          await AsyncStorage.setItem("locale", fallbackLocale);
+          console.log("Idioma detectado desde sistema:", sysLocale); // Imprime el idioma basado en el sistema
+          console.log("Idioma seleccionado:", fallbackLocale); // Imprime el idioma final seleccionado
         }
       } catch (error) {
         console.warn("Error loading locale", error);
@@ -85,11 +84,18 @@ export const LocalizationProvider: React.FC<LocalizationProviderProps> = ({ chil
       }
     })();
   }, []);
-
   const contextValue = useMemo(() => ({ locale, setLocale }), [locale, setLocale]);
 
   if (!hydrated) {
-    return null; // o un spinner
+    return (
+      <View style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
   }
 
   return (

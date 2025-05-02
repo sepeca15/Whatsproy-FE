@@ -9,7 +9,7 @@ import Animated, {
 import { Colors } from "../../../../constants/Colors";
 import CustomText from "./CustomText";
 import styles from "../HomeStyles";
-
+import { Shadow } from 'react-native-shadow-2';
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
 type QuickActionButtonProps = {
@@ -35,18 +35,27 @@ const QuickActionButton: React.FC<QuickActionButtonProps> = ({
 
   const handlePressOut = () => {
     scale.value = withSpring(1);
-  };
+  };                                                                                                                                                                          
 
   return (
-    <AnimatedTouchable
-      style={[styles.quickAction, animatedStyle]}
-      onPress={onPress}
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
+    <Shadow
+      distance={5}
+      startColor={'rgba(0, 0, 0, 0.05)'}
+      endColor={'rgba(0, 0, 0, 0.01)'}
+      offset={[0, 2]}
+      style={{ width: '100%', marginBottom: 12 }}
     >
-      <Icon name={icon} size={24} color={Colors.light.primary} />
-      <CustomText style={styles.quickActionText}>{title}</CustomText>
-    </AnimatedTouchable>
+
+      <AnimatedTouchable
+        style={[styles.quickAction, animatedStyle]}
+        onPress={onPress}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+      >
+        <Icon name={icon} size={24} color={Colors.light.primary} />
+        <CustomText style={styles.quickActionText}>{title}</CustomText>
+      </AnimatedTouchable>
+    </Shadow>
   );
 };
 

@@ -108,42 +108,54 @@ const Home: React.FC = () => {
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.light.primary} />
             }
           >
-            <Animated.View entering={FadeInDown.delay(100)} style={styles.metricsContainer}>
-              <MetricCard
-                icon="cart-outline"
-                title={intl.formatMessage({ id: "ordersToday.home", defaultMessage: "Peeeedidos Hoy" })}
-                value={ordersCount.toString()}
-                onPress={() => { }}
-              />
-              <MetricCard
-                icon="account-group"
-                title={intl.formatMessage({ id: "clients.home", defaultMessage: "Clientes" })}
-                value="120"
-                onPress={() => { }}
-              />
-              <MetricCard
-                icon="cash-multiple"
-                title={intl.formatMessage({ id: "revenue.home", defaultMessage: "Ingresos" })}
-                value={`$${dailyRevenue}`}
-                onPress={() => { }}
-              />
-            </Animated.View>
-            <Animated.View entering={FadeInDown.delay(200)} style={styles.lastActivitiesContainer}>
+            <View style={styles.metricsContainer}>
+              <Animated.View entering={FadeInDown.delay(100)} >
+                <MetricCard
+                  icon="cart-outline"
+                  title={intl.formatMessage({ id: "ordersToday.home", defaultMessage: "Peeeedidos Hoy" })}
+                  value={ordersCount.toString()}
+                  onPress={() => { }}
+                />
+              </Animated.View>
+
+              <Animated.View entering={FadeInDown.delay(200)} >
+                <MetricCard
+                  icon="account-group"
+                  title={intl.formatMessage({ id: "clients.home", defaultMessage: "Clientes" })}
+                  value="120"
+                  onPress={() => { }}
+                />
+              </Animated.View>
+
+              <Animated.View entering={FadeInDown.delay(300)} >
+                <MetricCard
+                  icon="cash-multiple"
+                  title={intl.formatMessage({ id: "revenue.home", defaultMessage: "Ingresos" })}
+                  value={`$${dailyRevenue}`}
+                  onPress={() => { }}
+                />
+              </Animated.View>
+            </View>
+
+            <Animated.View entering={FadeInDown.delay(400)} style={styles.lastActivitiesContainer}>
               <CustomText style={styles.sectionTitle} accessibilityLabel="Últimos 3 pedidos">
                 <FormattedMessage id="lastOrders.home" defaultMessage="Últimos 3 pedidos" />
               </CustomText>
               {lastOrders.length > 0 ? (
                 lastOrders.map((order) => (
-                  <LastActivityCard
-                    key={order.id}
-                    title={`${intl.formatMessage({ id: "pedido.card.home", defaultMessage: "pedido" })} #${order.id}`}
-                    time={order.time || "Desconocido"}
-                    id={order.id?.toString() || "0"}
-                    amount={order.amount || "$0"}
-                    icon={order.icon || "receipt"}
-                    address={order.address}
-                    onPress={() => { router.push({pathname:'/(tabs)/orderDetails', params: { orderId: order.id }} )}}
-                  />
+                 
+                    <LastActivityCard
+                      key={order.id}
+                      title={`${intl.formatMessage({ id: "pedido.card.home", defaultMessage: "pedido" })} #${order.id}`}
+                      time={order.time || "Desconocido"}
+                      id={order.id?.toString() || "0"}
+                      amount={order.amount || "$0"}
+                      icon={order.icon || "receipt"}
+                      address={order.address}
+                      onPress={() => { router.push({ pathname: '/(tabs)/orderDetails', params: { orderId: order.id } }) }}
+                    />
+               
+
                 ))
               ) : (
                 <Animatable.View animation="fadeIn" style={styles.emptyStateContainer}>

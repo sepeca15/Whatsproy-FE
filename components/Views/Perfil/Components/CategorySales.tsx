@@ -4,6 +4,7 @@ import { Box, HStack, VStack, Icon, Divider } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
 import { FormattedMessage } from "react-intl";
 import SafeProgress from "./SafeProgress";
+import { Shadow } from 'react-native-shadow-2';
 
 interface CategoryData {
   id: string;
@@ -72,68 +73,77 @@ const CategorySales: React.FC<CategorySalesProps> = ({
   };
 
   return (
-    <Box bg="white" borderRadius="lg" p={4} shadow={2} mb={4}>
-      <Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 10 }}>
-        <FormattedMessage
-          id="sales.byCategory"
-          defaultMessage="Ventas por categoría"
-        />
-      </Text>
 
-      <VStack space={4}>
-        {categories.map((category) => (
-          <VStack key={category.id} space={1}>
-            <HStack justifyContent="space-between" alignItems="center">
-              <HStack space={2} alignItems="center">
-                <Box bg={`${category.color}20`} p={1.5} borderRadius="full">
-                  <Icon
-                    as={Ionicons}
-                    name={category.icon}
-                    size="xs"
-                    color={category.color}
-                  />
-                </Box>
-                <Text style={{ fontSize: 14 }}>{category.name}</Text>
+    <Shadow
+      distance={5}
+      startColor={'rgba(0, 0, 0, 0.05)'}
+      endColor={'rgba(0, 0, 0, 0.01)'}
+      offset={[0, 2]}
+      style={{ width: '100%', marginBottom: 20 }}
+    >
+      <Box bg="white" borderRadius="lg" p={4}>
+        <Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 10 }}>
+          <FormattedMessage
+            id="sales.byCategory"
+            defaultMessage="Ventas por categoría"
+          />
+        </Text>
+
+        <VStack space={4}>
+          {categories.map((category) => (
+            <VStack key={category.id} space={1}>
+              <HStack justifyContent="space-between" alignItems="center">
+                <HStack space={2} alignItems="center">
+                  <Box bg={`${category.color}20`} p={1.5} borderRadius="full">
+                    <Icon
+                      as={Ionicons}
+                      name={category.icon}
+                      size="xs"
+                      color={category.color}
+                    />
+                  </Box>
+                  <Text style={{ fontSize: 14 }}>{category.name}</Text>
+                </HStack>
+                <Text style={{ fontSize: 14, fontWeight: "bold" }}>
+                  {currency}
+                  {formatNumber(category.sales)}
+                </Text>
               </HStack>
-              <Text style={{ fontSize: 14, fontWeight: "bold" }}>
-                {currency}
-                {formatNumber(category.sales)}
-              </Text>
-            </HStack>
-            <HStack space={2} alignItems="center">
-              <SafeProgress
-                value={category.percentage}
-                _filledTrack={{ bg: category.color }}
-                size="xs"
-                flex={1}
-              />
-              <Text
-                style={{
-                  fontSize: 12,
-                  color: "#666",
-                  width: 35,
-                  textAlign: "right",
-                }}
-              >
-                {Math.round(category.percentage)}%
-              </Text>
-            </HStack>
-          </VStack>
-        ))}
-      </VStack>
+              <HStack space={2} alignItems="center">
+                <SafeProgress
+                  value={category.percentage}
+                  _filledTrack={{ bg: category.color }}
+                  size="xs"
+                  flex={1}
+                />
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: "#666",
+                    width: 35,
+                    textAlign: "right",
+                  }}
+                >
+                  {Math.round(category.percentage)}%
+                </Text>
+              </HStack>
+            </VStack>
+          ))}
+        </VStack>
 
-      <Divider my={4} />
+        <Divider my={4} />
 
-      <HStack justifyContent="space-between" alignItems="center">
-        <Text style={{ fontSize: 14, fontWeight: "bold" }}>
-          <FormattedMessage id="sales.total" defaultMessage="Total" />
-        </Text>
-        <Text style={{ fontSize: 16, fontWeight: "bold" }}>
-          {currency}
-          {formatNumber(totalSales)}
-        </Text>
-      </HStack>
-    </Box>
+        <HStack justifyContent="space-between" alignItems="center">
+          <Text style={{ fontSize: 14, fontWeight: "bold" }}>
+            <FormattedMessage id="sales.total" defaultMessage="Total" />
+          </Text>
+          <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+            {currency}
+            {formatNumber(totalSales)}
+          </Text>
+        </HStack>
+      </Box>
+    </Shadow>
   );
 };
 
