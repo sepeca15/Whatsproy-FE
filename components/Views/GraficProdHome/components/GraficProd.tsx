@@ -10,7 +10,7 @@ import {
 import { AntDesign } from "@expo/vector-icons";
 import { BarChart } from "react-native-chart-kit";
 import { styles } from "./SalesChartsStyles";
-import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
+import { FormattedMessage } from "react-intl"; 
 import type { ProductDetailProps } from "./types";
 import { useUser } from "@/hooks/redux/useUser";
 
@@ -74,7 +74,7 @@ const GraficProddet: React.FC<ProductDetailProps> = ({
       ],
     },
   };
-
+console.log("prprp", product.disponible);
   return (
     <ScrollView
       style={styles.container}
@@ -82,9 +82,15 @@ const GraficProddet: React.FC<ProductDetailProps> = ({
     >
       <View style={styles.header}>
         <Image source={{ uri: product.imageUrl }} style={styles.productImage} />
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>{product.category}</Text>
-        </View>
+        {product.disponible ? (
+          <View style={styles.badge}>
+            <Text style={styles.badgeText}>Creldisponible</Text>
+          </View>
+        ) : (
+          <View style={styles.unavailableBadge}>
+            <Text style={styles.unavailableBadgeText}>No disponible</Text>
+          </View>
+        )}
       </View>
 
       <View style={styles.contentContainer}>
