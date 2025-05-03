@@ -1,25 +1,18 @@
-import { StyleSheet, Dimensions, Platform, StatusBar } from "react-native"
+import { StyleSheet, Platform, StatusBar } from "react-native"
 import { RFValue } from "react-native-responsive-fontsize"
 import { Colors } from "@/constants/Colors"
 
 export const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: Colors.light.background,
-  },
-  pickerContainer: {
-    backgroundColor:Colors.light.secondary,
-    color:'white',
-    width:150,
-    borderRadius:100,
+    backgroundColor: "#f5f5f5",
   },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: Colors.light.background,
+    backgroundColor: "#f5f5f5",
   },
-
   loadingText: {
     color: Colors.light.text,
     marginTop: 15,
@@ -27,173 +20,181 @@ export const styles = StyleSheet.create({
     fontWeight: "500",
   },
 
+  // Header
   header: {
-    backgroundColor: Colors.light.primary,
-    paddingTop: Platform.OS === "ios" ? 0 : StatusBar.currentHeight,
-    paddingBottom: 15,
-    paddingHorizontal: 20,
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
-  },
-
-  headerContent: {
     flexDirection: "row",
     alignItems: "center",
-    paddingTop: 10,
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingTop: Platform.OS === "ios" ? 10 : StatusBar.currentHeight! + 10,
+    paddingBottom: 10,
+    backgroundColor: Colors.light.primary,
   },
-
   backButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.15)",
+    backgroundColor: "rgba(255,255,255,0.2)",
   },
-
   headerTitle: {
-    color: "white",
-    fontSize: RFValue(17),
+    fontSize: RFValue(16),
     fontWeight: "600",
-    marginLeft: 15,
+    color: "white",
+  },
+  headerRight: {
+    flexDirection: "row",
+  },
+  headerActionButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(255,255,255,0.2)",
   },
 
+  // Scroll Content
   scrollViewContent: {
-    paddingHorizontal: 15,
-    paddingTop: 15,
-    paddingBottom: 25,
+    padding: 16,
+    paddingBottom: 30,
   },
 
-  orderNumberCard: {
-    backgroundColor: Colors.light.background,
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 15,
+  // Order Summary Card
+  orderSummaryCard: {
+    backgroundColor: "#ffffff",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
     shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 3,
     elevation: 2,
-    borderWidth: 1,
-    borderColor: "#f0f0f0",
   },
-
-  orderNumberContent: {
+  orderNumberRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "flex-start",
   },
-
   orderNumberLabel: {
     fontSize: RFValue(12),
     color: Colors.light.icon,
     marginBottom: 4,
   },
-
   orderNumberValue: {
     fontSize: RFValue(18),
-    fontWeight: "600",
+    fontWeight: "700",
     color: Colors.light.text,
   },
-
+  orderDateLabel: {
+    fontSize: RFValue(12),
+    color: Colors.light.icon,
+    marginBottom: 4,
+    textAlign: "right",
+  },
+  orderDateValue: {
+    fontSize: RFValue(14),
+    fontWeight: "500",
+    color: Colors.light.text,
+    textAlign: "right",
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "#f0f0f0",
+    marginVertical: 16,
+  },
+  statusSection: {
+    marginTop: 4,
+  },
+  currentStatusContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  currentStatusLabel: {
+    fontSize: RFValue(14),
+    fontWeight: "500",
+    color: Colors.light.text,
+  },
   statusBadge: {
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 6,
+    borderRadius: 20,
     backgroundColor: Colors.light.secondary,
   },
-
   statusText: {
     color: "white",
     fontSize: RFValue(12),
     fontWeight: "500",
+    marginRight: 4,
   },
 
-  orderDateContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent:'flex-start',
-    marginTop: 15,
-    paddingTop: 15,
-    borderTopWidth: 1,
-    borderTopColor: "#f0f0f0",
-  },
-
-  orderDateText: {
-    marginLeft: 8,
-    fontSize: RFValue(13),
-    color: Colors.light.icon,
-  },
-
+  // Section Cards
   sectionCard: {
-    backgroundColor: Colors.light.background,
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 15,
+    backgroundColor: "#ffffff",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
     shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 3,
     elevation: 2,
-    borderWidth: 1,
-    borderColor: "#f0f0f0",
   },
-
   sectionHeader: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 12,
+    marginBottom: 16,
   },
-
   sectionTitle: {
     marginLeft: 10,
-    fontSize: RFValue(15),
+    fontSize: RFValue(16),
     fontWeight: "600",
     color: Colors.light.text,
   },
 
-  estimateTimeValue: {
-    fontSize: RFValue(22),
+  // Client Info
+  clientInfoContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  clientAvatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: Colors.light.primary,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  clientAvatarText: {
+    color: "white",
+    fontSize: RFValue(20),
     fontWeight: "600",
-    color: Colors.light.primary,
-    textAlign: "center",
   },
-
-  estimateTimeUnit: {
-    fontSize: RFValue(15),
-    fontWeight: "400",
-    color: Colors.light.icon,
+  clientDetails: {
+    marginLeft: 12,
   },
-
   clientName: {
     fontSize: RFValue(16),
-    fontWeight: "500",
+    fontWeight: "600",
     color: Colors.light.text,
-    marginBottom: 12,
   },
-
+  clientPhone: {
+    fontSize: RFValue(13),
+    color: Colors.light.icon,
+    marginTop: 2,
+  },
   addressContainer: {
     flexDirection: "row",
     alignItems: "flex-start",
     backgroundColor: "#f9f9f9",
-    padding: 10,
-    borderRadius: 8,
+    padding: 12,
+    borderRadius: 12,
   },
-
   addressText: {
     marginLeft: 8,
     fontSize: RFValue(13),
@@ -202,8 +203,108 @@ export const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
 
+  // Time Container
+  timeContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 16,
+  },
+  estimateTimeValue: {
+    fontSize: RFValue(24),
+    fontWeight: "700",
+    color: Colors.light.primary,
+    marginLeft: 12,
+  },
+  estimateTimeUnit: {
+    fontSize: RFValue(16),
+    fontWeight: "400",
+    color: Colors.light.icon,
+  },
+
+  // Products
   productsList: {
-    marginBottom: 15,
+    marginBottom: 16,
+  },
+
+  // Order Details
+  orderDetailsContainer: {
+    marginTop: 4,
+  },
+  detailItem: {
+    marginBottom: 12,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#f0f0f0",
+  },
+  detailLabel: {
+    fontSize: RFValue(12),
+    color: Colors.light.icon,
+    marginBottom: 4,
+  },
+  detailValue: {
+    fontSize: RFValue(14),
+    fontWeight: "500",
+    color: Colors.light.text,
+  },
+  emptyDetailsContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+  },
+  emptyDetailsText: {
+    fontSize: RFValue(14),
+    color: Colors.light.icon,
+    marginTop: 8,
+  },
+
+  // Product Specifications
+  productSpecification: {
+    marginBottom: 12,
+  },
+  productSpecName: {
+    fontSize: RFValue(14),
+    fontWeight: "600",
+    color: Colors.light.text,
+    marginBottom: 6,
+  },
+  specificationBubble: {
+    backgroundColor: "rgba(18, 140, 126, 0.1)",
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    alignSelf: "flex-start",
+    borderLeftWidth: 3,
+    borderLeftColor: Colors.light.secondary,
+  },
+  productSpecDetail: {
+    fontSize: RFValue(13),
+    color: Colors.light.text,
+  },
+  generalNotes: {
+    marginTop: 16,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: "#f0f0f0",
+  },
+  generalNotesLabel: {
+    fontSize: RFValue(14),
+    fontWeight: "600",
+    color: Colors.light.text,
+    marginBottom: 8,
+  },
+  notesContainer: {
+    backgroundColor: "rgba(7, 94, 84, 0.05)",
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderLeftWidth: 3,
+    borderLeftColor: Colors.light.primary,
+  },
+  generalNotesText: {
+    fontSize: RFValue(13),
+    color: Colors.light.text,
+    lineHeight: 20,
   },
 
   totalContainer: {
@@ -214,75 +315,36 @@ export const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: "#f0f0f0",
   },
-
   totalLabel: {
-    fontSize: RFValue(15),
+    fontSize: RFValue(16),
     fontWeight: "600",
     color: Colors.light.text,
   },
-
   totalValue: {
-    fontSize: RFValue(18),
+    fontSize: RFValue(20),
     fontWeight: "700",
     color: Colors.light.primary,
   },
 
-  actionsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 5,
-    marginBottom: 15,
-  },
-
-  deleteButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#f5f5f5",
-    borderRadius: 8,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    flex: 0.48,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-
-  deleteButtonText: {
-    marginLeft: 8,
-    fontSize: RFValue(14),
-    fontWeight: "500",
-    color: Colors.light.text,
-  },
-
+  // Chat Button
   chatButton: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: Colors.light.primary,
-    borderRadius: 8,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    flex: 0.48,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
+    borderRadius: 12,
+    paddingVertical: 16,
+    marginTop: 8,
+    shadowColor: Colors.light.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
   },
-
   chatButtonText: {
     marginLeft: 8,
-    fontSize: RFValue(14),
-    fontWeight: "500",
+    fontSize: RFValue(16),
+    fontWeight: "600",
     color: "white",
   },
 })

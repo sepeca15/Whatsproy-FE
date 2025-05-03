@@ -1,10 +1,10 @@
-import { StyleSheet, Dimensions } from "react-native";
-import { Colors } from "../../../constants/Colors";
+import { StyleSheet, Dimensions } from "react-native"
+import { Colors } from "../../../constants/Colors"
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#f0f2f5", // Fondo ligeramente diferente para el neumorfismo
   },
   header: {
     padding: 12,
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     color: "rgba(255, 255, 255, 0.8)",
     marginTop: 4,
   },
-  iconButton:{
+  iconButton: {
     width: 36,
     height: 36,
     borderRadius: 18,
@@ -59,17 +59,23 @@ const styles = StyleSheet.create({
   },
   metricCard: {
     width: "100%",
-    backgroundColor: "#fff",
+    backgroundColor: "#f0f2f5", // Mismo color que el fondo
     padding: 16,
-    borderRadius: 12,
+    borderRadius: 16,
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-    marginBottom: 12,
+   
+    // Efecto neumórfico
+    shadowColor: "#fff",
+    shadowOffset: { width: -6, height: -6 },
+    shadowOpacity: 0.8,
+    shadowRadius: 6,
+    // Segunda sombra para el efecto completo
+    // Nota: React Native no soporta múltiples sombras, así que esto es una aproximación
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.1)",
+    elevation: 2,
   },
+  
   metricValue: {
     fontSize: 20,
     fontWeight: "bold",
@@ -92,15 +98,20 @@ const styles = StyleSheet.create({
   },
   lastActivityCard: {
     width: "100%",
-    backgroundColor: "#fff",
+    backgroundColor: "#f0f2f5", 
     padding: 16,
     borderRadius: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-    marginBottom: 12,
+    marginBottom: 2,
+
+    
+    // Efecto neumórfico
+    shadowColor: "#fff",
+    shadowOffset: { width: -6, height: -6 },
+    shadowOpacity: 0.8,
+    shadowRadius: 6,
+    // Segunda sombra para el efecto completo (simulada con borde)
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.1)",
   },
   lastActivityHeader: {
     flexDirection: "row",
@@ -143,13 +154,16 @@ const styles = StyleSheet.create({
   chartContainer: {
     margin: 16,
     padding: 16,
-    backgroundColor: "#fff",
+    backgroundColor: "#f0f2f5", // Mismo color que el fondo
     borderRadius: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    // Efecto neumórfico
+    shadowColor: "#fff",
+    shadowOffset: { width: -5, height: -5 },
+    shadowOpacity: 0.8,
+    shadowRadius: 5,
+    // Segunda sombra para el efecto completo (simulada con borde)
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.1)",
   },
   chartTitle: {
     fontSize: 16,
@@ -170,7 +184,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: Colors.light.text,
     marginBottom: 12,
-    
   },
   quickActionsGrid: {
     flexDirection: "row",
@@ -180,44 +193,47 @@ const styles = StyleSheet.create({
   quickAction: {
     flex: 1,
     minWidth: "48%",
-    backgroundColor: "#fff",
+    backgroundColor: "#f0f2f5", // Mismo color que el fondo
     padding: 16,
-    borderRadius: 12,
+    borderRadius: 16,
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    // Efecto neumórfico
+    shadowColor: "#fff",
+    shadowOffset: { width: -4, height: -4 },
+    shadowOpacity: 0.8,
     shadowRadius: 4,
-    elevation: 3,
+    // Segunda sombra para el efecto completo (simulada con borde)
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.1)",
   },
   quickActionText: {
     fontSize: 14,
     color: Colors.light.text,
     marginTop: 8,
   },
-   emptyStateContainer: {
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: 20,
-      height: Dimensions.get('window').height * 0.4,
-    },
-    emptyStateAnimation: {
-      width: 150,
-      height: 150,
-    },
-    emptyStateTitle: {
-      fontSize: 20,
-      fontWeight: 'bold',
-      marginTop: 20,
-      color: Colors.light.primary,
-    },
-    emptyStateSubtitle: {
-      fontSize: 16,
-      color: '#666',
-      textAlign: 'center',
-      marginTop: 10,
-      paddingHorizontal: 20,
-    },
-});
+  emptyStateContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+    height: Dimensions.get("window").height * 0.4,
+  },
+  emptyStateAnimation: {
+    width: 150,
+    height: 150,
+  },
+  emptyStateTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginTop: 20,
+    color: Colors.light.primary,
+  },
+  emptyStateSubtitle: {
+    fontSize: 16,
+    color: "#666",
+    textAlign: "center",
+    marginTop: 10,
+    paddingHorizontal: 20,
+  },
+})
 
-export default styles;
+export default styles

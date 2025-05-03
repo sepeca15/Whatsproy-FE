@@ -12,6 +12,7 @@ import { LocalizationProvider } from "./LocalizationContext";
 import { StatusBar, Platform } from "react-native";
 import * as Notifications from "expo-notifications";
 import { Colors } from "@/constants/Colors";
+import { DebugLocale } from "./DebugLocale";
 // import PedidosListener from "../utils/notificaciones/PedidosListener";
 // import { NotificationProvider } from "@/contexts/NotificationPreferenceContext";
 

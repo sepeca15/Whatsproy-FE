@@ -1,13 +1,13 @@
 import React from "react";
-import { View, Image, Text } from "react-native";
-import { styles } from "./OrdersPendingStyles";
+import { View, Image, Text, StyleSheet } from "react-native";
 import { useOrders } from "@/hooks/redux/useOrders";
 import * as Progress from "react-native-progress";
 import CustomText from "@/components/CustomText";
 import { io } from "socket.io-client";
+import {styles} from "./ordersPendingStyles";
 import { useUser } from "@/hooks/redux/useUser";
-import CardNewPedido from "../CardNewPedido.tsx";
-import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
+import CardNewPedido from "../CardNewPedido.tsx/index";
+import { FormattedMessage } from "react-intl"; 
 
 const OrdersPending = () => {
   const { user } = useUser();
@@ -67,5 +67,7 @@ const OrdersPending = () => {
     </View>
   );
 };
+
+
 
 export default OrdersPending;

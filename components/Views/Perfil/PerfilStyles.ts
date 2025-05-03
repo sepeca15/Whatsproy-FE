@@ -69,4 +69,12 @@ export const styles = StyleSheet.create({
     fontWeight: "bold",
     color: Colors.light.text,
   },
+  metricsContainer: {
+    padding: 16,
+
+  },
+  contentContainer: {
+    flexGrow: 1,
+    paddingBottom: 12, // o menos, según necesidad
+  },
 })

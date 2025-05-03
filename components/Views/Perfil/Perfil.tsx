@@ -12,12 +12,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage"
 import { profileData as defaultProfileData } from "./components/profileData"
 import QuickActions from "./components/QuickActions"
 import SubscriptionInfo from "./components/SubscriptionInfo"
-import SalesOverview from "./components/SalesOverview"
+import SalesOverview from "./components/SaleOverview/SalesOverview"
 import CategorySales from "./components/CategorySales"
 import SalesChart from "./components/SalesChart"
 import api from "@/services/api/admin"
 import { Colors } from "../../../constants/Colors"
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated"
+import { Shadow } from 'react-native-shadow-2';
+
 
 const Perfil: React.FC = () => {
   const router = useRouter()
@@ -83,13 +85,13 @@ const Perfil: React.FC = () => {
 
   const handleRefresh = async () => {
     if (isFetching.current) return
-    setRefreshing(true) // Establece el estado como "en refresco"
+    setRefreshing(true)
     isFetching.current = true
 
-    await Promise.all([fetchProfileData()]) // Realiza las actualizaciones necesarias
+    await Promise.all([fetchProfileData()])
 
-    setRefreshing(false) // Restablece el estado de refresco
-    isFetching.current = false // Restablece el estado de "en proceso"
+    setRefreshing(false)
+    isFetching.current = false
   }
 
   useEffect(() => {
@@ -187,89 +189,105 @@ const Perfil: React.FC = () => {
         <>
           <ScrollView
             style={styles.content}
+            contentContainerStyle={[styles.contentContainer, { paddingBottom: 20 }]} // no demasiado grande
             showsVerticalScrollIndicator={true}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor={Colors.light.primary} />
             }
           >
-            <Animated.View entering={FadeInDown.delay(100)}>
-              <SalesOverview
-                totalSales={pedidos ? pedidos : 0}
-                previousPeriodSales={12500}
-                averageSale={125}
-                currency="$"
-                period={salesPeriod}
-              />
-            </Animated.View>
 
-            <Animated.View entering={FadeInDown.delay(200)}>
-              <SalesChart
-                monthlySales={valorPrueba.sales}
-                labels={valorPrueba.labels}
-                period={salesPeriod}
-                onPeriodChange={(value) => setSalesPeriod(value)}
-              />
-            </Animated.View>
+            <View style={styles.contentContainer}>
 
-            <Animated.View entering={FadeInDown.delay(300)}>
-              <CategorySales
-                currency="$"
-                totalSales={15750}
-                categories={[
-                  {
-                    id: "1",
-                    name: "Hamburguesas",
-                    sales: 5250,
-                    percentage: 33,
-                    color: Colors.light.primary,
-                    icon: "fast-food-outline",
-                  },
-                  {
-                    id: "2",
-                    name: "Choris",
-                    sales: 4200,
-                    percentage: 27,
-                    color: Colors.light.secondary,
-                    icon: "pizza-outline",
-                  },
-                  {
-                    id: "3",
-                    name: "Milas",
-                    sales: 3150,
-                    percentage: 20,
-                    color: "#25d366",
-                    icon: "restaurant-outline",
-                  },
-                  {
-                    id: "4",
-                    name: "Gramajos",
-                    sales: 1575,
-                    percentage: 10,
-                    color: "#34b7f1",
-                    icon: "fast-food-outline",
-                  },
-                  {
-                    id: "5",
-                    name: "Otros",
-                    sales: 1575,
-                    percentage: 10,
-                    color: Colors.light.icon,
-                    icon: "ellipsis-horizontal-outline",
-                  },
-                ]}
-              />
-            </Animated.View>
 
-            <Animated.View entering={FadeInDown.delay(400)}>
-              <SubscriptionInfo plan={profileData?.plan || "Free"} expiryDate="30/06/2023" usagePercentage={75} />
-            </Animated.View>
+              <Animated.View
+                entering={FadeInDown.delay(100)}
+                style={{ minHeight: 200 }} // ajustar a lo necesario
+              >
+               
+                  <SalesOverview
+                    totalSales={pedidos ? pedidos : 0}
+                    previousPeriodSales={12500}
+                    averageSale={125}
+                    currency="$"
+                    period={salesPeriod}
+                  />
+             
 
-            <Animated.View entering={FadeInDown.delay(500)}>
-              <QuickActions />
-            </Animated.View>
+              </Animated.View>
+
+              <Animated.View entering={FadeInDown.delay(200)}>
+                <SalesChart
+                  monthlySales={valorPrueba.sales}
+                  labels={valorPrueba.labels}
+                  period={salesPeriod}
+                  onPeriodChange={(value) => setSalesPeriod(value)}
+                />
+              </Animated.View>
+
+              <Animated.View entering={FadeInDown.delay(300)}>
+                <CategorySales
+                  currency="$"
+                  totalSales={15750}
+                  categories={[
+                    {
+                      id: "1",
+                      name: "Hamburguesas",
+                      sales: 5250,
+                      percentage: 33,
+                      color: Colors.light.primary,
+                      icon: "fast-food-outline",
+                    },
+                    {
+                      id: "2",
+                      name: "Choris",
+                      sales: 4200,
+                      percentage: 27,
+                      color: Colors.light.secondary,
+                      icon: "pizza-outline",
+                    },
+                    
+                    {
+                      id: "3",
+                      name: "Milas",
+                      sales: 3150,
+                      percentage: 20,
+                      color: "#25d366",
+                      icon: "restaurant-outline",
+                    },
+
+                    {
+                      id: "4",
+                      name: "Gramajos",
+                      sales: 1575,
+                      percentage: 10,
+                      color: "#34b7f1",
+                      icon: "fast-food-outline",
+                    },
+
+                    {
+                      id: "5",
+                      name: "Otros",
+                      sales: 1575,
+                      percentage: 10,
+                      color: Colors.light.icon,
+                      icon: "ellipsis-horizontal-outline",
+                    },
+                  ]}
+                />
+              </Animated.View>
+
+              <Animated.View entering={FadeInDown.delay(400)}>
+                <SubscriptionInfo plan={profileData?.plan || "Free"} expiryDate="30/06/2023" usagePercentage={75} />
+              </Animated.View>
+
+              <Animated.View entering={FadeInDown.delay(500)}>
+                <QuickActions />
+              </Animated.View>
+            </View>
           </ScrollView>
         </>
-      )}
+      )
+      }
 
       <Modal
         animationType="fade"
@@ -291,7 +309,7 @@ const Perfil: React.FC = () => {
           </View>
         </View>
       </Modal>
-    </View>
+    </View >
   )
 }
 

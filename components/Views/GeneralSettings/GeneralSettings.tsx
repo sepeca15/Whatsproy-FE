@@ -8,7 +8,7 @@ import * as React from "react";
 import { TouchableOpacity } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
-import { FormattedMessage, useIntl } from "react-intl"; // Importa FormattedMessage y useIntl
+import { FormattedMessage, useIntl } from "react-intl"; 
 import Animated from "react-native-reanimated";
 import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";

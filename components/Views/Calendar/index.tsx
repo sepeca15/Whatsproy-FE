@@ -9,7 +9,7 @@ import {
   Image,
 } from "react-native";
 
-import { styles as stylesPending } from "@/components/Views/Pedidos/components/OrdersPending/OrdersPendingStyles";
+import { styles as stylesPending } from '@/components/Views/Pedidos/components/OrdersPending/ordersPendingStyles' ;
 import { Agenda } from "react-native-calendars";
 import { Ionicons } from "@expo/vector-icons";
 import { styles as productosStyles } from "@/components/Views/Productos/ProductosStyles";
@@ -199,7 +199,10 @@ export default function CalendarView() {
                     source={require("../../../assets/images/no-records.png")}
                     style={{ width: 350, height: 250, objectFit: "contain" }}
                   />
-                  <CustomText>No hay eventos para este día</CustomText>
+                   <FormattedMessage
+                    id="noOrdersAvailable.index"
+                    defaultMessage="No orders available"
+                  />
                 </View>
               )}
             </View>
