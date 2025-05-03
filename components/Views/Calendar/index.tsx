@@ -9,7 +9,7 @@ import {
   Image,
 } from "react-native";
 
-import { styles as stylesPending } from '@/components/Views/Pedidos/components/OrdersPending/OrdersPendingStyles' ;
+import { styles as stylesPending } from "@/components/Views/Pedidos/components/OrdersPending/OrdersPendingStyles";
 import { Agenda } from "react-native-calendars";
 import { Ionicons } from "@expo/vector-icons";
 import { styles as productosStyles } from "@/components/Views/Productos/ProductosStyles";
@@ -42,15 +42,22 @@ export default function CalendarView() {
   const [orderPerDays, setOrderPerDays] = useState<OrderPerDays>({});
   const [openAddModal, setOpenAddModal] = useState(false);
   const [selectedDate, setSelectedDate] = useState(
-    new Date().toISOString().split("T")[0],
+    new Date().toISOString().split("T")[0]
   );
-  const {user} = useUser()
+  const { user } = useUser();
   const [loading, setLoading] = useState(true);
-  
+
+  const [availableDates, setAvailableDates] = useState<string[]>([]);
+
   const onLoadItems = async (selectedDate: string) => {
     setLoading(true);
     try {
       const data = await api.order.getCalendarOrders(selectedDate);
+
+      const availableDates = await api.order.getAvailableDates(selectedDate);
+      if (availableDates?.length > 0) {
+        setAvailableDates(availableDates);
+      }
       setOrderPerDays(data.data);
     } catch (error: any) {
       console.log(error.response.data.message);
@@ -67,7 +74,7 @@ export default function CalendarView() {
       if (data.data) {
         setOrderPerDays((prevState) => {
           const updatedOrders = prevState[firstDate].map((order) =>
-            order.orderId === orderId ? { ...order, status: true } : order,
+            order.orderId === orderId ? { ...order, status: true } : order
           );
           return {
             ...prevState,
@@ -89,7 +96,7 @@ export default function CalendarView() {
         setOrderPerDays((prevState) => ({
           ...prevState,
           [firstDate]: prevState[firstDate].filter(
-            (order) => order.orderId !== orderId,
+            (order) => order.orderId !== orderId
           ),
         }));
       }
@@ -106,7 +113,7 @@ export default function CalendarView() {
 
   return (
     <View style={styles.container}>
-        <Animated.View style={styles.header}>
+      <Animated.View style={styles.header}>
         <View style={styles.headerContent}>
           <View style={styles.headerLeft}>
             <CustomText
@@ -119,67 +126,97 @@ export default function CalendarView() {
         </View>
       </Animated.View>
       <View style={styles.headerContainer}>
-        <Text style={styles.headerTitle}> <FormattedMessage id="events.calendar" defaultMessage="Eventos del calendario" /></Text>
+        <Text style={styles.headerTitle}>
+          {" "}
+          <FormattedMessage
+            id="events.calendar"
+            defaultMessage="Eventos del calendario"
+          />
+        </Text>
         <View style={styles.circleAvaiableContainer}>
           <View style={[styles.circleAvaiable, { backgroundColor: "green" }]} />
-          <Text style={styles.headerDescription}><FormattedMessage id="confirmed" defaultMessage="confirmados" /></Text>
+          <Text style={styles.headerDescription}>
+            <FormattedMessage id="confirmed" defaultMessage="confirmados" />
+          </Text>
         </View>
         <View style={[styles.circleAvaiableContainer]}>
           <View
             style={[styles.circleAvaiable, { backgroundColor: "gray" }]}
           ></View>
-          <Text style={styles.headerDescription}><FormattedMessage id="not.confirmed" defaultMessage="no comfirmados" /></Text>
+          <Text style={styles.headerDescription}>
+            <FormattedMessage
+              id="not.confirmed"
+              defaultMessage="no comfirmados"
+            />
+          </Text>
         </View>
       </View>
-      <Agenda
-        key={JSON.stringify(orderPerDays)}
-        items={orderPerDays}
-        selected={selectedDate}
-        refreshing={true}
-        showOnlySelectedDayItems={true}
-        onDayPress={(day: any) => {
-          setSelectedDate(day.dateString);
-        }}
-        renderItem={(data: IInfoItem) => (
-          <ItemCalendar
-            key={data.orderId}
-            confirmOrder={confirmOrder}
-            deleteOrder={deleteOrder}
-            InfoItem={data}
-            confirm={data.status}
-          />
-        )}
-        renderEmptyData={() => (
-          <View style={styles.emptyDate}>
-            {loading ? (
-              <Progress.Circle
-                color={Colors.light.primary}
-                indeterminate={true}
-                size={50}
+      <View style={styles.calendarContent}>
+        <Agenda
+          key={JSON.stringify(orderPerDays)}
+          items={orderPerDays}
+          selected={selectedDate}
+          refreshing={loading}
+          showOnlySelectedDayItems={true}
+          showClosingKnob={true}
+          onDayPress={(day: any) => {
+            setSelectedDate(day.dateString);
+          }}
+          renderKnob={() => (
+            <View style={{ alignItems: "center", padding: 10 }}>
+              <View
+                style={{
+                  width: 50,
+                  height: 5,
+                  borderRadius: 5,
+                  backgroundColor: "#128c7e",
+                }}
               />
-            ) : (
-              <View style={{ ...stylesPending.containerImage, marginTop: 10 }}>
-                <Image
-                  source={require("../../../assets/images/no-records.png")}
-                  style={{ width: 350, height: 250, objectFit: "contain" }}
+            </View>
+          )}
+          renderItem={(data: IInfoItem) => (
+            <ItemCalendar
+              key={data.orderId}
+              confirmOrder={confirmOrder}
+              deleteOrder={deleteOrder}
+              InfoItem={data}
+              confirm={data.status}
+            />
+          )}
+          renderEmptyData={() => (
+            <View style={styles.emptyDate}>
+              {loading ? (
+                <Progress.Circle
+                  color={Colors.light.primary}
+                  indeterminate={true}
+                  size={50}
                 />
-                <CustomText>No hay eventos para este día</CustomText>
-              </View>
-            )}
-          </View>
-        )}
-        rowHasChanged={(r1: any, r2: any) =>
-          r1.name !== r2.name || r1?.expanded !== r2?.expanded
-        }
-        theme={{
-          agendaDayTextColor: "#333",
-          agendaDayNumColor: "#333",
-          agendaTodayColor: "#128c7e",
-          agendaKnobColor: "#128c7e",
-          selectedDayBackgroundColor: "#128c7e",
-          selectedDayTextColor: "#ffffff",
-        }}
-      />
+              ) : (
+                <View
+                  style={{ ...stylesPending.containerImage, marginTop: 10 }}
+                >
+                  <Image
+                    source={require("../../../assets/images/no-records.png")}
+                    style={{ width: 350, height: 250, objectFit: "contain" }}
+                  />
+                  <CustomText>No hay eventos para este día</CustomText>
+                </View>
+              )}
+            </View>
+          )}
+          rowHasChanged={(r1: any, r2: any) =>
+            r1.name !== r2.name || r1?.expanded !== r2?.expanded
+          }
+          theme={{
+            agendaDayTextColor: "#333",
+            agendaDayNumColor: "#333",
+            agendaTodayColor: "#128c7e",
+            agendaKnobColor: "#128c7e",
+            selectedDayBackgroundColor: "#128c7e",
+            selectedDayTextColor: "#ffffff",
+          }}
+        />
+      </View>
 
       {openAddModal && selectedDate && (
         <CreateOrderModal
@@ -191,6 +228,7 @@ export default function CalendarView() {
           onSuccess={() => {
             onLoadItems(selectedDate);
           }}
+          availableDates={availableDates}
           tipoServicio={ID_TIPOSERVICIO_RESERVA}
         />
       )}
@@ -210,6 +248,10 @@ export default function CalendarView() {
 }
 
 const styles = StyleSheet.create({
+  calendarContent: {
+    width: "100%",
+    flex: 1,
+  },
   header: {
     padding: 16,
     paddingTop: 20,
@@ -238,6 +280,9 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    height: "100%",
+    maxHeight: "100%",
+    flexDirection: "column",
     backgroundColor: "#fff",
   },
   item: {

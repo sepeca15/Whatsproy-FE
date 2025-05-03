@@ -172,14 +172,10 @@ const OrderDetails = () => {
     const socketIo = io(user.apiUrl);
 
     socketIo.on("connect", () => {
-      console.log('conectado');
-
       socketIo.emit('listenChangeOrder', { orderId });
     });
 
     socketIo.on("changeStatusOrder", (data) => {
-      console.log('jejeje');
-
       if (data.id_user !== user.id) {
         changeStatusOrder(data.estado, data)
 

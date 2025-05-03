@@ -10,7 +10,6 @@ import { store } from "@/services/redux/store";
 import { ToastProvider } from "@/contexts/ToastContext";
 import { LocalizationProvider } from "./LocalizationContext";
 import { StatusBar, Platform } from "react-native";
-import { StripeProvider } from "@stripe/stripe-react-native";
 import * as Notifications from "expo-notifications";
 import { Colors } from "@/constants/Colors";
 // import PedidosListener from "../utils/notificaciones/PedidosListener";
@@ -42,7 +41,6 @@ export default function RootLayout() {
     <Provider store={store}>
     
       {/* <NotificationProvider> */}
-        <StripeProvider publishableKey="pk_test_51R4irgCSKnEqCO5rpO7Q8M1eyJvLZmZRVkYwsWYDEcoiLTqMYkhZCj6J6WsZWVv2WQOF8DCPVICck3Y1ezN10b3800sTbng8ux">
           <LocalizationProvider>
             <NativeBaseProvider>
               <ToastProvider>
@@ -60,7 +58,6 @@ export default function RootLayout() {
               </ToastProvider>
             </NativeBaseProvider>
           </LocalizationProvider>
-        </StripeProvider>
       {/* </NotificationProvider> */}
     </Provider>
   );

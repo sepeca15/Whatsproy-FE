@@ -15,11 +15,12 @@ import {
 import Ionicons from "react-native-vector-icons/Ionicons";
 import moment from "moment"; // Importamos moment
 import GlobalModal from "./Modal";
+import { Colors } from "@/constants/Colors";
 
 const generateTimeSlots = (
   startHour: number,
   endHour: number,
-  interval: number,
+  interval: number
 ) => {
   const times = [];
   for (let hour = startHour; hour < endHour; hour++) {
@@ -40,6 +41,7 @@ const TimePicker = ({
   endHour = 23,
   isRequired = true,
   error,
+  checkAvailable,
   occupiedTimes = [],
 }: any) => {
   const [showPicker, setShowPicker] = useState(false);
@@ -149,7 +151,12 @@ const TimePicker = ({
                   data={timeSlots}
                   keyExtractor={(item) => item.toISOString()}
                   renderItem={({ item }) => {
-                    const occupied = isOccupied(item);
+                    let occupied = isOccupied(item);
+                    if (checkAvailable) {
+                      occupied =
+                        isOccupied(item) ||
+                        !checkAvailable(moment(item).format("YYYY-MM-DD HH:mm"));
+                    }
                     return (
                       <Pressable
                         onPress={() => !occupied && handleTimeSelect(item)}
@@ -186,7 +193,7 @@ const TimePicker = ({
                           <Ionicons
                             name="checkmark-circle"
                             size={20}
-                            color="#01802b"
+                            color={Colors.light.secondary}
                           />
                         )}
                       </Pressable>
