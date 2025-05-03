@@ -145,8 +145,6 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
     (value: string) => {
       const stringValue = value.toString();
       let updatedSelected: string[];
-      console.log("old value", selectedItemsKeys)
-
       if (!isMultiple) {
         updatedSelected = [stringValue];
       } else {
@@ -155,7 +153,6 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
           : [...selectedItemsKeys, stringValue];
       }
 
-      console.log("updatedSelected", updatedSelected)
       setSelectedItemsKeys(updatedSelected);
       setItemsSelected(updatedSelected);
     },

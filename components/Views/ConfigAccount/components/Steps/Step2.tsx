@@ -36,7 +36,6 @@ const Step2 = ({ onSuccess }: { onSuccess?: any }) => {
 
   const currentPayment = user?.payment;
 
-  console.log("jeje", currentPayment);
   useEffect(() => {
     const init = async () => {
       await RNIap.initConnection();
@@ -65,9 +64,6 @@ const Step2 = ({ onSuccess }: { onSuccess?: any }) => {
 
     if (purchase?.isAcknowledgedAndroid && purchase?.purchaseStateAndroid !== 1)
       return;
-
-    console.log("purchaseToken", purchaseToken, productId);
-    
     try {
       setLoading(true);
 
@@ -78,7 +74,6 @@ const Step2 = ({ onSuccess }: { onSuccess?: any }) => {
         purchease: purchase,
       });
 
-      console.log("createIntiial resp", resp)
       if (!resp?.success) {
         showToast({
           title: "No se pudo verificar la suscripción",
