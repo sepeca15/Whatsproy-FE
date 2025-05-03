@@ -48,10 +48,8 @@ const RenderItem = React.memo(
         <Checkbox
           value={itemValue}
           isChecked={isSelected}
-          onChange={(isSelected) => {
-            handleProductSelection?.(item.value, isSelected);
-            toggleSelectionKeys(item.value);
-          }}
+          onChange={() => {}}
+          accessibilityRole="checkbox"
         />
         <Text style={{ flex: 1 }}>{item.label}</Text>
       </TouchableOpacity>
@@ -147,6 +145,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
     (value: string) => {
       const stringValue = value.toString();
       let updatedSelected: string[];
+      console.log("old value", selectedItemsKeys)
 
       if (!isMultiple) {
         updatedSelected = [stringValue];
@@ -156,6 +155,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
           : [...selectedItemsKeys, stringValue];
       }
 
+      console.log("updatedSelected", updatedSelected)
       setSelectedItemsKeys(updatedSelected);
       setItemsSelected(updatedSelected);
     },
@@ -277,7 +277,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
 
             <FlatList
               data={options}
-              keyExtractor={(item, index) => `option-${index}`}
+              keyExtractor={(item, index) => `${item?.value}`}
               extraData={selectedItemsKeys}
               renderItem={({ item }) => {
                 const itemValue = String(item.value);

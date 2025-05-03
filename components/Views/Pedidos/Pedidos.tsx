@@ -43,11 +43,11 @@ const PedidosEIngresos: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Animated.View style={styles.header}>
-        <View style={styles.headerContent}>
-          <View style={styles.headerLeft}>
+      <Animated.View style={globalStyles.header}>
+        <View style={globalStyles.headerContent}>
+          <View style={globalStyles.headerLeft}>
             <CustomText
-              style={styles.businessName}
+              style={globalStyles.businessName}
               accessibilityLabel="Pedidos"
             >
               <FormattedMessage id="orders" />

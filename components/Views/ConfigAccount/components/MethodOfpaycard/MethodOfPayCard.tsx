@@ -6,16 +6,12 @@ import ComunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import CustomButton from "@/components/CustomButton";
 import { FormattedMessage } from "react-intl";
 import { Subscription } from "react-native-iap";
+import { subscriptionBenefits } from "@/constants/variables";
 
 interface IMethodOfPayCard {
   Plan: any;
   selectPlan: (plan: Subscription) => void;
 }
-
-const subscriptionBenefits: any = {
-  basicsubscriptionmeasy2025:
-    "Mensajes ilimitados,Respuesta rapida,Cierre provisorio,Multiples cuentas,Calendario",
-};
 
 const MethodOfPayCard = ({ Plan, selectPlan }: IMethodOfPayCard) => {
   const getPrice = () => {

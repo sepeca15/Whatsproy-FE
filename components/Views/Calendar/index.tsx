@@ -112,11 +112,11 @@ export default function CalendarView() {
 
   return (
     <View style={styles.container}>
-      <Animated.View style={styles.header}>
+      <Animated.View style={globalStyles.header}>
         <View style={styles.headerContent}>
-          <View style={styles.headerLeft}>
+          <View style={globalStyles.headerLeft}>
             <CustomText
-              style={styles.businessName}
+              style={globalStyles.businessName}
               accessibilityLabel="Pedidos"
             >
               <FormattedMessage id="calendar" />

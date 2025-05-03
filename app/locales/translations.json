@@ -7,6 +7,8 @@
     "enable": "Enable",
     "delete": "Delete",
     "back": "Back",
+    "subscription": "Subscription",
+    "manageSubscription": "Manage your subscription, cancel or try new plans",
     "somethingHere": "Here we might put something",
     "addProduct": "Add Product",
     "addImage": "Add Image",
@@ -313,7 +315,28 @@
     "customerSpecifications": "Customer specifications",
     "currentStatus": "Current status",
     "showMore": "Show more",
-    "orderDate": "Order date"
+    "orderDate": "Order date",
+    "noSubscriptions": "You don't have an active subscription",
+    "noSubscriptionsDesc": "Create a subscription to start using our services and access all available features.",
+    "subscribe": "Subscribe",
+    "cancelSubscription": "Cancel Subscription",
+    "subscriptionExpiring": "Your subscription will expire soon",
+    "validUntil": "Valid until",
+    "subscriptionCancelledUntil": "Cancelled, valid until {date}",
+    "renewSuscription": "Renew subscription",
+    "privacyPolicy.title": "Privacy Policy",
+    "privacyPolicy.introTitle": "Introduction",
+    "privacyPolicy.intro": "Our application is designed to help businesses manage product orders, automate responses through WhatsApp using artificial intelligence (OpenAI), and facilitate product sales through digital channels. We are committed to protecting your privacy and the personal information we collect.",
+    "privacyPolicy.dataTitle": "Information We Collect",
+    "privacyPolicy.data": "- Company data (name, contact, products)\n- Order and WhatsApp message data\n- End user information (name, phone number)\n- Payment information for subscriptions (we do not store card details)",
+    "privacyPolicy.thirdPartyTitle": "Use of Third-Party Services",
+    "privacyPolicy.thirdParty": "We use the following services to enhance the app's functionality:\n\n- OpenAI: To generate automated responses to messages.\n- Green API: To receive and send messages via WhatsApp.\n- Play Store / Apple Store: For managing in-app payments.",
+    "privacyPolicy.usageTitle": "How We Use Your Information",
+    "privacyPolicy.usage": "The information collected is used solely to enable the application's functionality, improve the user experience, and ensure efficient order management. We do not sell or share your data with third parties unrelated to the services mentioned.",
+    "privacyPolicy.rightsTitle": "User Rights",
+    "privacyPolicy.rights": "You can access, modify, or delete your personal data at any time. You can also cancel your subscription from the appropriate store.",
+    "privacyPolicy.contactTitle": "Contact",
+    "privacyPolicy.contact": "If you have any questions about this policy, you can contact us via email at soporte@tuapp.com."
   },
   "es": {
     "activeOrdersTitle": "Activos",
@@ -629,15 +652,31 @@
     "customerSpecifications": "Especificaciones del cliente",
     "currentStatus": "Estado actual",
     "showMore": "Mostrar más",
-    "orderDate": "Fecha del pedido"
-
+    "orderDate": "Fecha del pedido",
+    "subscription": "Subscripción",
+    "manageSubscription": "Gestiona tu suscripción, cancela o prueba nuevos planes",
+    "noSubscriptions": "No tienes una suscripción activa",
+    "noSubscriptionsDesc": "Crea una suscripción para comenzar a usar nuestros servicios y acceder a todas las funcionalidades disponibles.",
+    "subscribe": "Suscribirme",
+    "cancelSubscription": "Cancelar suscripción",
+    "subscriptionExpiring": "Tu suscripción expirará pronto",
+    "validUntil": "Válida hasta",
+    "subscriptionCancelledUntil": "Cancelada, válida hasta {date}",
+    "renewSuscription": "Renovar suscripción",
+    "privacyPolicy.title": "Política de Privacidad",
+    "privacyPolicy.introTitle": "Introducción",
+    "privacyPolicy.intro": "Nuestra aplicación está diseñada para ayudar a empresas a gestionar sus pedidos de productos, automatizar respuestas a través de WhatsApp usando inteligencia artificial (OpenAI), y facilitar la venta de productos mediante canales digitales. Nos comprometemos a proteger tu privacidad y la información personal que recopilamos.",
+    "privacyPolicy.dataTitle": "Información que recopilamos",
+    "privacyPolicy.data": "- Datos de la empresa (nombre, contacto, productos)\n- Datos de pedidos y mensajes de WhatsApp\n- Información del usuario final (nombre, número de teléfono)\n- Información de pago para suscripciones (no almacenamos datos de tarjeta)",
+    "privacyPolicy.thirdPartyTitle": "Uso de servicios de terceros",
+    "privacyPolicy.thirdParty": "Utilizamos los siguientes servicios para mejorar el funcionamiento de la app:\n\n- OpenAI: Para generar respuestas automáticas a mensajes.\n- Green API: Para recibir y enviar mensajes a través de WhatsApp.\n- Play Store / Apple Store: Para la gestión de pagos in-app.",
+    "privacyPolicy.usageTitle": "Cómo usamos tu información",
+    "privacyPolicy.usage": "La información recopilada se utiliza únicamente para permitir el funcionamiento de la aplicación, mejorar la experiencia de usuario, y asegurar la gestión eficiente de los pedidos. No vendemos ni compartimos tus datos con terceros ajenos a los servicios mencionados.",
+    "privacyPolicy.rightsTitle": "Derechos del usuario",
+    "privacyPolicy.rights": "Puedes acceder, modificar o eliminar tus datos personales en cualquier momento. También puedes cancelar tu suscripción desde la tienda correspondiente.",
+    "privacyPolicy.contactTitle": "Contacto",
+    "privacyPolicy.contact": "Si tienes dudas sobre esta política, puedes contactarnos a través del correo soporte@tuapp.com."  
   },
-
-
-
-
-
-
   "pt": {
     "activeOrdersTitle": "Ativos",
     "noDetailsInOrdersDetails": "Nenhum detalhe fornecido.",
