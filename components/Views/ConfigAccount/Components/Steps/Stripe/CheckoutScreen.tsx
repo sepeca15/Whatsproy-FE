@@ -11,8 +11,6 @@ const CheckoutScreen = () => {
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
 
   const fetchPaymentSheetParams = async () => {
-    console.log('llamare', );
-    
     try {
       const resp = await api.stripe.createIntent({ amount: 100, currency: 'usd' });
       

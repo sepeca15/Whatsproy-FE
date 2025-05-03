@@ -1,5 +1,5 @@
-export const ID_TIPOSERVICIO_RESERVA = 1;
-export const ID_TIPOSERVICIO_DELIVERY = 2;
+export const ID_TIPOSERVICIO_DELIVERY = 1;
+export const ID_TIPOSERVICIO_RESERVA = 2;
 
 export type TipoServicioType = 1 | 2;
 

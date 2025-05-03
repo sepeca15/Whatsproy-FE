@@ -25,7 +25,7 @@ export const globalStyles = StyleSheet.create({
   },
   addButtonText: {
     color: "#ffffff",
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: "semibold",
   },
 });

@@ -145,7 +145,6 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
 
   const toggleSelectionKeys = React.useCallback(
     (value: string) => {
-      console.log("xd");
       const stringValue = value.toString();
       let updatedSelected: string[];
 
@@ -159,7 +158,6 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
 
       setSelectedItemsKeys(updatedSelected);
       setItemsSelected(updatedSelected);
-      console.log("xd3");
     },
     [selectedItemsKeys, setItemsSelected, isMultiple]
   );
@@ -302,6 +300,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
                 alignSelf="center"
                 flexDirection="row"
                 alignItems="center"
+                paddingBottom={5}
                 accessibilityLabel={`Agregar ${label}`}
               >
                 <Ionicons

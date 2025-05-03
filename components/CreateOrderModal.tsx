@@ -60,6 +60,7 @@ interface IProps {
   tipoServicio: TipoServicioType;
   onSuccess?: () => void;
   currentOrders?: any[];
+  availableDates?: string[],
 }
 
 const initialValues: CreateOrderDTO = {
@@ -85,6 +86,7 @@ const CreateOrderModal = ({
   tipoServicio,
   onSuccess,
   currentOrders,
+  availableDates = []
 }: IProps) => {
   const { showToast } = useToastContext();
   const { user } = useUser();
@@ -264,7 +266,7 @@ const CreateOrderModal = ({
       setLoadingNextDateAvailable(true);
       const resp = await api.order.getNextDateAvailable();
       if (resp) {
-        handleChangeValue("fecha", moment(resp).add("hours", 3));
+        handleChangeValue("fecha", moment(resp));
       }
     } catch (error) {
       console.log("error", error);
@@ -391,6 +393,7 @@ const CreateOrderModal = ({
                       )
                     : []
                 }
+                checkAvailable={(hour: string) => availableDates.includes(hour)}
                 date={form.fecha || localDate}
                 setDate={(val: any) => handleChangeValue("fecha", val)}
               />
