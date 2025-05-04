@@ -1,9 +1,5 @@
-"use client";
-
 import * as React from "react";
 import {
-  View,
-  Text,
   SafeAreaView,
   StatusBar,
   TouchableOpacity,
@@ -12,7 +8,7 @@ import {
 import { useLocalSearchParams, useRouter } from "expo-router";
 import * as Progress from "react-native-progress";
 import api from "@/services/api/admin";
-import { ScrollView } from "native-base";
+import { ScrollView, Text, View } from "native-base";
 import moment from "moment";
 import "moment/locale/es";
 import { FormattedMessage } from "react-intl";
@@ -214,6 +210,9 @@ const OrderDetails = () => {
     };
   }, []);
 
+  console.log(detailOfOrder.data?.infoLines);
+
+
   if (detailOfOrder.loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -331,7 +330,31 @@ const OrderDetails = () => {
           </View>
         </Animated.View>
 
-        {/* Client Info Card */}
+        <Animated.View
+          style={[
+            styles.sectionCard,
+            {
+              opacity: fadeAnim,
+              transform: [{ translateY: slideAnim }],
+            },
+          ]}
+        >
+          <View style={styles.sectionHeader}>
+            <AntDesign size={20} color={Colors.light.primary} name="database"/>
+            <Text style={styles.sectionTitle}>
+              <FormattedMessage id="informationAditional" />
+            </Text>
+          </View>
+          <View display={'flex'} flexDir={'column'} >
+            {
+              Object.keys(detailOfOrder.data?.infoLines).map((key, index) => {
+                return <Text fontSize={16} my={1} key={index}>-- {key}: {detailOfOrder.data?.infoLines[key]}
+                </Text>
+              })
+            }
+          </View>
+        </Animated.View>
+
         <Animated.View
           style={[
             styles.sectionCard,
@@ -347,7 +370,6 @@ const OrderDetails = () => {
               <FormattedMessage id="client" defaultMessage="Cliente" />
             </Text>
           </View>
-
           <View style={styles.clientInfoContainer}>
             <View style={styles.clientAvatar}>
               <Text style={styles.clientAvatarText}>
@@ -363,19 +385,6 @@ const OrderDetails = () => {
               </Text>
             </View>
           </View>
-
-          {detailOfOrder.data?.infoLines?.direccion && (
-            <View style={styles.addressContainer}>
-              <IonIcons
-                name="location-outline"
-                size={20}
-                color={Colors.light.icon}
-              />
-              <Text style={styles.addressText}>
-                {detailOfOrder.data.infoLines.direccion}
-              </Text>
-            </View>
-          )}
         </Animated.View>
 
         {/* Estimated Time Card */}
@@ -412,7 +421,7 @@ const OrderDetails = () => {
               {detailOfOrder.data?.estimateTime}{" "}
               <Text style={styles.estimateTimeUnit}>
                 {detailOfOrder?.data?.estimateTime &&
-                detailOfOrder?.data?.estimateTime > 60
+                  detailOfOrder?.data?.estimateTime > 60
                   ? "horas"
                   : "minutos"}
               </Text>
@@ -517,8 +526,7 @@ const OrderDetails = () => {
             </View>
           )}
 
-          {/* Notas generales del pedido si existen */}
-          {detailOfOrder.data?.infoLines?.notas && (
+          {detailOfOrder.data?.detalle && (
             <View style={styles.generalNotes}>
               <Text style={styles.generalNotesLabel}>
                 <FormattedMessage
@@ -528,7 +536,7 @@ const OrderDetails = () => {
               </Text>
               <View style={styles.notesContainer}>
                 <Text style={styles.generalNotesText}>
-                  {detailOfOrder.data.infoLines.notas}
+                  {detailOfOrder.data.detalle}
                 </Text>
               </View>
             </View>

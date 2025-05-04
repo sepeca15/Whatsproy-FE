@@ -7,7 +7,6 @@ import {
   Pressable,
   RefreshControl,
 } from "react-native";
-import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons.js";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons.js";
 import OrdersFinished from "./components/OrdersFinished";
 import OrdersPending from "./components/OrdersPending";

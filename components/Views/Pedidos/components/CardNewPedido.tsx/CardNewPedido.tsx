@@ -110,6 +110,7 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
             accessibilityRole={"button"}
             onPress={handleSendPageDetails}
             style={styles.detalles}
+            hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
           >
             <AntDesign color={"black"} name="eyeo" size={16} />
             <CustomText style={{ color: "black" }}>
@@ -124,6 +125,7 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
                 onPress={handleDeleteEntryOrder}
                 style={styles.buttonTransparent}
                 spinner={<Spinner color="black" />}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
               >
                 {!loadingApiAction && (
                   <EvilIcons color={"black"} name="close" size={22} />
@@ -134,12 +136,14 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
                 onPress={handleConfirmOrder}
                 isLoading={loading.deleteState}
                 spinner={<Spinner color="black" />}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
               >
                 <IonIcons color={"black"} name="checkmark-done" size={20} />
               </Button>
             </View>
           ) : (
             <Pressable
+              hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
               onPress={() => handleModal(true)}
               style={styles.deleteButton}
             >

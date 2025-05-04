@@ -69,6 +69,7 @@
     "error": "Error",
     "yes": "YES",
     "no": "NO",
+    "informationAditional": "Additional information",
     "create": "Create",
     "save": "Save",
     "name": "Name",
@@ -317,6 +318,7 @@
   },
   "es": {
     "activeOrdersTitle": "Activos",
+    "informationAditional": "Informacion adicional",
     "noDetailsInOrdersDetails": "No dio detalles.",
     "userChangeStatusDetailsMessagge": "Un usuario ha cambiado el estado de su orden a :",
     "statusUpdatedOrderDetails": "Estado actualizado",

@@ -9,7 +9,7 @@ interface IModalConfirmAction {
   onContinue: () => void;
   onClose: () => void;
   isOpen: boolean;
-  message: string;
+  message?: string;
   title: string;
   loading?: boolean;
 }

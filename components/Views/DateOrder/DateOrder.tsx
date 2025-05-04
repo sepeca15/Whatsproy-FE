@@ -12,6 +12,8 @@ import { Colors } from "@/constants/Colors";
 import { useToastContext } from "@/contexts/ToastContext";
 import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
 import Animated from "react-native-reanimated";
+import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmAction";
+import { initPaymentSheet } from "@stripe/stripe-react-native";
 
 const ItemsTable = ["Name", "Type", "Required", "isDefect", ""];
 
@@ -20,10 +22,21 @@ const DateOrder: React.FC = () => {
   const [selectedItem, setSelectedItem] = React.useState<any>({});
   const [stateModal, setStateModal] = React.useState<boolean>(false);
   const [loading, setLoading] = React.useState<boolean>(false);
+  const [loadingDelete, setLoadingDelete] = React.useState<boolean>(false);
+  const [stateModalConfirm, setstateModalConfirm] = React.useState<boolean>(false)
+  const [itemToDeleteId, setItemToDeleteId] = React.useState<number | null>(null);
+
   const { showToast } = useToastContext();
+
+  const toggleModalConfirm = () => setstateModalConfirm((prev) => !prev)
 
   const updateOrderData = (newOrderData: any) => {
     setOrderDate((prevState) => [...prevState, newOrderData]);
+  };
+
+  const openConfirmModal = (id: number) => {
+    setItemToDeleteId(id);
+    setstateModalConfirm(true);
   };
 
   const getAllOrderDate = async () => {
@@ -49,6 +62,7 @@ const DateOrder: React.FC = () => {
   };
 
   const onDeleteItem = async (id: number) => {
+    setLoadingDelete(true)
     try {
       const data = await api.dataOrder.delete(id);
       if (data) {
@@ -66,6 +80,8 @@ const DateOrder: React.FC = () => {
         status: "error",
       });
       console.log(error);
+    } finally {
+      setLoadingDelete(false)
     }
   };
 
@@ -99,11 +115,11 @@ const DateOrder: React.FC = () => {
       <View style={styles.message}>
         <MaterialIconss
           style={{ marginTop: 3 }}
-          color={"gray"}
+          color={Colors.light.secondary}
           size={16}
           name="error-outline"
         />
-        <CustomText style={{ flex: 1 }}>
+        <CustomText style={{ flex: 1, color: Colors.light.secondary }}>
           <FormattedMessage id="manageOrderData" />
         </CustomText>
       </View>
@@ -133,7 +149,7 @@ const DateOrder: React.FC = () => {
               <DateOrderCard
                 isPar={isPar}
                 key={index}
-                onDeleteItem={onDeleteItem}
+                onDeleteItem={()=> openConfirmModal(item.id)}
                 data={item}
               />
             );
@@ -150,6 +166,13 @@ const DateOrder: React.FC = () => {
           data={selectedItem}
         />
       )}
+      <ModalConfirmAction
+        isOpen={stateModalConfirm}
+        onClose={toggleModalConfirm}
+        loading={loadingDelete}
+        onContinue={() => onDeleteItem(itemToDeleteId ?? 0)}
+        title="Delete order data"
+      />
     </View>
   );
 };
