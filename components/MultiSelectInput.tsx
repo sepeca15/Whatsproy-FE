@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   VStack,
-  FormControl,
-  Input,
   Pressable,
-  ScrollView,
-  HStack,
   Badge,
   Text,
   Checkbox,
@@ -290,7 +286,6 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
                 );
               }}
             />
-
             {withAdd && (
               <Pressable
                 onPress={() => setIsModalOpenAdd(true)}

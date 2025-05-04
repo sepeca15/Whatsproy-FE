@@ -12,9 +12,7 @@ import {
   deepLinkToSubscriptions,
   deepLinkToSubscriptionsAndroid,
 } from "react-native-iap";
-import axios from "axios";
 import Animated from "react-native-reanimated";
-import { styles } from "../DateOrder/DateOrderStyles";
 import moment from "moment";
 import {
   EMPRESA_PAYMENT_FREE_TIME_AFTER_CANCEL,
@@ -88,9 +86,9 @@ const SubscriptionsView = () => {
   const renderActiveSubscription = () => {
     const expirationDate = currentPayment?.subscription_date
       ? moment(currentPayment.subscription_date).add(
-          EMPRESA_PAYMENT_FREE_TIME_AFTER_CANCEL,
-          "days"
-        )
+        EMPRESA_PAYMENT_FREE_TIME_AFTER_CANCEL,
+        "days"
+      )
       : null;
 
     const shouldShowExpiringSoon =
@@ -102,12 +100,12 @@ const SubscriptionsView = () => {
     const cancelationInfo =
       isCancelled && expirationDate
         ? intl.formatMessage(
-            {
-              id: "subscriptionCancelledUntil",
-              defaultMessage: "Cancelada, válida hasta {date}",
-            },
-            { date: expirationDate.format("LL") }
-          )
+          {
+            id: "subscriptionCancelledUntil",
+            defaultMessage: "Cancelada, válida hasta {date}",
+          },
+          { date: expirationDate.format("LL") }
+        )
         : null;
     const benefits = subscriptionBenefits[currentPayment?.subscription_sku];
     const benefitsArray = (benefits ? benefits.split(",") : []) as string[];
@@ -175,8 +173,8 @@ const SubscriptionsView = () => {
           <FormattedMessage id="validUntil" defaultMessage="Válida hasta" />:{" "}
           {currentPayment.subscription_date
             ? moment(currentPayment.subscription_date)
-                .add(EMPRESA_PAYMENT_FREE_TIME_AFTER_CANCEL, "days")
-                .format("LL")
+              .add(EMPRESA_PAYMENT_FREE_TIME_AFTER_CANCEL, "days")
+              .format("LL")
             : "-"}
         </Text>
 
@@ -211,7 +209,9 @@ const SubscriptionsView = () => {
             {isLoading ? (
               <Spinner color="white" />
             ) : (
-              <FormattedMessage id="cancelSubscription" />
+              <Text>
+                <FormattedMessage id="cancelSubscription" />
+              </Text>
             )}
           </CustomButton>
         )}

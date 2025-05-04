@@ -31,7 +31,6 @@
         <data android:scheme="myapp"/>
         <data android:scheme="com.whatsproy"/>
         <data android:scheme="exp+whatsproy"/>
-        <data android:scheme="exp+measy"/>
       </intent-filter>
     </activity>
   </application>
