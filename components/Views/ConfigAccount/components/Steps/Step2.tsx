@@ -19,7 +19,7 @@ import { FormattedMessage } from "react-intl";
 
 const itemSkus = ["basicsubscriptionmeasy2025"];
 
-const Step2 = () => {
+const Step2 = ({ onSuccess }: { onSuccess?: any }) => {
   const { handleAssignUserToPlan, user, handlePayOk } = useUser();
   const [loading, setLoading] = React.useState<boolean>(false);
   const [plans, setPlans] = React.useState<RNIap.Subscription[] | null>(null);
@@ -33,6 +33,8 @@ const Step2 = () => {
 
   const purchaseListenerRef = useRef<any>(null);
   const errorListenerRef = useRef<any>(null);
+
+  const currentPayment = user?.payment;
 
   useEffect(() => {
     const init = async () => {
@@ -62,7 +64,6 @@ const Step2 = () => {
 
     if (purchase?.isAcknowledgedAndroid && purchase?.purchaseStateAndroid !== 1)
       return;
-
     try {
       setLoading(true);
 
@@ -102,8 +103,11 @@ const Step2 = () => {
           descripcion: "",
           status: "success",
         });
-
-        handlePayOk();
+        if (onSuccess) {
+          onSuccess();
+        } else {
+          handlePayOk();
+        }
       } else {
         showToast({
           title: "No se pudo verificar la suscripción",

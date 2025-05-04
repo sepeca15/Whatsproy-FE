@@ -11,6 +11,7 @@ import { styles } from "../DateOrder/DateOrderStyles";
 import CustomText from "@/components/CustomText";
 import { FormattedMessage } from "react-intl";
 import CustomButton from "@/components/CustomButton";
+import { globalStyles } from "@/components/globalStyles";
 
 const Categories = () => {
   const [allCategories, setAllCategories] = React.useState<ICategoryData[]>([])
@@ -46,11 +47,11 @@ const Categories = () => {
   }, [])
 
   return <View style={{ flex: 1 }}>
-    <Animated.View style={styles.header}>
-      <View style={styles.headerContent}>
-        <View style={styles.headerLeft}>
+    <Animated.View style={globalStyles.header}>
+      <View style={globalStyles.headerContent}>
+        <View style={globalStyles.headerLeft}>
           <CustomText
-            style={styles.businessName}
+            style={globalStyles.businessName}
             accessibilityLabel="Pedidos"
           >
             <FormattedMessage id="categories" />

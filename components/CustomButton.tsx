@@ -44,8 +44,10 @@ CustomButton.displayName = "CustomButton";
 
 const styles = StyleSheet.create({
   containerButton: {
-    height: 40,
+    height: 45,
     display: "flex",
+    paddingLeft: 20,
+    paddingRight: 20,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -53,6 +55,7 @@ const styles = StyleSheet.create({
   buttonText: {
     borderRadius: 5,
     color: "#fff",
+    fontWeight: "500",
     textAlign: "center",
     fontSize: 16,
   },

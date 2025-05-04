@@ -25,6 +25,7 @@ import {
 import { useOrdersDashboard } from "@/hooks/home_functions/useOrdersDashboard";
 import { useUser } from "@/hooks/redux/useUser";
 import { Image, View } from "native-base";
+import { globalStyles } from "@/components/globalStyles";
 
 const Home: React.FC = () => {
   const intl = useIntl();
@@ -73,10 +74,10 @@ const Home: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.headerContent}>
-          <View style={styles.headerLeft}>
-            <View w={20} h={20} borderRadius={100} background={"gray.200"}>
+      <View style={globalStyles.header}>
+        <View style={globalStyles.headerContent}>
+          <View style={globalStyles.headerLeft}>
+            <View w={16} h={16} borderRadius={100} background={"gray.200"}>
               {user.logo && (
                 <Image
                   w={"full"}
@@ -87,7 +88,7 @@ const Home: React.FC = () => {
                 />
               )}
             </View>
-            <CustomText style={styles.businessName}>
+            <CustomText style={globalStyles.businessName}>
               {empresaName}
             </CustomText>
           </View>

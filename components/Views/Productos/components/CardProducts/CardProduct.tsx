@@ -255,7 +255,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       {!localDisponible && (
         <View style={styles.disabledLabel}>
           <Text style={styles.disabledText}>
-            <FormattedMessage id="disabled" defaultMessage="Disabled" />
+            <FormattedMessage id="notAvailable" defaultMessage="Disabled" />
           </Text>
         </View>
       )}

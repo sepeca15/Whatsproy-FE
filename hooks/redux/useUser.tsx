@@ -12,12 +12,14 @@ import {
   onUserConfigured,
   onUpdateFcm,
 } from "@/services/redux/Slices/userSlice/userSlice";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export const useUser = () => {
   const { showToast } = useToastContext();
   const Dispatch = useDispatch();
   const { user } = useSelector((state: any) => state.user);
+  const [loading, setLoading] = useState(false);
 
   const Mensaje = () => {
     Dispatch(mostrarMensaje("hola soy un nuevo mensaje ;D"));
@@ -25,12 +27,16 @@ export const useUser = () => {
 
   const handleAddUserData = async () => {
     try {
+      setLoading(true);
       const userData = await api.auth.me();
       if (userData) {
         Dispatch(onAddUserData(userData));
       }
+      return userData;
     } catch (error) {
       console.log("error:", error);
+    } finally {
+      setLoading(false);
     }
   };
 

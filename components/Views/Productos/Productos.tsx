@@ -42,6 +42,7 @@ const Productos: React.FC = () => {
   const { showToast } = useToastContext();
   const [isDeleting, setIsDeleting] = useState(true);
 
+  console.log("isInitialLoading", isInitialLoading)
   const [allCategories, setAllCategories] = useState<ICategoryData[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [selectCategory, setSelectCategory] = useState<number | null>(null);
@@ -86,7 +87,9 @@ const Productos: React.FC = () => {
     } catch (error: any) {
       console.log(error.response?.data?.message);
     } finally {
-      setIsInitialLoading(false);
+      if (selectCategory) {
+        setIsInitialLoading(false);
+      }
     }
   };
 
@@ -248,10 +251,10 @@ const Productos: React.FC = () => {
   return (
     <View style={styles.container}>
       <AnimatedTwo.View style={styles.header}>
-        <View style={styles.headerContent}>
-          <View style={styles.headerLeft}>
+        <View style={globalStyles.headerContent}>
+          <View style={globalStyles.headerLeft}>
             <CustomText
-              style={styles.businessName}
+              style={globalStyles.businessName}
               accessibilityLabel="Pedidos"
             >
               <FormattedMessage id="products" />

@@ -14,6 +14,7 @@ import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
 import Animated from "react-native-reanimated";
 import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmAction";
 import { initPaymentSheet } from "@stripe/stripe-react-native";
+import { globalStyles } from "@/components/globalStyles";
 
 const ItemsTable = ["Name", "Type", "Required", "isDefect", ""];
 
@@ -99,11 +100,11 @@ const DateOrder: React.FC = () => {
     </View>
   ) : (
     <View style={styles.container}>
-      <Animated.View style={styles.header}>
-        <View style={styles.headerContent}>
-          <View style={styles.headerLeft}>
+      <Animated.View style={globalStyles.header}>
+        <View style={globalStyles.headerContent}>
+          <View style={globalStyles.headerLeft}>
             <CustomText
-              style={styles.businessName}
+              style={globalStyles.businessName}
               accessibilityLabel="Pedidos"
             >
               <FormattedMessage id="orderData" />

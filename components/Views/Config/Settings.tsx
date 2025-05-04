@@ -1,6 +1,8 @@
 import { View, Text, StatusBar, FlatList } from "react-native"
 import { useRouter } from "expo-router"
 import Feather from "react-native-vector-icons/Feather"
+import Entypo from "react-native-vector-icons/Entypo"
+
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5"
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 import IonIcons from "react-native-vector-icons/Ionicons"
@@ -26,6 +28,12 @@ const Settings = () => {
       icon: <Feather size={22} color={"white"} name="settings" />,
     },
     {
+      title: intl.formatMessage({ id: "subscription ", defaultMessage: "Subscription" }),
+      href: "/(tabs)/subscriptions",
+      description: intl.formatMessage({ id: "manageSubscription", defaultMessage: "Manage your working hours and preferences" }),
+      icon: <Entypo size={22} color={"white"} name="wallet" />,
+    },
+    {
       title: intl.formatMessage({ id: "users", defaultMessage: "Users" }),
       href: "/(tabs)/usuarios",
       description: intl.formatMessage({ id: "createUsers", defaultMessage: "Create and manage users" }),
@@ -37,16 +45,16 @@ const Settings = () => {
       description: intl.formatMessage({ id: "statusDescription", defaultMessage: "View and manage statuses" }),
       icon: <MaterialCommunityIcons name="list-status" size={22} color={"white"} />,
     },
-    {
-      title: intl.formatMessage({ id: "notifications", defaultMessage: "Notifications" }),
-      href: "",
-      description: intl.formatMessage({ id: "notificationsDescription", defaultMessage: "Manage notification preferences" }),
-      icon: <IonIcons name="notifications-outline" size={22} color={"white"} />,
-    },
+    // {
+    //   title: intl.formatMessage({ id: "notifications", defaultMessage: "Notifications" }),
+    //   href: "",
+    //   description: intl.formatMessage({ id: "notificationsDescription", defaultMessage: "Manage notification preferences" }),
+    //   icon: <IonIcons name="notifications-outline" size={22} color={"white"} />,
+    // },
     {
       title: intl.formatMessage({ id: "privacySecurity", defaultMessage: "Privacy & Security" }),
-      href: "",
-      description: intl.formatMessage({ id: "privacyDescription", defaultMessage: "Adjust privacy and security settings" }),
+      href: "/(tabs)/privacy",
+      description: intl.formatMessage({ id: "privacyDescription", defaultMessage: "View privacy and security policies" }),
       icon: <Feather size={22} color={"white"} name="shield" />,
     },
     {
