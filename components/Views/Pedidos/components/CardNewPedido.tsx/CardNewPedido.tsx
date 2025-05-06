@@ -11,13 +11,17 @@ import { useRouter } from "expo-router";
 import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmAction";
 import { useIntl } from "react-intl";
 import { Button, Pressable, Spinner } from "native-base";
+import moment from "moment";
 
 interface IOrderData {
   clientName: string;
   direccion: string[];
   numberSender: string;
   total: number;
+  status?: boolean;
+  estado: any;
   orderId: number;
+  createdAt?: string;
 }
 
 interface ICardNewPedido {
@@ -28,21 +32,25 @@ interface ICardNewPedido {
 const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
   const [loading, setLoading] = React.useState({
     deleteState: false,
-    confirmState: false
-  })
+    confirmState: false,
+  });
+
   const router = useRouter();
   const [statusModalDelete, setStateModalDelete] = useState<boolean>(false);
   const { handleDeleteOrder, confirmOrder, loadingApiAction } = useOrders();
   const keyDeleteType = pending ? "pending" : "finished";
   const { clientName, direccion, numberSender, orderId, total } = orderData;
   const intl = useIntl();
+  const createdAt = orderData?.createdAt;
+  const fromNow =  createdAt ? moment(createdAt)?.fromNow() : "";
+  
 
   const toggleOptionLoading = (key: string) => {
     setLoading((prev: any) => ({
       ...prev,
-      [key]: !prev[key]
-    }))
-  }
+      [key]: !prev[key],
+    }));
+  };
 
   const handleSendPageDetails = () => {
     router.push({
@@ -56,35 +64,32 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
   };
 
   const handleConfirmOrder = async () => {
-    toggleOptionLoading('confirmState')
+    toggleOptionLoading("confirmState");
     try {
-      await confirmOrder(orderData)
+      await confirmOrder(orderData);
     } catch (error) {
-
     } finally {
-      toggleOptionLoading('confirmState')
+      toggleOptionLoading("confirmState");
     }
-  }
+  };
 
-
-  const handleDeleteEntryOrder = async() => {
-    toggleOptionLoading('deleteState')
+  const handleDeleteEntryOrder = async () => {
+    toggleOptionLoading("deleteState");
     try {
-      await handleDeleteOrder(orderId, keyDeleteType)
+      await handleDeleteOrder(orderId, keyDeleteType);
     } catch (error) {
-
     } finally {
-      toggleOptionLoading('deleteState')
-
+      toggleOptionLoading("deleteState");
     }
-  }
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.column}>
         <View style={styles.row1}>
           <View style={styles.column}>
-            <CustomText style={styles.name}>{clientName}</CustomText>
+            <CustomText style={styles.name}>Cliente: {clientName}</CustomText>
+            <CustomText style={{ color: "#abcbfb", fontSize: 12}}>{fromNow ?? "-"}</CustomText>
             <View style={styles.miniSeparator}></View>
             <CustomText style={styles.text}>{direccion}</CustomText>
             <View style={styles.separator}></View>
@@ -96,7 +101,9 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
           <View style={styles.column2}>
             <View style={styles.buttonsTop}>
               <CustomText style={styles.nuevo}>
-                {intl.formatMessage({ id: "new", defaultMessage: "New" })}
+                {!orderData?.status
+                  ? intl.formatMessage({ id: "new", defaultMessage: "New" })
+                  : orderData?.estado?.nombre}
               </CustomText>
             </View>
             <CustomText style={styles.semiBold}>
@@ -110,6 +117,7 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
             accessibilityRole={"button"}
             onPress={handleSendPageDetails}
             style={styles.detalles}
+            hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
           >
             <AntDesign color={"black"} name="eyeo" size={16} />
             <CustomText style={{ color: "black" }}>
@@ -124,6 +132,7 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
                 onPress={handleDeleteEntryOrder}
                 style={styles.buttonTransparent}
                 spinner={<Spinner color="black" />}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
               >
                 {!loadingApiAction && (
                   <EvilIcons color={"black"} name="close" size={22} />
@@ -134,12 +143,14 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
                 onPress={handleConfirmOrder}
                 isLoading={loading.deleteState}
                 spinner={<Spinner color="black" />}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
               >
                 <IonIcons color={"black"} name="checkmark-done" size={20} />
               </Button>
             </View>
           ) : (
             <Pressable
+              hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
               onPress={() => handleModal(true)}
               style={styles.deleteButton}
             >
@@ -148,8 +159,7 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
           )}
         </View>
       </View>
-      {
-        statusModalDelete &&
+      {statusModalDelete && (
         <ModalConfirmAction
           loading={loading.deleteState}
           onContinue={handleDeleteEntryOrder}
@@ -165,8 +175,7 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
           onClose={() => handleModal(false)}
           isOpen={statusModalDelete}
         />
-
-      }
+      )}
     </View>
   );
 };

@@ -95,7 +95,9 @@ const Layout = ({ children }: any) => {
 
   return (
     <View style={styles.mainContainer}>
-      {children}
+      <View style={{ flex: 1, width: "100%" }} >
+        {children}
+      </View>
       <View style={styles.navigationMenu}>
         {pages.map((page) => (
           <Pressable

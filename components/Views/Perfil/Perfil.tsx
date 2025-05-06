@@ -114,7 +114,9 @@ const Perfil: React.FC = () => {
   }, [])
 
   useEffect(() => {
+  
     if (resumenVentas) {
+
       switch (salesPeriod) {
         case "semanal":
           setPedidos(resumenVentas.weekly)
@@ -143,11 +145,22 @@ const Perfil: React.FC = () => {
             labels: resumenVentasData.yearlyLabels,
             sales: resumenVentasData.yearlySales,
           })
+
           break
         default:
+
           break
+
+        
       }
+    }else {
+      setPedidos(0)
+      setValorPrueba({
+        labels: [],
+        sales: [],
+      })
     }
+
   }, [salesPeriod, resumenVentas])
 
   return (
@@ -200,7 +213,7 @@ const Perfil: React.FC = () => {
 
               <Animated.View
                 entering={FadeInDown.delay(100)}
-                style={{ minHeight: 200 }} // ajustar a lo necesario
+                style={{ minHeight: 200 }} 
               >
                
                   <SalesOverview

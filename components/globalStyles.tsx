@@ -25,7 +25,40 @@ export const globalStyles = StyleSheet.create({
   },
   addButtonText: {
     color: "#ffffff",
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: "semibold",
+  },
+  headerTitle: {
+    flex: 1,
+    alignItems: "center",
+  },
+  header: {
+    padding: 12,
+    paddingTop: 20,
+    paddingBottom: 20,
+    backgroundColor: Colors.light.primary,
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  headerContent: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  headerLeft: {
+    display:'flex',
+    flexDirection:'row',
+    alignItems:'center',
+    gap:12
+  },
+  businessName: {
+    fontSize: 25,
+    fontWeight: "bold",
+    color: "#fff",
   },
 });

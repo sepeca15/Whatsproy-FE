@@ -151,12 +151,12 @@ const UsuariosEmpresasScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <View style={[styles.headerGradient, { backgroundColor: Colors.light.primary }]}>
-        <View style={styles.headerContent}>
+        <View style={globalStyles.headerContent}>
           <TouchableOpacity style={styles.backButton} onPress={() => router.back()} activeOpacity={0.7}>
             <AntDesign name="arrowleft" size={22} color="white" />
           </TouchableOpacity>
-          <View style={styles.headerTitle}>
-            <CustomText style={styles.businessName} accessibilityLabel="Pedidos">
+          <View style={globalStyles.headerTitle}>
+            <CustomText style={globalStyles.businessName} accessibilityLabel="Pedidos">
               <FormattedMessage id="users" />
             </CustomText>
           </View>

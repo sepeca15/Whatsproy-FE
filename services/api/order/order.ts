@@ -14,6 +14,14 @@ export const getOrderForCalendar = async (selectedDate: string) => {
   return data;
 };
 
+export const getAvailableDates = async (fecha: string) => {
+  const { data } = await ApiInstances("current").get(
+    `pedido/calendar/dates-avaiable?fecha=${fecha}&withPast=true`,
+  );
+
+  return data;
+};
+
 export const getAllFinished = async () => {
   const { data } = await ApiInstances("current").get("pedido/finished");
   return data;

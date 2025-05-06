@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   VStack,
-  FormControl,
-  Input,
   Pressable,
-  ScrollView,
-  HStack,
   Badge,
   Text,
   Checkbox,
@@ -48,10 +44,8 @@ const RenderItem = React.memo(
         <Checkbox
           value={itemValue}
           isChecked={isSelected}
-          onChange={(isSelected) => {
-            handleProductSelection?.(item.value, isSelected);
-            toggleSelectionKeys(item.value);
-          }}
+          onChange={() => {}}
+          accessibilityRole="checkbox"
         />
         <Text style={{ flex: 1 }}>{item.label}</Text>
       </TouchableOpacity>
@@ -145,10 +139,8 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
 
   const toggleSelectionKeys = React.useCallback(
     (value: string) => {
-      console.log("xd");
       const stringValue = value.toString();
       let updatedSelected: string[];
-
       if (!isMultiple) {
         updatedSelected = [stringValue];
       } else {
@@ -159,7 +151,6 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
 
       setSelectedItemsKeys(updatedSelected);
       setItemsSelected(updatedSelected);
-      console.log("xd3");
     },
     [selectedItemsKeys, setItemsSelected, isMultiple]
   );
@@ -279,7 +270,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
 
             <FlatList
               data={options}
-              keyExtractor={(item, index) => `option-${index}`}
+              keyExtractor={(item, index) => `${item?.value}`}
               extraData={selectedItemsKeys}
               renderItem={({ item }) => {
                 const itemValue = String(item.value);
@@ -295,13 +286,13 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
                 );
               }}
             />
-
             {withAdd && (
               <Pressable
                 onPress={() => setIsModalOpenAdd(true)}
                 alignSelf="center"
                 flexDirection="row"
                 alignItems="center"
+                paddingBottom={5}
                 accessibilityLabel={`Agregar ${label}`}
               >
                 <Ionicons

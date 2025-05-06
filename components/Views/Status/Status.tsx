@@ -153,11 +153,12 @@ const StatusView = () => {
                 </View>
 
                 <View style={styles.actionsColumn}>
-                    <TouchableOpacity style={[styles.actionButton, styles.deleteButton]} onPress={() => setModalDelete(item)}>
+                    <TouchableOpacity hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }} style={[styles.actionButton, styles.deleteButton]} onPress={() => setModalDelete(item)}>
                         <MaterialCommunityIcons name="delete-outline" size={18} color="white" />
                     </TouchableOpacity>
 
                     <TouchableOpacity
+                        hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
                         style={[styles.actionButton, styles.editButton, { borderColor: isDark ? "#2A2D30" : "#E8EDF2" }]}
                         onPress={() => handleEdit(item)}
                     >

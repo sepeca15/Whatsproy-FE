@@ -68,14 +68,11 @@ export const LocalizationProvider: React.FC<LocalizationProviderProps> = ({ chil
         const stored = await AsyncStorage.getItem("locale");
         if (stored && stored in messages) {
           setLocaleState(stored as LocaleKey);
-          console.log("Idioma detectado desde AsyncStorage:", stored); // Imprime el idioma almacenado
         } else {
           const sysLocale = Intl.DateTimeFormat().resolvedOptions().locale.split('-')[0];
           const fallbackLocale = (Object.keys(messages).includes(sysLocale) ? sysLocale : 'en') as LocaleKey;
           setLocaleState(fallbackLocale);
           await AsyncStorage.setItem("locale", fallbackLocale);
-          console.log("Idioma detectado desde sistema:", sysLocale); // Imprime el idioma basado en el sistema
-          console.log("Idioma seleccionado:", fallbackLocale); // Imprime el idioma final seleccionado
         }
       } catch (error) {
         console.warn("Error loading locale", error);

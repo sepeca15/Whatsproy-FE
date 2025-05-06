@@ -62,8 +62,11 @@ const GraficProddet: React.FC<ProductDetailProps> = ({ product, salesData, categ
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
       <View style={styles.header}>
         <Image source={{ uri: product.imageUrl }} style={styles.productImage} />
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>{product.category}</Text>
+        <View style={{
+          ...styles.badge,
+          backgroundColor: product?.disponible ? "#2E7D32" : "#7d2e2e"
+        }}>
+          <Text style={styles.badgeText}>{product.disponible ? <FormattedMessage  id="available"/> : <FormattedMessage  id="notAvailable"/>}</Text>
         </View>
       </View>
 

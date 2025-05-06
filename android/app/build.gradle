@@ -92,18 +92,8 @@ missingDimensionStrategy "store", "play"
         applicationId 'com.whatsproy'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-<<<<<<< HEAD
-<<<<<<< HEAD
-        versionCode 10500
-        versionName "1.5.0"
-=======
-        versionCode 10607
-        versionName "1.6.7"
->>>>>>> 30fd7c7dacfa3d29858f5dbc298d758276afaff9
-=======
         versionCode 10609
         versionName "1.6.9"
->>>>>>> 6896c37719e4a5d15877619a2d81c73d6cdfe065
     }
     signingConfigs {
         debug {
@@ -128,7 +118,7 @@ missingDimensionStrategy "store", "play"
         }
     }
 
-    flavorDimensions "store"
+    flavorDimensions "store", "env"
 
     productFlavors {
         play {
@@ -136,6 +126,12 @@ missingDimensionStrategy "store", "play"
         }
         amazon {
             dimension "store"
+        }
+        internal {
+            dimension "env"
+        }
+        production {
+            dimension "env"
         }
     }
     packagingOptions {

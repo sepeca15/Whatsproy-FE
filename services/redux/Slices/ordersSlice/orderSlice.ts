@@ -80,8 +80,6 @@ const orderSlice = createSlice({
       state.loadingApiAction = true;
     },
     onFinishLoadingApiAction: (state) => {
-      console.log('se llamo');
-
       state.loadingApiAction = false;
     },
     onFinishLoadingApi: (state) => {

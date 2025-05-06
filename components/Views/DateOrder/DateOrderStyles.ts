@@ -115,7 +115,7 @@ export const styles = StyleSheet.create({
     backgroundColor: Colors.light.secondary,
   },
   message: {
-    backgroundColor: "white",
+    backgroundColor: "rgba(18, 140, 126, 0.08)",
     borderRadius: 16,
     width: "92%",
     padding: 12,
@@ -124,14 +124,9 @@ export const styles = StyleSheet.create({
     gap: 4,
     alignItems: "flex-start",
     alignSelf: "center",
-    borderColor: "#f0f0f0",
-    borderWidth: 1,
-    shadowColor: "#ccc",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 2,
-    overflow: "hidden",
+    borderColor: Colors.light.secondary,
+    borderWidth: 0.6,
+
   },
   progress: {
     width: "100%",
