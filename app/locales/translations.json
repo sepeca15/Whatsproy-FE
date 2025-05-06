@@ -337,7 +337,15 @@
     "privacyPolicy.rightsTitle": "User Rights",
     "privacyPolicy.rights": "You can access, modify, or delete your personal data at any time. You can also cancel your subscription from the appropriate store.",
     "privacyPolicy.contactTitle": "Contact",
-    "privacyPolicy.contact": "If you have any questions about this policy, you can contact us via email at soporte@tuapp.com."
+    "privacyPolicy.contact": "If you have any questions about this policy, you can contact us via email at soporte@tuapp.com.",
+    "showLess": "Show less",
+    "performanceMetrics": "Performance Metrics",
+    "bestPerforming": "Best Performing",
+    "worstPerforming": "Worst Performing",
+    "units":"Units",
+    "growthRate": "Growth Rate",
+    "peakSales": "Peak Sales",
+    "avgSales": "Average Sales"
   },
   "es": {
     "activeOrdersTitle": "Activos",
@@ -677,7 +685,15 @@
     "privacyPolicy.rightsTitle": "Derechos del usuario",
     "privacyPolicy.rights": "Puedes acceder, modificar o eliminar tus datos personales en cualquier momento. También puedes cancelar tu suscripción desde la tienda correspondiente.",
     "privacyPolicy.contactTitle": "Contacto",
-    "privacyPolicy.contact": "Si tienes dudas sobre esta política, puedes contactarnos a través del correo soporte@tuapp.com."  
+    "privacyPolicy.contact": "Si tienes dudas sobre esta política, puedes contactarnos a través del correo soporte@tuapp.com.",  
+    "showLess": "Mostrar menos",
+    "performanceMetrics": "Métricas de rendimiento",
+    "bestPerforming": "Mejor rendimiento",
+    "worstPerforming": "Peor rendimiento",
+    "units":"unidades",
+    "growthRate": "Tasa de crecimiento",
+    "peakSales": "Ventas máximas",
+    "avgSales": "Promedio de ventas"
   },
   "pt": {
     "activeOrdersTitle": "Ativos",
