@@ -209,17 +209,26 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 16,
+    minHeight: 75,
+
   },
   estimateTimeValue: {
     fontSize: RFValue(24),
     fontWeight: "700",
     color: Colors.light.primary,
     marginLeft: 12,
+    padding: "auto",
+    height: "100%",
+    paddingTop: 15,
   },
   estimateTimeUnit: {
     fontSize: RFValue(16),
     fontWeight: "400",
     color: Colors.light.icon,
+    paddingTop: 20,
+  
+    
+
   },
 
   // Products
