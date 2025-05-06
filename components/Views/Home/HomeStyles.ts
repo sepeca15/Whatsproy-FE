@@ -59,13 +59,13 @@ const styles = StyleSheet.create({
   },
   metricCard: {
     width: "100%",
-    backgroundColor: "#f0f2f5", // Mismo color que el fondo
+    backgroundColor: "white", // Mismo color que el fondo
     padding: 16,
     borderRadius: 16,
     alignItems: "center",
    
     // Efecto neumórfico
-    shadowColor: "#fff",
+    shadowColor: "#5656f",
     shadowOffset: { width: -6, height: -6 },
     shadowOpacity: 0.8,
     shadowRadius: 6,
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     // Nota: React Native no soporta múltiples sombras, así que esto es una aproximación
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.1)",
-    elevation: 2,
+   
   },
   
   metricValue: {
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   },
   lastActivityCard: {
     width: "100%",
-    backgroundColor: "#f0f2f5", 
+    backgroundColor: "white", // Mismo color que el fondo
     padding: 16,
     borderRadius: 12,
     marginBottom: 2,
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
   quickAction: {
     flex: 1,
     minWidth: "48%",
-    backgroundColor: "#f0f2f5", // Mismo color que el fondo
+    backgroundColor: "white", // Mismo color que el fondo
     padding: 16,
     borderRadius: 16,
     alignItems: "center",

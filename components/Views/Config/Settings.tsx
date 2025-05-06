@@ -1,3 +1,5 @@
+"use client"
+
 import { View, Text, StatusBar, FlatList } from "react-native"
 import { useRouter } from "expo-router"
 import Feather from "react-native-vector-icons/Feather"
@@ -7,9 +9,11 @@ import IonIcons from "react-native-vector-icons/Ionicons"
 import { FormattedMessage, useIntl } from "react-intl"
 import { useColorScheme } from "react-native"
 import { Colors } from "@/constants/Colors"
-import Animated, { FadeIn } from "react-native-reanimated"
+import Animated from "react-native-reanimated"
 import styles from "./SettingsStyles"
 import SettingCard from "@/hooks/settingsCards/SettingCard"
+import * as Animatable from "react-native-animatable";
+
 
 const Settings = () => {
   const intl = useIntl()
@@ -20,9 +24,12 @@ const Settings = () => {
 
   const settingsPage = [
     {
-      title: intl.formatMessage({ id: "generalSettings ", defaultMessage: "General Settings" }),
+      title: intl.formatMessage({ id: "generalSettings", defaultMessage: "General Settings" }),
       href: "/(tabs)/generalSettings",
-      description: intl.formatMessage({ id: "manageHours", defaultMessage: "Manage your working hours and preferences" }),
+      description: intl.formatMessage({
+        id: "manageHours",
+        defaultMessage: "Manage your working hours and preferences",
+      }),
       icon: <Feather size={22} color={"white"} name="settings" />,
     },
     {
@@ -40,13 +47,19 @@ const Settings = () => {
     {
       title: intl.formatMessage({ id: "notifications", defaultMessage: "Notifications" }),
       href: "",
-      description: intl.formatMessage({ id: "notificationsDescription", defaultMessage: "Manage notification preferences" }),
+      description: intl.formatMessage({
+        id: "notificationsDescription",
+        defaultMessage: "Manage notification preferences",
+      }),
       icon: <IonIcons name="notifications-outline" size={22} color={"white"} />,
     },
     {
       title: intl.formatMessage({ id: "privacySecurity", defaultMessage: "Privacy & Security" }),
       href: "",
-      description: intl.formatMessage({ id: "privacyDescription", defaultMessage: "Adjust privacy and security settings" }),
+      description: intl.formatMessage({
+        id: "privacyDescription",
+        defaultMessage: "Adjust privacy and security settings",
+      }),
       icon: <Feather size={22} color={"white"} name="shield" />,
     },
     {
@@ -68,30 +81,37 @@ const Settings = () => {
       <StatusBar barStyle={isDark ? "light-content" : "dark-content"} backgroundColor={colors.primary} />
 
       {/* Header */}
-      <Animated.View entering={FadeIn.duration(500)} style={[styles.header, { backgroundColor: colors.primary }]}>
-        <View style={styles.headerContent}>
-          <Text style={styles.headerTitle}>
-            <FormattedMessage id="settings" />
-          </Text>
-        </View>
+      <Animated.View style={[styles.header, { backgroundColor: colors.primary }]}>
+      <View style={styles.headerContent}>
+        <Text style={styles.headerTitle}>
+        <FormattedMessage id="settings" />
+        </Text>
+      </View>
       </Animated.View>
 
       {/* Lista de Ajustes */}
       <FlatList
-        data={settingsPage}
-        keyExtractor={(item, index) => item.href || index.toString()}
-        renderItem={({ item, index }) => (
-          <SettingCard
-            item={item}
-            index={index}
-            isDark={isDark}
-            colors={colors}
-            onNavigate={(href) => router.push(href as any)}
-          />
-        )}
-        contentContainerStyle={styles.scrollContent}
-        style={styles.scrollView}
-        showsVerticalScrollIndicator={false}
+      data={settingsPage}
+      keyExtractor={(item, index) => item.href || index.toString()}
+      renderItem={({ item, index }) => (
+        <Animatable.View
+        animation="fadeInUp"
+        duration={800}
+        delay={100 + index * 50}
+        style={styles.metricsContainer}
+        >
+        <SettingCard
+          item={item}
+          index={index}
+          isDark={isDark}
+          colors={colors}
+          onNavigate={(href) => router.push(href as any)}
+        />
+        </Animatable.View>
+      )}
+      contentContainerStyle={styles.scrollContent}
+      style={styles.scrollView}
+      showsVerticalScrollIndicator={false}
       />
     </View>
   )
