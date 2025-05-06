@@ -15,6 +15,7 @@ export interface Product {
   reviews: number;
   currency_id?: string;
   tags: string[];
+  disponible: string;
 }
 
 export interface SalesData {

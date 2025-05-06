@@ -1,4 +1,3 @@
-"use client"
 
 import type React from "react"
 import { useState, useEffect, useRef } from "react"
@@ -11,7 +10,7 @@ import { FormattedMessage } from "react-intl"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { profileData as defaultProfileData } from "./components/profileData"
 import QuickActions from "./components/QuickActions"
-import SubscriptionInfo from "./components/SubscriptionInfo"
+// import SubscriptionInfo from "./components/SubscriptionInfo"
 import SalesOverview from "./components/SaleOverview/SalesOverview"
 import CategorySales from "./components/CategorySales"
 import SalesChart from "./components/SalesChart"
@@ -115,7 +114,9 @@ const Perfil: React.FC = () => {
   }, [])
 
   useEffect(() => {
+  
     if (resumenVentas) {
+
       switch (salesPeriod) {
         case "semanal":
           setPedidos(resumenVentas.weekly)
@@ -144,11 +145,22 @@ const Perfil: React.FC = () => {
             labels: resumenVentasData.yearlyLabels,
             sales: resumenVentasData.yearlySales,
           })
+
           break
         default:
+
           break
+
+        
       }
+    }else {
+      setPedidos(0)
+      setValorPrueba({
+        labels: [],
+        sales: [],
+      })
     }
+
   }, [salesPeriod, resumenVentas])
 
   return (
@@ -201,7 +213,7 @@ const Perfil: React.FC = () => {
 
               <Animated.View
                 entering={FadeInDown.delay(100)}
-                style={{ minHeight: 200 }} // ajustar a lo necesario
+                style={{ minHeight: 200 }} 
               >
                
                   <SalesOverview
@@ -276,9 +288,9 @@ const Perfil: React.FC = () => {
                 />
               </Animated.View>
 
-              <Animated.View entering={FadeInDown.delay(400)}>
+              {/* <Animated.View entering={FadeInDown.delay(400)}>
                 <SubscriptionInfo plan={profileData?.plan || "Free"} expiryDate="30/06/2023" usagePercentage={75} />
-              </Animated.View>
+              </Animated.View> */}
 
               <Animated.View entering={FadeInDown.delay(500)}>
                 <QuickActions />

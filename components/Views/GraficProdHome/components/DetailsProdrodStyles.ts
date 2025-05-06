@@ -37,6 +37,24 @@ export const styles = StyleSheet.create({
     padding: 20,
     maxWidth: "100%",
   },
+  unavailableBadge: {
+    position: "absolute",
+    top: 16,
+    right: 16,
+    backgroundColor: "#FF3D00",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+
+  unavailableBadgeText: {
+
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  
+  
   titleContainer: {
     marginBottom: 20,
   },

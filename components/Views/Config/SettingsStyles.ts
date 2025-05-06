@@ -33,6 +33,10 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
     marginTop: 10,
+    
+  },
+  metricsContainer: {
+   
   },
   scrollContent: {
     paddingHorizontal: 16,
