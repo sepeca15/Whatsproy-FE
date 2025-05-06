@@ -1,4 +1,3 @@
-"use client"
 
 import type React from "react"
 import { useState, useEffect, useRef } from "react"
@@ -11,7 +10,7 @@ import { FormattedMessage } from "react-intl"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { profileData as defaultProfileData } from "./components/profileData"
 import QuickActions from "./components/QuickActions"
-import SubscriptionInfo from "./components/SubscriptionInfo"
+// import SubscriptionInfo from "./components/SubscriptionInfo"
 import SalesOverview from "./components/SaleOverview/SalesOverview"
 import CategorySales from "./components/CategorySales"
 import SalesChart from "./components/SalesChart"
