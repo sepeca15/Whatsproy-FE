@@ -3,7 +3,7 @@ import {
   SafeAreaView,
   RefreshControl,
   ActivityIndicator,
-  TouchableOpacity,
+
   ScrollView,
 } from "react-native";
 import { Colors } from "../../../constants/Colors";
@@ -13,15 +13,11 @@ import LastActivityCard from "./components/LastActivityCard";
 import QuickActionButton from "./components/QuickActionButton";
 import styles from "./HomeStyles";
 import { router } from "expo-router";
-import Animated from "react-native-reanimated";
+
 import LottieView from "lottie-react-native";
 import { FormattedMessage, useIntl } from "react-intl";
 import * as Animatable from "react-native-animatable";
-import { Ionicons } from "@expo/vector-icons";
-import {
-  saveNotificationPreference,
-  getNotificationPreference,
-} from "../../../utils/notificaciones/notificationsStorage";
+
 import { useOrdersDashboard } from "@/hooks/home_functions/useOrdersDashboard";
 import { useUser } from "@/hooks/redux/useUser";
 import { Image, View } from "native-base";
@@ -32,8 +28,8 @@ const Home: React.FC = () => {
   const { loading, ordersCount, dailyRevenue, refreshData, lastOrders } =
     useOrdersDashboard();
   const [refreshing, setRefreshing] = React.useState(false);
-  const [notificationsEnabled, setNotificationsEnabled] =
-    React.useState<boolean>(false);
+  // const [notificationsEnabled, setNotificationsEnabled] =
+  React.useState<boolean>(false);
   const lottieRef = React.useRef<LottieView>(null);
 
   const onRefresh = async () => {
@@ -47,16 +43,23 @@ const Home: React.FC = () => {
     }
   };
 
-  React.useEffect(() => {
-    const fetchPreference = async () => {
-      const enabled = await getNotificationPreference();
-      setNotificationsEnabled(enabled);
-    };
-    fetchPreference();
-  }, []);
+  // React.useEffect(() => {
+  //   const fetchPreference = async () => {
+  //     const enabled = await getNotificationPreference();
+  //     setNotificationsEnabled(enabled);
+  //   };
+  //   fetchPreference();
+  // }, []);
 
   const { user } = useUser();
   const empresaName = user?.empresaName ?? "Empresa Name";
+
+
+  if (user) {
+    console.log("User:", user);
+  }
+
+
 
   React.useEffect(() => {
     return () => {
@@ -64,13 +67,13 @@ const Home: React.FC = () => {
     };
   }, []);
 
-  const toggleNotifications = () => {
-    setNotificationsEnabled((prev) => {
-      const newValue = !prev;
-      saveNotificationPreference(newValue);
-      return newValue;
-    });
-  };
+  // const toggleNotifications = () => {
+  //   setNotificationsEnabled((prev) => {
+  //     const newValue = !prev;
+  //     saveNotificationPreference(newValue);
+  //     return newValue;
+  //   });
+  // };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -92,7 +95,7 @@ const Home: React.FC = () => {
               {empresaName}
             </CustomText>
           </View>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={toggleNotifications}
             style={[
               styles.iconButton,
@@ -111,10 +114,10 @@ const Home: React.FC = () => {
               size={24}
               color="white"
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
-  
+
       {loading ? (
         <ActivityIndicator
           size="large"
@@ -146,7 +149,7 @@ const Home: React.FC = () => {
                 defaultMessage: "Pedidos Hoy",
               })}
               value={ordersCount?.toString()}
-              onPress={() => {}}
+              onPress={() => { }}
             />
             <MetricCard
               icon="account-group"
@@ -155,7 +158,7 @@ const Home: React.FC = () => {
                 defaultMessage: "Clientes",
               })}
               value="120"
-              onPress={() => {}}
+              onPress={() => { }}
             />
             <MetricCard
               icon="cash-multiple"
@@ -164,10 +167,10 @@ const Home: React.FC = () => {
                 defaultMessage: "Ingresos",
               })}
               value={`$${dailyRevenue}`}
-              onPress={() => {}}
+              onPress={() => { }}
             />
           </Animatable.View>
-  
+
           <Animatable.View
             animation="fadeInUp"
             duration={800}
@@ -180,7 +183,7 @@ const Home: React.FC = () => {
                 defaultMessage="Últimos 3 pedidos"
               />
             </CustomText>
-  
+
             {lastOrders.length > 0 ? (
               lastOrders.map((order) => (
                 <LastActivityCard
@@ -223,14 +226,14 @@ const Home: React.FC = () => {
                 </CustomText>
               </Animatable.View>
             )}
-  
+
             <CustomText style={styles.sectionTitle}>
               <FormattedMessage
                 id="quickActions.home"
                 defaultMessage="Quick Actions"
               />
             </CustomText>
-  
+
             <View style={styles.quickActionsGrid}>
               <QuickActionButton
                 icon="calendar"
@@ -254,7 +257,7 @@ const Home: React.FC = () => {
       )}
     </SafeAreaView>
   );
-  
+
 };
 
 export default Home;
