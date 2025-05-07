@@ -11,9 +11,10 @@ import { subscriptionBenefits } from "@/constants/variables";
 interface IMethodOfPayCard {
   Plan: any;
   selectPlan: (plan: Subscription) => void;
+  planInfo: any;
 }
 
-const MethodOfPayCard = ({ Plan, selectPlan }: IMethodOfPayCard) => {
+const MethodOfPayCard = ({ Plan, selectPlan, planInfo }: IMethodOfPayCard) => {
   const getPrice = () => {
     if (Plan?.subscriptionOfferDetails?.length > 0) {
       const offerDetails = Plan.subscriptionOfferDetails[0];
@@ -25,17 +26,15 @@ const MethodOfPayCard = ({ Plan, selectPlan }: IMethodOfPayCard) => {
     return <FormattedMessage id="priceNotAvailable" defaultMessage="Precio no disponible" />;
   };
 
-  const price = getPrice();
-  const benefits = subscriptionBenefits[Plan?.productId];
-  const adventagesArray = benefits ? benefits?.split(",") : [];
+  const price = planInfo?.costoUSD ? `${planInfo?.costoUSD} USD` : getPrice();
+  const adventagesArray = planInfo?.adventages ? planInfo?.adventages?.split(",") : [];
 
   return (
     <View style={styles.MainContainer}>
       <View style={styles.containerCardMethodOfPay}>
         <View style={styles.ContainerHeader}>
-          <CustomText style={styles.WhiteTextBold}>{Plan?.name}</CustomText>
+          <CustomText style={styles.WhiteTextBold}>{planInfo?.nombre ?? Plan?.name}</CustomText>
           <View style={styles.ContainerRow}>
-           
             <CustomText style={[styles.WhiteTextBold, { fontSize: 25 }]}>
               {price}
             </CustomText>

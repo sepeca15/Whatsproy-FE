@@ -29,7 +29,8 @@ const SubscriptionsView = () => {
   const [shouldSubscribe, setShouldSubscribe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [productInfo, setProductInfo] = useState<any>(null);
-  const currentPayment = user?.payment ? { ...user.payment } : null;
+  // const currentPayment = user?.payment ? { ...user.payment } : null;
+  const currentPayment: any = null;
 
   useEffect(() => {
     const fetchProduct = async () => {
