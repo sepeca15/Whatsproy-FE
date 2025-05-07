@@ -3,7 +3,6 @@ import {
   SafeAreaView,
   RefreshControl,
   ActivityIndicator,
-
   ScrollView,
 } from "react-native";
 import { Colors } from "../../../constants/Colors";
@@ -13,11 +12,9 @@ import LastActivityCard from "./components/LastActivityCard";
 import QuickActionButton from "./components/QuickActionButton";
 import styles from "./HomeStyles";
 import { router } from "expo-router";
-
 import LottieView from "lottie-react-native";
 import { FormattedMessage, useIntl } from "react-intl";
 import * as Animatable from "react-native-animatable";
-
 import { useOrdersDashboard } from "@/hooks/home_functions/useOrdersDashboard";
 import { useUser } from "@/hooks/redux/useUser";
 import { Image, View } from "native-base";
@@ -28,38 +25,20 @@ const Home: React.FC = () => {
   const { loading, ordersCount, dailyRevenue, refreshData, lastOrders } =
     useOrdersDashboard();
   const [refreshing, setRefreshing] = React.useState(false);
-  // const [notificationsEnabled, setNotificationsEnabled] =
-  React.useState<boolean>(false);
   const lottieRef = React.useRef<LottieView>(null);
 
   const onRefresh = async () => {
     try {
       setRefreshing(true);
       await refreshData();
-    } catch (error) {
-      console.error(error);
     } finally {
       setRefreshing(false);
     }
   };
 
-  // React.useEffect(() => {
-  //   const fetchPreference = async () => {
-  //     const enabled = await getNotificationPreference();
-  //     setNotificationsEnabled(enabled);
-  //   };
-  //   fetchPreference();
-  // }, []);
-
   const { user } = useUser();
   const empresaName = user?.empresaName ?? "Empresa Name";
-
-
-  if (user) {
-    console.log("User:", user);
-  }
-
-
+  const isReserva = user?.id_rol === 1;  // ← aquí
 
   React.useEffect(() => {
     return () => {
@@ -67,16 +46,9 @@ const Home: React.FC = () => {
     };
   }, []);
 
-  // const toggleNotifications = () => {
-  //   setNotificationsEnabled((prev) => {
-  //     const newValue = !prev;
-  //     saveNotificationPreference(newValue);
-  //     return newValue;
-  //   });
-  // };
-
   return (
     <SafeAreaView style={styles.container}>
+      {/* Header */}
       <View style={globalStyles.header}>
         <View style={globalStyles.headerContent}>
           <View style={globalStyles.headerLeft}>
@@ -95,29 +67,10 @@ const Home: React.FC = () => {
               {empresaName}
             </CustomText>
           </View>
-          {/* <TouchableOpacity
-            onPress={toggleNotifications}
-            style={[
-              styles.iconButton,
-              notificationsEnabled && {
-                backgroundColor: Colors.light.secondary,
-                borderRadius: 50,
-              },
-            ]}
-          >
-            <Ionicons
-              name={
-                notificationsEnabled
-                  ? "notifications"
-                  : "notifications-outline"
-              }
-              size={24}
-              color="white"
-            />
-          </TouchableOpacity> */}
         </View>
       </View>
 
+      {/* Loading */}
       {loading ? (
         <ActivityIndicator
           size="large"
@@ -127,7 +80,7 @@ const Home: React.FC = () => {
       ) : (
         <ScrollView
           style={styles.content}
-          showsVerticalScrollIndicator={true}
+          showsVerticalScrollIndicator
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -136,6 +89,7 @@ const Home: React.FC = () => {
             />
           }
         >
+          {/* Métricas */}
           <Animatable.View
             animation="fadeInUp"
             duration={800}
@@ -145,11 +99,11 @@ const Home: React.FC = () => {
             <MetricCard
               icon="cart-outline"
               title={intl.formatMessage({
-                id: "ordersToday.home",
-                defaultMessage: "Pedidos Hoy",
+                id: isReserva ? "reservasToday.home" : "ordersToday.home",
+                defaultMessage: isReserva ? "Reservas Hoy" : "Pedidos Hoy",
               })}
               value={ordersCount?.toString()}
-              onPress={() => { }}
+              onPress={() => {}}
             />
             <MetricCard
               icon="account-group"
@@ -158,7 +112,7 @@ const Home: React.FC = () => {
                 defaultMessage: "Clientes",
               })}
               value="120"
-              onPress={() => { }}
+              onPress={() => {}}
             />
             <MetricCard
               icon="cash-multiple"
@@ -167,10 +121,11 @@ const Home: React.FC = () => {
                 defaultMessage: "Ingresos",
               })}
               value={`$${dailyRevenue}`}
-              onPress={() => { }}
+              onPress={() => {}}
             />
           </Animatable.View>
 
+        
           <Animatable.View
             animation="fadeInUp"
             duration={800}
@@ -178,10 +133,12 @@ const Home: React.FC = () => {
             style={styles.lastActivitiesContainer}
           >
             <CustomText style={styles.sectionTitle}>
-              <FormattedMessage
-                id="lastOrders.home"
-                defaultMessage="Últimos 3 pedidos"
-              />
+              {intl.formatMessage({
+              id: isReserva ? "lastReservas.home" : "lastOrders.home",
+              defaultMessage: isReserva
+                ? "Últimas 3 reservas"
+                : "Últimos 3 pedidos",
+              })}
             </CustomText>
 
             {lastOrders.length > 0 ? (
@@ -189,20 +146,22 @@ const Home: React.FC = () => {
                 <LastActivityCard
                   key={order.id}
                   title={`${intl.formatMessage({
-                    id: "pedido.card.home",
-                    defaultMessage: "pedido",
+                    id: isReserva
+                      ? "reserva.card.home"
+                      : "pedido.card.home",
+                    defaultMessage: isReserva ? "reserva" : "pedido",
                   })} #${order.id}`}
                   time={order.time || "Desconocido"}
-                  id={order.id?.toString() || "0"}
+                  id={order.id.toString()}
                   amount={order.amount || "$0"}
                   icon={order.icon || "receipt"}
                   address={order.address}
-                  onPress={() => {
+                  onPress={() =>
                     router.push({
                       pathname: "/(tabs)/orderDetails",
                       params: { orderId: order.id },
-                    });
-                  }}
+                    })
+                  }
                 />
               ))
             ) : (
@@ -227,6 +186,7 @@ const Home: React.FC = () => {
               </Animatable.View>
             )}
 
+          
             <CustomText style={styles.sectionTitle}>
               <FormattedMessage
                 id="quickActions.home"
@@ -238,10 +198,12 @@ const Home: React.FC = () => {
               <QuickActionButton
                 icon="calendar"
                 title={intl.formatMessage({
-                  id: "pedidos.home",
-                  defaultMessage: "Pedidos",
+                  id: isReserva ? "reservas.home" : "pedidos.home",
+                  defaultMessage: isReserva ? "Reservas" : "Pedidos",
                 })}
-                onPress={() => router.push("/(tabs)/pedidos")}
+                onPress={() =>
+                  router.push(isReserva ? "/(tabs)/calendar" : "/(tabs)/pedidos")
+                }
               />
               <QuickActionButton
                 icon="cog"
@@ -257,7 +219,6 @@ const Home: React.FC = () => {
       )}
     </SafeAreaView>
   );
-
 };
 
 export default Home;
