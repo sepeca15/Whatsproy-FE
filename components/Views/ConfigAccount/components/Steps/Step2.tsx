@@ -17,8 +17,6 @@ import api from "@/services/api/admin";
 import LottieView from "lottie-react-native";
 import { FormattedMessage } from "react-intl";
 
-const itemSkus = ["basicsubscriptionmeasy2025"];
-
 const Step2 = ({ onSuccess }: { onSuccess?: any }) => {
   const { handleAssignUserToPlan, user, handlePayOk } = useUser();
   const [loading, setLoading] = React.useState<boolean>(false);
@@ -33,18 +31,55 @@ const Step2 = ({ onSuccess }: { onSuccess?: any }) => {
 
   const purchaseListenerRef = useRef<any>(null);
   const errorListenerRef = useRef<any>(null);
+  const [defaultPayments, setDefaultPayments] = React.useState([]);
 
   const currentPayment = user?.payment;
 
-  useEffect(() => {
-    const init = async () => {
-      await RNIap.initConnection();
-      const subs = await RNIap.getSubscriptions({ skus: itemSkus });
-      setProducts(subs);
-      setPlans(subs);
-    };
+  const handleLoadDefaultPayments = async () => {
+    try {
+      setLoading(true);
+      const resp = await api.payments.getPlans();
+      if (resp) {
+        console.log("resp", resp);
+        setDefaultPayments(resp);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    init();
+  useEffect(() => {
+    handleLoadDefaultPayments();
+  }, []);
+
+  const init = async () => {
+    await RNIap.initConnection();
+    const subs = await RNIap.getSubscriptions({
+      skus: defaultPayments?.map(
+        (payment: any) => "basicsubscriptionmeasy2025"
+      ),
+    });
+    console.log("subs", subs);
+    setProducts(subs);
+    setPlans(
+      subs.map((sub) => {
+        return {
+          ...sub,
+          planInfo:
+            defaultPayments?.find(
+              (itm: any) => itm?.product_sku === sub?.productId
+            ) ?? null,
+        };
+      })
+    );
+  };
+
+  useEffect(() => {
+    if (defaultPayments?.length > 0) {
+      init();
+    }
 
     purchaseListenerRef.current = RNIap.purchaseUpdatedListener(handlePurchase);
     errorListenerRef.current = RNIap.purchaseErrorListener(handlePurchaseError);
@@ -54,7 +89,7 @@ const Step2 = ({ onSuccess }: { onSuccess?: any }) => {
       errorListenerRef.current?.remove();
       RNIap.endConnection();
     };
-  }, []);
+  }, [defaultPayments?.length]);
 
   const handlePurchase = async (purchase: RNIap.Purchase) => {
     const { purchaseToken, productId } = purchase;
@@ -203,7 +238,13 @@ const Step2 = ({ onSuccess }: { onSuccess?: any }) => {
               {" "}
               <FormattedMessage id="procesingPayment" />
             </Text>
-            <Text color="gray.500" paddingX={15} textAlign={"center"} fontWeight="semibold" fontSize={12}>
+            <Text
+              color="gray.500"
+              paddingX={15}
+              textAlign={"center"}
+              fontWeight="semibold"
+              fontSize={12}
+            >
               {" "}
               <FormattedMessage id="procesingPaymentDesc" />
             </Text>
@@ -218,13 +259,23 @@ const Step2 = ({ onSuccess }: { onSuccess?: any }) => {
             />
           </View>
         ) : (
-          plans?.map((plan, index) => (
-            <MethodOfPayCard
-              selectPlan={selectPlan}
-              key={plan.productId + index}
-              Plan={plan}
-            />
-          ))
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{
+              paddingHorizontal: 16,
+              gap: 12,
+            }}
+          >
+            {plans?.map((plan: any, index) => (
+              <MethodOfPayCard
+                selectPlan={selectPlan}
+                key={plan.productId + index}
+                Plan={plan}
+                planInfo={plan?.planInfo}
+              />
+            ))}
+          </ScrollView>
         )}
       </View>
     </ScrollView>

@@ -32,6 +32,7 @@ const api = {
   payments: {
     createInitial: payments.createInitial,
     verifyPaymentIsOk: payments.verifyPaymentIsOk,
+    getPlans: payments.getPlans,
   },
   plans: {
     getAll: plan.getAllPlans,

@@ -23,3 +23,10 @@ export const verifyPaymentIsOk = async (info: {
   );
   return data;
 };
+
+export const getPlans = async () => {
+  const { data } = await ApiInstances("global").get(
+    "payments/plans",
+  );
+  return data;
+};
