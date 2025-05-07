@@ -2,7 +2,6 @@
   "expo": {
     "name": "Measy",
     "slug": "Whatsproy",
-    "appVersion": "1.7.2",
     "runtimeVersion": "1.7.2",
     "newArchEnabled": true,
     "version": "1.7.2",
@@ -34,11 +33,7 @@
       "googleServicesFile": "./assets/google-services.json",
       "newArchEnabled": true,
       "permissions": ["NOTIFICATIONS"],
-      "package": "com.whatsproy",
-      "notification": {
-        "icon": "./assets/images/imageIcon.png",
-        "color": "#128c7e"
-      }
+      "package": "com.whatsproy"
     },
     "web": {
       "bundler": "metro",
