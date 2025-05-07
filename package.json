@@ -113,5 +113,20 @@
     "react": "18.3.1",
     "react-dom": "18.3.1"
   },
-  "private": true
+  "private": true,
+  "expo": {
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "exclude": [
+          "react-native-chart-kit",
+          "react-native-easy-grid",
+          "react-native-keyboard-aware-scroll-view",
+          "react-native-responsive-fontsize",
+          "react-native-skeleton-placeholder",
+          "react-native-iap"
+        ],
+        "listUnknownPackages": false
+      }
+    }
+  }
 }
