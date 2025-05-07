@@ -117,23 +117,6 @@ missingDimensionStrategy "store", "play"
             crunchPngs (findProperty('android.enablePngCrunchInReleaseBuilds')?.toBoolean() ?: true)
         }
     }
-
-    flavorDimensions "store", "env"
-
-    productFlavors {
-        play {
-            dimension "store"
-        }
-        amazon {
-            dimension "store"
-        }
-        internal {
-            dimension "env"
-        }
-        production {
-            dimension "env"
-        }
-    }
     packagingOptions {
         jniLibs {
             useLegacyPackaging (findProperty('expo.useLegacyPackaging')?.toBoolean() ?: false)
