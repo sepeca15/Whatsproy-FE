@@ -10,12 +10,7 @@ import { Colors } from "../../../../constants/Colors";
 import CustomText from "./CustomText";
 import styles from "../HomeStyles";
 import { Shadow } from 'react-native-shadow-2';
-
-
-
-const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
-
-
+import { useUser } from "@/hooks/redux/useUser";
 
 type MetricCardProps = {
   icon: string;
@@ -23,8 +18,10 @@ type MetricCardProps = {
   value: string | number;
   subtitle?: string;
   onPress?: () => void;
-  style?: any; // podés tiparlo mejor con `StyleProp<ViewStyle>` si querés
+  style?: any;
 };
+
+const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
 const MetricCard: React.FC<MetricCardProps> = ({
   icon,
@@ -34,6 +31,18 @@ const MetricCard: React.FC<MetricCardProps> = ({
   onPress,
   style,
 }) => {
+  // Obtener rol de usuario para condicionar iconos y títulos
+  const { user } = useUser();
+  const isReserva = user?.id_rol === 1;
+
+  // Ajustar icono: si es rol reserva y el icono es de carrito, usar calendario
+  const displayIcon = isReserva && icon === "cart-outline" ? "calendar-outline" : icon;
+
+  // Ajustar título: reemplazar "Pedidos" por "Reservas" en reservas
+  const displayTitle = isReserva
+    ? title.replace(/Pedidos/g, "Reservas").replace(/Pedido/g, "Reserva")
+    : title;
+
   const scale = useSharedValue(1);
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -57,20 +66,19 @@ const MetricCard: React.FC<MetricCardProps> = ({
       style={{ width: '100%', marginBottom: 12 }}
     >
       <AnimatedTouchable
-        style={[styles.metricCard, style, animatedStyle]} // <- aplicás el estilo externo
+        style={[styles.metricCard, style, animatedStyle]}
         onPress={onPress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
       >
-        <Icon name={icon} size={24} color={Colors.light.primary} />
+        <Icon name={displayIcon} size={24} color={Colors.light.primary} />
         <CustomText style={styles.metricValue}>{value}</CustomText>
-        <CustomText style={styles.metricTitle}>{title}</CustomText>
+        <CustomText style={styles.metricTitle}>{displayTitle}</CustomText>
         {subtitle && (
           <CustomText style={styles.metricSubtitle}>{subtitle}</CustomText>
         )}
       </AnimatedTouchable>
     </Shadow>
-
   );
 };
 

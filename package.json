@@ -28,19 +28,19 @@
     "@stripe/stripe-react-native": "^0.38.6",
     "axios": "^1.7.7",
     "dotenv": "^16.4.5",
-    "expo": "52.0.31",
+    "expo": "~52.0.46",
     "expo-blur": "~14.0.3",
     "expo-constants": "~17.0.8",
     "expo-dev-client": "~5.0.20",
-    "expo-device": "~7.0.2",
+    "expo-device": "~7.0.3",
     "expo-font": "~13.0.4",
     "expo-haptics": "^14.0.1",
     "expo-image-picker": "~16.0.6",
     "expo-linear-gradient": "~14.0.2",
     "expo-linking": "~7.0.5",
     "expo-notifications": "~0.29.14",
-    "expo-router": "~4.0.19",
-    "expo-splash-screen": "~0.29.22",
+    "expo-router": "~4.0.21",
+    "expo-splash-screen": "~0.29.24",
     "expo-status-bar": "~2.0.1",
     "expo-system-ui": "~4.0.8",
     "expo-updates": "~0.27.4",
@@ -59,7 +59,7 @@
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-intl": "^7.1.6",
-    "react-native": "0.76.7",
+    "react-native": "0.76.9",
     "react-native-animatable": "^1.4.0",
     "react-native-calendars": "^1.1307.0",
     "react-native-chart-kit": "^6.12.0",
@@ -113,5 +113,20 @@
     "react": "18.3.1",
     "react-dom": "18.3.1"
   },
-  "private": true
+  "private": true,
+  "expo": {
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "exclude": [
+          "react-native-chart-kit",
+          "react-native-easy-grid",
+          "react-native-keyboard-aware-scroll-view",
+          "react-native-responsive-fontsize",
+          "react-native-skeleton-placeholder",
+          "react-native-iap"
+        ],
+        "listUnknownPackages": false
+      }
+    }
+  }
 }

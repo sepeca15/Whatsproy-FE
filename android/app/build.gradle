@@ -92,8 +92,8 @@ missingDimensionStrategy "store", "play"
         applicationId 'com.whatsproy'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 10609
-        versionName "1.6.9"
+        versionCode 10702
+        versionName "1.7.2"
     }
     signingConfigs {
         debug {
@@ -118,6 +118,7 @@ missingDimensionStrategy "store", "play"
         }
     }
 
+
     flavorDimensions "store", "env"
 
     productFlavors {
@@ -134,6 +135,7 @@ missingDimensionStrategy "store", "play"
             dimension "env"
         }
     }
+
     packagingOptions {
         jniLibs {
             useLegacyPackaging (findProperty('expo.useLegacyPackaging')?.toBoolean() ?: false)

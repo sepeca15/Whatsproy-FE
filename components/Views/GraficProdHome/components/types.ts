@@ -9,7 +9,7 @@ export interface Product {
   imageUrl: string;
   category: string;
   daydata: DayslySalesData;
-  disponible?: boolean;
+
   monthdata: DayslySalesData;
   rating: number;
   reviews: number;

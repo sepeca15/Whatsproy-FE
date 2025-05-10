@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "Whatsproy.app"
-               BlueprintName = "Whatsproy"
-               ReferencedContainer = "container:Whatsproy.xcodeproj">
+               BuildableName = "Measy.app"
+               BlueprintName = "Measy"
+               ReferencedContainer = "container:Measy.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "WhatsproyTests.xctest"
-               BlueprintName = "WhatsproyTests"
-               ReferencedContainer = "container:Whatsproy.xcodeproj">
+               BuildableName = "MeasyTests.xctest"
+               BlueprintName = "MeasyTests"
+               ReferencedContainer = "container:Measy.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "Whatsproy.app"
-            BlueprintName = "Whatsproy"
-            ReferencedContainer = "container:Whatsproy.xcodeproj">
+            BuildableName = "Measy.app"
+            BlueprintName = "Measy"
+            ReferencedContainer = "container:Measy.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "Whatsproy.app"
-            BlueprintName = "Whatsproy"
-            ReferencedContainer = "container:Whatsproy.xcodeproj">
+            BuildableName = "Measy.app"
+            BlueprintName = "Measy"
+            ReferencedContainer = "container:Measy.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

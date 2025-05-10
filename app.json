@@ -2,10 +2,9 @@
   "expo": {
     "name": "Measy",
     "slug": "Whatsproy",
-    "appVersion": "1.6.9",
-    "runtimeVersion": "1.6.9",
+    "runtimeVersion": "1.7.2",
     "newArchEnabled": true,
-    "version": "1.6.9",
+    "version": "1.7.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -26,7 +25,7 @@
       "bundleIdentifier": "com.whatsproy"
     },
     "android": {
-      "versionCode": 10609,
+      "versionCode": 10702,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon_foreground.png",
         "backgroundImage": "./assets/images/icon_background.png"
@@ -34,11 +33,7 @@
       "googleServicesFile": "./assets/google-services.json",
       "newArchEnabled": true,
       "permissions": ["NOTIFICATIONS"],
-      "package": "com.whatsproy",
-      "notification": {
-        "icon": "./assets/images/imageIcon.png",
-        "color": "#128c7e"
-      }
+      "package": "com.whatsproy"
     },
     "web": {
       "bundler": "metro",
@@ -80,31 +75,6 @@
     },
     "updates": {
       "url": "https://u.expo.dev/e40e15d9-921b-4314-a35c-1b33afd386da"
-    }
-  },
-  "build": {
-    "preview": {
-      "android": {
-        "buildType": "apk"
-      }
-    },
-    "production": {
-      "android": {
-        "buildType": "aab",
-        "flavor": "play"
-      }
-    },
-    "development": {
-      "developmentClient": true,
-      "distribution": "internal",
-      "android": {
-        "buildType": "apk"
-      }
-    },
-    "internal": {
-      "version": {
-        "source": "local"
-      }
     }
   }
 }
