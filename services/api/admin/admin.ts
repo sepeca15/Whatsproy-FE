@@ -66,6 +66,7 @@ const api = {
     getActive: order.getAllActive,
     getFinished: order.getAllFinished,
     getPending: order.getAllPending,
+    subOrderStatus: order.subOrderStatus,
     remove: order.removeOrder,
     confirm: order.confirmOrder,
     create: order.createOrder,

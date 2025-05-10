@@ -19,6 +19,8 @@ import { useOrdersDashboard } from "@/hooks/home_functions/useOrdersDashboard";
 import { useUser } from "@/hooks/redux/useUser";
 import { Image, View } from "native-base";
 import { globalStyles } from "@/components/globalStyles";
+import SubscriptionInfo from "@/components/SubscriptionInfo";
+import { useSubscriptionStatus } from "@/hooks/home_functions/useSubscriptionStatus";
 
 const Home: React.FC = () => {
   const intl = useIntl();
@@ -27,18 +29,24 @@ const Home: React.FC = () => {
   const [refreshing, setRefreshing] = React.useState(false);
   const lottieRef = React.useRef<LottieView>(null);
 
+  const { subStatus, refreshSubscriptionStatus} = useSubscriptionStatus();
+
   const onRefresh = async () => {
     try {
       setRefreshing(true);
       await refreshData();
+      await refreshSubscriptionStatus();
     } finally {
       setRefreshing(false);
     }
   };
+  
 
   const { user } = useUser();
   const empresaName = user?.empresaName ?? "Empresa Name";
-  const isReserva = user?.id_rol === 1;  
+  const isReserva = user?.id_rol === 1;
+  const currentPlan = user?.payment?.plan;
+  const currentPayment = user?.payment;
 
   React.useEffect(() => {
     return () => {
@@ -89,6 +97,7 @@ const Home: React.FC = () => {
             />
           }
         >
+       
           {/* Métricas */}
           <Animatable.View
             animation="fadeInUp"
@@ -123,7 +132,17 @@ const Home: React.FC = () => {
               value={`$${dailyRevenue}`}
               onPress={() => {}}
             />
+
+               {currentPlan && (
+            <SubscriptionInfo
+              currentPedidosMonthActual={subStatus?.currentMonthPedidos ?? 0}
+              plan={currentPlan?.nombre ?? "-"}
+              maxPedidos={subStatus?.maxPedidos}
+              expiryDate={currentPayment?.subscription_date}
+            />
+          )}
           </Animatable.View>
+          
 
           {/* Últimas actividades */}
           <Animatable.View
@@ -146,9 +165,7 @@ const Home: React.FC = () => {
                 <LastActivityCard
                   key={order.id}
                   title={`${intl.formatMessage({
-                    id: isReserva
-                      ? "reserva.card.home"
-                      : "pedido.card.home",
+                    id: isReserva ? "reserva.card.home" : "pedido.card.home",
                     defaultMessage: isReserva ? "reserva" : "pedido",
                   })} #${order.id}`}
                   time={order.time || "Desconocido"}
@@ -202,7 +219,9 @@ const Home: React.FC = () => {
                   defaultMessage: isReserva ? "Reservas" : "Pedidos",
                 })}
                 onPress={() =>
-                  router.push(isReserva ? "/(tabs)/calendar" : "/(tabs)/pedidos")
+                  router.push(
+                    isReserva ? "/(tabs)/calendar" : "/(tabs)/pedidos"
+                  )
                 }
               />
               <QuickActionButton

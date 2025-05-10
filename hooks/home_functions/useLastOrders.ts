@@ -66,7 +66,7 @@ export const useLastOrders = () => {
 
         try {
           const info = JSON.parse(order.infoLinesJson);
-          address = info.Direccion?.trim() || address;
+          address = info?.Direccion?.trim() || address;
           status = order.status?.trim() || status;
         } catch (error) {
           console.error("Error al parsear infoLinesJson", error);

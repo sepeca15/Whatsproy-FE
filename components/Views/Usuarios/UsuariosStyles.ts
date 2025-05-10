@@ -76,10 +76,11 @@ export const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    paddingHorizontal: 16,
   },
   scrollView: {
     flex: 1,
+    paddingLeft: 8,
+    paddingRight: 8,
   },
   scrollViewContent: {
     paddingBottom: 100,

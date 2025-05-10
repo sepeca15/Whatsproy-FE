@@ -203,6 +203,9 @@ const OrderDetails = () => {
   const generalDetail = detailOfOrder.data?.detalles_pedido ?? null;
   const productDetailsExist = detailOfOrder.data?.products.some(p => Boolean(p.detalle?.trim()));
 
+  console.log("detailOfOrder", detailOfOrder)
+
+
   return (
     <SafeAreaView style={styles.safeArea}>
     

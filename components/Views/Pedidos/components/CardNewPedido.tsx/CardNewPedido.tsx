@@ -39,7 +39,9 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
   const [statusModalDelete, setStateModalDelete] = useState<boolean>(false);
   const { handleDeleteOrder, confirmOrder, loadingApiAction } = useOrders();
   const keyDeleteType = pending ? "pending" : "finished";
-  const { clientName, direccion, numberSender, orderId, total } = orderData;
+  const { clientName, numberSender, orderId, total } = orderData;
+
+  const direccion = orderData?.direccion;
   const intl = useIntl();
   const createdAt = orderData?.createdAt;
   const fromNow =  createdAt ? moment(createdAt)?.fromNow() : "";

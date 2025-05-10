@@ -31,6 +31,7 @@ const SubscriptionsView = () => {
   const [productInfo, setProductInfo] = useState<any>(null);
   const currentPayment = user?.payment ? { ...user.payment } : null;
 
+  console.log("currentPayment", currentPayment)
   useEffect(() => {
     const fetchProduct = async () => {
       if (!currentPayment?.subscription_sku) return;
@@ -243,7 +244,7 @@ const SubscriptionsView = () => {
       </Text>
       <LottieView
         source={require("../../../constants/Animation-nodata.json")}
-        loop
+        loop={false}
         autoPlay
         style={{ width: 300, height: 250 }}
       />

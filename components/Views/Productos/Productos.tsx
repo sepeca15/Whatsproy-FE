@@ -42,7 +42,6 @@ const Productos: React.FC = () => {
   const { showToast } = useToastContext();
   const [isDeleting, setIsDeleting] = useState(true);
 
-  console.log("isInitialLoading", isInitialLoading)
   const [allCategories, setAllCategories] = useState<ICategoryData[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [selectCategory, setSelectCategory] = useState<number | null>(null);

@@ -285,11 +285,6 @@ const Perfil: React.FC = () => {
                   ]}
                 />
               </Animated.View>
-
-              {/* <Animated.View entering={FadeInDown.delay(400)}>
-                <SubscriptionInfo plan={profileData?.plan || "Free"} expiryDate="30/06/2023" usagePercentage={75} />
-              </Animated.View> */}
-
               <Animated.View entering={FadeInDown.delay(500)}>
                 <QuickActions />
               </Animated.View>
