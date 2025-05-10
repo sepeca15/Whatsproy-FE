@@ -38,7 +38,7 @@ const Home: React.FC = () => {
 
   const { user } = useUser();
   const empresaName = user?.empresaName ?? "Empresa Name";
-  const isReserva = user?.id_rol === 1;  // ← aquí
+  const isReserva = user?.id_rol === 1;  
 
   React.useEffect(() => {
     return () => {
@@ -125,7 +125,7 @@ const Home: React.FC = () => {
             />
           </Animatable.View>
 
-        
+          {/* Últimas actividades */}
           <Animatable.View
             animation="fadeInUp"
             duration={800}
@@ -133,12 +133,12 @@ const Home: React.FC = () => {
             style={styles.lastActivitiesContainer}
           >
             <CustomText style={styles.sectionTitle}>
-              {intl.formatMessage({
-              id: isReserva ? "lastReservas.home" : "lastOrders.home",
-              defaultMessage: isReserva
-                ? "Últimas 3 reservas"
-                : "Últimos 3 pedidos",
-              })}
+              <FormattedMessage
+                id={isReserva ? "lastReservas.home" : "lastOrders.home"}
+                defaultMessage={
+                  isReserva ? "Últimas 3 reservas" : "Últimos 3 pedidos"
+                }
+              />
             </CustomText>
 
             {lastOrders.length > 0 ? (
@@ -155,7 +155,7 @@ const Home: React.FC = () => {
                   id={order.id.toString()}
                   amount={order.amount || "$0"}
                   icon={order.icon || "receipt"}
-                  address={order.address}
+                  address={order.address ?? "Dirección desconocida"}
                   onPress={() =>
                     router.push({
                       pathname: "/(tabs)/orderDetails",
@@ -186,7 +186,7 @@ const Home: React.FC = () => {
               </Animatable.View>
             )}
 
-          
+            {/* Quick Actions */}
             <CustomText style={styles.sectionTitle}>
               <FormattedMessage
                 id="quickActions.home"

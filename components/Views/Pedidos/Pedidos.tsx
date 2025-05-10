@@ -21,8 +21,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
 import OrdersActive from "./components/OrdersActive";
 import { globalStyles } from "@/components/globalStyles";
-
+import { styles } from "./PedidosStyles";
 type pagesOrder = "finished" | "pending" | "active";
+
+
 
 const PedidosEIngresos: React.FC = () => {
   const [selected, setSelected] = React.useState<pagesOrder>("pending");
@@ -39,7 +41,8 @@ const PedidosEIngresos: React.FC = () => {
     setSelected(key);
   };
   const [refreshing, setRefreshing] = React.useState(false);
-
+ 
+  
   return (
     <SafeAreaView style={styles.container}>
       <Animated.View style={globalStyles.header}>
@@ -148,111 +151,6 @@ const PedidosEIngresos: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  header: {
-    padding: 16,
-    paddingTop: 20,
-    paddingBottom: 20,
-    backgroundColor: Colors.light.primary,
-    borderBottomLeftRadius: 15,
-    borderBottomRightRadius: 15,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
-  },
-  headerContent: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  headerLeft: {
-    flex: 1,
-  },
-  businessName: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#fff",
-  },
-  container: {
-    flex: 1,
-  },
-  chartWrapper: {
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 30,
-    textAlign: "center",
-  },
-  orders: {
-    marginTop: 20,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    flex: 1,
-  },
-  Corders: {
-    flex: 1,
-    height: "100%",
-    backgroundColor: "red",
-  },
-  tab: {
-    marginVertical: 12,
-    width: "100%",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderBottomColor: "#d4ece8",
-    borderBottomWidth: 4,
-  },
-  containerTabItem: {
-    position: "relative",
-    display: "flex",
-    flexDirection: "row",
-    alignContent: "center",
-    justifyContent: "center",
-    flex: 1 / 2,
-  },
-  pressable: {
-    position: "relative",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 12,
-    width: "60%",
-    paddingVertical: 12,
-  },
-  selected: {
-    height: 4,
-    width: "100%",
-    backgroundColor: "#075e54",
-    position: "absolute",
-    bottom: -16,
-    borderRadius: 12,
-  },
-  text: {
-    textAlign: "center",
-  },
-  column: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  row: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 4,
-  },
-  addButtonText: {
-    color: "#ffffff",
-    fontSize: 24,
-    fontWeight: "semibold",
-  },
-});
+
 
 export default PedidosEIngresos;

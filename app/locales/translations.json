@@ -315,6 +315,7 @@
     "period.quarterly": "Quarterly",
     "noSpecifications": "No specifications",
     "customerSpecifications": "Customer specifications",
+    "orderNotes": "General notes",
     "currentStatus": "Current status",
     "showMore": "Show more",
     "orderDate": "Order date",
@@ -343,7 +344,7 @@
     "performanceMetrics": "Performance Metrics",
     "bestPerforming": "Best Performing",
     "worstPerforming": "Worst Performing",
-    "units":"Units",
+    "units": "Units",
     "growthRate": "Growth Rate",
     "peakSales": "Peak Sales",
     "avgSales": "Average Sales",
@@ -684,6 +685,7 @@
     "period.quarterly": "Trimestral",
     "noSpecifications": "No hay especificaciones",
     "customerSpecifications": "Especificaciones del cliente",
+    "orderNotes": "Notas generales",
     "currentStatus": "Estado actual",
     "showMore": "Mostrar más",
     "orderDate": "Fecha del pedido",
@@ -709,12 +711,12 @@
     "privacyPolicy.rightsTitle": "Derechos del usuario",
     "privacyPolicy.rights": "Puedes acceder, modificar o eliminar tus datos personales en cualquier momento. También puedes cancelar tu suscripción desde la tienda correspondiente.",
     "privacyPolicy.contactTitle": "Contacto",
-    "privacyPolicy.contact": "Si tienes dudas sobre esta política, puedes contactarnos a través del correo soporte@tuapp.com.",  
+    "privacyPolicy.contact": "Si tienes dudas sobre esta política, puedes contactarnos a través del correo soporte@tuapp.com.",
     "showLess": "Mostrar menos",
     "performanceMetrics": "Métricas de rendimiento",
     "bestPerforming": "Mejor rendimiento",
     "worstPerforming": "Peor rendimiento",
-    "units":"unidades",
+    "units": "unidades",
     "growthRate": "Tasa de crecimiento",
     "peakSales": "Ventas máximas",
     "avgSales": "Promedio de ventas"
@@ -930,6 +932,5 @@
     "modalValidPassword": "Digite uma senha válida",
     "modalUserCreated": "Usuário criado com sucesso",
     "modalSuccess": "Sucesso"
-}
-
+  }
 }

@@ -5,7 +5,7 @@ import { useState } from "react"
 import { View, Text, ScrollView, Image, Dimensions, TouchableOpacity } from "react-native"
 import { BarChart } from "react-native-chart-kit"
 import { styles } from "./DetailsProdrodStyles"
-import { FormattedMessage } from "react-intl" // Importa FormattedMessage
+import { FormattedMessage } from "react-intl" 
 import type { ProductDetailProps } from "./types"
 import { useUser } from "@/hooks/redux/useUser"
 
@@ -57,17 +57,31 @@ const GraficProddet: React.FC<ProductDetailProps> = ({ product, salesData, categ
       ],
     },
   }
+  console.log("Disponible_View:", product.disponible);
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
       <View style={styles.header}>
         <Image source={{ uri: product.imageUrl }} style={styles.productImage} />
-        <View style={{
-          ...styles.badge,
-          backgroundColor: product?.disponible ? "#2E7D32" : "#7d2e2e"
-        }}>
-          <Text style={styles.badgeText}>{product.disponible ? <FormattedMessage  id="available"/> : <FormattedMessage  id="notAvailable"/>}</Text>
-        </View>
+
+        {product.disponible === "true" ? (
+          <View style={{
+            ...styles.badge,
+            backgroundColor: "#2E7D32"
+          }}>
+
+            <Text style={styles.badgeText}> <FormattedMessage id="available" /> </Text>
+          </View>
+        ) : (
+          <View style={{
+            ...styles.badge,
+            backgroundColor: "#7d2e2e"
+          }}>
+
+            <Text style={styles.badgeText}> <FormattedMessage id="notAvailable" /> </Text>
+          </View>
+        )}
+
       </View>
 
       <View style={styles.contentContainer}>
@@ -154,7 +168,7 @@ const GraficProddet: React.FC<ProductDetailProps> = ({ product, salesData, categ
               <Text style={styles.additionalInfoValue}>
                 {
                   data[currentView].labels[
-                    data[currentView].datasets[0].data.indexOf(Math.max(...data[currentView].datasets[0].data))
+                  data[currentView].datasets[0].data.indexOf(Math.max(...data[currentView].datasets[0].data))
                   ]
                 }{" "}
                 ({Math.max(...data[currentView].datasets[0].data)}{" "}
@@ -168,7 +182,7 @@ const GraficProddet: React.FC<ProductDetailProps> = ({ product, salesData, categ
               <Text style={styles.additionalInfoValue}>
                 {
                   data[currentView].labels[
-                    data[currentView].datasets[0].data.indexOf(Math.min(...data[currentView].datasets[0].data))
+                  data[currentView].datasets[0].data.indexOf(Math.min(...data[currentView].datasets[0].data))
                   ]
                 }{" "}
                 ({Math.min(...data[currentView].datasets[0].data)}{" "}

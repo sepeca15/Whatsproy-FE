@@ -15,7 +15,7 @@ interface FormattedOrder {
   time: string;
   amount: string;
   icon: string;
-  address: string;
+  address?: string | null;
   status: string;
 }
 
