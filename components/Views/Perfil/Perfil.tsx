@@ -14,6 +14,8 @@ import CategorySales from "./components/CategorySales"
 import api from "@/services/api/admin"
 import { Colors } from "../../../constants/Colors"
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated"
+import SalesChart from "./components/SalesChart"
+import QuickActions from "./components/QuickActions"
 
 
 const Perfil: React.FC = () => {
@@ -110,7 +112,7 @@ const Perfil: React.FC = () => {
   }, [])
 
   useEffect(() => {
-  
+
     if (resumenVentas) {
 
       switch (salesPeriod) {
@@ -147,9 +149,9 @@ const Perfil: React.FC = () => {
 
           break
 
-        
+
       }
-    }else {
+    } else {
       setPedidos(0)
       setValorPrueba({
         labels: [],
@@ -209,27 +211,27 @@ const Perfil: React.FC = () => {
 
               <Animated.View
                 entering={FadeInDown.delay(100)}
-                style={{ minHeight: 200 }} 
+                style={{ minHeight: 200 }}
               >
-               
-                  <SalesOverview
-                    totalSales={pedidos ? pedidos : 0}
-                    previousPeriodSales={12500}
-                    averageSale={125}
-                    currency="$"
-                    period={salesPeriod}
-                  />
-             
+
+                <SalesOverview
+                  totalSales={pedidos ? pedidos : 0}
+                  previousPeriodSales={12500}
+                  averageSale={125}
+                  currency="$"
+                  period={salesPeriod}
+                />
+
 
               </Animated.View>
 
               <Animated.View entering={FadeInDown.delay(200)}>
-                {/* <SalesChart
+                <SalesChart
                   monthlySales={valorPrueba.sales}
                   labels={valorPrueba.labels}
                   period={salesPeriod}
                   onPeriodChange={(value) => setSalesPeriod(value)}
-                /> */}
+                />
               </Animated.View>
 
               <Animated.View entering={FadeInDown.delay(300)}>
@@ -253,7 +255,7 @@ const Perfil: React.FC = () => {
                       color: Colors.light.secondary,
                       icon: "pizza-outline",
                     },
-                    
+
                     {
                       id: "3",
                       name: "Milas",
@@ -288,9 +290,9 @@ const Perfil: React.FC = () => {
                 <SubscriptionInfo plan={profileData?.plan || "Free"} expiryDate="30/06/2023" usagePercentage={75} />
               </Animated.View> */}
 
-              {/* <Animated.View entering={FadeInDown.delay(500)}>
+              <Animated.View entering={FadeInDown.delay(500)}>
                 <QuickActions />
-              </Animated.View> */}
+              </Animated.View>
             </View>
           </ScrollView>
         </>
