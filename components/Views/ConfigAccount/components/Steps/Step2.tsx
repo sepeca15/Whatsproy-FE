@@ -1,14 +1,10 @@
 import React, { useRef, useEffect } from "react";
 import {
-  Alert,
   ScrollView as RNScrollView,
   View,
-  ActivityIndicator,
 } from "react-native";
 import { styles } from "../../ConfigAccountStyles";
 import MethodOfPayCard from "../MethodOfpaycard";
-import * as Progress from "react-native-progress";
-import { Colors } from "@/constants/Colors";
 import { ScrollView, Text } from "native-base";
 import { useToastContext } from "@/contexts/ToastContext";
 import { useUser } from "@/hooks/redux/useUser";
@@ -18,13 +14,14 @@ import LottieView from "lottie-react-native";
 import { FormattedMessage } from "react-intl";
 
 const Step2 = ({ onSuccess }: { onSuccess?: any }) => {
-  const { handleAssignUserToPlan, user, handlePayOk } = useUser();
+  const { user, handlePayOk } = useUser();
   const [loading, setLoading] = React.useState<boolean>(false);
   const [plans, setPlans] = React.useState<RNIap.Subscription[] | null>(null);
   const scrollViewRef = useRef<RNScrollView>(null);
   const [selectedPlan, setSelectedPlan] = React.useState<RNIap.Product | null>(
     null
   );
+  
   const { showToast } = useToastContext();
   const [products, setProducts] = React.useState<RNIap.Subscription[]>([]);
   const handledTokensRef = useRef<Set<string>>(new Set());

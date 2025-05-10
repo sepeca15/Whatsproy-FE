@@ -9,15 +9,11 @@ import { styles } from "./PerfilStyles"
 import { FormattedMessage } from "react-intl"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { profileData as defaultProfileData } from "./components/profileData"
-import QuickActions from "./components/QuickActions"
-// import SubscriptionInfo from "./components/SubscriptionInfo"
 import SalesOverview from "./components/SaleOverview/SalesOverview"
 import CategorySales from "./components/CategorySales"
-import SalesChart from "./components/SalesChart"
 import api from "@/services/api/admin"
 import { Colors } from "../../../constants/Colors"
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated"
-import { Shadow } from 'react-native-shadow-2';
 
 
 const Perfil: React.FC = () => {
@@ -228,12 +224,12 @@ const Perfil: React.FC = () => {
               </Animated.View>
 
               <Animated.View entering={FadeInDown.delay(200)}>
-                <SalesChart
+                {/* <SalesChart
                   monthlySales={valorPrueba.sales}
                   labels={valorPrueba.labels}
                   period={salesPeriod}
                   onPeriodChange={(value) => setSalesPeriod(value)}
-                />
+                /> */}
               </Animated.View>
 
               <Animated.View entering={FadeInDown.delay(300)}>
@@ -292,9 +288,9 @@ const Perfil: React.FC = () => {
                 <SubscriptionInfo plan={profileData?.plan || "Free"} expiryDate="30/06/2023" usagePercentage={75} />
               </Animated.View> */}
 
-              <Animated.View entering={FadeInDown.delay(500)}>
+              {/* <Animated.View entering={FadeInDown.delay(500)}>
                 <QuickActions />
-              </Animated.View>
+              </Animated.View> */}
             </View>
           </ScrollView>
         </>

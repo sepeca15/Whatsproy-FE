@@ -111,7 +111,7 @@ const PedidosEIngresos: React.FC = () => {
                   await handleLoadOrdersPending();
                 }
               } catch (error) {
-                
+
               } finally {
                 setRefreshing(false);
               }

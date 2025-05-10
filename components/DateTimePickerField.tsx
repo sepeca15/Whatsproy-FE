@@ -11,6 +11,7 @@ const DateTimeInputField = ({
   setDate,
   isRequired = true,
   error,
+  direction = 'col'
 }: any) => {
   const [showPicker, setShowPicker] = useState(false);
   const [mode, setMode] = useState<"date" | "time">("date");
@@ -33,9 +34,9 @@ const DateTimeInputField = ({
   const formattedTime = moment(date).format("HH:mm");
 
   return (
-    <VStack space={4}>
+    <VStack flex={1} style={{gap: direction === 'row' ? 4 : 0}} display={'flex'} flexDir={direction === 'col' ? 'column' : 'row'}  space={4}>
       <TouchableWithoutFeedback onPress={() => handleOpenPicker("date")}>
-        <FormControl isRequired={isRequired}>
+        <FormControl flex={'1'} isRequired={isRequired}>
           <FormControl.Label _text={{ fontWeight: "bold" }}>
             Fecha
           </FormControl.Label>
@@ -51,7 +52,7 @@ const DateTimeInputField = ({
       </TouchableWithoutFeedback>
 
       <TouchableWithoutFeedback onPress={() => handleOpenPicker("time")}>
-        <FormControl isInvalid={error} isRequired={isRequired}>
+        <FormControl flex={1} isInvalid={error} isRequired={isRequired}>
           <FormControl.Label _text={{ fontWeight: "bold" }}>
             Hora
           </FormControl.Label>

@@ -46,6 +46,7 @@ export const globalStyles = StyleSheet.create({
     elevation: 3,
   },
   headerContent: {
+    marginHorizontal:4,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",

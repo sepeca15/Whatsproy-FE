@@ -150,7 +150,7 @@ const UsuariosEmpresasScreen: React.FC = () => {
   
   return (
     <View style={styles.container}>
-      <View style={[styles.headerGradient, { backgroundColor: Colors.light.primary }]}>
+      <View style={[styles.headerGradient, { backgroundColor: Colors.light.primary, }]}>
         <View style={globalStyles.headerContent}>
           <TouchableOpacity style={styles.backButton} onPress={() => router.back()} activeOpacity={0.7}>
             <AntDesign name="arrowleft" size={22} color="white" />
@@ -222,15 +222,17 @@ const UsuariosEmpresasScreen: React.FC = () => {
         </View>
       )}
 
-      <TouchableOpacity
-        style={globalStyles.addButton}
-        onPress={() => toggleModalState("modalCreate", true)}
-        activeOpacity={0.8}
-      >
-        <View style={[styles.addButtonGradient, { backgroundColor: Colors.light.primary }]}>
-          <Ionicons name="add" size={30} color="#fff" />
-        </View>
-      </TouchableOpacity>
+      <View style={globalStyles.buttonContainer}>
+        <TouchableOpacity
+          style={globalStyles.addButton}
+          onPress={() => toggleModalState("modalCreate", true)}
+          activeOpacity={0.8}
+        >
+          <View style={[styles.addButtonGradient, { backgroundColor: Colors.light.primary }]}>
+            <Ionicons name="add" size={30} color="#fff" />
+          </View>
+        </TouchableOpacity>
+      </View>
 
       <ModalCreateUser
         onToogleModal={() => toggleModalState("modalCreate", false)}

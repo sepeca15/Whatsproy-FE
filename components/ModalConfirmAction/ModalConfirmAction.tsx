@@ -9,8 +9,8 @@ interface IModalConfirmAction {
   onContinue: () => void;
   onClose: () => void;
   isOpen: boolean;
-  message?: string;
-  title: string;
+  message?: any;
+  title: any;
   loading?: boolean;
 }
 const ModalConfirmAction = ({

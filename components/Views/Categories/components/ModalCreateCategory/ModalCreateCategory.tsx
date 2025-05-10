@@ -134,8 +134,8 @@ const ModalCreateCategory = ({
               )}
             </View>
             <Button size={"sm"} mt={4} bg={"gray.800"} onPress={handleImagePick}>
-              <View style={{gap:8}} display={'flex'} flexDir={'row'} alignItems={'center'} >
-                <MaterialIcons name="photo" size={20} color={'white'}/>
+              <View style={{ gap: 8 }} display={'flex'} flexDir={'row'} alignItems={'center'} >
+                <MaterialIcons name="photo" size={20} color={'white'} />
                 <Text color={'white'}>
                   <FormattedMessage id="uploadPhoto" />
                 </Text>

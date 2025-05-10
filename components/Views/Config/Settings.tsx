@@ -75,6 +75,12 @@ const Settings = () => {
       description: intl.formatMessage({ id: "categoriesDesc", defaultMessage: "Organize and manage categories" }),
       icon: <MaterialCommunityIcons size={22} color={"white"} name="format-list-bulleted-type" />,
     },
+    {
+      title: intl.formatMessage({ id: "cierreProvisorioTittleSettings", defaultMessage: "Cierre Provisorio" }),
+      href: "/(tabs)/cierre_provisorio",
+      description: intl.formatMessage({ id: "cierreProvisorioDescriptionSettings", defaultMessage: "Organiza tus cierres" }),
+      icon: <Entypo size={22} color={"white"} name="time-slot" />,
+    },
   ]
 
   return (

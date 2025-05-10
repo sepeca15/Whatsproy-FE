@@ -16,6 +16,7 @@ import * as estado from "../estado/estado";
 import * as cambioEstado from "../cambioEstado/cambioEstado";
 import * as getchat from "../chat/chatData";
 import * as payments from "../payments/payment";
+import * as cierreProvisorio from "../cierre_provisoro/cierreProvisorio";
 
 const api = {
   auth: {
@@ -108,6 +109,11 @@ const api = {
   changeStatus: {
     cambioEstado: cambioEstado.creteStatusChange,
   },
+  cierreProvisorio : {
+    create: cierreProvisorio.createCierreProvisorio,
+    getAll: cierreProvisorio.getAllCierreProvisorio,
+    delete: cierreProvisorio.deleteCierreProvisorio
+  }
 };
 
 export default api;
