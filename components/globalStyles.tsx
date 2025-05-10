@@ -1,5 +1,12 @@
 import { Colors } from "@/constants/Colors";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
+
+
+
+
+const { width } = Dimensions.get("window");
+const dynamicFontSize = width * 0.02; // Ajusta el porcentaje según sea necesario
+
 
 export const globalStyles = StyleSheet.create({
   buttonContainer: {
@@ -25,7 +32,7 @@ export const globalStyles = StyleSheet.create({
   },
   addButtonText: {
     color: "#ffffff",
-    fontSize: 30,
+    fontSize: dynamicFontSize * 3, 
     fontWeight: "semibold",
   },
   headerTitle: {

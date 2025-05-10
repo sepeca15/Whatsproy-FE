@@ -29,6 +29,14 @@ export const styles = StyleSheet.create({
     paddingTop: Platform.OS === "ios" ? 10 : StatusBar.currentHeight! + 10,
     paddingBottom: 10,
     backgroundColor: Colors.light.primary,
+    padding: 12,
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
   },
   backButton: {
     width: 40,
@@ -249,6 +257,7 @@ export const styles = StyleSheet.create({
   detailLabel: {
     fontSize: RFValue(12),
     color: Colors.light.icon,
+    
     marginBottom: 4,
   },
   detailValue: {
@@ -279,6 +288,7 @@ export const styles = StyleSheet.create({
   },
   specificationBubble: {
     backgroundColor: "rgba(18, 140, 126, 0.1)",
+    width: "100%",
     borderRadius: 12,
     paddingHorizontal: 12,
     paddingVertical: 8,

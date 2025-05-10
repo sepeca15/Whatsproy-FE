@@ -28,7 +28,7 @@ export const getAllFinished = async () => {
 };
 
 export const getAllPending = async () => {
-  const { data } = await ApiInstances("current").get("pedido/pending");
+  const { data } = await ApiInstances("current").get("pedido/");
   return data;
 };
 

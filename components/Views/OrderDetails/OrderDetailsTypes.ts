@@ -43,4 +43,5 @@ export interface IOrderDetails {
   cambiosEstado: any[]
   estadoActual: IEstado,
   detalle: string | null
+  detalles_pedido?: string | null
 }
