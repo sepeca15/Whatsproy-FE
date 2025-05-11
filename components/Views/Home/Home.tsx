@@ -21,38 +21,48 @@ import { Image, View } from "native-base";
 import { globalStyles } from "@/components/globalStyles";
 import SubscriptionInfo from "@/components/SubscriptionInfo";
 import { useSubscriptionStatus } from "@/hooks/home_functions/useSubscriptionStatus";
+import { ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
 
 const Home: React.FC = () => {
-  const intl = useIntl();
-  const { loading, ordersCount, dailyRevenue, refreshData, lastOrders } =
-    useOrdersDashboard();
-  const [refreshing, setRefreshing] = React.useState(false);
-  const lottieRef = React.useRef<LottieView>(null);
+  const intl = useIntl()
+  const { loading, ordersCount, dailyRevenue, refreshData, lastOrders } = useOrdersDashboard()
+  const [refreshing, setRefreshing] = React.useState(false)
+  const lottieRef = React.useRef<LottieView>(null)
 
-  const { subStatus, refreshSubscriptionStatus} = useSubscriptionStatus();
+  const { subStatus, refreshSubscriptionStatus } = useSubscriptionStatus()
 
   const onRefresh = async () => {
     try {
-      setRefreshing(true);
-      await refreshData();
-      await refreshSubscriptionStatus();
+      setRefreshing(true)
+      await refreshData()
+      await refreshSubscriptionStatus()
     } finally {
-      setRefreshing(false);
+      setRefreshing(false)
     }
   };
-  
 
-  const { user } = useUser();
-  const empresaName = user?.empresaName ?? "Empresa Name";
-  const isReserva = user?.id_rol === 1;
-  const currentPlan = user?.payment?.plan;
-  const currentPayment = user?.payment;
+  const { user } = useUser()
+  const empresaName = user?.empresaName ?? "Empresa Name"
+  const isReserva = user?.id_rol === 1
+  const currentPlan = user?.payment?.plan
+  const currentPayment = user?.payment
+
+  // // Extraer beneficios del plan actual
+  // const benefits = currentPayment?.subscription_sku
+  //   ? (subscriptionBenefits[currentPayment.subscription_sku] || "").split(",").map((b) => b.trim())
+  //   : []
+
+  const handleViewSubscriptionDetails = () => {
+    router.push("/(tabs)/subscriptions")
+  }
+
+  const isCalendar = user?.tipo_servicio === ID_TIPOSERVICIO_RESERVA;
 
   React.useEffect(() => {
     return () => {
-      lottieRef.current?.reset();
-    };
-  }, []);
+      lottieRef.current?.reset()
+    }
+  }, [])
 
   return (
     <SafeAreaView style={styles.container}>
@@ -61,50 +71,26 @@ const Home: React.FC = () => {
         <View style={globalStyles.headerContent}>
           <View style={globalStyles.headerLeft}>
             <View w={16} h={16} borderRadius={100} background={"gray.200"}>
-              {user.logo && (
-                <Image
-                  w={"full"}
-                  h={"full"}
-                  alt="logo"
-                  rounded={"full"}
-                  source={{ uri: user.logo }}
-                />
-              )}
+              {user.logo && <Image w={"full"} h={"full"} alt="logo" rounded={"full"} source={{ uri: user.logo }} />}
             </View>
-            <CustomText style={globalStyles.businessName}>
-              {empresaName}
-            </CustomText>
+            <CustomText style={globalStyles.businessName}>{empresaName}</CustomText>
           </View>
         </View>
       </View>
 
       {/* Loading */}
       {loading ? (
-        <ActivityIndicator
-          size="large"
-          color={Colors.light.primary}
-          style={styles.loader}
-        />
+        <ActivityIndicator size="large" color={Colors.light.primary} style={styles.loader} />
       ) : (
         <ScrollView
           style={styles.content}
           showsVerticalScrollIndicator
           refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              tintColor={Colors.light.primary}
-            />
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.light.primary} />
           }
         >
-       
           {/* Métricas */}
-          <Animatable.View
-            animation="fadeInUp"
-            duration={800}
-            delay={100}
-            style={styles.metricsContainer}
-          >
+          <Animatable.View animation="fadeInUp" duration={800} delay={100} style={styles.metricsContainer}>
             <MetricCard
               icon="cart-outline"
               title={intl.formatMessage({
@@ -132,61 +118,62 @@ const Home: React.FC = () => {
               value={`$${dailyRevenue}`}
               onPress={() => {}}
             />
-
-               {currentPlan && (
-            <SubscriptionInfo
-              currentPedidosMonthActual={subStatus?.currentMonthPedidos ?? 0}
-              plan={currentPlan?.nombre ?? "-"}
-              maxPedidos={subStatus?.maxPedidos}
-              expiryDate={currentPayment?.subscription_date}
-            />
-          )}
           </Animatable.View>
-          
+
+          {/* Componente de Suscripción - Ahora ubicado después de las métricas */}
+          {currentPlan && (
+            <Animatable.View animation="fadeInUp" duration={800} delay={150} style={{ paddingHorizontal: 16 }}>
+              <SubscriptionInfo
+                currentPedidosMonthActual={subStatus?.currentMonthPedidos ?? 0}
+                plan={currentPlan?.nombre ?? "-"}
+                maxPedidos={subStatus?.maxPedidos}
+                expiryDate={currentPayment?.subscription_date}
+                isCancelled={currentPayment?.isCancelled}
+                // benefits={nunguno}
+                onViewDetails={handleViewSubscriptionDetails}
+              />
+            </Animatable.View>
+          )}
 
           {/* Últimas actividades */}
-          <Animatable.View
-            animation="fadeInUp"
-            duration={800}
-            delay={200}
-            style={styles.lastActivitiesContainer}
-          >
+          <Animatable.View animation="fadeInUp" duration={800} delay={200} style={styles.lastActivitiesContainer}>
             <CustomText style={styles.sectionTitle}>
               <FormattedMessage
                 id={isReserva ? "lastReservas.home" : "lastOrders.home"}
-                defaultMessage={
-                  isReserva ? "Últimas 3 reservas" : "Últimos 3 pedidos"
-                }
+                defaultMessage={isReserva ? "Últimas 3 reservas" : "Últimos 3 pedidos"}
               />
             </CustomText>
 
             {lastOrders.length > 0 ? (
-              lastOrders.map((order) => (
-                <LastActivityCard
-                  key={order.id}
-                  title={`${intl.formatMessage({
-                    id: isReserva ? "reserva.card.home" : "pedido.card.home",
-                    defaultMessage: isReserva ? "reserva" : "pedido",
-                  })} #${order.id}`}
-                  time={order.time || "Desconocido"}
-                  id={order.id.toString()}
-                  amount={order.amount || "$0"}
-                  icon={order.icon || "receipt"}
-                  address={order.address ?? "Dirección desconocida"}
-                  onPress={() =>
-                    router.push({
-                      pathname: "/(tabs)/orderDetails",
-                      params: { orderId: order.id },
-                    })
-                  }
-                />
-              ))
+              lastOrders.map((order) => {
+                console.log(order);
+                return (
+                  <LastActivityCard
+                    key={order.id}
+                    title={`${intl.formatMessage({
+                      id: isReserva ? "reserva.card.home" : "pedido.card.home",
+                      defaultMessage: isReserva ? "reserva" : "pedido",
+                    })} #${order.id}`}
+                    time={order.time || "Desconocido"}
+                    id={order.id.toString()}
+                    amount={order.amount || "$0"}
+                    icon={order.icon || "receipt"}
+                    address={
+                      isCalendar
+                        ? `${order?.fecha}`
+                        : (order.address ? `#${order.address}` : "Dirección desconocida")
+                    }
+                    onPress={() =>
+                      router.push({
+                        pathname: "/(tabs)/orderDetails",
+                        params: { orderId: order.id },
+                      })
+                    }
+                  />
+                );
+              })
             ) : (
-              <Animatable.View
-                animation="fadeIn"
-                duration={600}
-                style={styles.emptyStateContainer}
-              >
+              <Animatable.View animation="fadeIn" duration={600} style={styles.emptyStateContainer}>
                 <LottieView
                   ref={lottieRef}
                   source={require("../../../constants/Animation-non-order.json")}
@@ -195,20 +182,14 @@ const Home: React.FC = () => {
                   style={styles.emptyStateAnimation}
                 />
                 <CustomText style={styles.emptyStateTitle}>
-                  <FormattedMessage
-                    id="noOrden.home"
-                    defaultMessage="No hay productos"
-                  />
+                  <FormattedMessage id="noOrden.home" defaultMessage="No hay productos" />
                 </CustomText>
               </Animatable.View>
             )}
 
             {/* Quick Actions */}
             <CustomText style={styles.sectionTitle}>
-              <FormattedMessage
-                id="quickActions.home"
-                defaultMessage="Quick Actions"
-              />
+              <FormattedMessage id="quickActions.home" defaultMessage="Quick Actions" />
             </CustomText>
 
             <View style={styles.quickActionsGrid}>
@@ -218,11 +199,7 @@ const Home: React.FC = () => {
                   id: isReserva ? "reservas.home" : "pedidos.home",
                   defaultMessage: isReserva ? "Reservas" : "Pedidos",
                 })}
-                onPress={() =>
-                  router.push(
-                    isReserva ? "/(tabs)/calendar" : "/(tabs)/pedidos"
-                  )
-                }
+                onPress={() => router.push(isReserva ? "/(tabs)/calendar" : "/(tabs)/pedidos")}
               />
               <QuickActionButton
                 icon="cog"
@@ -237,7 +214,7 @@ const Home: React.FC = () => {
         </ScrollView>
       )}
     </SafeAreaView>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home
