@@ -81,6 +81,12 @@ const Settings = () => {
       description: intl.formatMessage({ id: "cierreProvisorioDescriptionSettings", defaultMessage: "Organiza tus cierres" }),
       icon: <Entypo size={22} color={"white"} name="time-slot" />,
     },
+    {
+      title: intl.formatMessage({ id: "trustedNumberSettingsTitle", defaultMessage: "Numeros de confianza" }),
+      href: "/(tabs)/numbers_trusted",
+      description: intl.formatMessage({ id: "trustedNumberSettingsDesc", defaultMessage: "Activa numeros con los cuales no se activará el bot" }),
+      icon: <IonIcons size={22} color={"white"} name="phone-portrait-outline" />,
+    },
   ]
 
   return (

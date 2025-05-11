@@ -221,7 +221,6 @@ export const CierreProvisorio = () => {
                                                 >
                                                     <MaterialCommunityIcons size={25} color="#A80000" name="delete" />
                                                 </Pressable>
-
                                             </View>
                                         </View>
                                     )

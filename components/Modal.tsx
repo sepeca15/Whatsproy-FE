@@ -11,6 +11,7 @@ interface GlobalModalProps {
   onClose: () => void;
   content: React.ReactNode;
   actions?: any[];
+  manyItems?: boolean
 }
 
 const GlobalModal: React.FC<GlobalModalProps> = ({
@@ -19,6 +20,8 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
   content,
   onClose,
   actions,
+  manyItems = false
+
 }) => {
 
   return (
@@ -37,7 +40,7 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
             <View style={styles.decorateDiv}></View>
             <View style={styles.containerCreate}>
               <View style={styles.containerTitle}>
-                <Pressable accessibilityLabel={`Cerrar Modal`} onPress={onClose}>
+                <Pressable hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}  accessibilityLabel={`Cerrar Modal`} onPress={onClose}>
                   <EvilIcons name="close" size={25} color={"white"} />
                 </Pressable>
                 <CustomText style={{ color: "white", fontSize: 20 }}>
@@ -48,24 +51,31 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
           </View>
 
           <View style={styles.bodyContent}>
-            <ScrollView
-              flexDirection={"column"}
-              display={"flex"}
-              keyboardShouldPersistTaps="handled"
-              horizontal={false}
-              width={"100%"}
-              showsVerticalScrollIndicator
-              contentContainerStyle={{
-                margin: "auto",
-                width: "100%",
-                flexGrow: 1,
-                gap: 8,
-                paddingHorizontal: 20,
-                paddingBottom: 60,
-              }}
-            >
-              {content}
-            </ScrollView>
+            {
+              !manyItems ?
+                <View>
+                  {content}
+                </View>
+                :
+                <ScrollView
+                  flexDirection={"column"}
+                  display={"flex"}
+                  keyboardShouldPersistTaps="handled"
+                  horizontal={false}
+                  width={"100%"}
+                  showsVerticalScrollIndicator
+                  contentContainerStyle={{
+                    margin: "auto",
+                    width: "100%",
+                    flexGrow: 1,
+                    gap: 8,
+                    paddingHorizontal: 20,
+                    paddingBottom: 60,
+                  }}
+                >
+                  {content}
+                </ScrollView>
+            }
           </View>
 
           {actions && actions.length > 0 && (
