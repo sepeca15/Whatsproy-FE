@@ -70,7 +70,7 @@ const LastActivityCard: React.FC<LastActivityCardProps> = ({
         <View style={styles.lastActivityContent}>
           <Icon name={icon} size={24} color={Colors.light.primary} />
           <View style={styles.lastActivityInfo}>
-            <CustomText style={styles.lastActivityId}>#{address}</CustomText>
+            <CustomText style={styles.lastActivityId}>{address}</CustomText>
             {amount && (
               <CustomText style={styles.lastActivityAmount}>{amount}</CustomText>
             )}

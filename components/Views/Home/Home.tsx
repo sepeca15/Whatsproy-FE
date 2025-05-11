@@ -21,6 +21,7 @@ import { Image, View } from "native-base";
 import { globalStyles } from "@/components/globalStyles";
 import SubscriptionInfo from "@/components/SubscriptionInfo";
 import { useSubscriptionStatus } from "@/hooks/home_functions/useSubscriptionStatus";
+import { ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
 
 const Home: React.FC = () => {
   const intl = useIntl();
@@ -29,7 +30,7 @@ const Home: React.FC = () => {
   const [refreshing, setRefreshing] = React.useState(false);
   const lottieRef = React.useRef<LottieView>(null);
 
-  const { subStatus, refreshSubscriptionStatus} = useSubscriptionStatus();
+  const { subStatus, refreshSubscriptionStatus } = useSubscriptionStatus();
 
   const onRefresh = async () => {
     try {
@@ -40,13 +41,14 @@ const Home: React.FC = () => {
       setRefreshing(false);
     }
   };
-  
 
   const { user } = useUser();
   const empresaName = user?.empresaName ?? "Empresa Name";
   const isReserva = user?.id_rol === 1;
   const currentPlan = user?.payment?.plan;
   const currentPayment = user?.payment;
+
+  const isCalendar = user?.tipo_servicio === ID_TIPOSERVICIO_RESERVA;
 
   React.useEffect(() => {
     return () => {
@@ -97,7 +99,6 @@ const Home: React.FC = () => {
             />
           }
         >
-       
           {/* Métricas */}
           <Animatable.View
             animation="fadeInUp"
@@ -133,16 +134,15 @@ const Home: React.FC = () => {
               onPress={() => {}}
             />
 
-               {currentPlan && (
-            <SubscriptionInfo
-              currentPedidosMonthActual={subStatus?.currentMonthPedidos ?? 0}
-              plan={currentPlan?.nombre ?? "-"}
-              maxPedidos={subStatus?.maxPedidos}
-              expiryDate={currentPayment?.subscription_date}
-            />
-          )}
+            {currentPlan && (
+              <SubscriptionInfo
+                currentPedidosMonthActual={subStatus?.currentMonthPedidos ?? 0}
+                plan={currentPlan?.nombre ?? "-"}
+                maxPedidos={subStatus?.maxPedidos}
+                expiryDate={currentPayment?.subscription_date}
+              />
+            )}
           </Animatable.View>
-          
 
           {/* Últimas actividades */}
           <Animatable.View
@@ -161,26 +161,33 @@ const Home: React.FC = () => {
             </CustomText>
 
             {lastOrders.length > 0 ? (
-              lastOrders.map((order) => (
-                <LastActivityCard
-                  key={order.id}
-                  title={`${intl.formatMessage({
-                    id: isReserva ? "reserva.card.home" : "pedido.card.home",
-                    defaultMessage: isReserva ? "reserva" : "pedido",
-                  })} #${order.id}`}
-                  time={order.time || "Desconocido"}
-                  id={order.id.toString()}
-                  amount={order.amount || "$0"}
-                  icon={order.icon || "receipt"}
-                  address={order.address ?? "Dirección desconocida"}
-                  onPress={() =>
-                    router.push({
-                      pathname: "/(tabs)/orderDetails",
-                      params: { orderId: order.id },
-                    })
-                  }
-                />
-              ))
+              lastOrders.map((order) => {
+                console.log(order);
+                return (
+                  <LastActivityCard
+                    key={order.id}
+                    title={`${intl.formatMessage({
+                      id: isReserva ? "reserva.card.home" : "pedido.card.home",
+                      defaultMessage: isReserva ? "reserva" : "pedido",
+                    })} #${order.id}`}
+                    time={order.time || "Desconocido"}
+                    id={order.id.toString()}
+                    amount={order.amount || "$0"}
+                    icon={order.icon || "receipt"}
+                    address={
+                      isCalendar
+                        ? `${order?.fecha}`
+                        : (order.address ? `#${order.address}` : "Dirección desconocida")
+                    }
+                    onPress={() =>
+                      router.push({
+                        pathname: "/(tabs)/orderDetails",
+                        params: { orderId: order.id },
+                      })
+                    }
+                  />
+                );
+              })
             ) : (
               <Animatable.View
                 animation="fadeIn"

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "@/services/api/admin";
 import { useIntl } from "react-intl";
+import moment from "moment-timezone";
 
 interface Order {
   id: number;
@@ -14,6 +15,7 @@ interface FormattedOrder {
   id: number;
   time: string;
   amount: string;
+  fecha?: string;
   icon: string;
   address?: string | null;
   status: string;
@@ -60,7 +62,7 @@ export const useLastOrders = () => {
       const orders = response.data;
       setRawOrders(orders);
 
-      const formatted = orders.map((order: Order) => {
+      const formatted = orders.map((order: Order & { fecha: string }) => {
         let address = intl.formatMessage({ id: "orders.noAddress" });
         let status = intl.formatMessage({ id: "orders.noStatus" });
 
@@ -75,6 +77,7 @@ export const useLastOrders = () => {
         return {
           id: order.id,
           time: getTimeAgo(order.createdAt),
+          fecha: order?.fecha ? moment(order?.fecha).format("YYYY-MM-DD HH:mm") : "-",
           amount: intl.formatMessage({ id: "orders.currencyPrefix" }, { amount: order.total }),
           icon: "receipt",
           address,
