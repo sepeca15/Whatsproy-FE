@@ -51,14 +51,14 @@ const SubscriptionInfo = ({
 
   return (
     <Pressable onPress={toggleExpand}>
-      <Animatable.View animation="fadeIn" duration={300}>
+     
         <Box
           bg="white"
           borderRadius="md"
           px={4}
           py={3}
           mb={3}
-          shadow={1}
+         
           borderColor={isExpanded ? `rgba(7, 94, 84, 0.1)` : "transparent"}
           borderWidth={1}
         >
@@ -177,7 +177,7 @@ const SubscriptionInfo = ({
             </VStack>
           </Collapse>
         </Box>
-      </Animatable.View>
+     
     </Pressable>
   )
 }

@@ -1,24 +1,27 @@
-"use client"
-
-import React from "react"
-import { SafeAreaView, RefreshControl, ActivityIndicator, ScrollView } from "react-native"
-import { Colors } from "../../../constants/Colors"
-import CustomText from "./components/CustomText"
-import MetricCard from "./components/MetricCard"
-import LastActivityCard from "./components/LastActivityCard"
-import QuickActionButton from "./components/QuickActionButton"
-import styles from "./HomeStyles"
-import { router } from "expo-router"
-import LottieView from "lottie-react-native"
-import { FormattedMessage, useIntl } from "react-intl"
-import * as Animatable from "react-native-animatable"
-import { useOrdersDashboard } from "@/hooks/home_functions/useOrdersDashboard"
-import { useUser } from "@/hooks/redux/useUser"
-import { Image, View } from "native-base"
-import { globalStyles } from "@/components/globalStyles"
-import SubscriptionInfo from "@/components/SubscriptionInfo"
-import { useSubscriptionStatus } from "@/hooks/home_functions/useSubscriptionStatus"
-import { subscriptionBenefits } from "@/constants/variables"
+import React from "react";
+import {
+  SafeAreaView,
+  RefreshControl,
+  ActivityIndicator,
+  ScrollView,
+} from "react-native";
+import { Colors } from "../../../constants/Colors";
+import CustomText from "./components/CustomText";
+import MetricCard from "./components/MetricCard";
+import LastActivityCard from "./components/LastActivityCard";
+import QuickActionButton from "./components/QuickActionButton";
+import styles from "./HomeStyles";
+import { router } from "expo-router";
+import LottieView from "lottie-react-native";
+import { FormattedMessage, useIntl } from "react-intl";
+import * as Animatable from "react-native-animatable";
+import { useOrdersDashboard } from "@/hooks/home_functions/useOrdersDashboard";
+import { useUser } from "@/hooks/redux/useUser";
+import { Image, View } from "native-base";
+import { globalStyles } from "@/components/globalStyles";
+import SubscriptionInfo from "@/components/SubscriptionInfo";
+import { useSubscriptionStatus } from "@/hooks/home_functions/useSubscriptionStatus";
+import { ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
 
 const Home: React.FC = () => {
   const intl = useIntl()
@@ -36,7 +39,7 @@ const Home: React.FC = () => {
     } finally {
       setRefreshing(false)
     }
-  }
+  };
 
   const { user } = useUser()
   const empresaName = user?.empresaName ?? "Empresa Name"
@@ -52,6 +55,8 @@ const Home: React.FC = () => {
   const handleViewSubscriptionDetails = () => {
     router.push("/(tabs)/subscriptions")
   }
+
+  const isCalendar = user?.tipo_servicio === ID_TIPOSERVICIO_RESERVA;
 
   React.useEffect(() => {
     return () => {
@@ -140,26 +145,33 @@ const Home: React.FC = () => {
             </CustomText>
 
             {lastOrders.length > 0 ? (
-              lastOrders.map((order) => (
-                <LastActivityCard
-                  key={order.id}
-                  title={`${intl.formatMessage({
-                    id: isReserva ? "reserva.card.home" : "pedido.card.home",
-                    defaultMessage: isReserva ? "reserva" : "pedido",
-                  })} #${order.id}`}
-                  time={order.time || "Desconocido"}
-                  id={order.id.toString()}
-                  amount={order.amount || "$0"}
-                  icon={order.icon || "receipt"}
-                  address={order.address ?? "Dirección desconocida"}
-                  onPress={() =>
-                    router.push({
-                      pathname: "/(tabs)/orderDetails",
-                      params: { orderId: order.id },
-                    })
-                  }
-                />
-              ))
+              lastOrders.map((order) => {
+                console.log(order);
+                return (
+                  <LastActivityCard
+                    key={order.id}
+                    title={`${intl.formatMessage({
+                      id: isReserva ? "reserva.card.home" : "pedido.card.home",
+                      defaultMessage: isReserva ? "reserva" : "pedido",
+                    })} #${order.id}`}
+                    time={order.time || "Desconocido"}
+                    id={order.id.toString()}
+                    amount={order.amount || "$0"}
+                    icon={order.icon || "receipt"}
+                    address={
+                      isCalendar
+                        ? `${order?.fecha}`
+                        : (order.address ? `#${order.address}` : "Dirección desconocida")
+                    }
+                    onPress={() =>
+                      router.push({
+                        pathname: "/(tabs)/orderDetails",
+                        params: { orderId: order.id },
+                      })
+                    }
+                  />
+                );
+              })
             ) : (
               <Animatable.View animation="fadeIn" duration={600} style={styles.emptyStateContainer}>
                 <LottieView
