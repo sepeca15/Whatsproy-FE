@@ -16,22 +16,16 @@ import { Colors } from "../../../constants/Colors"
 import Animated, { FadeIn, FadeInDown } from "react-native-reanimated"
 import SalesChart from "./components/SalesChart"
 import QuickActions from "./components/QuickActions"
-
+import { useUser } from "@/hooks/redux/useUser";
 
 const Perfil: React.FC = () => {
   const router = useRouter()
   const [modalVisible, setModalVisible] = useState(false)
-  const [user, setUser] = useState<{
-    id: number
-    nombre: string
-    apellido: string
-    correo: string
-    image: string
-    hora_apertura: string
-    hora_cierre: string
-    id_empresa: number
-    id_rol: number
-  } | null>(null)
+ 
+    const { user } = useUser()
+    const currentPlan = user?.payment?.plan
+
+
   const [salesPeriod, setSalesPeriod] = useState("mensual")
   const [profileData, setProfileData] = useState(defaultProfileData)
   const [pedidos, setPedidos] = useState(0)
@@ -98,7 +92,7 @@ const Perfil: React.FC = () => {
       try {
         const userData = await AsyncStorage.getItem("user")
         if (userData) {
-          setUser(JSON.parse(userData))
+         
         } else {
           router.push("/login")
         }
@@ -110,6 +104,7 @@ const Perfil: React.FC = () => {
 
     fetchUser()
   }, [])
+
 
   useEffect(() => {
 
@@ -180,7 +175,7 @@ const Perfil: React.FC = () => {
             <VStack marginLeft={3}>
               <Text style={styles.name}>{user?.nombre || "Usuario"}</Text>
               <Text style={styles.plan}>
-                <FormattedMessage id="plan" defaultMessage="Plan" />: {profileData?.plan || "Free"}
+                <FormattedMessage id="plan" defaultMessage="Plan" />: {currentPlan?.nombre ?? "-"}
               </Text>
             </VStack>
           </HStack>
