@@ -1,4 +1,4 @@
-import CalendarView from "@/components/Views/Calendar";
+ import CalendarView from "@/components/Views/Calendar";
 import SubscriptionsView from "@/components/Views/Subscriptions";
 
 const Subscriptions = () => {
