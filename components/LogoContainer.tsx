@@ -8,7 +8,7 @@ const LogoContainer: React.FC = () => {
       h="100%"
       resizeMode="cover"
       rounded={'full'} 
-      source={{ uri: "/assets/images/icon.png" }} />
+      source={ require("../assets/images/icon.png") } />
   </Box>;
 };
 
