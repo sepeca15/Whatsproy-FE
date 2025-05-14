@@ -74,7 +74,7 @@ const Step1 = ({ formData, handleInputChange, errors }: IStep1) => {
           />
           <Ionicons
             name="camera"
-            size={30}
+            size={20}
             color="#fff"
             style={styles.imagePicker}
           />

@@ -21,7 +21,8 @@ const CustomButton = ({
   loading,
   ...props
 }: CustomButtonProps) => {
-  const buttonBackgroundColor = isDisabled ? "#d3d3d3" : background;
+  const backgroundWithOpacity = `${background}90`;
+  const buttonBackgroundColor = isDisabled ? backgroundWithOpacity : background;
 
   return (
     <Button
