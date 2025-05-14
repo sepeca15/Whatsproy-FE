@@ -55,7 +55,7 @@ const Step2 = ({ onSuccess, onNext }: { onSuccess?: any, onNext: any }) => {
     await RNIap.initConnection();
     const subs = await RNIap.getSubscriptions({
       skus: defaultPayments?.map(
-        (payment: any) => "basicsubscriptionmeasy2025"
+        (payment: any) => payment
       ),
     });
     console.log("subs", subs);

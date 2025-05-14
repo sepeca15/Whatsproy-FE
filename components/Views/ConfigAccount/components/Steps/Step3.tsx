@@ -17,8 +17,9 @@ const Step3 = ({ onNext }: { onNext: any }) => {
   const getResponseFromMyBe = async () => {
     const intervalId = setInterval(async () => {
       try {
-        const response = await api.products.getAll();
-        if (response?.status === 200) {
+        const response = await api.products.isEmpresaAvailable();
+        console.log("response", response)
+        if (response === 200) {
           clearInterval(intervalId);
           setStatusAccount(true);
           onNext();

@@ -77,6 +77,7 @@ const Step4 = () => {
             styles.buttonLeft,
             selectedButton === "QR" && styles.selectedButton,
           ]}
+          borderRightRadius={0}
           onPress={() => handleButtonSelect("QR")}
         >
           <CustomText
@@ -96,6 +97,7 @@ const Step4 = () => {
             styles.buttonRight,
             selectedButton === "Auth" && styles.selectedButton,
           ]}
+          borderLeftRadius={0}
           onPress={() => handleButtonSelect("Auth")}
         >
           <CustomText
