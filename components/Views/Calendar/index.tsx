@@ -9,7 +9,6 @@ import {
   Image,
 } from "react-native";
 
-
 import { Agenda } from "react-native-calendars";
 import { ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
 import api from "@/services/api/admin";
@@ -43,6 +42,11 @@ export default function CalendarView() {
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split("T")[0]
   );
+  const [agendaKey, setAgendaKey] = useState(0);
+
+  useEffect(() => {
+    setAgendaKey((prev) => prev + 1);
+  }, [selectedDate]);
   const { user } = useUser();
   const [loading, setLoading] = useState(true);
 
@@ -150,75 +154,78 @@ export default function CalendarView() {
           </Text>
         </View>
       </View>
-      <View style={styles.calendarContent}>
-        <Agenda
-          key={JSON.stringify(orderPerDays)}
-          items={orderPerDays}
-          selected={selectedDate}
-          refreshing={loading}
-          showOnlySelectedDayItems={true}
-          showClosingKnob={true}
-          onDayPress={(day: any) => {
-            setSelectedDate(day.dateString);
-          }}
-          renderKnob={() => (
-            <View style={{ alignItems: "center", padding: 10 }}>
-              <View
-                style={{
-                  width: 50,
-                  height: 5,
-                  borderRadius: 5,
-                  backgroundColor: "#128c7e",
-                }}
-              />
-            </View>
-          )}
-          renderItem={(data: IInfoItem) => (
-            <ItemCalendar
-              key={data.orderId}
-              confirmOrder={confirmOrder}
-              deleteOrder={deleteOrder}
-              InfoItem={data}
-              confirm={data.status}
-            />
-          )}
-          renderEmptyData={() => (
-            <View style={styles.emptyDate}>
-              {loading ? (
-                <Progress.Circle
-                  color={Colors.light.primary}
-                  indeterminate={true}
-                  size={50}
-                />
-              ) : (
+      {(
+        <View style={styles.calendarContent}>
+          <Agenda
+            items={orderPerDays}
+            selected={selectedDate}
+            refreshing={loading}
+            showOnlySelectedDayItems={true}
+            showClosingKnob={true}
+            onDayPress={(day: any) => {
+              setSelectedDate(day.dateString);
+            }}
+            renderKnob={() => (
+              <View style={{ alignItems: "center", padding: 10 }}>
                 <View
-                  style={{ ...stylesPending.containerImage, marginTop: 10 }}
-                >
-                  <Image
-                    source={require("../../../assets/images/no-records.png")}
-                    style={{ width: 350, height: 250, objectFit: "contain" }}
+                  style={{
+                    width: 50,
+                    height: 5,
+                    borderRadius: 5,
+                    backgroundColor: "#128c7e",
+                  }}
+                />
+              </View>
+            )}
+            renderItem={(data: IInfoItem) => (
+              <ItemCalendar
+                key={data.orderId}
+                confirmOrder={confirmOrder}
+                deleteOrder={deleteOrder}
+                InfoItem={data}
+                confirm={data.status}
+              />
+            )}
+            renderEmptyData={() => (
+              <View style={styles.emptyDate}>
+                {loading ? (
+                  <Progress.Circle
+                    color={Colors.light.primary}
+                    indeterminate={true}
+                    size={50}
                   />
-                   <FormattedMessage
-                    id="noOrdersAvailable.index"
-                    defaultMessage="No orders available"
-                  />
-                </View>
-              )}
-            </View>
-          )}
-          rowHasChanged={(r1: any, r2: any) =>
-            r1.name !== r2.name || r1?.expanded !== r2?.expanded
-          }
-          theme={{
-            agendaDayTextColor: "#333",
-            agendaDayNumColor: "#333",
-            agendaTodayColor: "#128c7e",
-            agendaKnobColor: "#128c7e",
-            selectedDayBackgroundColor: "#128c7e",
-            selectedDayTextColor: "#ffffff",
-          }}
-        />
-      </View>
+                ) : (
+                  <View
+                    style={{ ...stylesPending.containerImage, marginTop: 10 }}
+                  >
+                    <Image
+                      source={require("../../../assets/images/no-records.png")}
+                      style={{ width: 350, height: 250, objectFit: "contain" }}
+                    />
+                    <CustomText>
+                      <FormattedMessage
+                        id="noOrdersAvailable.index"
+                        defaultMessage="No orders available"
+                      />
+                    </CustomText>
+                  </View>
+                )}
+              </View>
+            )}
+            rowHasChanged={(r1: any, r2: any) =>
+              r1.name !== r2.name || r1?.expanded !== r2?.expanded
+            }
+            theme={{
+              agendaDayTextColor: "#333",
+              agendaDayNumColor: "#333",
+              agendaTodayColor: "#128c7e",
+              agendaKnobColor: "#128c7e",
+              selectedDayBackgroundColor: "#128c7e",
+              selectedDayTextColor: "#ffffff",
+            }}
+          />
+        </View>
+      )}
 
       {openAddModal && selectedDate && (
         <CreateOrderModal
@@ -285,7 +292,6 @@ const styles = StyleSheet.create({
     height: "100%",
     maxHeight: "100%",
     flexDirection: "column",
-    backgroundColor: "#fff",
   },
   item: {
     backgroundColor: "#128c7e8c",

@@ -15,82 +15,119 @@ import { globalStyles } from "@/components/globalStyles";
 import { useUser } from "@/hooks/redux/useUser";
 
 const Categories = () => {
-  const [allCategories, setAllCategories] = React.useState<ICategoryData[]>([])
-  const [stateModal, setStateModal] = React.useState(false)
-  const [loadingApi, setLoadingApi] = React.useState(false)
-  const {user} = useUser()
+  const [allCategories, setAllCategories] = React.useState<ICategoryData[]>([]);
+  const [stateModal, setStateModal] = React.useState(false);
+  const [loadingApi, setLoadingApi] = React.useState(false);
+  const { user } = useUser();
 
-  console.log(user);
-  
-  const toggleModal = () => setStateModal((prev) => (!prev))
+  const toggleModal = () => setStateModal((prev) => !prev);
 
   const addCategory = (newCategory: any) => {
     setAllCategories((prev: any) => {
-      return [...prev, newCategory]
-    })
-  }
+      return [...prev, newCategory];
+    });
+  };
 
   const loadAllCategories = async () => {
-    setLoadingApi(true)
+    setLoadingApi(true);
     try {
-      const resp = await api.category.getAll()
+      const resp = await api.category.getAll();
 
       if (resp.ok) {
-        setAllCategories(resp.data)
+        setAllCategories(resp.data);
       }
-
     } catch (error) {
       console.log(error);
     } finally {
-      setLoadingApi(false)
+      setLoadingApi(false);
     }
-  }
+  };
 
   React.useEffect(() => {
-    loadAllCategories()
-  }, [])
+    loadAllCategories();
+  }, []);
 
-  return <View style={{ flex: 1 }}>
-    <Animated.View style={globalStyles.header}>
-      <View style={globalStyles.headerContent}>
-        <View style={globalStyles.headerLeft}>
-          <CustomText
-            style={globalStyles.businessName}
-            accessibilityLabel="Pedidos"
-          >
-            <FormattedMessage id="categories" />
-          </CustomText>
+  return (
+    <View style={{ flex: 1 }}>
+      <Animated.View style={globalStyles.header}>
+        <View style={globalStyles.headerContent}>
+          <View style={globalStyles.headerLeft}>
+            <CustomText
+              style={globalStyles.businessName}
+              accessibilityLabel="Pedidos"
+            >
+              <FormattedMessage id="categories" />
+            </CustomText>
+          </View>
         </View>
-      </View>
-    </Animated.View>
-    <View pb={10} h={'full'} w={'full'} flex={1} display={'flex'} flexDir={'column'} alignItems={'center'} color={'black'}>
-
-      <View w={'full'} py={2} flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}>
-        {
-          loadingApi ?
+      </Animated.View>
+      <View
+        pb={10}
+        h={"full"}
+        w={"full"}
+        flex={1}
+        display={"flex"}
+        flexDir={"column"}
+        alignItems={"center"}
+        color={"black"}
+      >
+        <View
+          w={"full"}
+          py={2}
+          flex={1}
+          display={"flex"}
+          alignItems={"center"}
+          justifyContent={"center"}
+        >
+          {loadingApi ? (
             <Spinner color={"black"} size={40} />
-            :
-            allCategories.length > 0 ?
-              <FlatList
-                style={{width:"100%", paddingHorizontal:8}}
-                data={allCategories}
-                renderItem={({ item }) => <CardCategory data={item} />}
-                keyExtractor={(_, index) => index.toString()}
-                numColumns={3} 
-                columnWrapperStyle={{ justifyContent: 'space-between' }}
-              />
-              :
-              <View>
-                <SvgEmpty />
-              </View>
-        }
+          ) : allCategories.length > 0 ? (
+            <FlatList
+              style={{ width: "100%", paddingHorizontal: 8 }}
+              data={allCategories}
+              renderItem={({ item }) => <CardCategory data={item} />}
+              keyExtractor={(_, index) => index.toString()}
+              numColumns={3}
+              columnWrapperStyle={{ justifyContent: "center", gap: 10 }}
+            />
+          ) : (
+            <View
+              display="flex"
+              flexDirection="column"
+              alignItems={"center"}
+              justifyContent={"center"}
+            >
+              <SvgEmpty />
+              <CustomText style={{ fontSize: 14, fontWeight: 400 }}>
+                {<FormattedMessage id="noCategories" />}
+              </CustomText>
+            </View>
+          )}
+        </View>
+        <CustomButton
+          shadow={"5"}
+          display={"flex"}
+          flexDir={"row"}
+          paddingLeft={5}
+          paddingRight={5}
+          borderRadius={10}
+          paddingTop={2}
+          paddingBottom={3}
+          height={40}
+          fontWeight={"semibold"}
+          alignItems={"center"}
+          onPress={toggleModal}
+        >
+          <FormattedMessage id="addCategorie" />
+        </CustomButton>
+        <ModalCreateCategory
+          addCategory={addCategory}
+          onClose={toggleModal}
+          isOpen={stateModal}
+        />
       </View>
-      <CustomButton shadow={'5'} display={'flex'} flexDir={'row'} paddingLeft={5} paddingRight={5} borderRadius={10} paddingTop={2} paddingBottom={3} height={40} fontWeight={"semibold"} alignItems={'center'} onPress={toggleModal}>
-        <FormattedMessage id="addCategorie" />
-      </CustomButton>
-      <ModalCreateCategory addCategory={addCategory} onClose={toggleModal} isOpen={stateModal} />
     </View>
-  </View>
+  );
 };
 
 export default Categories;

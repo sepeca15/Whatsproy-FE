@@ -18,7 +18,7 @@ const CardCategory = ({ data }: ICardCategory) => {
         <View p={4} marginBottom={4} w={"31%"} bg={'white'} rounded={'md'} alignItems={'center'}>
             {
                 data.image ?
-                    <Image w={20} h={20} alt="img" source={{ uri: data.image }} />
+                    <Image w={20} h={20} alt="img" source={{ uri: data.image }} style={{ borderRadius: 50 }} />
                     :
                     <MaterialCommunityIcons name="food-outline" size={40} />
             }

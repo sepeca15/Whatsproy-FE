@@ -11,6 +11,7 @@ interface InputFieldProps {
   isTextArea?: boolean;
   [key: string]: any;
   keyboardType?: any;
+  isDisabled?: boolean;
   isRequired?: boolean;
   error?: any;
   icon?: any;
@@ -29,12 +30,14 @@ const InputField: React.FC<InputFieldProps> = ({
   icon,
   error,
   isTime,
+  isDisabled,
   ...props
 }) => {
   const inputRef = useRef<any>(null);
 
   return (
     <FormControl
+      isDisabled={isDisabled}
       isInvalid={error}
       style={{ marginTop: marginTop }}
       isRequired={isRequired}
