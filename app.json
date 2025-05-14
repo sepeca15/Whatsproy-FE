@@ -2,9 +2,9 @@
   "expo": {
     "name": "Measy",
     "slug": "Whatsproy",
-    "runtimeVersion": "1.7.5",
+    "runtimeVersion": "1.7.6",
     "newArchEnabled": true,
-    "version": "1.7.5",
+    "version": "1.7.6",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -28,7 +28,7 @@
       }
     },
     "android": {
-      "versionCode": 10705,
+      "versionCode": 10706,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon_foreground.png",
         "backgroundImage": "./assets/images/icon_background.png"
