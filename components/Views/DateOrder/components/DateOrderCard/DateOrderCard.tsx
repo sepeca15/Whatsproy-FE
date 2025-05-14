@@ -22,7 +22,7 @@ interface IProps {
 }
 
 const DateOrderCard = ({ data, onDeleteItem, isPar }: IProps) => {
-  
+
   return (
     <View
       style={[
@@ -35,7 +35,20 @@ const DateOrderCard = ({ data, onDeleteItem, isPar }: IProps) => {
       </View>
 
       <View style={styles.column}>
-        <CustomText style={styles.text}>{data.tipo}</CustomText>
+        <CustomText style={styles.text}>
+          {
+            data.tipo === 'string' ?
+              <FormattedMessage id="dateOrderTypeText" />
+              :
+              data.tipo === 'number' ?
+                <FormattedMessage id="dateOrderTypeNumber" />
+                :
+                data.tipo === 'boolean' ?
+                  <FormattedMessage id="dateOrderTypeBoolean" />
+                  :
+                  <FormattedMessage id="dateOrderTypeDate" />
+          }
+        </CustomText>
       </View>
       <View style={styles.column}>
         <CustomText style={styles.text}>

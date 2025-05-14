@@ -41,8 +41,7 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
   const keyDeleteType = pending ? "pending" : "finished";
   const { clientName, numberSender, orderId, total } = orderData;
 
-
-  const direccion = orderData?.direccion;
+  const direccion = orderData?.direccion ?? "No direction";
   const intl = useIntl();
   const createdAt = orderData?.createdAt;
   const fromNow =  createdAt ? moment(createdAt)?.fromNow() : "";

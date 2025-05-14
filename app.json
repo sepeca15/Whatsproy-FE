@@ -22,7 +22,10 @@
         "usesNonExemptEncryption": false
       },
       "googleServicesFile": "./assets/GoogleService-Info.plist",
-      "bundleIdentifier": "com.whatsproy"
+      "bundleIdentifier": "com.whatsproy",
+      "infoPlist": {
+        "NSContactsUsageDescription": "Esta aplicación necesita acceder a tus contactos para importarlos."
+      }
     },
     "android": {
       "versionCode": 10705,
@@ -32,7 +35,7 @@
       },
       "googleServicesFile": "./assets/google-services.json",
       "newArchEnabled": true,
-      "permissions": ["NOTIFICATIONS"],
+      "permissions": ["NOTIFICATIONS", "CONTACTS"],
       "package": "com.whatsproy"
     },
     "web": {

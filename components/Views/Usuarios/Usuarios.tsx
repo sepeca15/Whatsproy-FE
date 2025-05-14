@@ -147,7 +147,7 @@ const UsuariosEmpresasScreen: React.FC = () => {
       user.nombre.toLowerCase().includes(valueSearch.toLocaleLowerCase())
     );
   }, [userData.data, valueSearch]);
-  
+
   return (
     <View style={styles.container}>
       <View style={[styles.headerGradient, { backgroundColor: Colors.light.primary, }]}>
@@ -167,7 +167,7 @@ const UsuariosEmpresasScreen: React.FC = () => {
         {
           stateSearchValue &&
           <View style={styles.inputContainer}>
-            <Input onChangeText={(text: string)=> setValueSearch(text)} placeholder="Search user" variant="unstyled" style={styles.input} value={valueSearch} ></Input>
+            <Input onChangeText={(text: string) => setValueSearch(text)} placeholder="Search user" variant="unstyled" style={styles.input} value={valueSearch} ></Input>
           </View>
         }
       </View>
@@ -201,7 +201,7 @@ const UsuariosEmpresasScreen: React.FC = () => {
           >
             {filteredUsers.map((infoUser, index) => (
               <UserCard
-                allowManage={user.firstUser}
+                allowManage={user.isAdmin}
                 selectEditUser={selectEditUser}
                 deleteUser={onDeleteUser}
                 key={index}
@@ -221,18 +221,21 @@ const UsuariosEmpresasScreen: React.FC = () => {
           </Text>
         </View>
       )}
+      {
+        user.isAdmin &&
+        <View style={globalStyles.buttonContainer}>
+          <TouchableOpacity
+            style={globalStyles.addButton}
+            onPress={() => toggleModalState("modalCreate", true)}
+            activeOpacity={0.8}
+          >
+            <View style={[styles.addButtonGradient, { backgroundColor: Colors.light.primary }]}>
+              <Ionicons name="add" size={30} color="#fff" />
+            </View>
+          </TouchableOpacity>
+        </View>
 
-      <View style={globalStyles.buttonContainer}>
-        <TouchableOpacity
-          style={globalStyles.addButton}
-          onPress={() => toggleModalState("modalCreate", true)}
-          activeOpacity={0.8}
-        >
-          <View style={[styles.addButtonGradient, { backgroundColor: Colors.light.primary }]}>
-            <Ionicons name="add" size={30} color="#fff" />
-          </View>
-        </TouchableOpacity>
-      </View>
+      }
 
       <ModalCreateUser
         onToogleModal={() => toggleModalState("modalCreate", false)}

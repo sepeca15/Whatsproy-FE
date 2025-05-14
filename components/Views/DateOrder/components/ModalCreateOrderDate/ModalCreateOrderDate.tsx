@@ -8,7 +8,7 @@ import InputField from "@/components/InputField";
 import { useUser } from "@/hooks/redux/useUser";
 import api from "@/services/api/admin";
 import { useToastContext } from "@/contexts/ToastContext";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmAction";
 
 interface IDateOrder {
@@ -37,7 +37,7 @@ const initialValues = {
 const ModalCreateOrderDate = ({ data, onClose, updateOrder }: IProps) => {
   const { user } = useUser();
   const { showToast } = useToastContext();
-
+  const intl = useIntl();
   const [loadingApi, setloadingApi] = React.useState<boolean>(false)
   const [stateModalConfirm, setstateModalConfirm] = React.useState<boolean>(false)
 
@@ -53,7 +53,6 @@ const ModalCreateOrderDate = ({ data, onClose, updateOrder }: IProps) => {
     }));
   };
 
-  const toggleModalConfirm = () => setstateModalConfirm((prev)=> !prev)
 
   const createOrderData = async () => {
     setloadingApi(true)
@@ -143,6 +142,7 @@ const ModalCreateOrderDate = ({ data, onClose, updateOrder }: IProps) => {
                     { label: "Si", value: true },
                     { label: "No", value: false },
                   ]}
+                  useNativeAndroidPickerStyle={false}
                   style={{
                     inputAndroid: styles.inputElement,
                     inputIOS: styles.inputElement,
@@ -161,10 +161,12 @@ const ModalCreateOrderDate = ({ data, onClose, updateOrder }: IProps) => {
                   value={form.tipo}
                   onValueChange={(value) => handleChangeValue("tipo", value)}
                   items={[
-                    { label: "string", value: "string" },
-                    { label: "number", value: "number" },
-                    { label: "boolean", value: "boolean" },
+                    { label: intl.formatMessage({ id: "dateOrderTypeText" }), value: "string" },
+                    { label: intl.formatMessage({ id: "dateOrderTypeNumber" }), value: "number" },
+                    { label: intl.formatMessage({ id: "dateOrderTypeBoolean" }), value: "boolean" },
+                    { label: intl.formatMessage({ id: "dateOrderTypeDate" }), value: "date" },
                   ]}
+                  useNativeAndroidPickerStyle={false}
                   style={{
                     inputAndroid: styles.inputElement,
                     inputIOS: styles.inputElement,
@@ -229,7 +231,16 @@ const styles = StyleSheet.create({
     borderColor: "#cfcfcf",
     borderRadius: 5,
   },
-  inputElement: {},
+  inputElement: {
+    height: 40,
+    paddingVertical: 0,
+    paddingHorizontal: 8,
+    lineHeight: 40,
+    fontSize: 16,
+    color: 'black',
+    includeFontPadding: false, // 👈 solo en Android: remueve padding interno de la fuente
+    textAlignVertical: 'center', // 👈 centra el texto verticalmente en Android
+  },
   decorateDiv: {
     marginBottom: 12,
     width: "60%",

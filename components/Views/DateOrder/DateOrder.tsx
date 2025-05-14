@@ -10,15 +10,37 @@ import MaterialIconss from "react-native-vector-icons/MaterialIcons";
 import * as Progress from "react-native-progress";
 import { Colors } from "@/constants/Colors";
 import { useToastContext } from "@/contexts/ToastContext";
-import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
+import { FormattedMessage, useIntl } from "react-intl"; // Importa FormattedMessage
 import Animated from "react-native-reanimated";
 import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmAction";
-import { initPaymentSheet } from "@stripe/stripe-react-native";
 import { globalStyles } from "@/components/globalStyles";
 
-const ItemsTable = ["Name", "Type", "Required", "Is Defect", ""];
 
 const DateOrder: React.FC = () => {
+  const intl = useIntl()
+  const ItemsTable = [
+    {
+      element: intl.formatMessage({ id: "dateOrderTypeTitleName" }),
+      key: "Name"
+    },
+    {
+      element: intl.formatMessage({ id: "dateOrderTypeTitleType" }),
+      key: "Type"
+    },
+    {
+      element: intl.formatMessage({ id: "dateOrderTypeTitleRequired" }),
+      key: "Required"
+    },
+    {
+      element: intl.formatMessage({ id: "dateOrderTypeTitleIsDefault" }),
+      key: "isDefault"
+    },
+    {
+      element: "",
+      key: ""
+    },
+  ];
+
   const [orderDate, setOrderDate] = React.useState<any[]>([]);
   const [selectedItem, setSelectedItem] = React.useState<any>({});
   const [stateModal, setStateModal] = React.useState<boolean>(false);
@@ -131,14 +153,14 @@ const DateOrder: React.FC = () => {
               <View
                 key={index}
                 style={
-                  item === "Name"
+                  item.key === "Name"
                     ? styles.columnName
-                    : item === ""
+                    : item.key === ""
                       ? styles.columnDelete
                       : styles.column
                 }
               >
-                <CustomText style={styles.text}>{item}</CustomText>
+                <CustomText style={styles.text}>{item.element}</CustomText>
               </View>
             );
           })}
@@ -150,7 +172,7 @@ const DateOrder: React.FC = () => {
               <DateOrderCard
                 isPar={isPar}
                 key={index}
-                onDeleteItem={()=> openConfirmModal(item.id)}
+                onDeleteItem={() => openConfirmModal(item.id)}
                 data={item}
               />
             );

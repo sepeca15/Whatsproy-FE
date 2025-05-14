@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Spinner, View } from "native-base";
+import { FlatList, Spinner, View } from "native-base";
 import api from "@/services/api/admin";
 import ModalCreateCategory from "./components/ModalCreateCategory";
 import SvgEmpty from "@/assets/svgComponents/Empty";
@@ -12,12 +12,16 @@ import CustomText from "@/components/CustomText";
 import { FormattedMessage } from "react-intl";
 import CustomButton from "@/components/CustomButton";
 import { globalStyles } from "@/components/globalStyles";
+import { useUser } from "@/hooks/redux/useUser";
 
 const Categories = () => {
   const [allCategories, setAllCategories] = React.useState<ICategoryData[]>([])
   const [stateModal, setStateModal] = React.useState(false)
   const [loadingApi, setLoadingApi] = React.useState(false)
+  const {user} = useUser()
 
+  console.log(user);
+  
   const toggleModal = () => setStateModal((prev) => (!prev))
 
   const addCategory = (newCategory: any) => {
@@ -67,15 +71,14 @@ const Categories = () => {
             <Spinner color={"black"} size={40} />
             :
             allCategories.length > 0 ?
-              <Grid>
-                <Row style={{ flexWrap: "wrap", justifyContent: "flex-start", width: "100%" }}>
-                  {
-                    allCategories.map((category: any, index: number) => {
-                      return <CardCategory key={index} data={category} />
-                    })
-                  }
-                </Row>
-              </Grid>
+              <FlatList
+                style={{width:"100%", paddingHorizontal:8}}
+                data={allCategories}
+                renderItem={({ item }) => <CardCategory data={item} />}
+                keyExtractor={(_, index) => index.toString()}
+                numColumns={3} 
+                columnWrapperStyle={{ justifyContent: 'space-between' }}
+              />
               :
               <View>
                 <SvgEmpty />
