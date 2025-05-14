@@ -285,8 +285,13 @@ const OrderDetails = () => {
             <Text style={styles.sectionTitle}><FormattedMessage id="estimatedTime" defaultMessage="Tiempo Estimado"/></Text>
           </View>
           <View style={styles.timeContainer}>
-            <MaterialCommunityIcons name="timer-outline" size={36} color={Colors.light.primary}/>
-            <Text style={styles.estimateTimeValue}>{detailOfOrder.data?.estimateTime} <Text style={styles.estimateTimeUnit}>{detailOfOrder.data?.estimateTime!>60?"horas":"minutos"}</Text></Text>
+            <MaterialCommunityIcons name="timer-outline" size={36} color={Colors.light.primary} style={{ marginRight: 10 }}/>
+            <Text style={styles.estimateTimeValue}>
+              {detailOfOrder.data?.estimateTime}{" "}
+              <Text style={styles.estimateTimeUnit}>
+          {detailOfOrder.data?.estimateTime! > 60 ? "horas" : "minutos"}
+              </Text>
+            </Text>
           </View>
         </Animated.View>
 
