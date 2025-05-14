@@ -274,7 +274,7 @@ const SubscriptionsView = () => {
 
       {shouldSubscribe && (
         <GlobalModal
-          content={<Step2 onSuccess={() => setShouldSubscribe(false)} />}
+          content={<Step2  onNext={() => null} onSuccess={() => setShouldSubscribe(false)} />}
           label={intl.formatMessage({
             id: "subscribe",
             defaultMessage: "Suscribirse",

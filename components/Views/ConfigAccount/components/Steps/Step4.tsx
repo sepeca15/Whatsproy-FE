@@ -19,7 +19,7 @@ const Step4 = () => {
     handleUpdateGreenApiConfig,
   } = useUser();
   const [selectedButton, setSelectedButton] = React.useState<buttons | null>(
-    null,
+    null
   );
   const [data, setData] = React.useState({
     QRCode: null,

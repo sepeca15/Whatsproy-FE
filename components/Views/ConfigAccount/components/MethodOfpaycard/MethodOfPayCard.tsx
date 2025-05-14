@@ -6,7 +6,6 @@ import ComunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import CustomButton from "@/components/CustomButton";
 import { FormattedMessage } from "react-intl";
 import { Subscription } from "react-native-iap";
-import { subscriptionBenefits } from "@/constants/variables";
 
 interface IMethodOfPayCard {
   Plan: any;
@@ -31,24 +30,27 @@ const MethodOfPayCard = ({ Plan, selectPlan, planInfo }: IMethodOfPayCard) => {
 
   return (
     <View style={styles.MainContainer}>
+      {planInfo?.mostPopular && (
+        <View style={styles.ContainerMostPopular}>
+          <CustomText style={styles.PopularText}>
+            🏅 <FormattedMessage id="mostPopular" defaultMessage="Más popular" />
+          </CustomText>
+        </View>
+      )}
       <View style={styles.containerCardMethodOfPay}>
         <View style={styles.ContainerHeader}>
           <CustomText style={styles.WhiteTextBold}>{planInfo?.nombre ?? Plan?.name}</CustomText>
           <View style={styles.ContainerRow}>
-            <CustomText style={[styles.WhiteTextBold, { fontSize: 25 }]}>
-              {price}
-            </CustomText>
-            <CustomText style={[styles.WhiteText, { fontSize: 20 }]}>
-              /mo
-            </CustomText>
+            <CustomText style={styles.WhiteTextPrice}>{price}</CustomText>
+            <CustomText style={styles.WhiteText}>/mo</CustomText>
           </View>
           <View style={styles.ContainerAdvantages}>
             {adventagesArray.map((advantage: string, index: number) => (
               <View key={index} style={styles.ContainerRowAdventage}>
                 <View style={styles.ContainerCircle}>
-                  <ComunityIcons name="check" color={"black"} size={10} />
+                  <ComunityIcons name="check" color={"white"} size={14} />
                 </View>
-                <CustomText style={styles.WhiteText}>{advantage}</CustomText>
+                <CustomText style={styles.WhiteText}>{advantage.trim()}</CustomText>
               </View>
             ))}
           </View>
@@ -56,12 +58,12 @@ const MethodOfPayCard = ({ Plan, selectPlan, planInfo }: IMethodOfPayCard) => {
         <View style={styles.ContainerFooter}>
           <CustomButton
             colorSpiner="white"
-            style={{ alignContent: "flex-start" }}
+            style={styles.ButtonBuyNow}
             width={"100%"}
-            background="#323232"
-            onPress={() => selectPlan(Plan)} 
+            background="#128c7e"
+            onPress={() => selectPlan(Plan)}
           >
-            <FormattedMessage id="buyNow" />
+            <FormattedMessage id="buyNow" defaultMessage="Comprar ahora" />
           </CustomButton>
         </View>
       </View>

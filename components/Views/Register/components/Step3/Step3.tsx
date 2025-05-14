@@ -18,10 +18,16 @@ const Step3 = ({
   handleInputChange,
   tipoServicio,
 }: IStep3) => {
-  const intl = useIntl(); // Usa useIntl para obtener la instancia de intl
+  const intl = useIntl();
 
   return (
     <VStack space={4}>
+        <CustomText style={styles.textCenterLg}>
+        {intl.formatMessage({
+          id: "registrationLogin",
+          defaultMessage: "registrationLogin",
+        })}
+      </CustomText>
       <View>
         <InputField
           label={intl.formatMessage({ id: "email", defaultMessage: "Email" })}
@@ -42,7 +48,7 @@ const Step3 = ({
             id: "password",
             defaultMessage: "Password",
           })}
-          placeholder=""
+          placeholder="Password"
           value={formData.password}
           onChangeText={(value) => handleInputChange("password", value)}
         />
@@ -56,7 +62,7 @@ const Step3 = ({
             id: "confirmPassword",
             defaultMessage: "Confirm Password",
           })}
-          placeholder=""
+          placeholder="Confirm Password"
           value={formData.confirmPassword}
           onChangeText={(value) => handleInputChange("confirmPassword", value)}
         />
