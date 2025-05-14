@@ -6,9 +6,8 @@ import { useUser } from "@/hooks/redux/useUser";
 import { ScrollView, Switch, View, VStack } from "native-base";
 import * as React from "react";
 import { TouchableOpacity } from "react-native";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
-import { FormattedMessage, useIntl } from "react-intl"; 
+import { FormattedMessage, useIntl } from "react-intl";
 import Animated from "react-native-reanimated";
 import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -165,7 +164,7 @@ const GeneralConfig = () => {
               </View>
             </View>
 
-            {user.empresa_id !== TipoServicio.RESERVA && (
+            {user.empresa_id === TipoServicio.RESERVA && (
               <View style={styles.colum}>
                 <View style={styles.notifReserva}>
                   <View style={styles.containerNotifReserva}>

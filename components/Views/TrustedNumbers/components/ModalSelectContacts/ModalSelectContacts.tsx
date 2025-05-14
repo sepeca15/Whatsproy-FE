@@ -20,25 +20,34 @@ const ModalSelectContact = ({ isOpen, onClose, onImportContacts, loadingApi, tru
 
     const importContacts = async () => {
         const { status } = await Contacts.requestPermissionsAsync();
-        if (status === "granted") {
-            const { data } = await Contacts.getContactsAsync({
-                fields: [Contacts.Fields.PhoneNumbers],
-            });
-
-            if (data.length > 0) {
-                setContacts(data);
-                const matchedContacts = data.filter(c =>
-                    c.phoneNumbers?.some(p =>
-                        trustedPhones.includes((p.number ?? "").replace(/\D/g, '').replace(/^0+/, ''))
-                    )
-                );
-
-                const matchedIds = new Set<string>(
-                    matchedContacts.map(c => String(c.id)).filter(Boolean)
-
-                );
-                setContactsSelected(matchedIds); setContactsSelected(matchedIds);
+        console.log(status);
+        
+        try {
+            if (status === "granted") {
+                const { data } = await Contacts.getContactsAsync({
+                    fields: [Contacts.Fields.PhoneNumbers],
+                });
+    
+                if (data.length > 0) {
+                    console.log('jasjasjas');
+                    
+                    setContacts(data);
+                    const matchedContacts = data.filter(c =>
+                        c.phoneNumbers?.some(p =>
+                            trustedPhones.includes((p.number ?? "").replace(/\D/g, '').replace(/^0+/, ''))
+                        )
+                    );
+    
+                    const matchedIds = new Set<string>(
+                        matchedContacts.map(c => String(c.id)).filter(Boolean)
+                    );
+                    setContactsSelected(matchedIds); setContactsSelected(matchedIds);
+                }
             }
+            
+        } catch (error) {
+            console.log(error);
+            
         }
     };
 
@@ -84,6 +93,7 @@ const ModalSelectContact = ({ isOpen, onClose, onImportContacts, loadingApi, tru
 
     return (
         <GlobalModal
+            manyItems={true}
             isVisible={isOpen}
             onClose={onClose}
             content={
@@ -127,7 +137,7 @@ const ModalSelectContact = ({ isOpen, onClose, onImportContacts, loadingApi, tru
                         }));
 
                         console.log('son', selectedContacts.length);
-                        
+
                         onImportContacts(selectedContacts);
                         setContactsSelected(new Set());
                         onClose();

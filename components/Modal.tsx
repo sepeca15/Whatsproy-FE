@@ -40,7 +40,7 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
             <View style={styles.decorateDiv}></View>
             <View style={styles.containerCreate}>
               <View style={styles.containerTitle}>
-                <Pressable hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}  accessibilityLabel={`Cerrar Modal`} onPress={onClose}>
+                <Pressable hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }} accessibilityLabel={`Cerrar Modal`} onPress={onClose}>
                   <EvilIcons name="close" size={25} color={"white"} />
                 </Pressable>
                 <CustomText style={{ color: "white", fontSize: 20 }}>
@@ -52,7 +52,7 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
 
           <View style={styles.bodyContent}>
             {
-              !manyItems ?
+              manyItems === true ?
                 <View>
                   {content}
                 </View>

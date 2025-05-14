@@ -1,5 +1,3 @@
-"use client";
-
 import type React from "react";
 import { useState, useEffect, useRef } from "react";
 import {
@@ -9,33 +7,25 @@ import {
   TouchableOpacity,
   Modal,
   Alert,
-  ActivityIndicator,
   Animated,
 } from "react-native";
-import * as Animatable from 'react-native-animatable'; // Importamos la librería
 import Icon from "react-native-vector-icons/Feather";
 import { useRouter } from "expo-router";
 import { styles } from "./CardProdStyle";
 import api from "@/services/api/admin";
-import { useLocalization } from "@/app/LocalizationContext";
 import { FormattedMessage, useIntl } from "react-intl";
 import LottieView from "lottie-react-native";
-import { Colors } from "../../../../../constants/Colors";
 
 
 import type {
   Product,
-  SatisfactionData,
   ProductBDD,
-  CategoryData,
-  SalesData,
   DayslySalesData,
   MonthlySalesData,
 } from "../../../../../hooks/dataProduct";
-import { useToast } from "native-base";
 import { useToastContext } from "@/contexts/ToastContext";
 import { useUser } from "@/hooks/redux/useUser";
-import { Dimensions } from "react-native";
+import { Button, Pressable } from "native-base";
 
 interface ProductCardProps {
   product: Product;
@@ -88,10 +78,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     }
   }, [isBeingDeleted, slideOutAnim, opacityAnim]);
 
-  
+
   const handleImageLoad = () => {
     setLoading(false);
-  };  
+  };
 
   const handleEdit = () => {
     router.push({
@@ -106,7 +96,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         duration: productBDD.plazoDuracionEstimadoMinutos.toString(),
         currency_id: productBDD?.currency_id,
         disponible: productBDD.disponible.toString(),
-        category: productBDD.category.map((cat)=> (cat.id)).join(','),      
+        category: productBDD.category.map((cat) => (cat.id)).join(','),
       },
     });
   };
@@ -135,7 +125,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     });
   };
 
-  const toggleAvailability = async () => {    
+  const toggleAvailability = async () => {
     setModalVisible(false);
     if (localDisponible) {
       Alert.alert(
@@ -163,7 +153,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             onPress: async () => {
               const newDisponible = false;
               setLocalDisponible(newDisponible);
-              try {                
+              try {
                 const updatedProduct = {
                   ...productBDD,
                   disponible: newDisponible,
@@ -178,7 +168,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                     title: "Product updated successfully",
                     status: "success",
                   });
-                  
+
                   onUpdateProduct(res.data.data);
                 }
               } catch (error) {
@@ -199,9 +189,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       setLocalDisponible(newDisponible);
       try {
         const updatedProduct = { ...productBDD, disponible: newDisponible };
-        const {data} = await api.products.update(productBDD.id, updatedProduct);
+        const { data } = await api.products.update(productBDD.id, updatedProduct);
 
-        if(data.ok) {
+        if (data.ok) {
           onUpdateProduct(data.data);
         }
       } catch (error) {
@@ -211,7 +201,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     }
   };
 
-  const handleDelete = () => {    
+  const handleDelete = () => {
     Alert.alert(
       intl.formatMessage({
         id: "confirmDelete",
@@ -241,7 +231,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   return (
-    <Animated.View 
+    <Animated.View
       style={[
         styles.container,
         {
@@ -259,6 +249,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </Text>
         </View>
       )}
+
+      <Button onPress={handleView} style={styles.overlay1}></Button>
 
       <View style={styles.card}>
 
@@ -288,6 +280,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <TouchableOpacity
               onPress={() => setModalVisible(true)}
               style={styles.moreButton}
+              hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
+
             >
               <Icon name="more-vertical" size={20} color="#666" />
             </TouchableOpacity>
@@ -355,7 +349,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       </Modal>
 
     </Animated.View>
-   
+
   );
 };
 
