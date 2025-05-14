@@ -16,7 +16,7 @@ import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmActi
 import { initPaymentSheet } from "@stripe/stripe-react-native";
 import { globalStyles } from "@/components/globalStyles";
 
-const ItemsTable = ["Name", "Type", "Required", "isDefect", ""];
+const ItemsTable = ["Name", "Type", "Required", "Is Defect", ""];
 
 const DateOrder: React.FC = () => {
   const [orderDate, setOrderDate] = React.useState<any[]>([]);

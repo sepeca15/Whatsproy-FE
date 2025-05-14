@@ -17,6 +17,8 @@ import * as cambioEstado from "../cambioEstado/cambioEstado";
 import * as getchat from "../chat/chatData";
 import * as payments from "../payments/payment";
 import * as cierreProvisorio from "../cierre_provisoro/cierreProvisorio";
+import * as numeroConfianza from "../numeroConfianza/numeroConfianza"
+
 
 const api = {
   auth: {
@@ -114,6 +116,12 @@ const api = {
     create: cierreProvisorio.createCierreProvisorio,
     getAll: cierreProvisorio.getAllCierreProvisorio,
     delete: cierreProvisorio.deleteCierreProvisorio
+  },
+  numeroConfianza: {
+    create: numeroConfianza.create,
+    findAll: numeroConfianza.getAllNumbers,
+    delete: numeroConfianza.deleteNumber
+
   }
 };
 

@@ -97,33 +97,41 @@ const OrderDetails = () => {
   React.useEffect(() => {
     if (!detailOfOrder.loading) {
       Animated.parallel([
-        Animated.timing(fadeAnim, { toValue: 1, duration: 500, useNativeDriver: true }),
-        Animated.timing(slideAnim, { toValue: 0, duration: 400, useNativeDriver: true }),
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 400,
+          useNativeDriver: true,
+        }),
       ]).start();
     }
   }, [detailOfOrder.loading]);
 
- const DeleteOrder = async () => {
-  console.log("detailOfOrder.data?.id:", detailOfOrder.data?.id);
-  console.log("keyDeleteType:", keyDeleteType);
+  const DeleteOrder = async () => {
+    console.log("detailOfOrder.data?.id:", detailOfOrder.data?.id);
+    console.log("keyDeleteType:", keyDeleteType);
 
-  if (detailOfOrder.data?.id && keyDeleteType) {
-    try {
-      const response = await api.order.remove(detailOfOrder.data.id);
-      console.log("API Response:", response);
-      if (response.ok) {
-        await handleDeleteOrder(detailOfOrder.data.id, resolvedKeyDeleteType);
-        router.push("/(tabs)/pedidos");
-      } else {
-        console.error("Failed to delete order:", response.message);
+    if (detailOfOrder.data?.id && keyDeleteType) {
+      try {
+        const response = await api.order.remove(detailOfOrder.data.id);
+        console.log("API Response:", response);
+        if (response.ok) {
+          await handleDeleteOrder(detailOfOrder.data.id, resolvedKeyDeleteType);
+          router.push("/(tabs)/pedidos");
+        } else {
+          console.error("Failed to delete order:", response.message);
+        }
+      } catch (error) {
+        console.error("Error deleting order:", error);
       }
-    } catch (error) {
-      console.error("Error deleting order:", error);
+    } else {
+      console.error("Missing required data to delete the order.");
     }
-  } else {
-    console.error("Missing required data to delete the order.");
-  }
-};
+  };
 
   const handleViewChat = () => {
     if (detailOfOrder.data?.chatId) {
@@ -139,7 +147,8 @@ const OrderDetails = () => {
     const currentOrder = detailOfOrder.data?.estadoActual.order;
     try {
       if (!detailOfOrder.data?.id || !newStatus.id) return;
-      if (newStatus.order === null || newStatus.order <= (currentOrder ?? 0)) return;
+      if (newStatus.order === null || newStatus.order <= (currentOrder ?? 0))
+        return;
       const resp = await api.changeStatus.cambioEstado({
         estadoId: newStatus.id,
         id_user: user.id,
@@ -176,65 +185,104 @@ const OrderDetails = () => {
 
   React.useEffect(() => {
     const socketIo = io(user.apiUrl);
-    socketIo.on("connect", () => socketIo.emit("listenChangeOrder", { orderId }));
+    socketIo.on("connect", () =>
+      socketIo.emit("listenChangeOrder", { orderId })
+    );
     socketIo.on("changeStatusOrder", (data: any) => {
       if (data.id_user !== user.id) {
         changeStatusOrderStore(data.estado, data);
         showToast({
           title: <FormattedMessage id="statusUpdatedOrderDetails" />,
-          description: <FormattedMessage id="userChangeStatusDetailsMessagge" /> + data.estado.nombre,
+          description:
+            <FormattedMessage id="userChangeStatusDetailsMessagge" /> +
+            data.estado.nombre,
           status: "success",
         });
       }
     });
-    return () => { socketIo.disconnect(); };
+    return () => {
+      socketIo.disconnect();
+    };
   }, [user.id, user.apiUrl, orderId]);
 
   if (detailOfOrder.loading) {
     return (
       <View style={styles.loadingContainer}>
-        <Progress.Circle color={Colors.light.primary} indeterminate size={70} borderWidth={3} strokeCap="round" />
-        <Text style={styles.loadingText}><FormattedMessage id="loading" defaultMessage="Cargando..." /></Text>
+        <Progress.Circle
+          color={Colors.light.primary}
+          indeterminate
+          size={70}
+          borderWidth={3}
+          strokeCap="round"
+        />
+        <Text style={styles.loadingText}>
+          <FormattedMessage id="loading" defaultMessage="Cargando..." />
+        </Text>
       </View>
     );
   }
 
   // presentation logic: siempre mostrar ambos si existen
-  const generalDetail = detailOfOrder.data?.detalles_pedido ?? null;
-  const productDetailsExist = detailOfOrder.data?.products.some(p => Boolean(p.detalle?.trim()));
-
-  console.log("detailOfOrder", detailOfOrder)
-
+  const generalDetail = detailOfOrder.data?.detalle_pedido ?? null;
+  const productDetailsExist = detailOfOrder.data?.products.some((p) =>
+    Boolean(p.detalle?.trim())
+  );
 
   return (
     <SafeAreaView style={styles.safeArea}>
-    
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
           <AntDesign name="arrowleft" size={22} color="white" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>
-          <FormattedMessage id="orderDetails" defaultMessage="Detalles del Pedido" />
+          <FormattedMessage
+            id="orderDetails"
+            defaultMessage="Detalles del Pedido"
+          />
         </Text>
         <View style={styles.headerRight}>
-          <TouchableOpacity style={styles.headerActionButton} onPress={DeleteOrder}>
+          <TouchableOpacity
+            style={styles.headerActionButton}
+            onPress={DeleteOrder}
+          >
             <MaterialIcons name="delete-outline" size={22} color="white" />
           </TouchableOpacity>
         </View>
       </View>
 
-      <ScrollView contentContainerStyle={styles.scrollViewContent} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        contentContainerStyle={styles.scrollViewContent}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Order Summary Card */}
-        <Animated.View style={[styles.orderSummaryCard, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>        
+        <Animated.View
+          style={[
+            styles.orderSummaryCard,
+            { opacity: fadeAnim, transform: [{ translateY: slideAnim }] },
+          ]}
+        >
           <View style={styles.orderNumberRow}>
             <View>
-              <Text style={styles.orderNumberLabel}><FormattedMessage id="orderNumber" defaultMessage="Pedido #"/></Text>
-              <Text style={styles.orderNumberValue}>{detailOfOrder.data?.id}</Text>
+              <Text style={styles.orderNumberLabel}>
+                <FormattedMessage id="orderNumber" defaultMessage="Pedido #" />
+              </Text>
+              <Text style={styles.orderNumberValue}>
+                {detailOfOrder.data?.id}
+              </Text>
             </View>
             <View>
-              <Text style={styles.orderDateLabel}><FormattedMessage id="orderDate" defaultMessage="Fecha"/></Text>
-              <Text style={styles.orderDateValue}>{moment(detailOfOrder.data?.date).locale("es").format("D MMM YYYY")}</Text>
+              <Text style={styles.orderDateLabel}>
+                <FormattedMessage id="orderDate" defaultMessage="Fecha" />
+              </Text>
+              <Text style={styles.orderDateValue}>
+                {moment(detailOfOrder.data?.date)
+                  .locale("es")
+                  .format("D MMM YYYY")}
+              </Text>
             </View>
           </View>
 
@@ -242,102 +290,255 @@ const OrderDetails = () => {
 
           <View style={styles.statusSection}>
             <View style={styles.currentStatusContainer}>
-              <Text style={styles.currentStatusLabel}><FormattedMessage id="currentStatus" defaultMessage="Estado actual"/></Text>
-              <TouchableOpacity style={styles.statusBadge} onPress={toggleModalStatus}>
-                <Text style={styles.statusText}>{detailOfOrder.data?.estadoActual.nombre}</Text>
-                <MaterialIcons name="keyboard-arrow-down" size={16} color="white"/>
+              <Text style={styles.currentStatusLabel}>
+                <FormattedMessage
+                  id="currentStatus"
+                  defaultMessage="Estado actual"
+                />
+              </Text>
+              <TouchableOpacity
+                style={styles.statusBadge}
+                onPress={toggleModalStatus}
+              >
+                <Text style={styles.statusText}>
+                  {detailOfOrder.data?.estadoActual.nombre}
+                </Text>
+                <MaterialIcons
+                  name="keyboard-arrow-down"
+                  size={16}
+                  color="white"
+                />
               </TouchableOpacity>
             </View>
-            {detailOfOrder.data?.cambiosEstado.length ? <StatusTimeline statusChanges={detailOfOrder.data.cambiosEstado}/> : null}
+            {detailOfOrder.data?.cambiosEstado.length ? (
+              <StatusTimeline
+                statusChanges={detailOfOrder.data.cambiosEstado}
+              />
+            ) : null}
           </View>
         </Animated.View>
 
         {/* Additional Info Card */}
-        <Animated.View style={[styles.sectionCard, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>        
+        <Animated.View
+          style={[
+            styles.sectionCard,
+            { opacity: fadeAnim, transform: [{ translateY: slideAnim }] },
+          ]}
+        >
           <View style={styles.sectionHeader}>
-            <AntDesign name="database" size={20} color={Colors.light.primary}/>
-            <Text style={styles.sectionTitle}><FormattedMessage id="informationAditional"/></Text>
+            <AntDesign name="database" size={20} color={Colors.light.primary} />
+            <Text style={styles.sectionTitle}>
+              <FormattedMessage id="informationAditional" />
+            </Text>
           </View>
           <View flexDir="column">
-            {Object.keys(detailOfOrder.data?.infoLines||{}).map(key=><Text key={key} fontSize={16} my={1}>-- {key}: {detailOfOrder.data?.infoLines[key]}</Text>)}
+            {Object.keys(detailOfOrder.data?.infoLines || {}).map((key) => (
+              <Text key={key} fontSize={16} my={1}>
+                -- {key}: {detailOfOrder.data?.infoLines[key]}
+              </Text>
+            ))}
           </View>
         </Animated.View>
 
         {/* Client Card */}
-        <Animated.View style={[styles.sectionCard, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>        
+        <Animated.View
+          style={[
+            styles.sectionCard,
+            { opacity: fadeAnim, transform: [{ translateY: slideAnim }] },
+          ]}
+        >
           <View style={styles.sectionHeader}>
-            <Octicons name="person" size={20} color={Colors.light.primary}/>
-            <Text style={styles.sectionTitle}><FormattedMessage id="client" defaultMessage="Cliente"/></Text>
+            <Octicons name="person" size={20} color={Colors.light.primary} />
+            <Text style={styles.sectionTitle}>
+              <FormattedMessage id="client" defaultMessage="Cliente" />
+            </Text>
           </View>
           <View style={styles.clientInfoContainer}>
-            <View style={styles.clientAvatar}><Text style={styles.clientAvatarText}>{detailOfOrder.data?.client.name.charAt(0).toUpperCase()}</Text></View>
+            <View style={styles.clientAvatar}>
+              <Text style={styles.clientAvatarText}>
+                {detailOfOrder.data?.client.name.charAt(0).toUpperCase()}
+              </Text>
+            </View>
             <View style={styles.clientDetails}>
-              <Text style={styles.clientName}>{detailOfOrder.data?.client.name}</Text>
-              <Text style={styles.clientPhone}>{detailOfOrder.data?.client.phone}</Text>
+              <Text style={styles.clientName}>
+                {detailOfOrder.data?.client.name}
+              </Text>
+              <Text style={styles.clientPhone}>
+                {detailOfOrder.data?.client.phone}
+              </Text>
             </View>
           </View>
         </Animated.View>
 
         {/* Estimated Time Card */}
-        <Animated.View style={[styles.sectionCard, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
+        <Animated.View
+          style={[
+            styles.sectionCard,
+            { opacity: fadeAnim, transform: [{ translateY: slideAnim }] },
+          ]}
+        >
           <View style={styles.sectionHeader}>
-            <AntDesign name="clockcircleo" size={20} color={Colors.light.primary}/>
-            <Text style={styles.sectionTitle}><FormattedMessage id="estimatedTime" defaultMessage="Tiempo Estimado"/></Text>
-          </View>
-          <View style={styles.timeContainer}>
-            <MaterialCommunityIcons name="timer-outline" size={36} color={Colors.light.primary} style={{ marginRight: 10 }}/>
-            <Text style={styles.estimateTimeValue}>
-              {detailOfOrder.data?.estimateTime}{" "}
-              <Text style={styles.estimateTimeUnit}>
-          {detailOfOrder.data?.estimateTime! > 60 ? "horas" : "minutos"}
-              </Text>
+            <AntDesign
+              name="clockcircleo"
+              size={20}
+              color={Colors.light.primary}
+            />
+            <Text style={styles.sectionTitle}>
+              <FormattedMessage
+                id="estimatedTime"
+                defaultMessage="Tiempo Estimado"
+              />
             </Text>
           </View>
+          {detailOfOrder?.data?.estimateTime && (
+            <View style={styles.timeContainer}>
+              <MaterialCommunityIcons
+                name="timer-outline"
+                size={36}
+                color={Colors.light.primary}
+              />
+              <Text style={styles.estimateTimeValue}>
+                {detailOfOrder.data?.estimateTime! >= 60
+                  ? Math.floor(detailOfOrder?.data?.estimateTime / 60)
+                  : detailOfOrder.data?.estimateTime}
+                <Text style={styles.estimateTimeUnit}>
+                  {detailOfOrder.data?.estimateTime! >= 60 ? (
+                    <FormattedMessage id="hours" />
+                  ) : (
+                    <FormattedMessage id="minutes" />
+                  )}
+                </Text>
+              </Text>
+            </View>
+          )}
         </Animated.View>
 
         {/* Products Card */}
-        <Animated.View style={[styles.sectionCard, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>        
+        <Animated.View
+          style={[
+            styles.sectionCard,
+            { opacity: fadeAnim, transform: [{ translateY: slideAnim }] },
+          ]}
+        >
           <View style={styles.sectionHeader}>
-            <MaterialIcons name="shopping-bag" size={20} color={Colors.light.primary}/>
-            <Text style={styles.sectionTitle}><FormattedMessage id="products" defaultMessage="Productos"/></Text>
+            <MaterialIcons
+              name="shopping-bag"
+              size={20}
+              color={Colors.light.primary}
+            />
+            <Text style={styles.sectionTitle}>
+              <FormattedMessage id="products" defaultMessage="Productos" />
+            </Text>
           </View>
           <View style={styles.productsList}>
-            {detailOfOrder.data?.products.map((product,idx)=><ProductOrderCard key={idx} data={product.productoInfo} cantidad={product.cantidad}/>)}
+            {detailOfOrder.data?.products.map((product, idx) => (
+              <ProductOrderCard
+                key={idx}
+                data={product.productoInfo}
+                cantidad={product.cantidad}
+              />
+            ))}
           </View>
           <View style={styles.totalContainer}>
-            <Text style={styles.totalLabel}><FormattedMessage id="total" defaultMessage="Total"/></Text>
+            <Text style={styles.totalLabel}>
+              <FormattedMessage id="total" defaultMessage="Total" />
+            </Text>
             <Text style={styles.totalValue}>$ {detailOfOrder.data?.total}</Text>
           </View>
         </Animated.View>
 
         {/* Order Details Card - Especificaciones del cliente */}
-        <Animated.View style={[styles.sectionCard, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>        
+        <Animated.View
+          style={[
+            styles.sectionCard,
+            { opacity: fadeAnim, transform: [{ translateY: slideAnim }] },
+          ]}
+        >
           <View style={styles.sectionHeader}>
-            <MaterialIcons name="notes" size={20} color={Colors.light.primary}/>
-            <Text style={styles.sectionTitle}><FormattedMessage id="customerSpecifications" defaultMessage="Especificaciones del cliente"/></Text>
+            <MaterialIcons
+              name="notes"
+              size={20}
+              color={Colors.light.primary}
+            />
+            <Text style={styles.sectionTitle}>
+              <FormattedMessage
+                id="customerSpecifications"
+                defaultMessage="Especificaciones del cliente"
+              />
+            </Text>
           </View>
-          {generalDetail&&(
+          {generalDetail && (
             <View style={styles.generalNotes}>
-              <Text style={styles.generalNotesLabel}><FormattedMessage id="orderNotes" defaultMessage="Notas generales:"/></Text>
-              <View style={styles.notesContainer}><Text style={styles.generalNotesText}>{generalDetail}</Text></View>
+              <Text style={styles.generalNotesLabel}>
+                <FormattedMessage
+                  id="orderNotes"
+                  defaultMessage="Notas generales:"
+                />
+              </Text>
+              <View style={styles.notesContainer}>
+                <Text style={styles.generalNotesText}>{generalDetail}</Text>
+              </View>
             </View>
           )}
-          {productDetailsExist&&(
+          {productDetailsExist && (
             <View style={styles.orderDetailsContainer}>
-              {detailOfOrder.data!.products.map((product,idx)=>product.detalle?(<View key={idx} style={styles.productSpecification}><Text style={styles.productSpecName}>{product.productoInfo.nombre}:</Text><View style={styles.specificationBubble}><Text style={styles.productSpecDetail}>{product.detalle}</Text></View></View>):null)}
+              {detailOfOrder.data!.products.map((product, idx) =>
+                product.detalle ? (
+                  <View key={idx} style={styles.productSpecification}>
+                    <Text style={styles.productSpecName}>
+                      {product.productoInfo.nombre}:
+                    </Text>
+                    <View style={styles.specificationBubble}>
+                      <Text style={styles.productSpecDetail}>
+                        {product.detalle}
+                      </Text>
+                    </View>
+                  </View>
+                ) : null
+              )}
             </View>
           )}
-          {!generalDetail&&!productDetailsExist&&(
-            <View style={styles.emptyDetailsContainer}><MaterialIcons name="info-outline" size={24} color={Colors.light.icon}/><Text style={styles.emptyDetailsText}><FormattedMessage id="noSpecifications" defaultMessage="Sin especificaciones adicionales"/></Text></View>
+          {!generalDetail && !productDetailsExist && (
+            <View style={styles.emptyDetailsContainer}>
+              <MaterialIcons
+                name="info-outline"
+                size={24}
+                color={Colors.light.icon}
+              />
+              <Text style={styles.emptyDetailsText}>
+                <FormattedMessage
+                  id="noSpecifications"
+                  defaultMessage="Sin especificaciones adicionales"
+                />
+              </Text>
+            </View>
           )}
         </Animated.View>
 
         {/* Chat Button */}
-        <TouchableOpacity style={styles.chatButton} onPress={handleViewChat} activeOpacity={0.7}><IonIcons name="chatbubble-outline" size={20} color="white"/><Text style={styles.chatButtonText}><FormattedMessage id="goToChat" defaultMessage="Ir al chat"/></Text></TouchableOpacity>
+        <TouchableOpacity
+          style={styles.chatButton}
+          onPress={handleViewChat}
+          activeOpacity={0.7}
+        >
+          <IonIcons name="chatbubble-outline" size={20} color="white" />
+          <Text style={styles.chatButtonText}>
+            <FormattedMessage id="goToChat" defaultMessage="Ir al chat" />
+          </Text>
+        </TouchableOpacity>
       </ScrollView>
 
       {/* Status Change Modal */}
-      <CustomModalPicker loading={sendingChangeStatus} changeStatus={detailOfOrder.data?.cambiosEstado} createOrderDate={detailOfOrder.data?.date??"No date"} changeStatusOrder={changeStatusOrder} lastStatusOrder={detailOfOrder.data?.estadoActual.order??0} elements={allStatus} isVisible={stateModalStatus} onClose={toggleModalStatus}/>
+      <CustomModalPicker
+        loading={sendingChangeStatus}
+        changeStatus={detailOfOrder.data?.cambiosEstado}
+        createOrderDate={detailOfOrder.data?.date ?? "No date"}
+        changeStatusOrder={changeStatusOrder}
+        lastStatusOrder={detailOfOrder.data?.estadoActual.order ?? 0}
+        elements={allStatus}
+        isVisible={stateModalStatus}
+        onClose={toggleModalStatus}
+      />
     </SafeAreaView>
   );
 };

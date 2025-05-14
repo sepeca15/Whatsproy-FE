@@ -9,7 +9,7 @@ import MaterialIconss from "react-native-vector-icons/MaterialCommunityIcons";
 import { useOrders } from "@/hooks/redux/useOrders";
 import { useRouter } from "expo-router";
 import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmAction";
-import { useIntl } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import { Button, Pressable, Spinner } from "native-base";
 import moment from "moment";
 
@@ -40,6 +40,8 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
   const { handleDeleteOrder, confirmOrder, loadingApiAction } = useOrders();
   const keyDeleteType = pending ? "pending" : "finished";
   const { clientName, numberSender, orderId, total } = orderData;
+
+  console.log("orderData", orderData)
 
   const direccion = orderData?.direccion;
   const intl = useIntl();
@@ -90,7 +92,7 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
       <View style={styles.column}>
         <View style={styles.row1}>
           <View style={styles.column}>
-            <CustomText style={styles.name}>Cliente: {clientName}</CustomText>
+            <CustomText style={styles.name}><FormattedMessage id="client" />: {clientName}</CustomText>
             <CustomText style={{ color: "#abcbfb", fontSize: 12}}>{fromNow ?? "-"}</CustomText>
             <View style={styles.miniSeparator}></View>
             <CustomText style={styles.text}>{direccion}</CustomText>
