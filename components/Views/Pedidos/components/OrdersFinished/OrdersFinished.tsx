@@ -44,6 +44,7 @@ const OrdersFinished = () => {
             }
           }}
           onEndReachedThreshold={0.2}
+          contentContainerStyle={{ paddingBottom: 100 }}
           ListFooterComponent={
             (loadingApi && ordersFinished.length > 0) && (
               <View style={styles.spinerCenter}>
@@ -51,7 +52,7 @@ const OrdersFinished = () => {
               </View>
             )
           }
-        /> 
+        />
       ) : (
         <View style={styles.containerImage}>
           <Image

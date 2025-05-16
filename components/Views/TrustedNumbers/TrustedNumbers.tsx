@@ -5,12 +5,13 @@ import CustomText from "@/components/CustomText";
 import { globalStyles } from "@/components/globalStyles";
 import { useUser } from "@/hooks/redux/useUser";
 import { TouchableOpacity } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import CardContact from "./components/CardContact";
 import ModalSelectContact from "./components/ModalSelectContacts";
 import api from "@/services/api/admin";
 import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmAction";
+import { router } from "expo-router";
 
 interface INumberTrusted {
     nombre: any;
@@ -126,10 +127,14 @@ const TrustedNumbers = () => {
 
     return (
         <View flex={1} w="full" h="full" position={'relative'}>
-            <View style={globalStyles.header}>
+            <View style={globalStyles.header2}>
+
+                <TouchableOpacity style={globalStyles.backButton} onPress={() => router.back()} activeOpacity={0.7}>
+                    <AntDesign name="arrowleft" size={24} color="white" />
+                </TouchableOpacity>
                 <View style={globalStyles.headerContent}>
                     <View style={globalStyles.headerLeft}>
-                        <CustomText style={globalStyles.businessName}>
+                        <CustomText style={globalStyles.businessName_confianza}>
                             <FormattedMessage id="trustedNumberSettingsTitle" />
                         </CustomText>
                     </View>

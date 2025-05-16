@@ -7,19 +7,14 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   container: {
+    maxWidth: "100%",
     padding: 16,
     backgroundColor: "white",
     borderRadius: 16,
     position: "relative",
     overflow: "hidden",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
+    alignContent: "center",
+    elevation: 1,
   },
   currentUserBadge: {
     position: "absolute",

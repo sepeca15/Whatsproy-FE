@@ -399,18 +399,19 @@ const OrderDetails = () => {
                 size={36}
                 color={Colors.light.primary}
               />
-              <Text style={styles.estimateTimeValue}>
+                <Text style={styles.estimateTimeValue}>
                 {detailOfOrder.data?.estimateTime! >= 60
                   ? Math.floor(detailOfOrder?.data?.estimateTime / 60)
                   : detailOfOrder.data?.estimateTime}
+                {" "}
                 <Text style={styles.estimateTimeUnit}>
                   {detailOfOrder.data?.estimateTime! >= 60 ? (
-                    <FormattedMessage id="hours" />
+                  <FormattedMessage id="hours" />
                   ) : (
-                    <FormattedMessage id="minutes" />
+                  <FormattedMessage id="minutes" />
                   )}
                 </Text>
-              </Text>
+                </Text>
             </View>
           )}
         </Animated.View>

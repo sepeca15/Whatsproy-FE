@@ -13,6 +13,9 @@ import { FormattedMessage } from "react-intl";
 import CustomButton from "@/components/CustomButton";
 import { globalStyles } from "@/components/globalStyles";
 import { useUser } from "@/hooks/redux/useUser";
+import { router } from "expo-router";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import { TouchableOpacity } from "react-native";
 
 const Categories = () => {
   const [allCategories, setAllCategories] = React.useState<ICategoryData[]>([]);
@@ -49,9 +52,12 @@ const Categories = () => {
 
   return (
     <View style={{ flex: 1 }}>
-      <Animated.View style={globalStyles.header}>
-        <View style={globalStyles.headerContent}>
-          <View style={globalStyles.headerLeft}>
+      <Animated.View style={globalStyles.header2}>
+        <View style={globalStyles.headerContent_categorias}>
+          <TouchableOpacity style={styles.backButton} onPress={() => router.back()} activeOpacity={0.7}>
+            <AntDesign name="arrowleft" size={24} color="white" />
+          </TouchableOpacity>
+          <View style={globalStyles.headerLef_categorias}>
             <CustomText
               style={globalStyles.businessName}
               accessibilityLabel="Pedidos"
