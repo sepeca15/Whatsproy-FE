@@ -15,8 +15,8 @@ import { useUser } from "@/hooks/redux/useUser";
 type MetricCardProps = {
   icon: string;
   title: string;
-  value: string | number;
-  subtitle?: string;
+  value: any;
+  subtitle?: any;
   onPress?: () => void;
   style?: any;
 };

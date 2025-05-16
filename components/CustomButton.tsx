@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
     display: "flex",
     paddingLeft: 20,
     paddingRight: 20,
+    gap: 4,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",

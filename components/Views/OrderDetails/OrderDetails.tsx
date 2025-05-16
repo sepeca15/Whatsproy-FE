@@ -32,6 +32,7 @@ import { useOrders } from "@/hooks/redux/useOrders";
 import { useUser } from "@/hooks/redux/useUser";
 import { io } from "socket.io-client";
 import { useToastContext } from "@/contexts/ToastContext";
+import { ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
 
 interface IDetailsOrder {
   loading: boolean;
@@ -112,16 +113,17 @@ const OrderDetails = () => {
   }, [detailOfOrder.loading]);
 
   const DeleteOrder = async () => {
-    console.log("detailOfOrder.data?.id:", detailOfOrder.data?.id);
-    console.log("keyDeleteType:", keyDeleteType);
-
     if (detailOfOrder.data?.id && keyDeleteType) {
       try {
         const response = await api.order.remove(detailOfOrder.data.id);
         console.log("API Response:", response);
         if (response.ok) {
           await handleDeleteOrder(detailOfOrder.data.id, resolvedKeyDeleteType);
-          router.push("/(tabs)/pedidos");
+          if (user?.tipo_servicio === ID_TIPOSERVICIO_RESERVA) {
+            router.push("/(tabs)/calendar");
+          } else {
+            router.push("/(tabs)/pedidos");
+          }
         } else {
           console.error("Failed to delete order:", response.message);
         }

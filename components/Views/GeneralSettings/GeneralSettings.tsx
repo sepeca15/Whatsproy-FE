@@ -16,6 +16,7 @@ import { Colors } from "@/constants/Colors";
 
 interface IForm {
   hora_apertura: string;
+  assistentEnabled?: boolean;
   hora_cierre: string;
   abierto: boolean;
   intervaloTiempoCalendario: number;
@@ -35,6 +36,7 @@ const GeneralConfig = () => {
     hora_apertura: user.hora_apertura,
     hora_cierre: user.hora_cierre,
     abierto: user.abierto,
+    assistentEnabled: user?.assistentEnabled,
     intervaloTiempoCalendario: user.intervaloTiempoCalendario,
     notificarReservaHoras: user.notificarReservaHoras,
     remaindersHorsRemainder: user.remaindersHorsRemainder,
@@ -169,6 +171,27 @@ const GeneralConfig = () => {
                   <Switch
                     isChecked={form.abierto}
                     onToggle={() => handleInputChange("abierto", !form.abierto)}
+                    size="lg"
+                    colorScheme="primary"
+                  />
+                </View>
+              </View>
+              <View style={styles.notifReserva}>
+                <View style={styles.row1}>
+                  <CustomText style={styles.textInput}>
+                    <FormattedMessage
+                      id="assistentEnabled"
+                      defaultMessage="Asistente habilitado"
+                    />
+                  </CustomText>
+                  <Switch
+                    isChecked={form.assistentEnabled}
+                    onToggle={() =>
+                      handleInputChange(
+                        "assistentEnabled",
+                        !form.assistentEnabled
+                      )
+                    }
                     size="lg"
                     colorScheme="primary"
                   />

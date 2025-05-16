@@ -6,6 +6,11 @@ export const getDetailsOfOrder = async (id: any) => {
   return data;
 };
 
+export const getStatitics = async (filterType: any) => {
+  const { data } = await ApiInstances("current").get("pedido/statistics?type=" + filterType);
+  return data;
+};
+
 export const getOrderForCalendar = async (selectedDate: string) => {
   const { data } = await ApiInstances("current").get(
     "pedido/calendar/formatCalendar/" + selectedDate,

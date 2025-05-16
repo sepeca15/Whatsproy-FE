@@ -63,6 +63,7 @@ const api = {
     delete: dataOrder.deleteOrderDate,
   },
   order: {
+    getStatitics: order.getStatitics,
     getCalendarOrders: order.getOrderForCalendar,
     getOrderDetails: order.getDetailsOfOrder,
     getAvailableDates: order.getAvailableDates,

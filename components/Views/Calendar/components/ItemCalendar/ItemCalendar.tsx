@@ -16,12 +16,13 @@ import * as moment from "moment-timezone";
 import { useUser } from "@/hooks/redux/useUser";
 import Icon from "react-native-vector-icons/Feather";
 import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
+import CustomButton from "@/components/CustomButton";
 
 interface IItemCalendar {
   InfoItem: IInfoItem;
   deleteOrder: (orderId: number) => void;
   confirmOrder: (orderId: number) => void;
-  confirm: boolean;
+  confirmed: boolean;
 }
 
 interface IDataDetails {
@@ -33,8 +34,10 @@ const ItemCalendar = ({
   InfoItem,
   confirmOrder,
   deleteOrder,
-  confirm,
+  confirmed,
 }: IItemCalendar) => {
+  const [loading, setLoading] = useState(false);
+  const [loadingDelete, setLoadingDelete] = useState(false);
   const { user } = useUser();
   const router = useRouter();
   const [expanded, setExpanded] = useState<boolean>(false);
@@ -42,7 +45,7 @@ const ItemCalendar = ({
     info: null,
     loadingApi: true,
   });
-  const keyDeleteType = confirm ? "pending" : "finished";
+  const keyDeleteType = confirmed ? "pending" : "finished";
   const animationHeight = useRef(new Animated.Value(0)).current;
 
   const toggleLoadingApi = (value: boolean) => {
@@ -92,13 +95,19 @@ const ItemCalendar = ({
   };
 
   const validateFunction = async () => {
-    if (confirm) {
+    if (confirmed) {
       router.push({
         pathname: "/(tabs)/orderDetails",
         params: { orderId: InfoItem.orderId, keyDeleteType: keyDeleteType },
       });
     } else {
-      confirmOrder(InfoItem.orderId);
+      try {
+        setLoading(true);
+        await confirmOrder(InfoItem.orderId);
+      } catch (error) {
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -117,7 +126,7 @@ const ItemCalendar = ({
       <View
         style={[
           styles.container,
-          { backgroundColor: confirm === true ? "#128c7e" : "#A9A9A9" },
+          { backgroundColor: confirmed === true ? "#128c7e" : "#A9A9A9" },
         ]}
       >
         <View style={styles.mainInfo}>
@@ -142,7 +151,7 @@ const ItemCalendar = ({
                 {InfoItem.date}
               </Text>
             </Container>
-            <Pressable style={{padding:3}} onPress={toggleExpand}>
+            <Pressable style={{ padding: 3 }} onPress={toggleExpand}>
               <EvilIcons
                 color={"white"}
                 size={30}
@@ -214,32 +223,54 @@ const ItemCalendar = ({
                   </View>
                 </View>
                 <View style={styles.buttons}>
-                  <Pressable
-                    style={[
-                      styles.buttonNormal,
-                      { backgroundColor: confirm ? "128c7e" : "transparent" },
-                    ]}
-                  >
-                    <Text color={"white"} fontSize={12}>
-                      <FormattedMessage id="deleteOrder" />
-                    </Text>
-                    <EvilIcons color={"white"} name="close" size={16} />
-                  </Pressable>
-                  <Pressable
+                  {!confirmed && (
+                    <CustomButton
+                      loading={loadingDelete}
+                      disabled={loading || loadingDelete}
+                      style={[
+                        styles.buttonNormal,
+                        {
+                          backgroundColor: confirmed ? "128c7e" : "transparent",
+                        },
+                      ]}
+                      onPress={async () => {
+                        try {
+                          setLoadingDelete(true);
+                          await deleteOrder(InfoItem.orderId);
+                        } catch (error) {
+                        } finally {
+                          setLoadingDelete(false);
+                        }
+                      }}
+                    >
+                      <Text color={"white"} fontSize={12}>
+                        <FormattedMessage id="deleteOrder" />
+                      </Text>
+                      <EvilIcons
+                        style={{ paddingTop: 2 }}
+                        color={"white"}
+                        name="close"
+                        size={16}
+                      />
+                    </CustomButton>
+                  )}
+                  <CustomButton
+                    loading={loading}
+                    disabled={loading || loadingDelete}
                     onPress={validateFunction}
                     style={[
                       styles.buttonConfirm,
-                      { backgroundColor: confirm ? "#1eab9b" : "black" },
+                      { backgroundColor: confirmed ? "#1eab9b" : "black" },
                     ]}
                   >
-                    <Text color={"white"} fontSize={12}>
-                      {confirm ? (
+                    <Text color={"white"} fontSize={13}>
+                      {confirmed ? (
                         <FormattedMessage id="viewDetails" />
                       ) : (
                         <FormattedMessage id="confirmOrder" />
                       )}
                     </Text>
-                  </Pressable>
+                  </CustomButton>
                 </View>
               </View>
             ))}
