@@ -15,8 +15,6 @@ import CreateOrderModal from "@/components/CreateOrderModal";
 import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
 import CustomText from "@/components/CustomText";
 import Animated from "react-native-reanimated";
-import { Colors } from "@/constants/Colors";
-import { useOrders } from "@/hooks/redux/useOrders";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
 import OrdersActive from "./components/OrdersActive";
@@ -29,20 +27,12 @@ type pagesOrder = "finished" | "pending" | "active";
 const PedidosEIngresos: React.FC = () => {
   const [selected, setSelected] = React.useState<pagesOrder>("pending");
   const [openAddModal, setOpenAddModal] = React.useState<boolean>(false);
-  const {
-    loadingApi,
-    handleLoadOrdersFinished,
-    handleLoadOrdersPending,
-    handleLoadingOrdersActive,
-  } = useOrders();
 
   const { user } = useUser();
   const handleSelectPage = (key: pagesOrder) => {
     setSelected(key);
   };
-  const [refreshing, setRefreshing] = React.useState(false);
- 
-  
+
   return (
     <SafeAreaView style={styles.container}>
       <Animated.View style={globalStyles.header}>
@@ -97,31 +87,8 @@ const PedidosEIngresos: React.FC = () => {
           </View>
         ))}
       </View>
-      <ScrollView
-        showsVerticalScrollIndicator={true}
+      <View
         style={styles.orders}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={async () => {
-              try {
-                setRefreshing(true);
-                if (selected === "finished") {
-                  await handleLoadOrdersFinished();
-                } else if (selected === "active") {
-                  await handleLoadingOrdersActive();
-                } else {
-                  await handleLoadOrdersPending();
-                }
-              } catch (error) {
-
-              } finally {
-                setRefreshing(false);
-              }
-            }}
-            tintColor={Colors.light.primary}
-          />
-        }
       >
         {selected === "finished" ? (
           <OrdersFinished />
@@ -130,7 +97,7 @@ const PedidosEIngresos: React.FC = () => {
         ) : (
           <OrdersActive />
         )}
-      </ScrollView>
+      </View>
       <View style={globalStyles.buttonContainer}>
         <Pressable
           style={globalStyles.addButton}

@@ -10,14 +10,18 @@ import {
   onLoadOrdersPending,
   odLoadOrdersActive,
   onLoadingApiAction,
-onFinishLoadingApiAction,
-finishOrderActive
+  onFinishLoadingApiAction,
+  finishOrderActive,
+  setOffsetPending,
+  setOffsetActive,
+  setOffsetFinished
 } from "@/services/redux/Slices/ordersSlice/orderSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 export const useOrders = () => {
   const Dispatch = useDispatch();
-  const { loadingApi, ordersFinished, ordersPending, ordersActive, loadingApiAction } = useSelector(
+  const limit = 20;
+  const { loadingApi, ordersFinished, ordersPending, ordersActive, loadingApiAction, offsetFinished, offsetPending, offsetActive, totalItemsFinished, totalItemsPending, totalItemsActive } = useSelector(
     (state: any) => state.orders,
   );
   const { showToast } = useToastContext();
@@ -25,13 +29,14 @@ export const useOrders = () => {
   const handleLoadOrdersFinished = async () => {
     Dispatch(onLoadingApi());
     try {
-      const data = await api.order.getFinished();
+      const data = await api.order.getFinished(offsetFinished, limit);
 
       if (data.ok === true && data.data.length > 0) {
-        Dispatch(onLoadOrdersFinished(data.data));
+        Dispatch(onLoadOrdersFinished({ data: data.data, total: data.totalItems }));
+        Dispatch(setOffsetFinished(offsetFinished + limit))
       }
-    } catch (error) {
-      console.log("error", error);
+    } catch (error: any) {
+      console.log("error", error.response.data.message);
     } finally {
       Dispatch(onFinishLoadingApi());
     }
@@ -40,7 +45,7 @@ export const useOrders = () => {
   const handleFinishOrderActive = (order: any) => {
     try {
       Dispatch(finishOrderActive(order))
-      
+
     } catch (error) {
       console.log(error);
     }
@@ -49,13 +54,15 @@ export const useOrders = () => {
   const handleLoadOrdersPending = async () => {
     Dispatch(onLoadingApi());
     try {
-      const data = await api.order.getPending();
+      const data = await api.order.getPending(offsetPending, limit);
 
       if (data.ok === true && data.data.length > 0) {
-        Dispatch(onLoadOrdersPending(data.data));
+        Dispatch(onLoadOrdersPending({ data: data.data, total: data.totalItems }));
+        Dispatch(setOffsetPending(offsetPending + limit))
       }
-    } catch (error) {
-      console.log("error", error);
+
+    } catch (error: any) {
+      console.log("error", error.response.data.message);
     } finally {
       Dispatch(onFinishLoadingApi());
     }
@@ -64,13 +71,14 @@ export const useOrders = () => {
   const handleLoadingOrdersActive = async () => {
     Dispatch(onLoadingApi());
     try {
-      const data = await api.order.getActive();
+      const data = await api.order.getActive(offsetActive, limit);
 
       if (data.ok === true && data.data.length > 0) {
-        Dispatch(odLoadOrdersActive(data.data));
+        Dispatch(odLoadOrdersActive({ data: data.data, total: data.totalItems }));
+        Dispatch(setOffsetActive(offsetActive + limit))
       }
-    } catch (error) {
-      console.log("error", error);
+    } catch (error: any) {
+      console.log("error", error.response.data.message);
     } finally {
       Dispatch(onFinishLoadingApi());
     }
@@ -128,18 +136,32 @@ export const useOrders = () => {
     Dispatch(onAddOrderPending(newOrder));
   };
 
+  const addOffsetToOrdersPending = () => {
+    try {
+      Dispatch(setOffsetPending(offsetPending + 1))
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+
+  
   return {
     loadingApiAction,
     loadingApi,
     ordersFinished,
     ordersPending,
     ordersActive,
+    totalItemsFinished,
+    totalItemsPending,
+    totalItemsActive,
     handleLoadOrdersFinished,
     handleLoadOrdersPending,
     confirmOrder,
     handleDeleteOrder,
     handleAddNewOrderPending,
     handleLoadingOrdersActive,
-    handleFinishOrderActive
+    handleFinishOrderActive,
+    addOffsetToOrdersPending
   };
 };
