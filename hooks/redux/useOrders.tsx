@@ -20,7 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 export const useOrders = () => {
   const Dispatch = useDispatch();
-  const limit = 5;
+  const limit = 20;
   const { loadingApi, ordersFinished, ordersPending, ordersActive, loadingApiAction, offsetFinished, offsetPending, offsetActive, totalItemsFinished, totalItemsPending, totalItemsActive } = useSelector(
     (state: any) => state.orders,
   );
