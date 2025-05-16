@@ -21,11 +21,12 @@ const ConfigAccount = () => {
   // Inicializa el paso actual y el paso máximo según el estado del usuario (una vez)
   React.useEffect(() => {
     let step = 1;
-    if (!user.userConfigured) step = 1;
-    else if (!user.paymentMade) step = 2;
-    else if (!user.apiConfigured) step = 3;
-    else if (!user.greenApiConfigured) step = 4;
-    else step = 4;
+    if (user) {
+      if (!user.userConfigured) step = 1;
+      else if (!user.paymentMade) step = 2;
+      else if (!user.apiConfigured) step = 3;
+      else if (!user.greenApiConfigured) step = 4;
+    }
 
     setCurrentStep(step);
     setMaxStep(step);
@@ -61,10 +62,7 @@ const ConfigAccount = () => {
   return (
     <View style={styles.containerTransparent}>
       <View style={styles.container}>
-        <StepHeader
-          step={currentStep}
-          total={totalSteps}
-        />
+        <StepHeader step={currentStep} total={totalSteps} />
 
         <View style={styles.ContainerHeader}>{renderStep()}</View>
       </View>

@@ -6,6 +6,7 @@ import { useOrders } from "@/hooks/redux/useOrders";
 import * as Progress from "react-native-progress";
 import CustomText from "@/components/CustomText";
 import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
+import { FlatList } from "native-base";
 
 <Progress.Circle
   style={{ marginVertical: 20 }}
@@ -14,7 +15,7 @@ import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
 />;
 
 const OrdersActive = () => {
-  const { loadingApi, ordersActive, handleLoadingOrdersActive } = useOrders();
+  const { loadingApi, ordersActive, handleLoadingOrdersActive, totalItemsActive } = useOrders();
 
   React.useEffect(() => {
     if (ordersActive.length === 0) {
@@ -24,20 +25,33 @@ const OrdersActive = () => {
 
   return (
     <View style={styles.container}>
-      {loadingApi ? (
+      {(loadingApi && ordersActive.length === 0) ? (
         <View style={styles.containerSpiner}>
           <Progress.Circle color={"#075e54"} indeterminate={true} size={100} />
         </View>
       ) : ordersActive.length > 0 ? (
-        ordersActive.map((order: any) => {
-          return (
-            <CardNewPedido
-              key={order.orderId}
-              orderData={order}
-              pending={false}
-            />
-          );
-        })
+        <FlatList
+          data={ordersActive}
+          renderItem={({ item }: { item: any }) => <CardNewPedido
+            key={item.orderId}
+            orderData={item}
+            pending={true}
+          />}
+          keyExtractor={(item) => item.orderId.toString()}
+          onEndReached={() => {
+            if (ordersActive.length < totalItemsActive && !loadingApi) {
+              handleLoadingOrdersActive();
+            }
+          }}
+          onEndReachedThreshold={0.2}
+          ListFooterComponent={
+            (loadingApi && ordersActive.length > 0) &&(
+              <View style={styles.spinerCenter}>
+                <Progress.Circle color={"#075e54"} indeterminate={true} size={40} />
+              </View>
+            )
+          }
+        />
       ) : (
         <View style={styles.containerImage}>
           <Image

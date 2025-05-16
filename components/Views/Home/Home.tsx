@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   SafeAreaView,
   RefreshControl,
@@ -17,35 +17,50 @@ import { FormattedMessage, useIntl } from "react-intl";
 import * as Animatable from "react-native-animatable";
 import { useOrdersDashboard } from "@/hooks/home_functions/useOrdersDashboard";
 import { useUser } from "@/hooks/redux/useUser";
-import { Image, View } from "native-base";
+import { HStack, Icon, Image, Select, View } from "native-base";
 import { globalStyles } from "@/components/globalStyles";
 import SubscriptionInfo from "@/components/SubscriptionInfo";
 import { useSubscriptionStatus } from "@/hooks/home_functions/useSubscriptionStatus";
 import { ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
+import { Ionicons } from "@expo/vector-icons";
 
 const Home: React.FC = () => {
-  const intl = useIntl()
-  const { loading, ordersCount, dailyRevenue, refreshData, lastOrders } = useOrdersDashboard()
-  const [refreshing, setRefreshing] = React.useState(false)
-  const lottieRef = React.useRef<LottieView>(null)
+  const intl = useIntl();
+  const [filterType, setFilterType] = React.useState<string | undefined>(
+    "lastMonth"
+  );
+  const { loading, refreshData, lastOrders, getStatitics, statitics } =
+    useOrdersDashboard(filterType);
+  const [refreshing, setRefreshing] = React.useState(false);
+  const lottieRef = React.useRef<LottieView>(null);
 
-  const { subStatus, refreshSubscriptionStatus } = useSubscriptionStatus()
+  console.log("loading", loading)
 
+  const { subStatus, refreshSubscriptionStatus } = useSubscriptionStatus();
+
+  useEffect(() => {
+    if (filterType) {
+      getStatitics(filterType);
+    }
+  }, [filterType]);
+
+  const ordersCount = 0;
+  const dailyRevenue = 0;
   const onRefresh = async () => {
     try {
-      setRefreshing(true)
-      await refreshData()
-      await refreshSubscriptionStatus()
+      setRefreshing(true);
+      await refreshData();
+      await refreshSubscriptionStatus();
     } finally {
-      setRefreshing(false)
+      setRefreshing(false);
     }
   };
 
-  const { user } = useUser()
-  const empresaName = user?.empresaName ?? "Empresa Name"
-  const isReserva = user?.id_rol === 1
-  const currentPlan = user?.payment?.plan
-  const currentPayment = user?.payment
+  const { user } = useUser();
+  const empresaName = user?.empresaName ?? "Empresa Name";
+  const isReserva = user?.id_rol === 1;
+  const currentPlan = user?.payment?.plan;
+  const currentPayment = user?.payment;
 
   // // Extraer beneficios del plan actual
   // const benefits = currentPayment?.subscription_sku
@@ -53,16 +68,16 @@ const Home: React.FC = () => {
   //   : []
 
   const handleViewSubscriptionDetails = () => {
-    router.push("/(tabs)/subscriptions")
-  }
+    router.push("/(tabs)/subscriptions");
+  };
 
   const isCalendar = user?.tipo_servicio === ID_TIPOSERVICIO_RESERVA;
 
   React.useEffect(() => {
     return () => {
-      lottieRef.current?.reset()
-    }
-  }, [])
+      lottieRef.current?.reset();
+    };
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -71,33 +86,114 @@ const Home: React.FC = () => {
         <View style={globalStyles.headerContent}>
           <View style={globalStyles.headerLeft}>
             <View w={16} h={16} borderRadius={100} background={"gray.200"}>
-              {user.logo && <Image w={"full"} h={"full"} alt="logo" rounded={"full"} source={{ uri: user.logo }} />}
+              {user.logo && (
+                <Image
+                  w={"full"}
+                  h={"full"}
+                  alt="logo"
+                  rounded={"full"}
+                  source={{ uri: user.logo }}
+                />
+              )}
             </View>
-            <CustomText style={globalStyles.businessName}>{empresaName}</CustomText>
+            <CustomText style={globalStyles.businessName}>
+              {empresaName}
+            </CustomText>
           </View>
         </View>
       </View>
 
       {/* Loading */}
       {loading ? (
-        <ActivityIndicator size="large" color={Colors.light.primary} style={styles.loader} />
+        <ActivityIndicator
+          size="large"
+          color={Colors.light.primary}
+          style={styles.loader}
+        />
       ) : (
         <ScrollView
           style={styles.content}
           showsVerticalScrollIndicator
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.light.primary} />
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor={Colors.light.primary}
+            />
           }
         >
           {/* Métricas */}
-          <Animatable.View animation="fadeInUp" duration={800} delay={100} style={styles.metricsContainer}>
+          <Animatable.View
+            animation="fadeInUp"
+            duration={800}
+            delay={100}
+            style={[styles.metricsContainer, { zIndex: 999 }]}
+          >
+            <HStack width={"100%"} flex={1}>
+              <Select
+                selectedValue={filterType}
+                minWidth={120}
+                width={"100%"}
+                height={10}
+                flex={1}
+                marginBottom={5}
+                accessibilityLabel={intl.formatMessage({
+                  id: "selectPeriod",
+                  defaultMessage: "Seleccionar Periodo",
+                })}
+                placeholder={intl.formatMessage({
+                  id: "selectPeriod",
+                  defaultMessage: "Seleccionar Periodo",
+                })}
+                onValueChange={(val) => {
+                  setFilterType(val);
+                }}
+                style={{ zIndex: 999, width: "100%", flex: 1 }}
+                borderRadius={10}
+                fontSize={12}
+                backgroundColor={"white"}
+                _selectedItem={{
+                  bg: `rgba(7, 94, 84, 0.1)`,
+                  endIcon: (
+                    <Icon
+                      as={Ionicons}
+                      name="checkmark"
+                      size="xs"
+                      color="#075e54"
+                    />
+                  ),
+                }}
+              >
+                <Select.Item
+                  label={intl.formatMessage({
+                    id: "lastDay",
+                    defaultMessage: "lastDay",
+                  })}
+                  value="lastDay"
+                />
+                <Select.Item
+                  label={intl.formatMessage({
+                    id: "lastWeek",
+                    defaultMessage: "lastWeek",
+                  })}
+                  value="lastWeek"
+                />
+                <Select.Item
+                  label={intl.formatMessage({
+                    id: "lastMonth",
+                    defaultMessage: "lastMonth",
+                  })}
+                  value="lastMonth"
+                />
+              </Select>
+            </HStack>
             <MetricCard
               icon="cart-outline"
               title={intl.formatMessage({
                 id: isReserva ? "reservasToday.home" : "ordersToday.home",
                 defaultMessage: isReserva ? "Reservas Hoy" : "Pedidos Hoy",
               })}
-              value={ordersCount?.toString()}
+              value={statitics?.orders}
               onPress={() => {}}
             />
             <MetricCard
@@ -106,7 +202,7 @@ const Home: React.FC = () => {
                 id: "clients.home",
                 defaultMessage: "Clientes",
               })}
-              value="120"
+              value={statitics?.clients}
               onPress={() => {}}
             />
             <MetricCard
@@ -115,14 +211,19 @@ const Home: React.FC = () => {
                 id: "revenue.home",
                 defaultMessage: "Ingresos",
               })}
-              value={`$${dailyRevenue}`}
+              value={`$${Number(statitics?.revenue ?? 0).toFixed(2)}`}
               onPress={() => {}}
             />
           </Animatable.View>
 
           {/* Componente de Suscripción - Ahora ubicado después de las métricas */}
           {currentPlan && (
-            <Animatable.View animation="fadeInUp" duration={800} delay={150} style={{ paddingHorizontal: 16 }}>
+            <Animatable.View
+              animation="fadeInUp"
+              duration={800}
+              delay={150}
+              style={{ paddingHorizontal: 16 }}
+            >
               <SubscriptionInfo
                 currentPedidosMonthActual={subStatus?.currentMonthPedidos ?? 0}
                 plan={currentPlan?.nombre ?? "-"}
@@ -136,11 +237,18 @@ const Home: React.FC = () => {
           )}
 
           {/* Últimas actividades */}
-          <Animatable.View animation="fadeInUp" duration={800} delay={200} style={styles.lastActivitiesContainer}>
+          <Animatable.View
+            animation="fadeInUp"
+            duration={800}
+            delay={200}
+            style={styles.lastActivitiesContainer}
+          >
             <CustomText style={styles.sectionTitle}>
               <FormattedMessage
                 id={isReserva ? "lastReservas.home" : "lastOrders.home"}
-                defaultMessage={isReserva ? "Últimas 3 reservas" : "Últimos 3 pedidos"}
+                defaultMessage={
+                  isReserva ? "Últimas 3 reservas" : "Últimos 3 pedidos"
+                }
               />
             </CustomText>
 
@@ -161,7 +269,9 @@ const Home: React.FC = () => {
                     address={
                       isCalendar
                         ? `${order?.fecha}`
-                        : (order.address ? `#${order.address}` : "Dirección desconocida")
+                        : order.address
+                          ? `#${order.address}`
+                          : "Dirección desconocida"
                     }
                     onPress={() =>
                       router.push({
@@ -173,7 +283,11 @@ const Home: React.FC = () => {
                 );
               })
             ) : (
-              <Animatable.View animation="fadeIn" duration={600} style={styles.emptyStateContainer}>
+              <Animatable.View
+                animation="fadeIn"
+                duration={600}
+                style={styles.emptyStateContainer}
+              >
                 <LottieView
                   ref={lottieRef}
                   source={require("../../../constants/Animation-non-order.json")}
@@ -182,14 +296,20 @@ const Home: React.FC = () => {
                   style={styles.emptyStateAnimation}
                 />
                 <CustomText style={styles.emptyStateTitle}>
-                  <FormattedMessage id="noOrden.home" defaultMessage="No hay productos" />
+                  <FormattedMessage
+                    id="noOrden.home"
+                    defaultMessage="No hay productos"
+                  />
                 </CustomText>
               </Animatable.View>
             )}
 
             {/* Quick Actions */}
             <CustomText style={styles.sectionTitle}>
-              <FormattedMessage id="quickActions.home" defaultMessage="Quick Actions" />
+              <FormattedMessage
+                id="quickActions.home"
+                defaultMessage="Quick Actions"
+              />
             </CustomText>
 
             <View style={styles.quickActionsGrid}>
@@ -199,7 +319,11 @@ const Home: React.FC = () => {
                   id: isReserva ? "reservas.home" : "pedidos.home",
                   defaultMessage: isReserva ? "Reservas" : "Pedidos",
                 })}
-                onPress={() => router.push(isReserva ? "/(tabs)/calendar" : "/(tabs)/pedidos")}
+                onPress={() =>
+                  router.push(
+                    isReserva ? "/(tabs)/calendar" : "/(tabs)/pedidos"
+                  )
+                }
               />
               <QuickActionButton
                 icon="cog"
@@ -214,7 +338,7 @@ const Home: React.FC = () => {
         </ScrollView>
       )}
     </SafeAreaView>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

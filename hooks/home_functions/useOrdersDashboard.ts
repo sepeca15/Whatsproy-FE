@@ -1,26 +1,30 @@
 import { useDailyStats } from "./useDailyStats";
+import { useGetStatitics } from "./useGetStaticsticks";
 import { useLastOrders } from "./useLastOrders";
 import { usePendingOrders } from "./usePendingOrders";
 
-export const useOrdersDashboard = () => {
-  const daily = useDailyStats();
+export const useOrdersDashboard = (filterType: any) => {
   const last = useLastOrders();
-  const pending = usePendingOrders();
+  const statitics = useGetStatitics();
 
   const refreshData = async () => {
     await Promise.all([
-      daily.refreshDailyStats(),
       last.refreshLastOrders(),
-      pending.refreshPendingOrders(),
+      statitics.getStatitics(filterType),
     ]);
   };
 
-  const loading = daily.loading || last.loading || pending.loading;
+
+  const getStaticstics = (filterType: string) => {
+
+  }
+
+
+  const loading = last.loading || statitics.loading;
 
   return {
-    ...daily,
     ...last,
-    ...pending,
+    ...statitics,
     refreshData,
     loading,
   };

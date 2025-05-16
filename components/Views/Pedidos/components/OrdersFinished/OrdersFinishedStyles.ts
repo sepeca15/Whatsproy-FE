@@ -23,4 +23,11 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 125,
   },
+  spinerCenter: {
+    width:'100%',
+    display:'flex',
+    flexDirection:'row',
+    justifyContent:'center',
+    marginVertical:8
+  }
 });

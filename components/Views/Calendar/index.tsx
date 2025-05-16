@@ -79,9 +79,10 @@ export default function CalendarView() {
           const updatedOrders = prevState[firstDate].map((order) =>
             order.orderId === orderId ? { ...order, status: true } : order
           );
+
           return {
             ...prevState,
-            [firstDate]: updatedOrders,
+            [firstDate]: [...updatedOrders],
           };
         });
       }
@@ -96,18 +97,21 @@ export default function CalendarView() {
 
       const data = await api.order.remove(orderId);
       if (data) {
-        setOrderPerDays((prevState) => ({
-          ...prevState,
-          [firstDate]: prevState[firstDate].filter(
+        setOrderPerDays((prevState) => {
+          const updatedList = prevState[firstDate].filter(
             (order) => order.orderId !== orderId
-          ),
-        }));
+          );
+
+          return {
+            ...prevState,
+            [firstDate]: [...updatedList], // ← Clona la lista filtrada
+          };
+        });
       }
     } catch (error: any) {
       console.log(error.response.data.message);
     }
   };
-
   useEffect(() => {
     if (selectedDate) {
       onLoadItems(selectedDate);
@@ -154,7 +158,7 @@ export default function CalendarView() {
           </Text>
         </View>
       </View>
-      {(
+      {
         <View style={styles.calendarContent}>
           <Agenda
             items={orderPerDays}
@@ -183,7 +187,7 @@ export default function CalendarView() {
                 confirmOrder={confirmOrder}
                 deleteOrder={deleteOrder}
                 InfoItem={data}
-                confirm={data.status}
+                confirmed={data.status}
               />
             )}
             renderEmptyData={() => (
@@ -213,7 +217,9 @@ export default function CalendarView() {
               </View>
             )}
             rowHasChanged={(r1: any, r2: any) =>
-              r1.name !== r2.name || r1?.expanded !== r2?.expanded
+              r1.name !== r2.name ||
+              r1?.expanded !== r2?.expanded ||
+              r1?.status !== r2?.status
             }
             theme={{
               agendaDayTextColor: "#333",
@@ -225,7 +231,7 @@ export default function CalendarView() {
             }}
           />
         </View>
-      )}
+      }
 
       {openAddModal && selectedDate && (
         <CreateOrderModal
