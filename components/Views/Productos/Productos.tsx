@@ -35,7 +35,6 @@ const Productos: React.FC = () => {
   const router = useRouter();
   const [ProductsBD, setProducts] = useState<ProductBDD[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
   const fadeAnim = useState(new Animated.Value(0))[0];
   const { locale } = useLocalization();
   const intl = useIntl();
@@ -51,6 +50,7 @@ const Productos: React.FC = () => {
   const [deletingProductId, setDeletingProductId] = useState<number | null>(
     null
   );
+  const [loadingProducts, setLoadingProducts] = useState(true);
   const deleteAnimationRef = useRef(null);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -74,7 +74,7 @@ const Productos: React.FC = () => {
 
   const loadProductsFromCategory = async () => {
     try {
-      setIsInitialLoading(true);
+      setLoadingProducts(true);
       if (selectCategory) {
         const resp = await api.category.getProducts({
           categoryId: selectCategory,
@@ -86,18 +86,17 @@ const Productos: React.FC = () => {
     } catch (error: any) {
       console.log(error.response?.data?.message);
     } finally {
-      if (selectCategory) {
-        setIsInitialLoading(false);
-      }
+      setLoadingProducts(false);
     }
   };
 
+  const isInitialLoading = loadingCategories || loadingProducts;
   useEffect(() => {
     loadAllCategories();
   }, []);
 
   useEffect(() => {
-      loadProductsFromCategory();
+    loadProductsFromCategory();
   }, [selectCategory]);
 
   useEffect(() => {
@@ -309,7 +308,9 @@ const Productos: React.FC = () => {
               })}
             </ScrollView>
           </View>
-        ) : <View></View>}
+        ) : (
+          <View></View>
+        )}
         {/* (
           !loadingCategories && (
             <View
@@ -346,7 +347,7 @@ const Productos: React.FC = () => {
             />
           }
         >
-          {isInitialLoading ? (
+          {loadingCategories || loadingProducts ? (
             Array.from({ length: 5 }).map((_, index) => (
               <ProductCardSkeleton key={`item-${index}`} />
             ))

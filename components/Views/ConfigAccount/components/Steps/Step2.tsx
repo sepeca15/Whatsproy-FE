@@ -13,7 +13,7 @@ import api from "@/services/api/admin";
 import LottieView from "lottie-react-native";
 import { FormattedMessage } from "react-intl";
 
-const Step2 = ({ onSuccess }: { onSuccess?: any }) => {
+const Step2 = ({ onSuccess, onNext }: { onSuccess?: any, onNext: any }) => {
   const { user, handlePayOk } = useUser();
   const [loading, setLoading] = React.useState<boolean>(false);
   const [plans, setPlans] = React.useState<RNIap.Subscription[] | null>(null);
@@ -21,7 +21,7 @@ const Step2 = ({ onSuccess }: { onSuccess?: any }) => {
   const [selectedPlan, setSelectedPlan] = React.useState<RNIap.Product | null>(
     null
   );
-  
+
   const { showToast } = useToastContext();
   const [products, setProducts] = React.useState<RNIap.Subscription[]>([]);
   const handledTokensRef = useRef<Set<string>>(new Set());
@@ -55,7 +55,7 @@ const Step2 = ({ onSuccess }: { onSuccess?: any }) => {
     await RNIap.initConnection();
     const subs = await RNIap.getSubscriptions({
       skus: defaultPayments?.map(
-        (payment: any) => "basicsubscriptionmeasy2025"
+        (payment: any) => payment
       ),
     });
     console.log("subs", subs);
@@ -140,6 +140,7 @@ const Step2 = ({ onSuccess }: { onSuccess?: any }) => {
         } else {
           handlePayOk();
         }
+        onNext();
       } else {
         showToast({
           title: "No se pudo verificar la suscripción",

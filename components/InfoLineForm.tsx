@@ -110,9 +110,9 @@ const InfoLineForm = ({ setValue, value, infoLines, errors }: Props) => {
       alignItems="center"
       justifyContent="center"
     >
-      {infoLines?.map((infoLine, index) => (
+      {infoLines?.map((infoLine) => (
         <FormControl
-          key={infoLine.nombre + index}
+          key={infoLine.nombre}
           isRequired={infoLine.requerido}
         >
           {handleRenderInfoLineInput(infoLine)}

@@ -35,17 +35,17 @@ const TrustedNumbers = () => {
 
     const ImportContacts = async (contacts: any[]) => {
         console.log(contacts);
-        
+
         const normalize = (num: string) => num.replace(/\D/g, '').replace(/^0+/, '');
 
         const incomingPhones = new Set(contacts.map(c => normalize(c.numero)));
         const existingPhones = new Set(numbersTrusted.map((n: any) => normalize(n.telefono)));
-        console.log(incomingPhones);
-        console.log(existingPhones);
-        
-        
-        const toDelete = numbersTrusted.filter((n: any) => !incomingPhones.has(normalize(n.telefono)));
-        const toAdd = contacts.filter(c => !existingPhones.has(normalize(c.numero)));
+
+
+        const toDelete = numbersTrusted.filter(
+            (n: any) => n.id && !incomingPhones.has(normalize(n.telefono))
+
+        ); const toAdd = contacts.filter(c => !existingPhones.has(normalize(c.numero)));
         let arraysIdsDelete: number[] = []
         try {
             await Promise.all(toDelete.map(async (n: any) => {
@@ -71,16 +71,7 @@ const TrustedNumbers = () => {
                     }
                 })
             );
-            console.log(toDelete);
-            
-            if (toDelete.length > 0) {
-                setNumberTrusted((prev) => {
-                    console.log('eliminaae', prev);
-                    console.log(prev.filter((prev : any) => !arraysIdsDelete.includes(prev.id)));
-                    
-                    return prev.filter((prev : any) => !arraysIdsDelete.includes(prev.id))
-                })
-            }
+
         } catch (error: any) {
             console.error("Error importing contacts:", error.response?.data?.message || error.message);
         } finally {

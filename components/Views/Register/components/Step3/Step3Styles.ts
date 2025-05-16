@@ -12,4 +12,9 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 4,
   },
+  textCenterLg: {
+    marginBottom: 20,
+    textAlign: "center",
+    fontSize: 18,
+  },
 });

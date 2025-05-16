@@ -86,7 +86,7 @@ const UserCard = ({ infoUser, deleteUser, selectEditUser, allowManage }: IUserCa
           </View>
         </View>
 
-        {allowManage ? (
+        {allowManage && (
           <View style={styles.buttons}>
             <TouchableOpacity onPress={() => selectEditUser(infoUser)} style={styles.buttonEdit} activeOpacity={0.7}>
               <FatherIcon name="edit-2" size={14} color={"#000035"} />
@@ -103,19 +103,13 @@ const UserCard = ({ infoUser, deleteUser, selectEditUser, allowManage }: IUserCa
               <Text style={styles.textDelete}>{intl.formatMessage({ id: "delete", defaultMessage: "Delete" })}</Text>
             </TouchableOpacity>
           </View>
-        ) : (
-          <Text style={styles.noPermissionText}>
-            {intl.formatMessage({
-              id: "noPermission",
-              defaultMessage: "You do not have permission to manage users",
-            })}
-          </Text>
-        )}
+        )
+        }
       </Animated.View>
 
       <ModalConfirmAction
         isOpen={stateModal}
-        onContinue={()=> deleteUser(infoUser.id)}
+        onContinue={() => deleteUser(infoUser.id)}
         onClose={toggleModal}
         message={intl.formatMessage({
           id: "confirmDeleteUser",

@@ -29,6 +29,7 @@ const api = {
     getAll: products.findAllProducts,
     find: products.find,
     update: products.update,
+    isEmpresaAvailable: products.isEmpresaAvailable,
     delete: products.deletProd,
     create: products.create,
   },

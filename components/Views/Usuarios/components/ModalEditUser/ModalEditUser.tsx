@@ -204,6 +204,7 @@ const ModalEditUser = ({
                 })}
               </FormControl.Label>
               <Select
+                borderRadius={8}
                 selectedValue={formData.activo ? "Si" : "No"}
                 onValueChange={(value) =>
                   handleInputChange("activo", value === "Si")

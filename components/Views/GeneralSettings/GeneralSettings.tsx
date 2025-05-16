@@ -6,9 +6,8 @@ import { useUser } from "@/hooks/redux/useUser";
 import { ScrollView, Switch, View, VStack } from "native-base";
 import * as React from "react";
 import { TouchableOpacity } from "react-native";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
-import { FormattedMessage, useIntl } from "react-intl"; 
+import { FormattedMessage, useIntl } from "react-intl";
 import Animated from "react-native-reanimated";
 import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -29,6 +28,8 @@ const GeneralConfig = () => {
   const intl = useIntl();
   const [loadingApi, setLoadingApi] = React.useState<boolean>(false);
   const [hasChanges, setHasChanges] = React.useState<boolean>(false);
+
+  const isAdmin = user?.isAdmin;
 
   const [form, setForm] = React.useState<IForm>({
     hora_apertura: user.hora_apertura,
@@ -105,9 +106,13 @@ const GeneralConfig = () => {
             <View style={styles.container1}>
               <View style={styles.inputContainer}>
                 <CustomText style={styles.textInput}>
-                  <FormattedMessage id="openingTimeLabel" defaultMessage={'Hora de apertura'} />
+                  <FormattedMessage
+                    id="openingTimeLabel"
+                    defaultMessage={"Hora de apertura"}
+                  />
                 </CustomText>
                 <InputField
+                  isDisabled={!isAdmin}
                   icon={
                     <SimpleLineIcons
                       style={{ marginLeft: 12 }}
@@ -128,9 +133,13 @@ const GeneralConfig = () => {
               </View>
               <View style={styles.inputContainer}>
                 <CustomText style={styles.textInput}>
-                  <FormattedMessage id="closingTimeLabel" defaultMessage={'Hora de cierre'} />
+                  <FormattedMessage
+                    id="closingTimeLabel"
+                    defaultMessage={"Hora de cierre"}
+                  />
                 </CustomText>
                 <InputField
+                  isDisabled={!isAdmin}
                   icon={
                     <SimpleLineIcons
                       style={{ marginLeft: 12 }}
@@ -144,7 +153,9 @@ const GeneralConfig = () => {
                     defaultMessage: "Ingresa la hora de cierre",
                   })}
                   value={form.hora_cierre}
-                  onChangeText={(value) => handleInputChange("hora_cierre", value)}
+                  onChangeText={(value) =>
+                    handleInputChange("hora_cierre", value)
+                  }
                 />
               </View>
               <View style={styles.notifReserva}>
@@ -165,7 +176,7 @@ const GeneralConfig = () => {
               </View>
             </View>
 
-            {user.empresa_id !== TipoServicio.RESERVA && (
+            {user.tipo_servicio === TipoServicio.RESERVA && (
               <View style={styles.colum}>
                 <View style={styles.notifReserva}>
                   <View style={styles.containerNotifReserva}>
@@ -188,13 +199,12 @@ const GeneralConfig = () => {
                         colorScheme="primary"
                       />
                     </View>
-                    <CustomText style={{ fontSize: 12, color: 'gray' }}>
+                    <CustomText style={{ fontSize: 12, color: "gray" }}>
                       <FormattedMessage
                         id="notifyReservationDescription"
                         defaultMessage="Si activas esta opción, se le notificará al usuario el tiempo antes de realizarse la reserva"
                       />
                     </CustomText>
-
                   </View>
                 </View>
                 <View style={styles.containerHorasReserva}>
@@ -246,24 +256,31 @@ const GeneralConfig = () => {
                     </View>
                   )}
                 </View>
-                <CustomButton
-                  colorSpiner="white"
-                  disabled={!hasChanges}
-                  onPress={updateCompany}
-                  loading={loadingApi}
-                  style={[
-                    styles.button,
-                    {
-                      backgroundColor: hasChanges ? Colors.light.primary : "#b6b6b6",
-                    },
-                  ]}
-                >
-                  <VStack style={styles.rowButton}>
-                    <CustomText style={{ color: "white" }}>
-                      <FormattedMessage id="saveButton" defaultMessage="Guardar" />
-                    </CustomText>
-                  </VStack>
-                </CustomButton>
+                {isAdmin && (
+                  <CustomButton
+                    colorSpiner="white"
+                    disabled={!hasChanges}
+                    onPress={updateCompany}
+                    loading={loadingApi}
+                    style={[
+                      styles.button,
+                      {
+                        backgroundColor: hasChanges
+                          ? Colors.light.primary
+                          : "#b6b6b6",
+                      },
+                    ]}
+                  >
+                    <VStack style={styles.rowButton}>
+                      <CustomText style={{ color: "white" }}>
+                        <FormattedMessage
+                          id="saveButton"
+                          defaultMessage="Guardar"
+                        />
+                      </CustomText>
+                    </VStack>
+                  </CustomButton>
+                )}
               </View>
             )}
           </View>

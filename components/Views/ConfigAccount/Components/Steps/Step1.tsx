@@ -7,15 +7,14 @@ import { useUser } from "@/hooks/redux/useUser";
 import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
 import { useIntl } from "react-intl";
 
-
-const Step1 = () => {
+const Step1 = ({ onNext }: { onNext: any }) => {
   const { handleUpdateUser } = useUser();
   const [formData, setFormData] = React.useState({
     nombre: "",
     apellido: "",
   });
   const { formatMessage } = useIntl();
-
+  const intl = useIntl();
 
   const handleChangeInputs = (key: string, value: string) => {
     setFormData((prevState) => ({
@@ -24,16 +23,15 @@ const Step1 = () => {
     }));
   };
 
- 
-
   const saveDataUser = async () => {
     try {
-      await handleUpdateUser({
+      const resp = await handleUpdateUser({
         nombre: formData.nombre,
         apellido: formData.apellido,
       });
+      onNext();
     } catch (error) {
-      console.log('no se pudo',error);
+      console.log("no se pudo", error);
     }
   };
 
@@ -43,14 +41,14 @@ const Step1 = () => {
         <InputField
           marginTop={20}
           type="text"
-          label={<FormattedMessage id="enterFirstName" />}
+          label={formatMessage({ id: "enterFirstName" })}
           placeholder={formatMessage({ id: "firstNamePlaceholder" })}
           onChangeText={(text) => handleChangeInputs("nombre", text)}
         />
         <InputField
           marginTop={20}
           type="text"
-          label={<FormattedMessage id="enterLastName" />}
+          label={formatMessage({ id: "enterLastName" })}
           placeholder="Last name"
           onChangeText={(text) => handleChangeInputs("apellido", text)}
         />

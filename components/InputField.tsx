@@ -1,18 +1,21 @@
 import React, { useRef } from "react";
 import { FormControl, Input, TextArea } from "native-base";
+import MaskInput from "react-native-mask-input";
 
 interface InputFieldProps {
-  label?: React.ReactNode; // Acepta elementos JSX
-  placeholder: React.ReactNode; // Acepta elementos JSX
+  label?: React.ReactNode;
+  placeholder: React.ReactNode;
   value?: string;
   onChangeText?: (text: string) => void;
   marginTop?: number;
   isTextArea?: boolean;
   [key: string]: any;
   keyboardType?: any;
+  isDisabled?: boolean;
   isRequired?: boolean;
   error?: any;
   icon?: any;
+  isTime?: boolean;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -26,22 +29,42 @@ const InputField: React.FC<InputFieldProps> = ({
   isRequired = true,
   icon,
   error,
+  isTime,
+  isDisabled,
   ...props
 }) => {
   const inputRef = useRef<any>(null);
 
   return (
     <FormControl
+      isDisabled={isDisabled}
       isInvalid={error}
       style={{ marginTop: marginTop }}
       isRequired={isRequired}
     >
       {label && <FormControl.Label>{label}</FormControl.Label>}
-      {isTextArea ? (
+      {isTime ? (
+        <MaskInput
+          onChangeText={onChangeText}
+          keyboardType="numeric"
+          placeholder="HH:MM"
+          mask={[/\d/, /\d/, ":", /\d/, /\d/]}
+          style={{
+            height: 38,
+            borderWidth: 1,
+            borderColor: error ? "red" : "#ccc",
+            borderRadius: 8,
+            paddingVertical: 4,
+            paddingHorizontal: 12,
+          }}
+          {...props}
+        />
+      ) : isTextArea ? (
         <TextArea
           InputLeftElement={icon}
           keyboardType={keyboardType}
           autoCompleteType={""}
+          borderRadius={8}
           placeholder={
             typeof placeholder === "string" ? placeholder : undefined
           }
@@ -51,6 +74,7 @@ const InputField: React.FC<InputFieldProps> = ({
         />
       ) : (
         <Input
+          borderRadius={8}
           ref={inputRef}
           autoFocus={false}
           _stack={{ style: {} }}

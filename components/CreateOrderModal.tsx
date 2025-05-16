@@ -60,7 +60,7 @@ interface IProps {
   tipoServicio: TipoServicioType;
   onSuccess?: () => void;
   currentOrders?: any[];
-  availableDates?: string[],
+  availableDates?: string[];
 }
 
 const initialValues: CreateOrderDTO = {
@@ -86,7 +86,7 @@ const CreateOrderModal = ({
   tipoServicio,
   onSuccess,
   currentOrders,
-  availableDates = []
+  availableDates = [],
 }: IProps) => {
   const { showToast } = useToastContext();
   const { user } = useUser();

@@ -2,9 +2,9 @@
   "expo": {
     "name": "Measy",
     "slug": "Whatsproy",
-    "runtimeVersion": "1.7.3",
+    "runtimeVersion": "1.7.6",
     "newArchEnabled": true,
-    "version": "1.7.3",
+    "version": "1.7.6",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -22,17 +22,20 @@
         "usesNonExemptEncryption": false
       },
       "googleServicesFile": "./assets/GoogleService-Info.plist",
-      "bundleIdentifier": "com.whatsproy"
+      "bundleIdentifier": "com.whatsproy",
+      "infoPlist": {
+        "NSContactsUsageDescription": "Esta aplicación necesita acceder a tus contactos para importarlos."
+      }
     },
     "android": {
-      "versionCode": 10703,
+      "versionCode": 10706,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon_foreground.png",
         "backgroundImage": "./assets/images/icon_background.png"
       },
       "googleServicesFile": "./assets/google-services.json",
       "newArchEnabled": true,
-      "permissions": ["NOTIFICATIONS"],
+      "permissions": ["NOTIFICATIONS", "CONTACTS"],
       "package": "com.whatsproy"
     },
     "web": {

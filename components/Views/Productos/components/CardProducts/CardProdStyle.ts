@@ -1,5 +1,4 @@
 import { StyleSheet } from "react-native";
-import Index from "../../../../../app/index";
 
 export const styles = StyleSheet.create({
   container: {
@@ -13,10 +12,11 @@ export const styles = StyleSheet.create({
     elevation: 3,
     marginVertical: 8,
     padding: 5,
-    
+    position:'relative',
+
   },
   iconConteiner: {
-    
+
     backgroundColor: "#fff",
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
@@ -27,7 +27,7 @@ export const styles = StyleSheet.create({
     elevation: 3,
     marginVertical: 8,
     padding: 5,
-   
+
     height: 100,
   },
   icon: {
@@ -51,7 +51,13 @@ export const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
-
+  overlay1: {
+    position: 'absolute',
+    height: '110%',
+    width: "85%",
+    backgroundColor:'transparent',
+    zIndex:100
+  },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -107,17 +113,17 @@ export const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 4,
     zIndex: 1,
-    width:'30%',
+    width: '30%',
     alignItems: 'center',
-    
+
   },
   disabledText: {
     color: "#fff",
     fontSize: 12,
     fontWeight: "bold",
   },
-  
- 
+
+
   imagenspiner: {
     width: 100,  // Reduce el tamaño del contenedor
     height: 100, // Mantiene la proporción
@@ -147,13 +153,13 @@ export const styles = StyleSheet.create({
   //   transform: [{ translateX: -25 }, { translateY: -25 }], // Centra correctamente
   // },
   animationContainer: {
-    width: 100,  
-    height: 100, 
+    width: 100,
+    height: 100,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(255, 255,499, 0.8)',
-    borderRadius: 10, 
-    position: 'absolute', 
+    borderRadius: 10,
+    position: 'absolute',
     top: '25%',
     left: '7%',
     transform: [{ translateX: -25 }, { translateY: -25 }],

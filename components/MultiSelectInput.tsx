@@ -44,7 +44,10 @@ const RenderItem = React.memo(
         <Checkbox
           value={itemValue}
           isChecked={isSelected}
-          onChange={() => {}}
+          onChange={() => {
+            toggleSelectionKeys(item.value);
+            handleProductSelection?.(item.value, !isSelected);
+          }}
           accessibilityRole="checkbox"
         />
         <Text style={{ flex: 1 }}>{item.label}</Text>
@@ -234,6 +237,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
       <GlobalModal
         isVisible={isModalOpen}
         label={label}
+        manyItems={true}
         onClose={() => setIsModalOpen(false)}
         actions={[
           <Button

@@ -8,6 +8,7 @@ export const styles = StyleSheet.create({
   },
   textPrimary: {
     color: Colors.light.primary,
+    display: "flex",
   },
   textSecondary: {
     color: Colors.light.secondary,

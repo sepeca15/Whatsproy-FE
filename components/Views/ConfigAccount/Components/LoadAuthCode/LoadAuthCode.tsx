@@ -7,6 +7,7 @@ import { useUser } from "@/hooks/redux/useUser";
 import { Image, Text, TextInput } from "react-native";
 import CustomButton from "@/components/CustomButton";
 import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
+import { useToastContext } from "@/contexts/ToastContext";
 
 interface ILoadAuthCode {
   AuthCode: string | null;
@@ -18,6 +19,7 @@ const LoadAuthCode = ({ AuthCode, handleUpdateData }: ILoadAuthCode) => {
   const [loading, setLoading] = React.useState<boolean>(false);
 
   const { user } = useUser();
+  const { showToast } = useToastContext();
 
   const LoadAuthCode = async () => {
     setLoading(true);
@@ -28,6 +30,11 @@ const LoadAuthCode = ({ AuthCode, handleUpdateData }: ILoadAuthCode) => {
       });
       handleUpdateData("AuthCode", data.resAuth.code);
     } catch (error) {
+      showToast({
+        title: "Error obteniendo codigo",
+        description: "Si el error persiste, contacte con soporte",
+        status: "error",
+      });
       console.log(error);
     } finally {
       setLoading(false);
@@ -50,7 +57,11 @@ const LoadAuthCode = ({ AuthCode, handleUpdateData }: ILoadAuthCode) => {
       </CustomText>
       <View>
         <TextInput
-          style={styles.input}
+          style={{
+            ...styles.input,
+            borderRadius: 8,
+            height: 38,
+          }}
           keyboardType="numeric"
           value={numberPhone}
           onChangeText={(num) => setNumberPhone(num)}
