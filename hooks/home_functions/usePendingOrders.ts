@@ -18,7 +18,7 @@ export const usePendingOrders = () => {
     setLoading(true);
     setError(null); 
     try {
-      const response = await api.order.getPending();
+      const response = await api.order.getPending(0, 100);
       setPendingOrders(response.data);
     } catch (err: any) {
       console.error("Error en usePendingOrders:", err);
