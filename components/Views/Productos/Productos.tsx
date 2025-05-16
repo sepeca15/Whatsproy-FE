@@ -30,6 +30,7 @@ import type { ICategoryData } from "../Categories/components/CardCategory/CardCa
 import AnimatedTwo from "react-native-reanimated";
 import CustomText from "@/components/CustomText";
 import { globalStyles } from "@/components/globalStyles";
+import AddButton from "..../../hooks/add_Button/Add_button"; 
 
 const Productos: React.FC = () => {
   const router = useRouter();
@@ -408,16 +409,7 @@ const Productos: React.FC = () => {
           )}
         </ScrollView>
       </View>
-      <View style={globalStyles.buttonContainer}>
-        <TouchableOpacity
-          style={globalStyles.addButton}
-          onPress={() => {
-            router.push("/(tabs)/addpro");
-          }}
-        >
-          <Text style={globalStyles.addButtonText}>+</Text>
-        </TouchableOpacity>
-      </View>
+       <AddButton route="/(tabs)/addpro" />
     </View>
   );
 };

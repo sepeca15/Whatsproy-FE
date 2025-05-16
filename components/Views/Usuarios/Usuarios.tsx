@@ -1,3 +1,5 @@
+"use client"
+
 import React from "react"
 import { View, Text, TouchableOpacity, Animated } from "react-native"
 import { AntDesign, Ionicons, MaterialIcons } from "@expo/vector-icons"
@@ -16,7 +18,7 @@ import { FormattedMessage, useIntl } from "react-intl"
 import CustomText from "@/components/CustomText"
 import { useToastContext } from "@/contexts/ToastContext"
 import { globalStyles } from "@/components/globalStyles"
-
+import AddButton from "..../../hooks/add_Button/Add_button";  
 const initialValues = {
   data: [],
   loading: true,
@@ -32,7 +34,7 @@ const UsuariosEmpresasScreen: React.FC = () => {
     modalCreate: false,
   })
   const [stateSearchValue, setStateSearchValue] = React.useState<boolean>(false)
-  const [valueSearch, setValueSearch] = React.useState<string>('')
+  const [valueSearch, setValueSearch] = React.useState<string>("")
   const [selectedUser, setSelectedUser] = React.useState<any>(undefined)
 
   const { showToast } = useToastContext()
@@ -46,7 +48,7 @@ const UsuariosEmpresasScreen: React.FC = () => {
 
   const uploadUsers = async () => {
     try {
-      const resp = await api.user.findAll(user.id_empresa);
+      const resp = await api.user.findAll(user.id_empresa)
       setUserData((prevState) => ({
         ...prevState,
         data: resp.data,
@@ -77,7 +79,6 @@ const UsuariosEmpresasScreen: React.FC = () => {
     uploadUsers()
   }, [])
 
-
   const toggleModalState = (key: "modalEdit" | "modalCreate", value: boolean) => {
     setStateModal((prev) => ({
       ...prev,
@@ -93,28 +94,26 @@ const UsuariosEmpresasScreen: React.FC = () => {
   }
 
   const selectEditUser = (user: IUser) => {
-    toggleModalState("modalEdit", true);
-    setSelectedUser(user);
-  };
+    toggleModalState("modalEdit", true)
+    setSelectedUser(user)
+  }
 
   const editUserSelected = async (userId: number, userData: any) => {
     try {
       const resp = await api.user.update(userId, userData)
       if (resp) {
-        console.log('respondio', resp.data);
+        console.log("respondio", resp.data)
 
         setUserData((prevState) => ({
           ...prevState,
-          data: prevState.data.map((user) =>
-            user.id === userId ? resp : user,
-          ),
-        }));
+          data: prevState.data.map((user) => (user.id === userId ? resp : user)),
+        }))
         toggleModalState("modalEdit", false)
       }
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
 
   const onDeleteUser = async (userId: number) => {
     try {
@@ -143,43 +142,44 @@ const UsuariosEmpresasScreen: React.FC = () => {
   }
 
   const filteredUsers = React.useMemo(() => {
-    return userData.data.filter((user) =>
-      user.nombre.toLowerCase().includes(valueSearch.toLocaleLowerCase())
-    );
-  }, [userData.data, valueSearch]);
+    return userData.data.filter((user) => user.nombre.toLowerCase().includes(valueSearch.toLocaleLowerCase()))
+  }, [userData.data, valueSearch])
 
   return (
     <View style={styles.container}>
-      <View style={[styles.headerGradient, { backgroundColor: Colors.light.primary, }]}>
+      <View style={[styles.headerGradient, { backgroundColor: Colors.light.primary }]}>
         <View style={globalStyles.headerContent}>
           <TouchableOpacity style={styles.backButton} onPress={() => router.back()} activeOpacity={0.7}>
-            <AntDesign name="arrowleft" size={22} color="white" />
+            <AntDesign name="arrowleft" size={24} color="white" />
           </TouchableOpacity>
           <View style={globalStyles.headerTitle}>
-            <CustomText style={globalStyles.businessName} accessibilityLabel="Pedidos">
+            <CustomText style={[globalStyles.businessName, { fontSize: 24 }]} accessibilityLabel="Usuarios">
               <FormattedMessage id="users" />
             </CustomText>
           </View>
           <TouchableOpacity onPress={toggleSearchValue} style={styles.searchButton} activeOpacity={0.7}>
-            <MaterialIcons name="search" size={22} color="white" />
+            <MaterialIcons name="search" size={24} color="white" />
           </TouchableOpacity>
         </View>
-        {
-          stateSearchValue &&
+        {stateSearchValue && (
           <View style={styles.inputContainer}>
-            <Input onChangeText={(text: string) => setValueSearch(text)} placeholder="Search user" variant="unstyled" style={styles.input} value={valueSearch} ></Input>
+            <Input
+              onChangeText={(text: string) => setValueSearch(text)}
+              placeholder="Search user"
+              variant="unstyled"
+              style={styles.input}
+              value={valueSearch}
+              InputLeftElement={
+                <MaterialIcons name="search" size={20} color="rgba(255,255,255,0.7)" style={{ marginLeft: 10 }} />
+              }
+            />
           </View>
-        }
+        )}
       </View>
 
       {userData.loading ? (
         <View style={styles.spinner}>
-          <Progress.Circle
-            color={Colors.light.primary}
-            indeterminate={true}
-            size={60}
-            borderWidth={3}
-          />
+          <Progress.Circle color={Colors.light.primary} indeterminate={true} size={60} borderWidth={3} />
           <Text style={styles.loadingText}>
             <FormattedMessage id="loading" defaultMessage="Loading users..." />
           </Text>
@@ -212,7 +212,7 @@ const UsuariosEmpresasScreen: React.FC = () => {
         </Animated.View>
       ) : (
         <View style={styles.emptyState}>
-          <MaterialIcons name="people-outline" size={80} color={`${Colors.light.primary}80`} />
+          <MaterialIcons name="people-outline" size={90} color={`${Colors.light.primary}80`} />
           <Text style={styles.emptyStateText}>
             <FormattedMessage id="noUsers" defaultMessage="No users found" />
           </Text>
@@ -221,21 +221,19 @@ const UsuariosEmpresasScreen: React.FC = () => {
           </Text>
         </View>
       )}
-      {
-        user.isAdmin &&
+      {user.isAdmin && (
         <View style={globalStyles.buttonContainer}>
           <TouchableOpacity
-            style={globalStyles.addButton}
+            style={styles.addButton}
             onPress={() => toggleModalState("modalCreate", true)}
             activeOpacity={0.8}
           >
-            <View style={[styles.addButtonGradient, { backgroundColor: Colors.light.primary }]}>
-              <Ionicons name="add" size={30} color="#fff" />
-            </View>
+           
+              <Ionicons name="add"  style={globalStyles.addtext} color="#fff" />
+          
           </TouchableOpacity>
         </View>
-
-      }
+      )}
 
       <ModalCreateUser
         onToogleModal={() => toggleModalState("modalCreate", false)}

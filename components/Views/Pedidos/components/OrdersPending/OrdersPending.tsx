@@ -19,7 +19,7 @@ const OrdersPending = () => {
     handleAddNewOrderPending,
     totalItemsPending,
 
-  } = useOrders();  
+  } = useOrders();
 
   React.useEffect(() => {
     const socketIo = io(user.apiUrl);
@@ -53,11 +53,12 @@ const OrdersPending = () => {
           />}
           keyExtractor={(item) => item.orderId.toString()}
           onEndReached={() => {
-            if (ordersPending.length < totalItemsPending && !loadingApi) {                            
+            if (ordersPending.length < totalItemsPending && !loadingApi) {
               handleLoadOrdersPending();
             }
           }}
           onEndReachedThreshold={0.2}
+          contentContainerStyle={{ paddingBottom: 100 }}
           ListFooterComponent={
             (loadingApi && ordersPending.length > 0) && (
               <View style={styles.spinerCenter}>

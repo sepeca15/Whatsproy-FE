@@ -4,12 +4,12 @@ import { RFValue } from "react-native-responsive-fontsize";
 
 export const styles = StyleSheet.create({
     header: {
-        padding: 16,
-        paddingTop: 20,
+       padding: 16,
+        paddingTop: 30,
         paddingBottom: 20,
         backgroundColor: Colors.light.primary,
-        borderBottomLeftRadius: 15,
-        borderBottomRightRadius: 15,
+        // borderBottomLeftRadius: 15,
+        // borderBottomRightRadius: 15,
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,

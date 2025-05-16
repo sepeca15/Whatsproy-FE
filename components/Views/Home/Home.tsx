@@ -24,6 +24,9 @@ import { useSubscriptionStatus } from "@/hooks/home_functions/useSubscriptionSta
 import { ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
 import { Ionicons } from "@expo/vector-icons";
 
+
+
+
 const Home: React.FC = () => {
   const intl = useIntl();
   const [filterType, setFilterType] = React.useState<string | undefined>(

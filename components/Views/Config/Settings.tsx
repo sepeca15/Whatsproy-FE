@@ -91,7 +91,7 @@ const Settings = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <StatusBar barStyle={isDark ? "light-content" : "dark-content"} backgroundColor={colors.primary} />
+    
 
       {/* Header */}
       <Animated.View style={[styles.header, { backgroundColor: colors.primary }]}>

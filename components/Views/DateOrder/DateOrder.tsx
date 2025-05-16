@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import { styles } from "./DateOrderStyles";
 import api from "@/services/api/admin";
 import CustomText from "@/components/CustomText";
@@ -14,6 +14,8 @@ import { FormattedMessage, useIntl } from "react-intl"; // Importa FormattedMess
 import Animated from "react-native-reanimated";
 import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmAction";
 import { globalStyles } from "@/components/globalStyles";
+import { useRouter } from "expo-router";
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 
 const DateOrder: React.FC = () => {
@@ -48,7 +50,7 @@ const DateOrder: React.FC = () => {
   const [loadingDelete, setLoadingDelete] = React.useState<boolean>(false);
   const [stateModalConfirm, setstateModalConfirm] = React.useState<boolean>(false)
   const [itemToDeleteId, setItemToDeleteId] = React.useState<number | null>(null);
-
+  const router = useRouter()
   const { showToast } = useToastContext();
 
   const toggleModalConfirm = () => setstateModalConfirm((prev) => !prev)
@@ -123,7 +125,11 @@ const DateOrder: React.FC = () => {
   ) : (
     <View style={styles.container}>
       <Animated.View style={globalStyles.header}>
+        
         <View style={globalStyles.headerContent}>
+           <TouchableOpacity style={styles.backButton} onPress={() => router.back()} activeOpacity={0.7}>
+            <AntDesign name="arrowleft" size={24} color="white" />
+          </TouchableOpacity>
           <View style={globalStyles.headerLeft}>
             <CustomText
               style={globalStyles.businessName}

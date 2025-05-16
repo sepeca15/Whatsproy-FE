@@ -12,6 +12,7 @@ import { useUser } from "@/hooks/redux/useUser";
 import { useToastContext } from "@/contexts/ToastContext";
 import api from "@/services/api/admin";
 import moment from "moment-timezone";
+import { router } from "expo-router";
 
 type Cierre = {
     id: number;
@@ -116,10 +117,13 @@ export const CierreProvisorio = () => {
 
     return (
         <View flex={1} w="full" h="full" position={'relative'}>
-            <View style={globalStyles.header}>
-                <View style={globalStyles.headerContent}>
+            <View style={globalStyles.header2}>
+                <TouchableOpacity style={globalStyles.backButton} onPress={() => router.back()} activeOpacity={0.7}>
+                    <AntDesign name="arrowleft" size={24} color="white" />
+                </TouchableOpacity>
+                <View style={globalStyles.headerContent_datoPedido}>
                     <View style={globalStyles.headerLeft}>
-                        <CustomText style={globalStyles.businessName}>
+                        <CustomText style={globalStyles.businessName_cierrepro}>
                             <FormattedMessage id="cierreProvisorioTittleSettings" />
                         </CustomText>
                     </View>

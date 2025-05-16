@@ -5,7 +5,7 @@ import CardNewPedido from "../CardNewPedido.tsx";
 import { useOrders } from "@/hooks/redux/useOrders";
 import * as Progress from "react-native-progress";
 import CustomText from "@/components/CustomText";
-import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
+import { FormattedMessage } from "react-intl";
 import { FlatList } from "native-base";
 
 <Progress.Circle
@@ -44,6 +44,7 @@ const OrdersActive = () => {
             }
           }}
           onEndReachedThreshold={0.2}
+          contentContainerStyle={{ paddingBottom: 100 }}
           ListFooterComponent={
             (loadingApi && ordersActive.length > 0) &&(
               <View style={styles.spinerCenter}>

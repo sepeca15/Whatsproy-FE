@@ -16,10 +16,11 @@ import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
 import CustomText from "@/components/CustomText";
 import Animated from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Feather } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import OrdersActive from "./components/OrdersActive";
 import { globalStyles } from "@/components/globalStyles";
 import { styles } from "./PedidosStyles";
+
 type pagesOrder = "finished" | "pending" | "active";
 
 
@@ -35,6 +36,7 @@ const PedidosEIngresos: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+
       <Animated.View style={globalStyles.header}>
         <View style={globalStyles.headerContent}>
           <View style={globalStyles.headerLeft}>
@@ -90,13 +92,15 @@ const PedidosEIngresos: React.FC = () => {
       <View
         style={styles.orders}
       >
-        {selected === "finished" ? (
-          <OrdersFinished />
-        ) : selected === "pending" ? (
-          <OrdersPending />
-        ) : (
-          <OrdersActive />
-        )}
+       
+          {selected === "finished" ? (
+            <OrdersFinished />
+          ) : selected === "pending" ? (
+            <OrdersPending />
+          ) : (
+            <OrdersActive />
+          )}
+       
       </View>
       <View style={globalStyles.buttonContainer}>
         <Pressable
@@ -105,7 +109,7 @@ const PedidosEIngresos: React.FC = () => {
             setOpenAddModal((prevState) => !prevState);
           }}
         >
-          <Text style={styles.addButtonText}>+</Text>
+          <Ionicons name="add" style={globalStyles.addtext} color="#fff" />
         </Pressable>
       </View>
       {openAddModal && (
@@ -114,6 +118,7 @@ const PedidosEIngresos: React.FC = () => {
           onClose={() => setOpenAddModal((prevState) => !prevState)}
         />
       )}
+
     </SafeAreaView>
   );
 };
