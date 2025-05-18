@@ -793,10 +793,25 @@
     "units": "unidades",
     "growthRate": "Tasa de crecimiento",
     "peakSales": "Ventas máximas",
-    "avgSales": "Promedio de ventas"
+    "avgSales": "Promedio de ventas",
+    "titleLogin": "Bienvenido de nuevo",
+    "stepsRegisterDesc1":"Empieza a administrar tu negocio",
+    "stepsRegisterDesc2":"Configura los horarios y que tipo de servicio ofreces",
+    "stepsRegisterDesc3":"Finaliza el proceso creando el usuario administrador de la empresa",
+    "stepsRegisterTitle1": "Crea tu empresa",
+    "stepsRegisterTitle2": "Configurar horarios",
+    "stepsRegisterTitle3": "Crear usuario"
+
   },
   "pt": {
+    "stepsRegisterTitle1": "Create your company",
+    "stepsRegisterTitle2": "Set up schedules",
+    "stepsRegisterTitle3": "Create user",
+    "stepsRegisterDesc1":"Create your company and start managing it",
+    "stepsRegisterDesc2":"Set your hours and the type of service you offe",
+    "stepsRegisterDesc3":"Finalize the process by creating the company administrator user",
     "activeOrdersTitle": "Ativos",
+    "titleLogin": "Welcome Back",
     "noDetailsInOrdersDetails": "Nenhum detalhe fornecido.",
     "userChangeStatusDetailsMessagge": "Um usuário alterou o status do seu pedido para:",
     "statusUpdatedOrderDetails": "Status atualizado",

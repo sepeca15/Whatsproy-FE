@@ -1,12 +1,8 @@
 import React, { useState } from "react";
 import {
-  Center,
-  VStack,
-  Checkbox,
-  Select,
-  View,
   ScrollView,
-  KeyboardAvoidingView,
+  VStack,
+  View,
 } from "native-base";
 import { Link, useRouter } from "expo-router";
 import CustomButton from "@/components/CustomButton";
@@ -16,8 +12,10 @@ import Step3 from "./components/Step3";
 import Step2 from "./components/Step2";
 import { useToastContext } from "@/contexts/ToastContext";
 import api from "@/services/api/admin";
-import CustomText from "@/components/CustomText";
 import { useIntl } from "react-intl"; // Importa useIntl
+import LogoContainer from "@/components/LogoContainer";
+import StepHeader from "../ConfigAccount/StepHeader";
+import StepHeaderRegister from "./components/StepHeaderRegister";
 
 interface IDataRegister {
   nombre: string;
@@ -165,46 +163,51 @@ const Register: React.FC = () => {
   };
 
   return (
-    <View alignItems={"center"} style={{ flex: 1 }}>
-      <VStack flex={1} w="90%" maxW="350px">
-        <View style={styles.containerSteps}>
-          {steps === 1 ? (
-            <Step1
-              errors={errors}
-              formData={formData}
-              handleInputChange={handleInputChange}
-            />
-          ) : steps === 2 ? (
-            <Step2
-              errors={errors}
-              formData={formData}
-              handleInputChange={handleInputChange}
-            />
-          ) : (
-            <Step3
-              tipoServicio={formData.tipoServicioId}
-              errors={errors}
-              formData={formData}
-              handleInputChange={handleInputChange}
-            />
-          )}
-          <CustomButton
-            colorSpiner="white"
-            loading={loadingApi}
-            style={{ marginTop: 20 }}
-            onPress={nextStep}
-          >
-            {steps === 3
-              ? intl.formatMessage({
+    <View bg={'teal.700'} display={'flex'} flexDir={'column'} alignItems={"center"} style={{ flex: 1 }}>
+      <View paddingTop={4} paddingBottom={2} w={'full'} background={'teal.700'} style={styles.containerImage}>
+        <StepHeaderRegister title={"Create account"} color={'white'} step={steps} total={3} />
+      </View>
+      <VStack bg={'white'} roundedTop={30} space={4} w="full" display={'flex'} flexDir={'column'} alignItems={'center'} justifyItems={'center'} flex={1}>
+        <ScrollView roundedTop={30} style={styles.containerSteps}>
+          <View mt={4} m={'auto'} w={'85%'} flex={1}>
+            {steps === 1 ? (
+              <Step1
+                errors={errors}
+                formData={formData}
+                handleInputChange={handleInputChange}
+              />
+            ) : steps === 2 ? (
+              <Step2
+                errors={errors}
+                formData={formData}
+                handleInputChange={handleInputChange}
+              />
+            ) : (
+              <Step3
+                tipoServicio={formData.tipoServicioId}
+                errors={errors}
+                formData={formData}
+                handleInputChange={handleInputChange}
+              />
+            )}
+            <CustomButton
+              colorSpiner="white"
+              loading={loadingApi}
+              style={{ marginTop: 20 }}
+              onPress={nextStep}
+            >
+              {steps === 3
+                ? intl.formatMessage({
                   id: "createAccount",
                   defaultMessage: "Create Account",
                 })
-              : intl.formatMessage({
+                : intl.formatMessage({
                   id: "continue",
                   defaultMessage: "Continue",
                 })}
-          </CustomButton>
-        </View>
+            </CustomButton>
+          </View>
+        </ScrollView>
       </VStack>
     </View>
   );

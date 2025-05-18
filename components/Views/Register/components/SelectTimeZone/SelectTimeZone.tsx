@@ -1,4 +1,4 @@
-import { Center, Modal, View, Button, Text, ScrollView } from "native-base";
+import { Center, Modal, View, Button, Text, ScrollView, FlatList } from "native-base";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { useEffect, useState } from "react";
 import InputField from "@/components/InputField";
@@ -64,9 +64,9 @@ const SelectTimeZone = ({
           {timeZoneSelected
             ? timeZoneSelected
             : intl.formatMessage({
-                id: "selectTimeZone",
-                defaultMessage: "Select a time zone",
-              })}
+              id: "selectTimeZone",
+              defaultMessage: "Select a time zone",
+            })}
         </Text>
       </TouchableOpacity>
       <Modal
@@ -87,36 +87,35 @@ const SelectTimeZone = ({
               })}
               onChangeText={(text) => setValueSearch(text)}
             />
-            <ScrollView style={styles.containerScroll}>
-              {valueSearch && valuesFiltered.length === 0 ? (
-                <Text>
-                  {intl.formatMessage({
-                    id: "noResultsFound",
-                    defaultMessage: "No results found",
-                  })}
-                </Text>
-              ) : (
-                (valueSearch ? valuesFiltered : timeZones).map(
-                  (element, index) => (
-                    <TouchableOpacity
-                      onPress={() => selectItem(element)}
-                      style={[
-                        styles.buttonTz,
-                        {
-                          backgroundColor:
-                            element === timeZoneSelected
-                              ? "#e3e3e3"
-                              : "transparent",
-                        },
-                      ]}
-                      key={index}
-                    >
-                      <Text>{element}</Text>
-                    </TouchableOpacity>
-                  ),
-                )
+            <FlatList
+              style={styles.containerScroll}
+              data={valueSearch ? valuesFiltered : timeZones}
+              keyExtractor={(item) => item}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  onPress={() => selectItem(item)}
+                  style={[
+                    styles.buttonTz,
+                    {
+                      backgroundColor:
+                        item === timeZoneSelected ? "#e3e3e3" : "transparent",
+                    },
+                  ]}
+                >
+                  <Text>{item}</Text>
+                </TouchableOpacity>
               )}
-            </ScrollView>
+              ListEmptyComponent={
+                valueSearch ? (
+                  <Text>
+                    {intl.formatMessage({
+                      id: "noResultsFound",
+                      defaultMessage: "No results found",
+                    })}
+                  </Text>
+                ) : null
+              }
+            />
           </Modal.Content>
         </Center>
       </Modal>

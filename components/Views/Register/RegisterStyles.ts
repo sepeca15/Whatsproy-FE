@@ -18,12 +18,12 @@ export const styles = StyleSheet.create({
   },
   containerImage: {
     alignItems: "center",
+    justifyContent:'center',
+    display:'flex',
+    flexDirection:'column'
   },
   containerSteps: {
     flex: 1,
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
+    width: "100%"
   },
 });

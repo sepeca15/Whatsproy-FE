@@ -6,7 +6,7 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useIntl } from "react-intl";
 import * as Animatable from "react-native-animatable";
 
-type StepHeaderProps = {
+type StepHeaderRegisterProps = {
   step: number;
   total: number;
   color?: "black" | "white",
@@ -15,20 +15,18 @@ type StepHeaderProps = {
 };
 
 const iconsByStep: { [key: number]: string } = {
-  1: "account-cog",
-  2: "credit-card-check",
-  3: "api",
-  4: "whatsapp",
+  1: "google-my-business",
+  2: "clockcircleo",
+  3: "account"
 };
 
-const StepHeader: React.FC<StepHeaderProps> = ({ step, total, color, title }) => {
+const StepHeaderRegister: React.FC<StepHeaderRegisterProps> = ({ step, total, color, title }) => {
   const progress = Math.round((step / total) * 100);
   const iconName = iconsByStep[step] || "progress-clock";
   const intl = useIntl();
 
-  // Obtención de los títulos y descripciones dinámicamente
-  const stepTitle = title ? title : (intl.formatMessage({ id: `step${step}Title` }))
-  const stepDescription = intl.formatMessage({ id: `step${step}Description` });
+  const stepTitle = (intl.formatMessage({ id: `stepsRegisterTitle${step}` }))
+  const stepDescription = intl.formatMessage({ id: `stepsRegisterDesc${step}` });
 
   return (
     <View style={{ alignItems: "center", marginBottom: 24, width: "100%" }}>
@@ -99,4 +97,4 @@ const StepHeader: React.FC<StepHeaderProps> = ({ step, total, color, title }) =>
   );
 };
 
-export default StepHeader;
+export default StepHeaderRegister;

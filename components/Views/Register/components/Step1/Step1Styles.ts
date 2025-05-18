@@ -17,7 +17,7 @@ export const styles = StyleSheet.create({
   },
   imagePicker: {
     position: "absolute",
-    right: 22,
+    right: 10,
     bottom: 0,
     backgroundColor: Colors.light.primary,
     borderRadius: 20,
@@ -32,8 +32,8 @@ export const styles = StyleSheet.create({
     elevation: 5,
   },
   image: {
-    width: 140,
-    height: 140,
+    width: 100,
+    height: 100,
     borderRadius: 200,
   },
   errorText: {

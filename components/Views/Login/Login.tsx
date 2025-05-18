@@ -1,11 +1,10 @@
 import React, { useState, useCallback } from "react";
 import {
   ScrollView,
-  Text,
   KeyboardAvoidingView,
   TouchableOpacity,
 } from "react-native";
-import { Center, View, VStack } from "native-base";
+import { Center, View, VStack, Text } from "native-base";
 import { useRouter } from "expo-router";
 import { FormattedMessage, useIntl } from "react-intl";
 import InputField from "@/components/InputField";
@@ -16,6 +15,8 @@ import api from "@/services/api/admin";
 import { StoreData } from "@/storage/localStorage";
 import { styles } from "./LoginStyles";
 import { useToastContext } from "@/contexts/ToastContext";
+import RoundedInputField from "@/components/RoundedInputField";
+import { AntDesign, EvilIcons } from "@expo/vector-icons";
 
 const LoginScreen: React.FC = () => {
   const [formValues, setFormValues] = useState({ email: "", password: "" });
@@ -62,98 +63,92 @@ const LoginScreen: React.FC = () => {
   }, [formValues, router, showToast]);
 
   return (
-    <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+    <KeyboardAvoidingView behavior="padding" style={{ flex: 1, height: '100%' }}>
       <ScrollView
         contentContainerStyle={styles.scrollView}
         keyboardShouldPersistTaps="handled"
       >
-        <Center>
-          <VStack space={4} w="90%" maxW="300px">
-            <View style={styles.containerImage}>
-              <LogoContainer />
-            </View>
+        <Center w={'full'} h={'full'} display={'flex'} flexDir={'column'} backgroundColor={'teal.700'}>
+          <View w={'full'} height={'30%'} flex={1} background={'teal.700'} style={styles.containerImage}>
+            <LogoContainer />
+          </View>
+          <VStack bg={'white'} roundedTop={30} space={4} w="full" display={'flex'} flexDir={'column'} alignItems={'center'} justifyItems={'center'} height={'70%'}>
+            <View w={'90%'} mt={8} style={{ gap: 12 }}>
+              <Text textAlign={'center'} fontSize={35} fontWeight={'semibold'} >
+                <FormattedMessage id="titleLogin" />
+              </Text>
 
-            {["email", "password"].map((field) => (
-              <InputField
-                key={field} // Asegúrate de que la key sea única
-                onChangeText={(text) => handleChangeValue(field, text)}
-                label={
-                  <Text>
+              <Text mb={2} textAlign={'center'} fontSize={20} fontWeight={'semibold'} >
+                <FormattedMessage id="loginButton" />
+              </Text>
+              {["email", "password"].map((field) => (
+                <RoundedInputField
+                  key={field}
+                  onChangeText={(text) => handleChangeValue(field, text)}
+                  icon={field === 'email' ? <AntDesign size={16} name="user" /> : <EvilIcons name="lock" size={20} />}
+                  marginTop={8}
+                  placeholder={intl.formatMessage({
+                    id: `${field}Placeholder`,
+                    defaultMessage: `Enter your ${field}`,
+                  })}
+                  type={field === "password" ? "password" : "text"}
+                />
+              ))}
+              <TouchableOpacity
+                onPress={() => router.push("/(auth)/sign-up")}
+                style={styles.textPrimary}
+              >
+                <View
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    flexDirection: "row",
+                    gap: 4,
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  <Text color={'teal.700'}>
                     <FormattedMessage
-                      id={`${field}Label`}
-                      defaultMessage={
-                        field.charAt(0).toUpperCase() + field.slice(1)
-                      }
+                      id="forgotPassword"
+                      defaultMessage="Forgot your password?"
                     />
                   </Text>
-                }
-                placeholder={intl.formatMessage({
-                  id: `${field}Placeholder`,
-                  defaultMessage: `Enter your ${field}`,
-                })}
-                type={field === "password" ? "password" : "text"}
-              />
-            ))}
+                </View>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={() => router.push("/(auth)/sign-up")}
-              style={styles.textPrimary}
-            >
-              <View
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  flexDirection: "row",
-                  gap: 4,
-                  justifyContent: "flex-start",
-                }}
+              <CustomButton onPress={Login} colorSpiner="white" borderRadius={1000}>
+                <FormattedMessage id="loginButton" defaultMessage="Login" />
+              </CustomButton>
+
+              <TouchableOpacity
+                onPress={() => router.push("/(auth)/sign-up")}
+                style={styles.textPrimary}
               >
-                <CustomText>
-                  <FormattedMessage
-                    id="forgotPassword"
-                    defaultMessage="Forgot your password?"
-                  />
-                </CustomText>
-                <CustomText style={styles.textSecondary}>
-                  <FormattedMessage
-                    id="resetPassword"
-                    defaultMessage=" Reset"
-                  />
-                </CustomText>
-              </View>
-            </TouchableOpacity>
+                <View
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    flexDirection: "row",
+                    gap: 4,
+                    justifyContent: "center",
+                  }}
+                >
+                  <Text>
+                    <FormattedMessage
+                      id="noAccount"
+                      defaultMessage="Don't have an account?"
+                    />
+                  </Text>
+                  <Text color={'teal.700'}>
+                    <FormattedMessage
+                      id="createAccount"
+                      defaultMessage=" Create one"
+                    />
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
 
-            <TouchableOpacity
-              onPress={() => router.push("/(auth)/sign-up")}
-              style={styles.textPrimary}
-            >
-              <View
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  flexDirection: "row",
-                  gap: 4,
-                  justifyContent: "flex-start",
-                }}
-              >
-                <Text>
-                  <FormattedMessage
-                    id="noAccount"
-                    defaultMessage="Don't have an account?"
-                  />
-                </Text>
-                <CustomText style={styles.textSecondary}>
-                  <FormattedMessage
-                    id="createAccount"
-                    defaultMessage=" Create one"
-                  />
-                </CustomText>
-              </View>
-            </TouchableOpacity>
-
-            <CustomButton loading={loading} onPress={Login} colorSpiner="white" borderRadius={10}>
-              <FormattedMessage id="loginButton" defaultMessage="Login" />
-            </CustomButton>
           </VStack>
         </Center>
       </ScrollView>

@@ -11,6 +11,7 @@ import * as moment from "moment-timezone";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useState } from "react";
 import api from "@/services/api/admin";
+import InformativeText from "@/components/InformativeText";
 
 interface IDataStep1 {
   nombre: string;
@@ -34,34 +35,33 @@ const Step1 = ({ formData, handleInputChange, errors }: IStep1) => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [1, 1], 
+      aspect: [1, 1],
       quality: 1,
     });
-  
+
     if (result.canceled) return;
-  
+
     const asset = result.assets?.[0];
     if (!asset?.uri) {
       console.error("Error: No se pudo obtener la URI de la imagen.");
       return;
     }
-    console.error("se seleccionó bien la imagen...:", asset);
-  
+
     const file = {
       uri: result.assets[0].uri,
       type: result.assets[0].mimeType || "image/png",
       name: asset.fileName || `image_${Date.now()}.png`,
     };
-  
+
     setUri(file.uri);
     const uploadResponse = await api.image.upload(file);
     handleInputChange("logo", uploadResponse.url);
   };
 
- 
+
 
   return (
-    <VStack space={2} style={styles.container}>
+    <VStack roundedTop={30} space={2} style={styles.container}>
       <View style={styles.containerImage}>
         <TouchableOpacity onPress={pickImage}>
           <Image
@@ -80,13 +80,13 @@ const Step1 = ({ formData, handleInputChange, errors }: IStep1) => {
           />
         </TouchableOpacity>
       </View>
-      <CustomText style={styles.textCenterLg}>
-        {intl.formatMessage({
+      <InformativeText text={
+        intl.formatMessage({
           id: "registerCompany",
           defaultMessage:
             "Register your company and start managing your orders and reservations",
-        })}
-      </CustomText>
+        })
+      } />
       <View>
         <InputField
           label={intl.formatMessage({
