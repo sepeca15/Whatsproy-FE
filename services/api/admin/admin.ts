@@ -1,4 +1,3 @@
-import { getMoneyInDay } from "./../order/order";
 import * as auth from "../auth/auth";
 import * as products from "../products/products";
 import * as company from "../company/company";
@@ -24,6 +23,8 @@ const api = {
   auth: {
     login: auth.Login,
     me: auth.GetMyAccountData,
+    resetPassword: auth.resetPassword,
+    sendLink: auth.sendLinkToGmail
   },
   products: {
     getAll: products.findAllProducts,

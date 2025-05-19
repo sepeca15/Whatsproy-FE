@@ -7,7 +7,7 @@
     "version": "1.7.6",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "miapp",
     "owner": "whatsproy",
     "userInterfaceStyle": "automatic",
     "splash": {
@@ -35,8 +35,26 @@
       },
       "googleServicesFile": "./assets/google-services.json",
       "newArchEnabled": true,
-      "permissions": ["NOTIFICATIONS", "CONTACTS"],
-      "package": "com.whatsproy"
+      "permissions": [
+        "NOTIFICATIONS",
+        "CONTACTS"
+      ],
+      "package": "com.whatsproy",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "miapp",
+              "host": "*"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -69,6 +87,7 @@
       "typedRoutes": true
     },
     "extra": {
+      "deepLinking": true,
       "router": {
         "origin": false
       },

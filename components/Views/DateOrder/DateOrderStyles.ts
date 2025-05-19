@@ -126,7 +126,6 @@ export const styles = StyleSheet.create({
     alignSelf: "center",
     borderColor: Colors.light.secondary,
     borderWidth: 0.6,
-
   },
   progress: {
     width: "100%",

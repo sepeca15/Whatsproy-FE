@@ -7,10 +7,8 @@ import {
 import { Center, View, VStack, Text } from "native-base";
 import { useRouter } from "expo-router";
 import { FormattedMessage, useIntl } from "react-intl";
-import InputField from "@/components/InputField";
 import CustomButton from "@/components/CustomButton";
 import LogoContainer from "@/components/LogoContainer";
-import CustomText from "@/components/CustomText";
 import api from "@/services/api/admin";
 import { StoreData } from "@/storage/localStorage";
 import { styles } from "./LoginStyles";
@@ -95,7 +93,7 @@ const LoginScreen: React.FC = () => {
                 />
               ))}
               <TouchableOpacity
-                onPress={() => router.push("/(auth)/sign-up")}
+                onPress={() => router.push("/(auth)/sendLinkEmail")}
                 style={styles.textPrimary}
               >
                 <View
