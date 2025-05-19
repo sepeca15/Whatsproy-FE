@@ -9,6 +9,24 @@ export const usePushNotifications = () => {
   const [loading, setLoading] = useState(false);
   const { user } = useUser();
 
+  Notifications.setNotificationHandler({
+    handleNotification: async () => {
+      if (user?.id) {
+        return {
+          shouldShowAlert: true,
+          shouldPlaySound: true,
+          shouldSetBadge: false,
+        };
+      }
+
+      return {
+        shouldShowAlert: false,
+        shouldPlaySound: false,
+        shouldSetBadge: false,
+      };
+    },
+  });
+
   const registerForPushNotifications = async () => {
     setLoading(true);
     try {

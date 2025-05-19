@@ -1,5 +1,5 @@
 import { Colors } from "@/constants/Colors";
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
 
 export const styles = StyleSheet.create({
@@ -8,6 +8,29 @@ export const styles = StyleSheet.create({
     flex: 1,
     display: "flex",
     flexDirection: "column",
+  },
+  emptyStateContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+    height: Dimensions.get("window").height * 0.4,
+  },
+  emptyStateAnimation: {
+    width: 150,
+    height: 150,
+  },
+  emptyStateTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginTop: 20,
+    color: Colors.light.primary,
+  },
+  emptyStateSubtitle: {
+    fontSize: 16,
+    color: "#666",
+    textAlign: "center",
+    marginTop: 10,
+    paddingHorizontal: 20,
   },
   header: {
     padding: 16,
@@ -117,6 +140,7 @@ export const styles = StyleSheet.create({
   message: {
     backgroundColor: "rgba(18, 140, 126, 0.08)",
     borderRadius: 16,
+    marginTop: 10,
     width: "92%",
     padding: 12,
     display: "flex",
@@ -126,7 +150,6 @@ export const styles = StyleSheet.create({
     alignSelf: "center",
     borderColor: Colors.light.secondary,
     borderWidth: 0.6,
-
   },
   progress: {
     width: "100%",

@@ -31,7 +31,6 @@ const SubscriptionsView = () => {
   const [productInfo, setProductInfo] = useState<any>(null);
   const currentPayment = user?.payment ? { ...user.payment } : null;
 
-  console.log("currentPayment", currentPayment)
   useEffect(() => {
     const fetchProduct = async () => {
       if (!currentPayment?.subscription_sku) return;
@@ -87,9 +86,9 @@ const SubscriptionsView = () => {
   const renderActiveSubscription = () => {
     const expirationDate = currentPayment?.subscription_date
       ? moment(currentPayment.subscription_date).add(
-        EMPRESA_PAYMENT_FREE_TIME_AFTER_CANCEL,
-        "days"
-      )
+          EMPRESA_PAYMENT_FREE_TIME_AFTER_CANCEL,
+          "days"
+        )
       : null;
 
     const shouldShowExpiringSoon =
@@ -101,12 +100,12 @@ const SubscriptionsView = () => {
     const cancelationInfo =
       isCancelled && expirationDate
         ? intl.formatMessage(
-          {
-            id: "subscriptionCancelledUntil",
-            defaultMessage: "Cancelada, válida hasta {date}",
-          },
-          { date: expirationDate.format("LL") }
-        )
+            {
+              id: "subscriptionCancelledUntil",
+              defaultMessage: "Cancelada, válida hasta {date}",
+            },
+            { date: expirationDate.format("LL") }
+          )
         : null;
     const benefits = subscriptionBenefits[currentPayment?.subscription_sku];
     const benefitsArray = (benefits ? benefits.split(",") : []) as string[];
@@ -171,12 +170,17 @@ const SubscriptionsView = () => {
         </Text>
 
         <Text fontSize="sm" color="gray.500" mb={1}>
-          <FormattedMessage id="validUntil" defaultMessage="Válida hasta" />:{" "}
-          {currentPayment.subscription_date
-            ? moment(currentPayment.subscription_date)
-              .add(EMPRESA_PAYMENT_FREE_TIME_AFTER_CANCEL, "days")
-              .format("LL")
-            : "-"}
+          {!currentPayment?.isCancelled && (
+            <>
+              <FormattedMessage id="validUntil" defaultMessage="Válida hasta" />
+              :{" "}
+              {currentPayment.subscription_date
+                ? moment(currentPayment.subscription_date)
+                    .add(EMPRESA_PAYMENT_FREE_TIME_AFTER_CANCEL, "days")
+                    .format("LL")
+                : "-"}
+            </>
+          )}
         </Text>
 
         {benefitsArray.length > 0 && (
@@ -219,9 +223,12 @@ const SubscriptionsView = () => {
         {currentPayment?.isCancelled && (
           <CustomButton
             colorSpiner="white"
+            marginTop={5}
             onPress={() => setShouldSubscribe(true)}
           >
-            <FormattedMessage id="renewSuscription" />
+            <CustomText>
+              <FormattedMessage id="renewSuscription" />
+            </CustomText>
           </CustomButton>
         )}
       </Box>
@@ -274,7 +281,12 @@ const SubscriptionsView = () => {
 
       {shouldSubscribe && (
         <GlobalModal
-          content={<Step2  onNext={() => null} onSuccess={() => setShouldSubscribe(false)} />}
+          content={
+            <Step2
+              onNext={() => null}
+              onSuccess={() => setShouldSubscribe(false)}
+            />
+          }
           label={intl.formatMessage({
             id: "subscribe",
             defaultMessage: "Suscribirse",
@@ -299,7 +311,7 @@ const SubscriptionsView = () => {
       >
         {" "}
         <View style={{ alignItems: "center", gap: 8, width: "100%" }}>
-          {currentPayment?.active
+          {currentPayment?.isActive
             ? renderActiveSubscription()
             : renderEmptySubscription()}
         </View>

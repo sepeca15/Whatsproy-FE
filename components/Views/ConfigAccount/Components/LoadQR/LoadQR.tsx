@@ -53,7 +53,7 @@ const LoadQR = ({ QRCode, handleUpdateData }: ILoadQR) => {
       ) : QRCode ? (
         <Image
           source={{ uri: QRCode }}
-          alt="QR Code"
+          alt="Failed load QR code"
           style={{ width: 200, height: 200 }}
         />
       ) : (

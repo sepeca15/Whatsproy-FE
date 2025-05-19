@@ -4,7 +4,8 @@ import { styles } from "./DateOrderStyles";
 import CustomText from "@/components/CustomText";
 import { Colors } from "@/constants/Colors";
 import MaterialIconss from "react-native-vector-icons/MaterialCommunityIcons";
-import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
+import { FormattedMessage, useIntl } from "react-intl"; // Importa FormattedMessage
+import { useToastContext } from "@/contexts/ToastContext";
 
 interface IDateOrder {
   es_defecto: boolean;
@@ -22,6 +23,8 @@ interface IProps {
 }
 
 const DateOrderCard = ({ data, onDeleteItem, isPar }: IProps) => {
+  const { showToast } = useToastContext();
+  const intl = useIntl()
 
   return (
     <View
@@ -36,18 +39,15 @@ const DateOrderCard = ({ data, onDeleteItem, isPar }: IProps) => {
 
       <View style={styles.column}>
         <CustomText style={styles.text}>
-          {
-            data.tipo === 'string' ?
-              <FormattedMessage id="dateOrderTypeText" />
-              :
-              data.tipo === 'number' ?
-                <FormattedMessage id="dateOrderTypeNumber" />
-                :
-                data.tipo === 'boolean' ?
-                  <FormattedMessage id="dateOrderTypeBoolean" />
-                  :
-                  <FormattedMessage id="dateOrderTypeDate" />
-          }
+          {data.tipo === "string" ? (
+            <FormattedMessage id="dateOrderTypeText" />
+          ) : data.tipo === "number" ? (
+            <FormattedMessage id="dateOrderTypeNumber" />
+          ) : data.tipo === "boolean" ? (
+            <FormattedMessage id="dateOrderTypeBoolean" />
+          ) : (
+            <FormattedMessage id="dateOrderTypeDate" />
+          )}
         </CustomText>
       </View>
       <View style={styles.column}>
@@ -70,11 +70,19 @@ const DateOrderCard = ({ data, onDeleteItem, isPar }: IProps) => {
       </View>
       <View style={styles.columnDelete}>
         <Pressable
-          disabled={data.es_defecto === true}
-          onPress={onDeleteItem}
+          onPress={() => {
+            if (data.es_defecto) {
+              showToast({
+                title: intl.formatMessage({ id: "defaultTitle", defaultMessage: "Error" }),
+                description: intl.formatMessage({ id: "defaultTitleDesc", defaultMessage: "Este registro esta por defecto para su tipo de servicio." }),
+                status: "error",
+              });
+              return;
+            }
+            onDeleteItem();
+          }}
           role="button"
           hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
-
         >
           <MaterialIconss
             name="delete"

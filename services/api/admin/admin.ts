@@ -17,7 +17,8 @@ import * as cambioEstado from "../cambioEstado/cambioEstado";
 import * as getchat from "../chat/chatData";
 import * as payments from "../payments/payment";
 import * as cierreProvisorio from "../cierre_provisoro/cierreProvisorio";
-import * as numeroConfianza from "../numeroConfianza/numeroConfianza"
+import * as numeroConfianza from "../numeroConfianza/numeroConfianza";
+
 
 
 const api = {
@@ -47,6 +48,9 @@ const api = {
     update: company.updateCompany,
     loadQR: company.LoadQR,
     loadAuthCode: company.LoadAuthCode,
+    isGreenApiConfigured: company.isGreenApiConfigured,
+    getCompaniesAdmin: company.getCompaniesAdmin,
+    deployCompany: company.deployCompany,
   },
   user: {
     create: user.createUser,

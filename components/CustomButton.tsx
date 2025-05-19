@@ -17,7 +17,7 @@ const CustomButton = ({
   background = "#128c7e",
   isDisabled = false,
   variant = "solid",
-  colorSpiner = "#128c7e",
+  colorSpiner = background === "#128c7e" ? "white" : "#128c7e",
   loading,
   ...props
 }: CustomButtonProps) => {
@@ -29,7 +29,12 @@ const CustomButton = ({
       style={styles.containerButton}
       bg={buttonBackgroundColor}
       variant={variant}
-      isDisabled={isDisabled}
+      isDisabled={isDisabled || loading}
+      onPress={(e) => {
+        if (props.onPress && !loading) {
+          props.onPress(e);
+        }
+      }}
       {...props}
     >
       {loading ? (

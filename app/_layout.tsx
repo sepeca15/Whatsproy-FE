@@ -16,14 +16,6 @@ import { DebugLocale } from "./DebugLocale";
 // import PedidosListener from "../utils/notificaciones/PedidosListener";
 // import { NotificationProvider } from "@/contexts/NotificationPreferenceContext";
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-  }),
-});
-
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -45,7 +37,7 @@ export default function RootLayout() {
           <LocalizationProvider>
             <NativeBaseProvider>
               <ToastProvider>
-                <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+                <ThemeProvider value={DefaultTheme}>
                 <StatusBar barStyle="light-content" backgroundColor={"#075e54" }/>
                 
 

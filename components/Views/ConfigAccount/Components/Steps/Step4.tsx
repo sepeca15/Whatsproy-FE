@@ -1,15 +1,15 @@
 import * as React from "react";
 import { Button, useToast, View } from "native-base";
 import CustomText from "@/components/CustomText";
-import { StyleSheet } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import { Colors } from "@/constants/Colors";
 import LoadAuthCode from "../LoadAuthCode";
 import LoadQR from "../LoadQR";
 import { useUser } from "@/hooks/redux/useUser";
-import { io } from "socket.io-client";
 import CustomButton from "@/components/CustomButton";
 import { useToastContext } from "@/contexts/ToastContext";
 import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
+import TutorialGreenApi from "../../TotorialGreenApi";
 
 type buttons = "Auth" | "QR";
 
@@ -17,38 +17,40 @@ const Step4 = () => {
   const {
     user: { apiUrl },
     handleUpdateGreenApiConfig,
+    isGreenApiConfigured,
   } = useUser();
   const [selectedButton, setSelectedButton] = React.useState<buttons | null>(
     null
   );
+  const [openTutorial, setOpenTutorial] = React.useState(false);
+  const [loadingChecking, setLoadingChecking] = React.useState(false);
   const [data, setData] = React.useState({
     QRCode: null,
     AuthCode: null,
   });
   const { showToast } = useToastContext();
 
-  React.useEffect(() => {
-    const socketIo = io(apiUrl);
-
-    socketIo.on("greenApiStatusResponse", (data) => {
-      FinishConfigGreenApi();
-    });
-
-    return () => {
-      socketIo.disconnect();
-    };
-  }, []);
-
   const FinishConfigGreenApi = async () => {
     try {
-      await handleUpdateGreenApiConfig();
-      showToast({
-        description: <FormattedMessage id="configSuccessDescription" />,
-        title: <FormattedMessage id="configSuccessTitle" />,
-        status: "success",
-      });
+      setLoadingChecking(true);
+      const resp = await isGreenApiConfigured();
+      if (resp?.isDone) {
+        showToast({
+          description: <FormattedMessage id="configSuccessDescription" />,
+          title: <FormattedMessage id="configSuccessTitle" />,
+          status: "success",
+        });
+      } else {
+        showToast({
+          description: <FormattedMessage id="configErrorDesc" />,
+          title: <FormattedMessage id="ooops" />,
+          status: "error",
+        });
+      }
     } catch (error: any) {
       console.log(error?.message);
+    } finally {
+      setLoadingChecking(false);
     }
   };
 
@@ -65,7 +67,10 @@ const Step4 = () => {
 
   return (
     <View style={styles.container}>
-      {!data.AuthCode && !data.QRCode && (
+      {openTutorial && (
+        <TutorialGreenApi open={openTutorial} setOpen={setOpenTutorial} />
+      )}
+      {!selectedButton && (
         <CustomText style={styles.centerText}>
           <FormattedMessage id="chooseConnectionMethod" />
         </CustomText>
@@ -113,19 +118,46 @@ const Step4 = () => {
         </Button>
       </View>
       <View style={styles.content}>
-        <CustomButton onPress={FinishConfigGreenApi}>OK</CustomButton>
         {selectedButton === "Auth" ? (
           <LoadAuthCode
             AuthCode={data.AuthCode}
             handleUpdateData={handleUpdateData}
           />
-        ) : selectedButton === "QR" ? (
-          <LoadQR QRCode={data.QRCode} handleUpdateData={handleUpdateData} />
         ) : (
-          <CustomText>
-            <FormattedMessage id="pleaseChooseOption" />
-          </CustomText>
+          selectedButton === "QR" && (
+            <LoadQR QRCode={data.QRCode} handleUpdateData={handleUpdateData} />
+          )
         )}
+        <View
+          display={"flex"}
+          flexDirection={"row"}
+          alignItems={"center"}
+          style={{ gap: 4, marginTop: 4 }}
+        >
+          <CustomText>{<FormattedMessage id="needHelp" />}</CustomText>{" "}
+          <TouchableOpacity onPress={() => setOpenTutorial(!openTutorial)}>
+            <CustomText
+              style={{
+                color: "#128c7e",
+                textDecorationColor: "#128c7e",
+                textDecorationLine: "underline",
+              }}
+            >
+              <FormattedMessage id="seeTutorial" />
+            </CustomText>
+          </TouchableOpacity>
+        </View>
+
+        <View width={"100%"}>
+          <CustomButton
+            loading={loadingChecking}
+            marginRight={0}
+            marginTop={5}
+            onPress={FinishConfigGreenApi}
+          >
+            <FormattedMessage id="verify" />
+          </CustomButton>
+        </View>
       </View>
     </View>
   );
@@ -169,6 +201,7 @@ const styles = StyleSheet.create({
     color: "#FFF",
   },
   content: {
+    width: "100%",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",

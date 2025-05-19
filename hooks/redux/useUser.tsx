@@ -76,6 +76,19 @@ export const useUser = () => {
     }
   };
 
+    const isGreenApiConfigured = async () => {
+    try {
+      const resp = await api.company.isGreenApiConfigured(user.id_empresa);
+      console.log("resp", resp?.isDone)
+      if (resp?.isDone) {
+        Dispatch(greenApiConfigured());
+      }
+      return resp;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleUpdateFCM = async (fcm: any) => {
     try {
       Dispatch(onUpdateFcm(fcm));
@@ -135,5 +148,6 @@ export const useUser = () => {
     user,
     handleUpdateFCM,
     handlePayOk,
+    isGreenApiConfigured,
   };
 };

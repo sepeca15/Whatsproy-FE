@@ -7,7 +7,7 @@ import { ModalStyles as styles } from "./ModalStyles";
 
 interface GlobalModalProps {
   isVisible: boolean;
-  label: string;
+  label: any;
   onClose: () => void;
   content: React.ReactNode;
   actions?: any[];
@@ -80,7 +80,7 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
                   gap: 8,
                   paddingHorizontal: 20,
                   paddingBottom: 60,
-                  minHeight: 250,
+                  minHeight: 300,
                 }}
               >
                 {content}

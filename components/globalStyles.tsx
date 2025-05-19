@@ -93,7 +93,7 @@ export const globalStyles = StyleSheet.create({
   headerContent_categorias: {
     marginHorizontal: 10,
     flexDirection: "row",
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
     alignItems: "center",
   },
   headerLeft: {

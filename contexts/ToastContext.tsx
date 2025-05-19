@@ -10,36 +10,36 @@ export const ToastProvider = ({ children }: any) => {
 
   const showToast = ({ title, description, status }: any) => {
     toast.show({
-      placement: "bottom-right",
-      zIndex: 9999999,
-      duration: 3000,
-      marginRight: 3,
-      paddingRight: 3,
-      position: "fixed",
+      placement: "top",
+      duration: 4000,
       render: () => (
         <Box
-          bg={status === "success" ? "green.500" : "red.500"}
+          marginTop={-5}
+          bg={status === "success" ? "green.600" : "red.600"}
+          maxWidth="95%"
+          alignSelf="center"
+          rounded="xl"
+          width={"95%"}
           px="4"
           py="3"
-          marginRight={3}
-          rounded="lg"
-          zIndex={9999999}
-          shadow="2"
-          _text={{ color: "white" }}
+          shadow="9"
+          borderLeftWidth={6}
+          borderColor={status === "success" ? "green.300" : "red.300"}
         >
-          <HStack space={3} alignItems="center">
+          <HStack space={3} alignItems="flex-start">
             <Icon
               as={Ionicons}
               name={status === "success" ? "checkmark-circle" : "alert-circle"}
               color="white"
               size="lg"
+              mt={0.5}
             />
-            <VStack>
+            <VStack flexShrink={1}>
               <Text color="white" bold fontSize="md">
                 {title}
               </Text>
               {description && (
-                <Text color="white" fontSize="sm">
+                <Text color="white" fontSize="sm" flexWrap="wrap">
                   {description}
                 </Text>
               )}

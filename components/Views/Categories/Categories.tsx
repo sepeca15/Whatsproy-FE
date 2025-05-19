@@ -16,12 +16,15 @@ import { useUser } from "@/hooks/redux/useUser";
 import { router } from "expo-router";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { TouchableOpacity } from "react-native";
+import * as Animatable from "react-native-animatable";
+import LottieView from "lottie-react-native";
 
 const Categories = () => {
   const [allCategories, setAllCategories] = React.useState<ICategoryData[]>([]);
   const [stateModal, setStateModal] = React.useState(false);
   const [loadingApi, setLoadingApi] = React.useState(false);
   const { user } = useUser();
+  const lottieRef = React.useRef<LottieView>(null);
 
   const toggleModal = () => setStateModal((prev) => !prev);
 
@@ -37,7 +40,7 @@ const Categories = () => {
       const resp = await api.category.getAll();
 
       if (resp.ok) {
-        setAllCategories(resp.data);
+        // setAllCategories(resp.data);
       }
     } catch (error) {
       console.log(error);
@@ -97,17 +100,26 @@ const Categories = () => {
               columnWrapperStyle={{ justifyContent: "center", gap: 10 }}
             />
           ) : (
-            <View
-              display="flex"
-              flexDirection="column"
-              alignItems={"center"}
-              justifyContent={"center"}
-            >
-              <SvgEmpty />
-              <CustomText style={{ fontSize: 14, fontWeight: 400 }}>
-                {<FormattedMessage id="noCategories" />}
-              </CustomText>
-            </View>
+             <Animatable.View
+                animation="fadeIn"
+                duration={600}
+                style={styles.emptyStateContainer}
+              >
+                <LottieView
+                  ref={lottieRef}
+                  source={require("../../../constants/Animation-non-order.json")}
+                  autoPlay
+                  loop
+                  style={styles.emptyStateAnimation}
+                />
+                <CustomText style={styles.emptyStateTitle}>
+                  <FormattedMessage
+                    id="noCategories"
+                    defaultMessage="No hay productos"
+                  />
+                </CustomText>
+              </Animatable.View>
+
           )}
         </View>
         <CustomButton

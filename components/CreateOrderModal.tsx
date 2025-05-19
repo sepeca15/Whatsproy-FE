@@ -53,6 +53,7 @@ import {
 } from "@/utils/date";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import TimePicker from "./TimePicker";
+import { useIntl } from "react-intl";
 
 interface IProps {
   onClose: () => void;
@@ -90,6 +91,7 @@ const CreateOrderModal = ({
 }: IProps) => {
   const { showToast } = useToastContext();
   const { user } = useUser();
+  const intl = useIntl();
   const localDate = new Date((defaultDate || new Date()) + "T00:00");
   const [form, setForm] = React.useState({
     ...initialValues,
@@ -345,7 +347,7 @@ const CreateOrderModal = ({
 
   return (
     <GlobalModal
-      label={`Agregar ${tipoServicio === ID_TIPOSERVICIO_RESERVA ? "nuevo Evento" : "nueva Orden"}`}
+      label={`${intl.formatMessage({ id: "add" })} ${tipoServicio === ID_TIPOSERVICIO_RESERVA ? intl.formatMessage({ id: "newReserva" }) : intl.formatMessage({ id: "newOrder" })}`}
       isVisible={true}
       onClose={onClose}
       actions={[
@@ -357,20 +359,23 @@ const CreateOrderModal = ({
           fontWeight={"bold"}
         >
           <Text fontWeight={500} color={"#2C2C2C"}>
-            Cancelar
+            {intl.formatMessage({ id: "cancel" })}
           </Text>
         </Button>,
         <Button
           isLoading={loadingCreate || loadingNextDateAvailable}
           onPress={() => createOrderData()}
           size="sm"
+          marginLeft={2}
           backgroundColor={"#2C2C2C"}
           borderRadius={"6"}
           fontWeight={700}
         >
           <Text fontWeight={500} color={"white"}>
-            Crear{" "}
-            {tipoServicio === ID_TIPOSERVICIO_RESERVA ? "Evento" : "Orden"}
+            {intl.formatMessage({ id: "modalCreate" })}{" "}
+            {tipoServicio === ID_TIPOSERVICIO_RESERVA
+              ? intl.formatMessage({ id: "event" })
+              : intl.formatMessage({ id: "order" })}
           </Text>
         </Button>,
       ]}
