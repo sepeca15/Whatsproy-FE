@@ -27,14 +27,11 @@ export default function RootLayout() {
 
   useEffect(() => {
     const handleDeepLink = (event : any) => {
-      console.log('sisisisis');
-      
       const url = new URL(event.url);
       const token = url.searchParams.get('token');
-      console.log("Token recibido: ", token);
 
       if (token) {
-        router.push(`/reset-password?token=${token}`);
+        router.push(`/(auth)/reset-password?token=${token}` as any);
       }
     };
 
