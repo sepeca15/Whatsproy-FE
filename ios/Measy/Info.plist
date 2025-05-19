@@ -27,7 +27,7 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>myapp</string>
+          <string>miapp</string>
           <string>com.whatsproy</string>
         </array>
       </dict>

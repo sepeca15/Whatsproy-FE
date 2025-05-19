@@ -4,6 +4,7 @@ import InputField from "@/components/InputField";
 import CustomText from "@/components/CustomText";
 import AlertText from "../AlertText";
 import { useIntl } from "react-intl"; // Importa useIntl
+import InformativeText from "@/components/InformativeText";
 
 interface IStep3 {
   formData: any;
@@ -22,12 +23,10 @@ const Step3 = ({
 
   return (
     <VStack space={4}>
-        <CustomText style={styles.textCenterLg}>
-        {intl.formatMessage({
-          id: "registrationLogin",
-          defaultMessage: "registrationLogin",
-        })}
-      </CustomText>
+      <InformativeText text={intl.formatMessage({
+        id: "registrationLogin",
+        defaultMessage: "registrationLogin",
+      })} />
       <View>
         <InputField
           label={intl.formatMessage({ id: "email", defaultMessage: "Email" })}

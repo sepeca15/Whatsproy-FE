@@ -4,9 +4,11 @@ import { Colors } from "@/constants/Colors";
 export const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
+    height:'100%',
     justifyContent: "center",
   },
   textPrimary: {
+    textAlign:'center',
     color: Colors.light.primary,
     display: "flex",
   },
@@ -16,5 +18,7 @@ export const styles = StyleSheet.create({
   },
   containerImage: {
     alignItems: "center",
+    display:'flex',
+    justifyContent:'center'
   },
 });

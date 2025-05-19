@@ -45,8 +45,6 @@ const Productos: React.FC = () => {
   const [allCategories, setAllCategories] = useState<ICategoryData[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [selectCategory, setSelectCategory] = useState<number | null>(null);
-
-  // New state for delete modal
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deletingProductId, setDeletingProductId] = useState<number | null>(
     null

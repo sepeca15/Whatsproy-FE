@@ -4,7 +4,7 @@ export const styles = StyleSheet.create({
   container: {
     marginTop: 12,
     width: "100%",
-    height: 45,
+    height: 35,
     borderWidth: 1,
     borderColor: "#D3D3D3",
     borderRadius: 8,
@@ -12,7 +12,6 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 8,
     fontWeight: 500,
   },
   buttonText: {
