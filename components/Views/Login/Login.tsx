@@ -114,7 +114,7 @@ const LoginScreen: React.FC = () => {
                 </View>
               </TouchableOpacity>
 
-              <CustomButton onPress={Login} colorSpiner="white" borderRadius={1000}>
+              <CustomButton loading={loading} onPress={Login} colorSpiner="white" borderRadius={1000}>
                 <FormattedMessage id="loginButton" defaultMessage="Login" />
               </CustomButton>
 

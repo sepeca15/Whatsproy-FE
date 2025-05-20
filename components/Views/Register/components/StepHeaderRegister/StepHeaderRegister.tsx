@@ -25,9 +25,6 @@ const StepHeaderRegister: React.FC<StepHeaderRegisterProps> = ({ step, total, co
   const iconName = iconsByStep[step] || "progress-clock";
   const intl = useIntl();
 
-  const stepTitle = (intl.formatMessage({ id: `stepsRegisterTitle${step}` }))
-  const stepDescription = intl.formatMessage({ id: `stepsRegisterDesc${step}` });
-
   return (
     <View style={{ alignItems: "center", marginBottom: 24, width: "100%" }}>
       <Animatable.View duration={300} animation="zoomIn">
@@ -55,7 +52,7 @@ const StepHeaderRegister: React.FC<StepHeaderRegisterProps> = ({ step, total, co
           textAlign: "center",
         }}
       >
-        {stepTitle}
+        {intl.formatMessage({ id: `stepsRegisterTitle${step}` })}
       </Text>
 
 
@@ -91,7 +88,7 @@ const StepHeaderRegister: React.FC<StepHeaderRegisterProps> = ({ step, total, co
           paddingHorizontal: 20,
         }}
       >
-        {stepDescription}
+        {intl.formatMessage({ id: `stepsRegisterDesc2` })}
       </Text>
     </View>
   );
