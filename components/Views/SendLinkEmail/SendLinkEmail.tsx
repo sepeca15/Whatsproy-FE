@@ -2,10 +2,11 @@ import InformativeText from "@/components/InformativeText";
 import InputField from "@/components/InputField";
 import LogoContainer from "@/components/LogoContainer";
 import { Colors } from "@/constants/Colors";
+import { useToastContext } from "@/contexts/ToastContext";
 import api from "@/services/api/admin";
 import { Box, Button, Center, KeyboardAvoidingView, ScrollView, Text, Toast, View } from "native-base";
 import { useState } from "react";
-import { useIntl } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import { Platform, StyleSheet } from "react-native";
 
 const SendLinkEmail = () => {
@@ -15,6 +16,7 @@ const SendLinkEmail = () => {
     const isValidEmail = (email: string) => {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     };
+    const { showToast } = useToastContext();
 
 
     const handleSendCode = async () => {
@@ -26,16 +28,28 @@ const SendLinkEmail = () => {
         try {
             setLoading(true);
             const resp = await api.auth.sendLink(email)
-            
+
             if (resp.ok) {
-                Toast.show({ description: "Código enviado a tu correo", bgColor: "green.500" });
-            } else {
-                Toast.show({ description: resp?.message || "Error al enviar código", bgColor: "red.500" });
+                showToast({
+                    title: intl.formatMessage({
+                        id: "send",
+                    }),
+                    description: intl.formatMessage({
+                        id: "sendLinkSuccess",
+                    }),
+                    status: "success",
+                });
             }
         } catch (error: any) {
-            Toast.show({ description: "Error de red", bgColor: "red.500" });
+            showToast({
+                title: "Error",
+                description: intl.formatMessage({
+                    id: "sendLinkError",
+                }),
+                status: "error",
+            });
             console.log(error.response.data.message);
-            
+
         } finally {
             setLoading(false);
         }
@@ -52,8 +66,8 @@ const SendLinkEmail = () => {
                 </Center>
                 <ScrollView bg={'white'} roundedTop={30} flex={0.6} >
                     <Box mt={8} display={'flex'} flexDir={'column'} style={{ gap: 0 }} px={4} w="100%" >
-                        <Text textAlign={'center'} fontWeight={'bold'} fontSize={30} mb={4} > Restablecer contraseña</Text>
-                        <InformativeText text={'Ingrese su correo y enviaremos un link para que pueda restablecer su contraseña'} />
+                        <Text textAlign={'center'} fontWeight={'bold'} fontSize={30} mb={4} ><FormattedMessage id="sendLinkTitle" /></Text>
+                        <InformativeText text={intl.formatMessage({ id: "sendLinkInformativeText" })} />
                         < InputField
                             label={intl.formatMessage({
                                 id: "email",
@@ -66,7 +80,9 @@ const SendLinkEmail = () => {
                             onChangeText={setEmail}
                         />
                         < Button mt={8} bg={Colors.light.secondary} onPress={handleSendCode} isLoading={loading} >
-                            Enviar código
+                            <Text color={'white'}>
+                                <FormattedMessage id="sendLink" />
+                            </Text>
                         </Button>
                     </Box>
                 </ScrollView>
