@@ -52,6 +52,7 @@ const api = {
     isGreenApiConfigured: company.isGreenApiConfigured,
     getCompaniesAdmin: company.getCompaniesAdmin,
     deployCompany: company.deployCompany,
+    updateCompanyAdmin: company.updateCompanyAdmin,
   },
   user: {
     create: user.createUser,

@@ -10,46 +10,51 @@ export const createCompany = async (info: CreateEmpresaDto) => {
 
 export const updateCompany = async (
   companyData: IUserData,
-  id_empresa: number,
+  id_empresa: number
 ) => {
   const { data } = await ApiInstances("global").patch(
     "empresa/" + id_empresa,
-    companyData,
+    companyData
   );
 
   return data;
 };
 
-
-
-export const isGreenApiConfigured = async (
-  id_empresa: number,
-) => {
+export const isGreenApiConfigured = async (id_empresa: number) => {
   const { data } = await ApiInstances("global").post(
-    "empresa/isGreenApiConfigured/" + id_empresa,
+    "empresa/isGreenApiConfigured/" + id_empresa
   );
 
   return data;
 };
 
-export const deployCompany = async (
-  companyId: string,
-) => {
+export const deployCompany = async (companyId: string) => {
   const { data } = await ApiInstances("global").post(
-    `admin/deploy/${companyId}`,
+    `admin/deploy/${companyId}`
   );
 
   return data;
 };
-
 
 export const getCompaniesAdmin = async (
   query: string,
   page: any,
-  limit: any,
+  limit: any
 ) => {
   const { data } = await ApiInstances("global").get(
-    `admin/empresas?query=${query}&page=${page}&limit=${limit}`,
+    `admin/empresas?query=${query}&page=${page}&limit=${limit}`
+  );
+
+  return data;
+};
+
+export const updateCompanyAdmin = async (
+  id: string,
+  empresaInfo: any,
+) => {
+  const { data } = await ApiInstances("global").put(
+    `admin/empresas/${id}`,
+    empresaInfo
   );
 
   return data;
@@ -63,7 +68,7 @@ export const LoadAuthCode = async ({
   numberPhone: number;
 }) => {
   const { data } = await ApiInstances("global").get(
-    `empresa/authCode/${id_empresa}/${numberPhone}`,
+    `empresa/authCode/${id_empresa}/${numberPhone}`
   );
   return data;
 };

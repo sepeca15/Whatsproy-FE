@@ -20,6 +20,13 @@
       "android": {
         "buildType": "app-bundle"
       }
+    },
+    "internalApk": {
+      "developmentClient": false,
+      "distribution": "internal",
+      "android": {
+        "buildType": "app-bundle"
+      }
     }
   },
   "submit": {

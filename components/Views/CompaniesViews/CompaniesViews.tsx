@@ -19,6 +19,7 @@ import api from "@/services/api/admin";
 import CustomButton from "@/components/CustomButton";
 import { EMPRESA_PAYMENT_FREE_TIME_AFTER_CANCEL } from "@/constants/variables";
 import { useToastContext } from "@/contexts/ToastContext";
+import EditCompanyModal from "./components/EditCompany";
 
 const CompaniesView = () => {
   const router = useRouter();
@@ -26,11 +27,13 @@ const CompaniesView = () => {
 
   const [companies, setCompanies] = useState<any[]>([]);
   const [loadingCompanies, setLoadingCompanies] = useState(false);
+  const [loadingUpdateCompany, setLoadingUpdateCompany] = useState(false);
+
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [deploying, setDeploying] = useState(false);
   const [editing, setEditing] = useState(false);
-  const [editOpen, setEditOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState<any>();
   const { showToast } = useToastContext();
   const intl = useIntl();
 
@@ -53,6 +56,38 @@ const CompaniesView = () => {
       loadCompanies(1);
     }
   }, [user]);
+
+  const handleSaveEmpresa = async (info: any) => {
+    const dataToUpdate = {
+      ...info,
+    };
+
+    try {
+      setLoadingUpdateCompany(true);
+      const resp = await api.company.updateCompanyAdmin(
+        editOpen?.id,
+        dataToUpdate
+      );
+      if (resp?.ok) {
+        setEditOpen(undefined);
+        showToast({
+          title: intl.formatMessage({ id: "companyUpdatedOk" }),
+          description: intl.formatMessage({ id: "companyUpdatedOkDesc" }),
+          status: "error",
+        });
+      } else {
+        showToast({
+          title: intl.formatMessage({ id: "companyUpdatedOk" }),
+          description: intl.formatMessage({ id: "companyUpdatedOkDesc" }),
+          status: "error",
+        });
+      }
+    } catch (error) {
+      console.log("error loading companies", error);
+    } finally {
+      setLoadingUpdateCompany(false);
+    }
+  };
 
   const handleDeploy = async (item: any) => {
     try {
@@ -202,7 +237,7 @@ const CompaniesView = () => {
 
         <View style={styles.deployButtonContainer}>
           <CustomButton
-            onPress={() => setEditOpen(!editOpen)}
+            onPress={() => setEditOpen(item)}
             loading={editing}
             style={styles.deployButton}
           >
@@ -302,6 +337,15 @@ const CompaniesView = () => {
           </Text>
         </CustomButton>
       </View>
+      {!!editOpen?.id && (
+        <EditCompanyModal
+          loading={loadingUpdateCompany}
+          isVisible={!!editOpen?.id}
+          onClose={() => setEditOpen(undefined)}
+          onSubmit={handleSaveEmpresa}
+          company={editOpen}
+        />
+      )}
     </View>
   );
 };
