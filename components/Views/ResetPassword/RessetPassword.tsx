@@ -29,8 +29,6 @@ export const ResetPassword = () => {
     const token: string = params?.token as string;
     const intl = useIntl()
 
-    console.log('el token es',token);
-
     const handleResetPassword = async () => {
         if (!newPassword) {
             showToast({
