@@ -54,7 +54,7 @@ export const styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     flex: 1,
-    flexDirection: "row",
+    flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
   },

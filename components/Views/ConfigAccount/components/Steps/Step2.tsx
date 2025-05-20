@@ -1,11 +1,8 @@
 import React, { useRef, useEffect } from "react";
-import {
-  ScrollView as RNScrollView,
-  View,
-} from "react-native";
+import { ScrollView as RNScrollView, View } from "react-native";
 import { styles } from "../../ConfigAccountStyles";
 import MethodOfPayCard from "../MethodOfpaycard";
-import { ScrollView, Text } from "native-base";
+import { Box, ScrollView, Text } from "native-base";
 import { useToastContext } from "@/contexts/ToastContext";
 import { useUser } from "@/hooks/redux/useUser";
 import * as RNIap from "react-native-iap";
@@ -13,7 +10,7 @@ import api from "@/services/api/admin";
 import LottieView from "lottie-react-native";
 import { FormattedMessage } from "react-intl";
 
-const Step2 = ({ onSuccess, onNext }: { onSuccess?: any, onNext: any }) => {
+const Step2 = ({ onSuccess, onNext }: { onSuccess?: any; onNext: any }) => {
   const { user, handlePayOk } = useUser();
   const [loading, setLoading] = React.useState<boolean>(false);
   const [plans, setPlans] = React.useState<RNIap.Subscription[] | null>(null);
@@ -54,11 +51,8 @@ const Step2 = ({ onSuccess, onNext }: { onSuccess?: any, onNext: any }) => {
   const init = async () => {
     await RNIap.initConnection();
     const subs = await RNIap.getSubscriptions({
-      skus: defaultPayments?.map(
-        (payment: any) => payment
-      ),
+      skus: defaultPayments?.map((payment: any) => payment?.product_sku),
     });
-    console.log("subs", subs);
     setProducts(subs);
     setPlans(
       subs.map((sub) => {
@@ -222,6 +216,22 @@ const Step2 = ({ onSuccess, onNext }: { onSuccess?: any, onNext: any }) => {
       ref={scrollViewRef}
     >
       <View style={styles.test}>
+        {currentPayment && !currentPayment?.isActive && (
+          <Box
+            background="yellow.100"
+            borderRadius="md"
+            p={2}
+            mb={3}
+            alignItems="center"
+          >
+            <Text color="yellow.800" fontWeight="semibold">
+              <FormattedMessage
+                id="subscriptionExpired"
+                defaultMessage="Tu suscripción actual expiraro"
+              />
+            </Text>
+          </Box>
+        )}
         {loading ? (
           <View
             style={{
