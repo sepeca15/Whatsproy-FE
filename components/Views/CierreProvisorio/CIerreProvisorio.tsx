@@ -121,7 +121,7 @@ export const CierreProvisorio = () => {
                 <TouchableOpacity style={globalStyles.backButton} onPress={() => router.back()} activeOpacity={0.7}>
                     <AntDesign name="arrowleft" size={24} color="white" />
                 </TouchableOpacity>
-                <View style={globalStyles.headerContent_datoPedido}>
+                <View style={globalStyles.headerContent}>
                     <View style={globalStyles.headerLeft}>
                         <CustomText style={globalStyles.businessName_cierrepro}>
                             <FormattedMessage id="cierreProvisorioTittleSettings" />

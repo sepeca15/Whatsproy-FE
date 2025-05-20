@@ -4,11 +4,23 @@ import Animated from "react-native-reanimated";
 import CustomText from "@/components/CustomText";
 import { globalStyles } from "@/components/globalStyles";
 import { FormattedMessage } from "react-intl";
+import { TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router";
+import { AntDesign } from "@expo/vector-icons";
 
 const PrivacyView = () => {
+  const router = useRouter();
+
   return (
     <View flex={1}>
-      <Animated.View style={globalStyles.header}>
+      <Animated.View style={globalStyles.header2}>
+        <TouchableOpacity
+          style={globalStyles.backButton}
+          onPress={() => router.back()}
+          activeOpacity={0.7}
+        >
+          <AntDesign name="arrowleft" size={24} color="white" />
+        </TouchableOpacity>
         <View style={globalStyles.headerContent}>
           <View style={globalStyles.headerLeft}>
             <CustomText

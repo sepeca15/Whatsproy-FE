@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Image, Text, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { View, Image, RefreshControl } from "react-native";
 import { useOrders } from "@/hooks/redux/useOrders";
 import * as Progress from "react-native-progress";
 import CustomText from "@/components/CustomText";
@@ -18,8 +18,9 @@ const OrdersPending = () => {
     handleLoadOrdersPending,
     handleAddNewOrderPending,
     totalItemsPending,
-
   } = useOrders();
+
+  const [refreshing, setRefreshing] = useState(false);
 
   React.useEffect(() => {
     const socketIo = io(user.apiUrl);
@@ -37,6 +38,12 @@ const OrdersPending = () => {
     };
   }, []);
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await handleLoadOrdersPending();
+    setRefreshing(false);
+  };
+
   return (
     <View style={styles.container}>
       {(loadingApi && ordersPending.length === 0) ? (
@@ -46,11 +53,13 @@ const OrdersPending = () => {
       ) : ordersPending.length > 0 ? (
         <FlatList
           data={ordersPending}
-          renderItem={({ item }: { item: any }) => <CardNewPedido
-            key={item.orderId}
-            orderData={item}
-            pending={true}
-          />}
+          renderItem={({ item }: { item: any }) => (
+            <CardNewPedido
+              key={item.orderId}
+              orderData={item}
+              pending={true}
+            />
+          )}
           keyExtractor={(item) => item.orderId.toString()}
           onEndReached={() => {
             if (ordersPending.length < totalItemsPending && !loadingApi) {
@@ -59,6 +68,14 @@ const OrdersPending = () => {
           }}
           onEndReachedThreshold={0.2}
           contentContainerStyle={{ paddingBottom: 100 }}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={["#075e54"]}
+              tintColor="#075e54"
+            />
+          }
           ListFooterComponent={
             (loadingApi && ordersPending.length > 0) && (
               <View style={styles.spinerCenter}>
@@ -84,7 +101,5 @@ const OrdersPending = () => {
     </View>
   );
 };
-
-
 
 export default OrdersPending;

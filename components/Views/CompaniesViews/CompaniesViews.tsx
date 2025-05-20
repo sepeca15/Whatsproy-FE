@@ -262,25 +262,25 @@ const CompaniesView = () => {
   return (
     <View style={{ flex: 1, backgroundColor: "#f8f9fa" }}>
       <Animated.View style={globalStyles.header2}>
-        <View style={globalStyles.headerContent_categorias}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => router.back()}
-            activeOpacity={0.7}
-          >
-            <AntDesign name="arrowleft" size={24} color="white" />
-          </TouchableOpacity>
-          <View style={globalStyles.headerLef_categorias}>
+        <TouchableOpacity
+          style={globalStyles.backButton}
+          onPress={() => router.back()}
+          activeOpacity={0.7}
+        >
+          <AntDesign name="arrowleft" size={24} color="white" />
+        </TouchableOpacity>
+        <View style={globalStyles.headerContent}>
+          <View style={globalStyles.headerLeft}>
             <CustomText
               style={globalStyles.businessName}
-              accessibilityLabel="Pedidos"
+              accessibilityLabel="Companies"
             >
               <FormattedMessage id="companies" />
             </CustomText>
           </View>
         </View>
       </Animated.View>
-
+    
       {loadingCompanies ? (
         <ActivityIndicator
           size="large"

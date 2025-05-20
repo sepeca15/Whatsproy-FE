@@ -17,29 +17,28 @@ import { globalStyles } from "@/components/globalStyles";
 import { useRouter } from "expo-router";
 import AntDesign from "react-native-vector-icons/AntDesign";
 
-
 const DateOrder: React.FC = () => {
-  const intl = useIntl()
+  const intl = useIntl();
   const ItemsTable = [
     {
       element: intl.formatMessage({ id: "dateOrderTypeTitleName" }),
-      key: "Name"
+      key: "Name",
     },
     {
       element: intl.formatMessage({ id: "dateOrderTypeTitleType" }),
-      key: "Type"
+      key: "Type",
     },
     {
       element: intl.formatMessage({ id: "dateOrderTypeTitleRequired" }),
-      key: "Required"
+      key: "Required",
     },
     {
       element: intl.formatMessage({ id: "dateOrderTypeTitleIsDefault" }),
-      key: "isDefault"
+      key: "isDefault",
     },
     {
       element: "",
-      key: ""
+      key: "",
     },
   ];
 
@@ -48,12 +47,15 @@ const DateOrder: React.FC = () => {
   const [stateModal, setStateModal] = React.useState<boolean>(false);
   const [loading, setLoading] = React.useState<boolean>(false);
   const [loadingDelete, setLoadingDelete] = React.useState<boolean>(false);
-  const [stateModalConfirm, setstateModalConfirm] = React.useState<boolean>(false)
-  const [itemToDeleteId, setItemToDeleteId] = React.useState<number | null>(null);
-  const router = useRouter()
+  const [stateModalConfirm, setstateModalConfirm] =
+    React.useState<boolean>(false);
+  const [itemToDeleteId, setItemToDeleteId] = React.useState<number | null>(
+    null
+  );
+  const router = useRouter();
   const { showToast } = useToastContext();
 
-  const toggleModalConfirm = () => setstateModalConfirm((prev) => !prev)
+  const toggleModalConfirm = () => setstateModalConfirm((prev) => !prev);
 
   const updateOrderData = (newOrderData: any) => {
     setOrderDate((prevState) => [...prevState, newOrderData]);
@@ -87,7 +89,7 @@ const DateOrder: React.FC = () => {
   };
 
   const onDeleteItem = async (id: number) => {
-    setLoadingDelete(true)
+    setLoadingDelete(true);
     try {
       const data = await api.dataOrder.delete(id);
       if (data) {
@@ -106,7 +108,7 @@ const DateOrder: React.FC = () => {
       });
       console.log(error);
     } finally {
-      setLoadingDelete(false)
+      setLoadingDelete(false);
     }
   };
 
@@ -124,12 +126,15 @@ const DateOrder: React.FC = () => {
     </View>
   ) : (
     <View style={styles.container}>
-      <Animated.View style={globalStyles.header}>
-        
+      <Animated.View style={globalStyles.header2}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.back()}
+          activeOpacity={0.7}
+        >
+          <AntDesign name="arrowleft" size={24} color="white" />
+        </TouchableOpacity>
         <View style={globalStyles.headerContent}>
-           <TouchableOpacity style={styles.backButton} onPress={() => router.back()} activeOpacity={0.7}>
-            <AntDesign name="arrowleft" size={24} color="white" />
-          </TouchableOpacity>
           <View style={globalStyles.headerLeft}>
             <CustomText
               style={globalStyles.businessName}

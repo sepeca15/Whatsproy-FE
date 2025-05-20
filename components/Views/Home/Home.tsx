@@ -23,9 +23,7 @@ import SubscriptionInfo from "@/components/SubscriptionInfo";
 import { useSubscriptionStatus } from "@/hooks/home_functions/useSubscriptionStatus";
 import { ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
 import { Ionicons } from "@expo/vector-icons";
-
-
-
+import moment from "moment";
 
 const Home: React.FC = () => {
   const intl = useIntl();
@@ -37,7 +35,7 @@ const Home: React.FC = () => {
   const [refreshing, setRefreshing] = React.useState(false);
   const lottieRef = React.useRef<LottieView>(null);
 
-  console.log("loading", loading)
+  console.log("lastThree", lastOrders);
 
   const { subStatus, refreshSubscriptionStatus } = useSubscriptionStatus();
 
@@ -271,7 +269,7 @@ const Home: React.FC = () => {
                     icon={order.icon || "receipt"}
                     address={
                       isCalendar
-                        ? `${order?.fecha}`
+                        ? `${moment(order?.fecha).utc().format("YYYY-MM-DD HH:mm")}`
                         : order.address
                           ? `#${order.address}`
                           : "Dirección desconocida"

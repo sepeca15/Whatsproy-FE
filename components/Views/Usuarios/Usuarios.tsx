@@ -149,15 +149,15 @@ const UsuariosEmpresasScreen: React.FC = () => {
     <View style={styles.container}>
       <View style={[styles.headerGradient, { backgroundColor: Colors.light.primary }]}>
         <View style={globalStyles.headerContent}>
-          <TouchableOpacity style={styles.backButton} onPress={() => router.back()} activeOpacity={0.7}>
+          <TouchableOpacity style={globalStyles.backButton} onPress={() => router.back()} activeOpacity={0.7}>
             <AntDesign name="arrowleft" size={24} color="white" />
           </TouchableOpacity>
-          <View style={globalStyles.headerTitle}>
+          <View style={globalStyles.headerLeft}>
             <CustomText style={[globalStyles.businessName, { fontSize: 24 }]} accessibilityLabel="Usuarios">
               <FormattedMessage id="users" />
             </CustomText>
           </View>
-          <TouchableOpacity onPress={toggleSearchValue} style={styles.searchButton} activeOpacity={0.7}>
+          <TouchableOpacity onPress={toggleSearchValue} style={globalStyles.backButton} activeOpacity={0.7}>
             <MaterialIcons name="search" size={24} color="white" />
           </TouchableOpacity>
         </View>
@@ -170,7 +170,7 @@ const UsuariosEmpresasScreen: React.FC = () => {
               style={styles.input}
               value={valueSearch}
               InputLeftElement={
-                <MaterialIcons name="search" size={20} color="rgba(255,255,255,0.7)" style={{ marginLeft: 10 }} />
+                <MaterialIcons name="search" size={20} color="rgba(255,255,255,0.7)" style={{ marginLeft: 10, marginRight: 10 }} />
               }
             />
           </View>

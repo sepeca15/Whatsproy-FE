@@ -69,7 +69,6 @@ const OrderDetails = () => {
   const loadOrderDetail = async () => {
     try {
       const orderDetailsData = await api.order.getOrderDetails(orderId);
-      console.log("orderDetailsData", orderDetailsData);
       if (orderDetailsData.ok) {
         setDetailOfOrder({ loading: false, data: orderDetailsData.data });
       }

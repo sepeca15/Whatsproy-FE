@@ -13,6 +13,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { styles } from "./GeneralSettingsStyles";
 import { Colors } from "@/constants/Colors";
+import { globalStyles } from "@/components/globalStyles";
 
 interface IForm {
   hora_apertura: string;
@@ -82,17 +83,17 @@ const GeneralConfig = () => {
   return (
     <ScrollView>
       <View style={styles.container}>
-        <Animated.View style={styles.header}>
-          <View style={styles.headerContent}>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => router.back()}
-            >
-              <AntDesign name="arrowleft" size={22} color="white" />
-            </TouchableOpacity>
-            <View style={styles.headerTitle}>
+        <Animated.View style={globalStyles.header2}>
+          <TouchableOpacity
+            style={globalStyles.backButton}
+            onPress={() => router.back()}
+          >
+            <AntDesign name="arrowleft" size={22} color="white" />
+          </TouchableOpacity>
+          <View style={globalStyles.headerContent}>
+            <View style={globalStyles.headerLeft}>
               <CustomText
-                style={styles.businessName}
+                style={globalStyles.businessName}
                 accessibilityLabel="Pedidos"
               >
                 <FormattedMessage

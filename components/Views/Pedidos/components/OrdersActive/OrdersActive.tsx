@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Image } from "react-native";
+import React, { useState } from "react";
+import { View, Image, RefreshControl } from "react-native";
 import { styles } from "./OrdersActiveStyles";
 import CardNewPedido from "../CardNewPedido.tsx";
 import { useOrders } from "@/hooks/redux/useOrders";
@@ -8,20 +8,21 @@ import CustomText from "@/components/CustomText";
 import { FormattedMessage } from "react-intl";
 import { FlatList } from "native-base";
 
-<Progress.Circle
-  style={{ marginVertical: 20 }}
-  indeterminate={true}
-  size={50}
-/>;
-
 const OrdersActive = () => {
   const { loadingApi, ordersActive, handleLoadingOrdersActive, totalItemsActive } = useOrders();
+  const [refreshing, setRefreshing] = useState(false);
 
   React.useEffect(() => {
     if (ordersActive.length === 0) {
       handleLoadingOrdersActive();
     }
   }, []);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await handleLoadingOrdersActive();
+    setRefreshing(false);
+  };
 
   return (
     <View style={styles.container}>
@@ -32,11 +33,13 @@ const OrdersActive = () => {
       ) : ordersActive.length > 0 ? (
         <FlatList
           data={ordersActive}
-          renderItem={({ item }: { item: any }) => <CardNewPedido
-            key={item.orderId}
-            orderData={item}
-            pending={true}
-          />}
+          renderItem={({ item }: { item: any }) => (
+            <CardNewPedido
+              key={item.orderId}
+              orderData={item}
+              pending={false}
+            />
+          )}
           keyExtractor={(item) => item.orderId.toString()}
           onEndReached={() => {
             if (ordersActive.length < totalItemsActive && !loadingApi) {
@@ -45,8 +48,16 @@ const OrdersActive = () => {
           }}
           onEndReachedThreshold={0.2}
           contentContainerStyle={{ paddingBottom: 100 }}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={["#075e54"]}
+              tintColor="#075e54"
+            />
+          }
           ListFooterComponent={
-            (loadingApi && ordersActive.length > 0) &&(
+            (loadingApi && ordersActive.length > 0) && (
               <View style={styles.spinerCenter}>
                 <Progress.Circle color={"#075e54"} indeterminate={true} size={40} />
               </View>

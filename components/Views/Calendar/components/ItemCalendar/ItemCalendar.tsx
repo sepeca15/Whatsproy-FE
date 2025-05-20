@@ -17,6 +17,7 @@ import { useUser } from "@/hooks/redux/useUser";
 import Icon from "react-native-vector-icons/Feather";
 import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
 import CustomButton from "@/components/CustomButton";
+import DateTimeInputField from "@/components/DateTimePickerField";
 
 interface IItemCalendar {
   InfoItem: IInfoItem;
@@ -45,6 +46,7 @@ const ItemCalendar = ({
     info: null,
     loadingApi: true,
   });
+
   const keyDeleteType = confirmed ? "pending" : "finished";
   const animationHeight = useRef(new Animated.Value(0)).current;
 
@@ -87,11 +89,10 @@ const ItemCalendar = ({
   }, [expanded, dataDetails.info]);
 
   const formatDate = (dateString: any) => {
-    const date = moment.tz(dateString, user.timeZone);
-    const datePart = date.format("DD-MM-YYYY");
-    const timePart = date.format("HH:mm");
+    const date = moment.utc(dateString);
+    const datePart = date.format("DD-MM-YYYY, HH:mm");
 
-    return `${datePart}, ${timePart}`;
+    return datePart;
   };
 
   const validateFunction = async () => {
@@ -103,8 +104,10 @@ const ItemCalendar = ({
     } else {
       try {
         setLoading(true);
-        await confirmOrder(InfoItem.orderId);
+        const resp = await confirmOrder(InfoItem.orderId);
+        console.log("resp is", resp)
       } catch (error) {
+        console.log("error is", error)
       } finally {
         setLoading(false);
       }
@@ -148,7 +151,7 @@ const ItemCalendar = ({
             >
               <Ion color={"white"} name="time-outline" size={16} />
               <Text color={"white"} fontWeight={"500"}>
-                {InfoItem.date}
+                {InfoItem?.date?.split("T")[0]}
               </Text>
             </Container>
             <Pressable style={{ padding: 3 }} onPress={toggleExpand}>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -24,7 +24,10 @@ import Animated, { FadeIn } from "react-native-reanimated";
 import { FormattedMessage } from "react-intl";
 import { globalStyles } from "@/components/globalStyles";
 import { styles as stylesPending } from "../Pedidos/components/OrdersPending/ordersPendingStyles";
-
+import { useToastContext } from "@/contexts/ToastContext";
+import { Animated as AnimatedNative, Easing } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { RefreshControl } from "react-native-gesture-handler";
 if (
   Platform.OS === "android" &&
   UIManager.setLayoutAnimationEnabledExperimental
@@ -43,6 +46,7 @@ export default function CalendarView() {
     new Date().toISOString().split("T")[0]
   );
   const [agendaKey, setAgendaKey] = useState(0);
+  const spinAnim = useRef(new AnimatedNative.Value(0)).current;
 
   useEffect(() => {
     setAgendaKey((prev) => prev + 1);
@@ -51,6 +55,31 @@ export default function CalendarView() {
   const [loading, setLoading] = useState(true);
 
   const [availableDates, setAvailableDates] = useState<string[]>([]);
+  const { showToast } = useToastContext();
+
+  const startSpin = () => {
+    spinAnim.setValue(0);
+    AnimatedNative.loop(
+      AnimatedNative.timing(spinAnim, {
+        toValue: 1,
+        duration: 1000,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      })
+    ).start();
+  };
+
+  const stopSpin = () => {
+    spinAnim.stopAnimation(() => {
+      spinAnim.setValue(0);
+    });
+  };
+
+  const onRefresh = async () => {
+    startSpin();
+    await onLoadItems(selectedDate);
+    stopSpin();
+  };
 
   const onLoadItems = async (selectedDate: string) => {
     setLoading(true);
@@ -74,17 +103,25 @@ export default function CalendarView() {
       const firstDate = Object.keys(orderPerDays)[0];
 
       const data = await api.order.confirm(orderId);
+      showToast({
+        title: "¡Evento confirmado!",
+        description: "Su reserva fue confirmado exitosamente.",
+        status: "success",
+      });
       if (data.data) {
         setOrderPerDays((prevState) => {
           const updatedOrders = prevState[firstDate].map((order) =>
             order.orderId === orderId ? { ...order, status: true } : order
           );
 
+          console.log("updatedOrders", updatedOrders);
+
           return {
             ...prevState,
             [firstDate]: [...updatedOrders],
           };
         });
+        setAgendaKey((prev) => prev + 1);
       }
     } catch (error: any) {
       console.log(error.response.data.message);
@@ -96,6 +133,11 @@ export default function CalendarView() {
       const firstDate = Object.keys(orderPerDays)[0];
 
       const data = await api.order.remove(orderId);
+      showToast({
+        title: "¡Evento cancelado!",
+        description: "Su reserva fue cancelado exitosamente.",
+        status: "success",
+      });
       if (data) {
         setOrderPerDays((prevState) => {
           const updatedList = prevState[firstDate].filter(
@@ -104,9 +146,10 @@ export default function CalendarView() {
 
           return {
             ...prevState,
-            [firstDate]: [...updatedList], // ← Clona la lista filtrada
+            [firstDate]: [...updatedList],
           };
         });
+        setAgendaKey((prev) => prev + 1);
       }
     } catch (error: any) {
       console.log(error.response.data.message);
@@ -132,6 +175,7 @@ export default function CalendarView() {
           </View>
         </View>
       </Animated.View>
+
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>
           {" "}
@@ -157,18 +201,41 @@ export default function CalendarView() {
             />
           </Text>
         </View>
+
+        <View style={styles.buttonRefresh}>
+          <TouchableOpacity disabled={loading} onPress={() => onRefresh()}>
+            <AnimatedNative.View
+              style={{
+                transform: [
+                  {
+                    rotate: spinAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: ["0deg", "360deg"],
+                    }),
+                  },
+                ],
+              }}
+            >
+              <Ionicons name="refresh" size={24} color={"white"} />
+            </AnimatedNative.View>
+          </TouchableOpacity>
+        </View>
       </View>
+
       {
         <View style={styles.calendarContent}>
           <Agenda
+            key={agendaKey}
             items={orderPerDays}
             selected={selectedDate}
             refreshing={loading}
+            displayLoadingIndicator={true}
             showOnlySelectedDayItems={true}
             showClosingKnob={true}
             onDayPress={(day: any) => {
               setSelectedDate(day.dateString);
             }}
+            onRefresh={onRefresh}
             renderKnob={() => (
               <View style={{ alignItems: "center", padding: 10 }}>
                 <View
@@ -339,6 +406,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
+  buttonRefresh: {
+    position: "absolute",
+    right: 8,
+    top: 16,
+    width: 40,
+    height: 40,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: "100%",
+    backgroundColor: "#128c7e",
+  },
   row: {
     display: "flex",
     flexDirection: "row",
@@ -348,6 +428,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     display: "flex",
+    position: "relative",
     flexDirection: "column",
     width: "100%",
     justifyContent: "center",

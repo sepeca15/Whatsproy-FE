@@ -56,11 +56,11 @@ const Categories = () => {
   return (
     <View style={{ flex: 1 }}>
       <Animated.View style={globalStyles.header2}>
-        <View style={globalStyles.headerContent_categorias}>
-          <TouchableOpacity style={styles.backButton} onPress={() => router.back()} activeOpacity={0.7}>
+            <TouchableOpacity style={styles.backButton} onPress={() => router.back()} activeOpacity={0.7}>
             <AntDesign name="arrowleft" size={24} color="white" />
           </TouchableOpacity>
-          <View style={globalStyles.headerLef_categorias}>
+        <View style={globalStyles.headerContent}>
+          <View style={globalStyles.headerLeft}>
             <CustomText
               style={globalStyles.businessName}
               accessibilityLabel="Pedidos"

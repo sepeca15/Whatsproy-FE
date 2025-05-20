@@ -60,7 +60,7 @@ const CustomModalPicker = ({ isVisible, onClose, elements, lastStatusOrder, chan
                         {
                             elements.map((item, index) => {
                                 const isStatusFinished = item.order <= lastStatusOrder
-                                const findCambioEstado = changeStatus.find((itm: any) => itm.estado.id === item.id)
+                                const findCambioEstado = (changeStatus ?? [])?.find((itm: any) => itm.estado.id === item.id)
                                 return <Pressable onPress={() => changeStatusOrder(item)} backgroundColor={isStatusFinished ? 'gray.200' : 'white'} style={styles.element} key={index}>
                                     <View display={'flex'} flexDir={'column'} alignItems={'flex-start'}>
                                         <Text fontWeight={'bold'} color={isStatusFinished ? 'gray.400' : 'black'} >{item.nombre}</Text>

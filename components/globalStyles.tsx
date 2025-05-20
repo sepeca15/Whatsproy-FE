@@ -47,7 +47,8 @@ export const globalStyles = StyleSheet.create({
   },
   headerTitle: {
     flex: 1,
-    alignItems: "center",
+    alignItems: "flex-start",
+    paddingLeft: 20,
   },
   header: {
     padding: 12,
@@ -100,6 +101,7 @@ export const globalStyles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1,
     gap: 12,
     marginLeft: 10,
   },

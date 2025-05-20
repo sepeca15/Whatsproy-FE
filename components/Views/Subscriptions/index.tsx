@@ -18,10 +18,11 @@ import {
   EMPRESA_PAYMENT_FREE_TIME_AFTER_CANCEL,
   subscriptionBenefits,
 } from "@/constants/variables";
-import { MaterialIcons } from "@expo/vector-icons";
-import { Linking, Platform } from "react-native";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
+import { Linking, Platform, TouchableOpacity } from "react-native";
 import { globalStyles } from "@/components/globalStyles";
 import { ScrollView, RefreshControl } from "react-native";
+import { useRouter } from "expo-router";
 
 const SubscriptionsView = () => {
   const intl = useIntl();
@@ -30,6 +31,7 @@ const SubscriptionsView = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [productInfo, setProductInfo] = useState<any>(null);
   const currentPayment = user?.payment ? { ...user.payment } : null;
+  const router = useRouter();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -266,14 +268,23 @@ const SubscriptionsView = () => {
 
   return (
     <View style={{ flex: 1 }}>
-      <Animated.View style={globalStyles.header}>
+      <Animated.View style={globalStyles.header2}>
+        <TouchableOpacity
+          style={globalStyles.backButton}
+          onPress={() => router.back()}
+        >
+          <AntDesign name="arrowleft" size={22} color="white" />
+        </TouchableOpacity>
         <View style={globalStyles.headerContent}>
           <View style={globalStyles.headerLeft}>
             <CustomText
               style={globalStyles.businessName}
-              accessibilityLabel="Subscriptions"
+              accessibilityLabel="Subscription"
             >
-              <FormattedMessage id="subscription" />
+              <FormattedMessage
+                id="subscription"
+                defaultMessage="Subscripcion"
+              />
             </CustomText>
           </View>
         </View>
