@@ -1,12 +1,37 @@
-import { StyleSheet, Dimensions } from "react-native";
-import { Colors } from "../../../constants/Colors";
+import { StyleSheet, Dimensions } from "react-native"
+import { Colors } from "../../../constants/Colors"
 
 export const styles = StyleSheet.create({
+  header: {
+    padding: 16,
+    paddingTop: 20,
+    paddingBottom: 20,
+    backgroundColor: Colors.light.primary,
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  headerContent: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  headerLeft: {
+    flex: 1,
+  },
+  businessName: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#fff",
+  },
   container: {
     flex: 1,
     backgroundColor: "#f0f0f0",
     width: "100%",
-    paddingHorizontal: 10,
   },
   scrollViewContent: {
     justifyContent: "center",
@@ -49,38 +74,13 @@ export const styles = StyleSheet.create({
     backgroundColor: "transparent",
     fontSize: 16,
   },
-  buttonContainer: {
-    position: "absolute",
-    bottom: 20,
-    right: 20,
-    flexDirection: "row",
-    alignItems: "center",
-    zIndex: 1,
-  },
+
   graficButton: {
     backgroundColor: Colors.light.primary,
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 5,
     marginRight: 10,
-  },
-  addButton: {
-    backgroundColor: Colors.light.primary,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    justifyContent: "center",
-    alignItems: "center",
-    elevation: 6,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-  addButtonText: {
-    color: "#ffffff",
-    fontSize: 24,
-    fontWeight: "semibold",
   },
   clearButton: {
     padding: 8,
@@ -90,33 +90,56 @@ export const styles = StyleSheet.create({
     fontSize: 18,
   },
   categoryContainer: {
+    paddingTop: 12,
+    marginBottom: 5,
+    height: 110,
+  },
+  categoryButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#ffffff",
+    borderRadius: 12,
+    marginHorizontal: 6,
     paddingHorizontal: 16,
     paddingVertical: 12,
-    gap: 8,
+    height: 80,
+    minWidth: 160,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: "#f0f0f0",
   },
-  categoryChip: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: '#f0f0f0',
-    marginRight: 8,
-  },
-  selectedCategoryChip: {
+  selectedCategoryButton: {
     backgroundColor: Colors.light.primary,
+    borderColor: Colors.light.primary,
+    shadowOpacity: 0.2,
+    elevation: 5,
+  },
+  categoryImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 8,
+    marginRight: 12,
   },
   categoryText: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: 15,
+    fontWeight: "500",
+    color: "#333",
+    flex: 1,
+    flexWrap: "wrap",
   },
   selectedCategoryText: {
-    color: '#fff',
-    fontWeight: '600',
+    color: "#ffffff",
+    fontWeight: "600",
   },
   emptyStateContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     padding: 20,
-    height: Dimensions.get('window').height * 0.6,
+    height: "100%",
   },
   emptyStateAnimation: {
     width: 200,
@@ -124,15 +147,15 @@ export const styles = StyleSheet.create({
   },
   emptyStateTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginTop: 20,
     color: Colors.light.primary,
   },
   emptyStateSubtitle: {
     fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
+    color: "#666",
+    textAlign: "center",
     marginTop: 10,
     paddingHorizontal: 20,
   },
-});
+})

@@ -13,4 +13,5 @@ export interface IUser {
   id_rol: number;
   activo: boolean;
   firstUser: boolean;
+  image: string
 }

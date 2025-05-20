@@ -1,18 +1,22 @@
 import CustomButton from "@/components/CustomButton";
 import CustomText from "@/components/CustomText";
-import DateTimeInputField from "@/components/DateTimePickerField";
 import InputField from "@/components/InputField";
 import { TipoServicio } from "@/enums/TipoServicio";
 import { useUser } from "@/hooks/redux/useUser";
-import { Button, Switch, Text, View, VStack } from "native-base";
+import { ScrollView, Switch, View, VStack } from "native-base";
 import * as React from "react";
-import { StyleSheet } from "react-native";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { TouchableOpacity } from "react-native";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
-import { FormattedMessage, useIntl } from "react-intl"; // Importa FormattedMessage y useIntl
+import { FormattedMessage, useIntl } from "react-intl";
+import Animated from "react-native-reanimated";
+import { AntDesign } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { styles } from "./GeneralSettingsStyles";
+import { Colors } from "@/constants/Colors";
 
 interface IForm {
   hora_apertura: string;
+  assistentEnabled?: boolean;
   hora_cierre: string;
   abierto: boolean;
   intervaloTiempoCalendario: number;
@@ -22,18 +26,22 @@ interface IForm {
 
 const GeneralConfig = () => {
   const { handleUpdateCompany, user } = useUser();
-  const intl = useIntl(); 
+  const intl = useIntl();
   const [loadingApi, setLoadingApi] = React.useState<boolean>(false);
   const [hasChanges, setHasChanges] = React.useState<boolean>(false);
+
+  const isAdmin = user?.isAdmin;
 
   const [form, setForm] = React.useState<IForm>({
     hora_apertura: user.hora_apertura,
     hora_cierre: user.hora_cierre,
     abierto: user.abierto,
+    assistentEnabled: user?.assistentEnabled,
     intervaloTiempoCalendario: user.intervaloTiempoCalendario,
     notificarReservaHoras: user.notificarReservaHoras,
     remaindersHorsRemainder: user.remaindersHorsRemainder,
   });
+  const router = useRouter();
 
   const handleInputChange = (key: string, value: any) => {
     setForm((prevState) => ({
@@ -72,233 +80,237 @@ const GeneralConfig = () => {
   }, [form]);
 
   return (
-    <View style={styles.container}>
-      <CustomText
-        style={{
-          fontSize: 30,
-          textAlign: "center",
-          fontWeight: "bold",
-          paddingTop: 20,
-        }}
-      >
-        <FormattedMessage
-          id="generalConfigTitle"
-          defaultMessage="Configuración General"
-        />
-      </CustomText>
-      <CustomText
-        style={{ textAlign: "center", color: "#b6b6b6", paddingBottom: 20 }}
-      >
-        <FormattedMessage
-          id="generalConfigSubtitle"
-          defaultMessage="Ajusta los parámetros de tu negocio"
-        />
-      </CustomText>
-      <View style={styles.form}>
-        <View>
-          <InputField
-            label={intl.formatMessage({
-              id: "openingTimeLabel",
-              defaultMessage: "Hora de apertura",
-            })}
-            placeholder={intl.formatMessage({
-              id: "enterOpeningTime",
-              defaultMessage: "Ingresa la hora de apertura",
-            })}
-            value={form.hora_apertura}
-            onChangeText={(value) => handleInputChange("hora_apertura", value)}
-          />
-        </View>
-        <View>
-          <InputField
-            label={intl.formatMessage({
-              id: "closingTimeLabel",
-              defaultMessage: "Hora de cierre",
-            })}
-            placeholder={intl.formatMessage({
-              id: "enterClosingTime",
-              defaultMessage: "Ingresa la hora de cierre",
-            })}
-            value={form.hora_cierre}
-            onChangeText={(value) => handleInputChange("hora_cierre", value)}
-          />
-        </View>
-        <View style={styles.notifReserva}>
-          <View style={styles.row1}>
-            <CustomText>
-              <FormattedMessage
-                id="openCloseLabel"
-                defaultMessage="Abrir/Cerrar local"
-              />
-            </CustomText>
-            <Switch
-              isChecked={form.abierto}
-              onToggle={() => handleInputChange("abierto", !form.abierto)}
-              size="lg"
-              colorScheme="primary"
-            />
+    <ScrollView>
+      <View style={styles.container}>
+        <Animated.View style={styles.header}>
+          <View style={styles.headerContent}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => router.back()}
+            >
+              <AntDesign name="arrowleft" size={22} color="white" />
+            </TouchableOpacity>
+            <View style={styles.headerTitle}>
+              <CustomText
+                style={styles.businessName}
+                accessibilityLabel="Pedidos"
+              >
+                <FormattedMessage
+                  id="generalConfigTitle"
+                  defaultMessage="Configuración General"
+                />
+              </CustomText>
+            </View>
           </View>
-        </View>
-
-        {user.empresa_id !== TipoServicio.RESERVA && (
-          <View style={styles.colum}>
-            <View style={styles.notifReserva}>
-              <View style={styles.row1}>
-                <CustomText>
+        </Animated.View>
+        <View style={styles.containerGlobal}>
+          <View style={styles.form}>
+            <View style={styles.container1}>
+              <View style={styles.inputContainer}>
+                <CustomText style={styles.textInput}>
                   <FormattedMessage
-                    id="notifyReservationLabel"
-                    defaultMessage="Notificar Reserva?"
+                    id="openingTimeLabel"
+                    defaultMessage={"Hora de apertura"}
                   />
                 </CustomText>
-                <Switch
-                  isChecked={form.notificarReservaHoras}
-                  onToggle={() =>
-                    handleInputChange(
-                      "notificarReservaHoras",
-                      !form.notificarReservaHoras,
-                    )
-                  }
-                  size="lg"
-                  colorScheme="primary"
-                />
-              </View>
-              <View style={styles.row2}>
-                <MaterialIcons
-                  style={{ marginRight: 6 }}
-                  name="error-outline"
-                  color={"black"}
-                  size={20}
-                />
-                <CustomText style={{ maxWidth: "95%" }}>
-                  <FormattedMessage
-                    id="notifyReservationDescription"
-                    defaultMessage="Si activas esta opción, se le notificará al usuario el tiempo antes de realizarse la reserva"
-                  />
-                </CustomText>
-              </View>
-            </View>
-            <View>
-              <InputField
-                keyboardType={"number"}
-                label={intl.formatMessage({
-                  id: "intervalBetweenReservationsLabel",
-                  defaultMessage: "Intervalo entre reservas",
-                })}
-                placeholder={intl.formatMessage({
-                  id: "enterIntervalBetweenReservations",
-                  defaultMessage: "Ingresa el intervalo entre reservas",
-                })}
-                value={form.intervaloTiempoCalendario.toString()}
-                onChangeText={(value) =>
-                  handleInputChange("intervaloTiempoCalendario", value)
-                }
-              />
-            </View>
-            {form.notificarReservaHoras && (
-              <View>
                 <InputField
+                  isDisabled={!isAdmin}
                   icon={
                     <SimpleLineIcons
                       style={{ marginLeft: 12 }}
                       color={"#b6b6b6"}
                       name="clock"
-                      size={20}
+                      size={16}
                     />
                   }
-                  label={intl.formatMessage({
-                    id: "notifyUserXHoursBeforeLabel",
-                    defaultMessage: "Notificar al usuario X horas antes",
-                  })}
                   placeholder={intl.formatMessage({
-                    id: "enterNotificationInterval",
-                    defaultMessage: "Ingresa el intervalo",
+                    id: "enterOpeningTime",
+                    defaultMessage: "Ingresa la hora de apertura",
                   })}
-                  value={form.remaindersHorsRemainder.toString()}
+                  value={form.hora_apertura}
                   onChangeText={(value) =>
-                    handleInputChange("remaindersHorsRemainder", value)
+                    handleInputChange("hora_apertura", value)
                   }
                 />
               </View>
+              <View style={styles.inputContainer}>
+                <CustomText style={styles.textInput}>
+                  <FormattedMessage
+                    id="closingTimeLabel"
+                    defaultMessage={"Hora de cierre"}
+                  />
+                </CustomText>
+                <InputField
+                  isDisabled={!isAdmin}
+                  icon={
+                    <SimpleLineIcons
+                      style={{ marginLeft: 12 }}
+                      color={"#b6b6b6"}
+                      name="clock"
+                      size={16}
+                    />
+                  }
+                  placeholder={intl.formatMessage({
+                    id: "enterClosingTime",
+                    defaultMessage: "Ingresa la hora de cierre",
+                  })}
+                  value={form.hora_cierre}
+                  onChangeText={(value) =>
+                    handleInputChange("hora_cierre", value)
+                  }
+                />
+              </View>
+              <View style={styles.notifReserva}>
+                <View style={styles.row1}>
+                  <CustomText style={styles.textInput}>
+                    <FormattedMessage
+                      id="openCloseLabel"
+                      defaultMessage="Abrir/Cerrar local"
+                    />
+                  </CustomText>
+                  <Switch
+                    isChecked={form.abierto}
+                    onToggle={() => handleInputChange("abierto", !form.abierto)}
+                    size="lg"
+                    colorScheme="primary"
+                  />
+                </View>
+              </View>
+              <View style={styles.notifReserva}>
+                <View style={styles.row1}>
+                  <CustomText style={styles.textInput}>
+                    <FormattedMessage
+                      id="assistentEnabled"
+                      defaultMessage="Asistente habilitado"
+                    />
+                  </CustomText>
+                  <Switch
+                    isChecked={form.assistentEnabled}
+                    onToggle={() =>
+                      handleInputChange(
+                        "assistentEnabled",
+                        !form.assistentEnabled
+                      )
+                    }
+                    size="lg"
+                    colorScheme="primary"
+                  />
+                </View>
+              </View>
+            </View>
+
+            {user.tipo_servicio === TipoServicio.RESERVA && (
+              <View style={styles.colum}>
+                <View style={styles.notifReserva}>
+                  <View style={styles.containerNotifReserva}>
+                    <View style={styles.row1Custom}>
+                      <CustomText style={styles.textInput}>
+                        <FormattedMessage
+                          id="notifyReservationLabel"
+                          defaultMessage="Notificar Reserva?"
+                        />
+                      </CustomText>
+                      <Switch
+                        isChecked={form.notificarReservaHoras}
+                        onToggle={() =>
+                          handleInputChange(
+                            "notificarReservaHoras",
+                            !form.notificarReservaHoras
+                          )
+                        }
+                        size="lg"
+                        colorScheme="primary"
+                      />
+                    </View>
+                    <CustomText style={{ fontSize: 12, color: "gray" }}>
+                      <FormattedMessage
+                        id="notifyReservationDescription"
+                        defaultMessage="Si activas esta opción, se le notificará al usuario el tiempo antes de realizarse la reserva"
+                      />
+                    </CustomText>
+                  </View>
+                </View>
+                <View style={styles.containerHorasReserva}>
+                  <View style={styles.inputContainer}>
+                    <CustomText style={styles.textInput}>
+                      <FormattedMessage
+                        id="intervalBetweenReservationsLabel"
+                        defaultMessage="Intervalo entre reservas"
+                      />
+                    </CustomText>
+                    <InputField
+                      keyboardType={"number"}
+                      placeholder={intl.formatMessage({
+                        id: "enterIntervalBetweenReservations",
+                        defaultMessage: "Ingresa el intervalo entre reservas",
+                      })}
+                      value={form.intervaloTiempoCalendario.toString()}
+                      onChangeText={(value) =>
+                        handleInputChange("intervaloTiempoCalendario", value)
+                      }
+                    />
+                  </View>
+                  {form.notificarReservaHoras && (
+                    <View style={styles.inputContainer}>
+                      <CustomText style={styles.textInput}>
+                        <FormattedMessage
+                          id="notifyUserXHoursBeforeLabel"
+                          defaultMessage="Notificar al usuario X horas antes"
+                        />
+                      </CustomText>
+                      <InputField
+                        icon={
+                          <SimpleLineIcons
+                            style={{ marginLeft: 12 }}
+                            color={"#b6b6b6"}
+                            name="clock"
+                            size={20}
+                          />
+                        }
+                        placeholder={intl.formatMessage({
+                          id: "enterNotificationInterval",
+                          defaultMessage: "Ingresa el intervalo",
+                        })}
+                        value={form.remaindersHorsRemainder.toString()}
+                        onChangeText={(value) =>
+                          handleInputChange("remaindersHorsRemainder", value)
+                        }
+                      />
+                    </View>
+                  )}
+                </View>
+                {isAdmin && (
+                  <CustomButton
+                    colorSpiner="white"
+                    disabled={!hasChanges}
+                    onPress={updateCompany}
+                    loading={loadingApi}
+                    style={[
+                      styles.button,
+                      {
+                        backgroundColor: hasChanges
+                          ? Colors.light.primary
+                          : "#b6b6b6",
+                      },
+                    ]}
+                  >
+                    <VStack style={styles.rowButton}>
+                      <CustomText style={{ color: "white" }}>
+                        <FormattedMessage
+                          id="saveButton"
+                          defaultMessage="Guardar"
+                        />
+                      </CustomText>
+                    </VStack>
+                  </CustomButton>
+                )}
+              </View>
             )}
           </View>
-        )}
+        </View>
       </View>
-      <CustomButton
-        colorSpiner="white"
-        disabled={!hasChanges}
-        onPress={updateCompany}
-        loading={loadingApi}
-        style={[
-          styles.button,
-          {
-            backgroundColor: hasChanges ? "black" : "#b6b6b6",
-          },
-        ]}
-      >
-        <VStack style={styles.rowButton}>
-          <CustomText style={{ color: "white" }}>
-            <FormattedMessage id="saveButton" defaultMessage="Guardar" />
-          </CustomText>
-        </VStack>
-      </CustomButton>
-    </View>
+    </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    marginTop: 50,
-    margin: "auto",
-    width: "90%",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    paddingVertical: 20,
-  },
-  form: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-  },
-  notifReserva: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-  },
-  row1: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  row2: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "flex-start",
-  },
-  colum: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-  },
-  button: {
-    width: "100%",
-    height: 50,
-    display: "flex",
-    borderRadius: 8,
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
-    paddingHorizontal: 16,
-    marginTop: 20,
-  },
-  rowButton: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around",
-  },
-});
 
 export default GeneralConfig;

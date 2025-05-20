@@ -9,6 +9,7 @@ import { Colors } from "@/constants/Colors";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { useUser } from "@/hooks/redux/useUser";
 import { TipoServicio } from "@/enums/TipoServicio";
+import Entypo from "react-native-vector-icons/Entypo";
 
 const Pages = (empresaType: number) => {
   return [
@@ -48,6 +49,13 @@ const Pages = (empresaType: number) => {
       name: "productos",
       path: "/(tabs)/productos",
       icon: (select: boolean) => (
+        empresaType === TipoServicio.RESERVA ?
+        <Entypo 
+          name="shopping-cart"
+          size={24}
+          color={select ? Colors.light.primary : "#717171"}
+        />
+        :
         <IonIcon
           name="fast-food"
           size={24}
@@ -87,7 +95,9 @@ const Layout = ({ children }: any) => {
 
   return (
     <View style={styles.mainContainer}>
-      {children}
+      <View style={{ flex: 1, width: "100%" }} >
+        {children}
+      </View>
       <View style={styles.navigationMenu}>
         {pages.map((page) => (
           <Pressable

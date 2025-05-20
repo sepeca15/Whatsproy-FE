@@ -7,6 +7,11 @@ export const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
   },
+   textCenterLg: {
+    marginBottom: 20,
+    textAlign: "center",
+    fontSize: 18,
+  },
   errorText: {
     color: "red",
     fontSize: 12,

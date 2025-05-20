@@ -17,11 +17,12 @@ interface IDateOrder {
 
 interface IProps {
   data: IDateOrder;
-  onDeleteItem: (id: number) => void;
+  onDeleteItem: () => void;
   isPar: boolean;
 }
 
 const DateOrderCard = ({ data, onDeleteItem, isPar }: IProps) => {
+
   return (
     <View
       style={[
@@ -34,7 +35,20 @@ const DateOrderCard = ({ data, onDeleteItem, isPar }: IProps) => {
       </View>
 
       <View style={styles.column}>
-        <CustomText style={styles.text}>{data.tipo}</CustomText>
+        <CustomText style={styles.text}>
+          {
+            data.tipo === 'string' ?
+              <FormattedMessage id="dateOrderTypeText" />
+              :
+              data.tipo === 'number' ?
+                <FormattedMessage id="dateOrderTypeNumber" />
+                :
+                data.tipo === 'boolean' ?
+                  <FormattedMessage id="dateOrderTypeBoolean" />
+                  :
+                  <FormattedMessage id="dateOrderTypeDate" />
+          }
+        </CustomText>
       </View>
       <View style={styles.column}>
         <CustomText style={styles.text}>
@@ -57,8 +71,10 @@ const DateOrderCard = ({ data, onDeleteItem, isPar }: IProps) => {
       <View style={styles.columnDelete}>
         <Pressable
           disabled={data.es_defecto === true}
-          onPress={() => onDeleteItem(data.id)}
+          onPress={onDeleteItem}
           role="button"
+          hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
+
         >
           <MaterialIconss
             name="delete"

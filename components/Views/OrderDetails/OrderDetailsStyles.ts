@@ -1,169 +1,369 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Platform, StatusBar } from "react-native"
+import { RFValue } from "react-native-responsive-fontsize"
+import { Colors } from "@/constants/Colors"
 
 export const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "space-between",
+    backgroundColor: "#f5f5f5",
   },
-  containerSpiner: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
+  loadingContainer: {
+    flex: 1,
     justifyContent: "center",
-    flex: 1,
+    alignItems: "center",
+    backgroundColor: "#f5f5f5",
   },
+  loadingText: {
+    color: Colors.light.text,
+    marginTop: 15,
+    fontSize: RFValue(15),
+    fontWeight: "500",
+  },
+
+  // Header
   header: {
-    paddingHorizontal: 20,
-    paddingVertical: 30,
-    width: "100%",
-    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingTop: Platform.OS === "ios" ? 10 : StatusBar.currentHeight! + 10,
+    paddingBottom: 10,
+    backgroundColor: Colors.light.primary,
+    padding: 12,
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(255,255,255,0.2)",
+  },
+  headerTitle: {
+    fontSize: RFValue(16),
+    fontWeight: "600",
+    color: "white",
+  },
+  headerRight: {
+    flexDirection: "row",
+  },
+  headerActionButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(255,255,255,0.2)",
+  },
+
+  // Scroll Content
+  scrollViewContent: {
+    padding: 16,
+    paddingBottom: 30,
+  },
+
+  // Order Summary Card
+  orderSummaryCard: {
+    backgroundColor: "#ffffff",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  orderNumberRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    backgroundColor: "rgba(0, 0, 0, 0.8)",
-    color: "white",
   },
-  body: {
-    flexGrow: 1,
-    width: "90%",
-    display: "flex",
-    flexDirection: "column",
+  orderNumberLabel: {
+    fontSize: RFValue(12),
+    color: Colors.light.icon,
+    marginBottom: 4,
+  },
+  orderNumberValue: {
+    fontSize: RFValue(18),
+    fontWeight: "700",
+    color: Colors.light.text,
+  },
+  orderDateLabel: {
+    fontSize: RFValue(12),
+    color: Colors.light.icon,
+    marginBottom: 4,
+    textAlign: "right",
+  },
+  orderDateValue: {
+    fontSize: RFValue(14),
+    fontWeight: "500",
+    color: Colors.light.text,
+    textAlign: "right",
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "#f0f0f0",
+    marginVertical: 16,
+  },
+  statusSection: {
+    marginTop: 4,
+  },
+  currentStatusContainer: {
+    flexDirection: "row",
     alignItems: "center",
-  },
-  footer: {
-    width: "100%",
-    borderTopWidth: 1,
-    borderTopColor: "#d5d5d5",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  columnDate: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
     justifyContent: "space-between",
   },
-  text: {
-    color: "white",
+  currentStatusLabel: {
+    fontSize: RFValue(14),
+    fontWeight: "500",
+    color: Colors.light.text,
   },
-  textTitle: {
-    fontSize: 30,
-    color: "white",
-  },
-  buttonStatus: {
-    fontWeight: "bold",
-    alignSelf: "flex-start",
-    backgroundColor: "white",
-    paddingHorizontal: 20,
+  statusBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 50,
-    color: "#1F2937",
+    borderRadius: 20,
+    backgroundColor: Colors.light.secondary,
   },
-  containerDate: {
-    marginTop: 25,
-    display: "flex",
+  statusText: {
+    color: "white",
+    fontSize: RFValue(12),
+    fontWeight: "500",
+    marginRight: 4,
+  },
+
+  // Section Cards
+  sectionCard: {
+    backgroundColor: "#ffffff",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  sectionHeader: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
+    marginBottom: 16,
   },
-  containerEstimateTime: {
-    width: "100%",
-    display: "flex",
+  sectionTitle: {
+    marginLeft: 10,
+    fontSize: RFValue(16),
+    fontWeight: "600",
+    color: Colors.light.text,
+  },
+
+  // Client Info
+  clientInfoContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 30,
+    marginBottom: 16,
   },
-  containerRowinfo: {
-    display: "flex",
-    flexDirection: "row",
+  clientAvatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: Colors.light.primary,
+    justifyContent: "center",
     alignItems: "center",
-    alignSelf: "flex-start",
-    marginBottom: 14,
   },
-  containerRowinfoGap: {
-    display: "flex",
+  clientAvatarText: {
+    color: "white",
+    fontSize: RFValue(20),
+    fontWeight: "600",
+  },
+  clientDetails: {
+    marginLeft: 12,
+  },
+  clientName: {
+    fontSize: RFValue(16),
+    fontWeight: "600",
+    color: Colors.light.text,
+  },
+  clientPhone: {
+    fontSize: RFValue(13),
+    color: Colors.light.icon,
+    marginTop: 2,
+  },
+  addressContainer: {
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 12,
-  },
-  containerProducts: {
-    alignSelf: "center",
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
     alignItems: "flex-start",
-    gap: 12,
+    backgroundColor: "#f9f9f9",
+    padding: 12,
+    borderRadius: 12,
   },
-  products: {
-    height: 250,
-    width: "100%",
-    borderColor: "#d5d5d5",
-    borderWidth: 1,
-    borderRadius: 4,
+  addressText: {
+    marginLeft: 8,
+    fontSize: RFValue(13),
+    color: Colors.light.text,
+    flex: 1,
+    flexWrap: "wrap",
   },
-  textBody: {
-    fontSize: 19,
-  },
-  textBodyBold: {
-    fontSize: 19,
-    fontWeight: "bold",
-  },
-  textBodyBig: {
-    fontSize: 25,
-    fontWeight: "bold",
-  },
-  textlocation: {
-    fontSize: 16,
-    color: "#999999",
-  },
-  textEstimateTime: {
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-  containerrColumn: {
-    paddingVertical: 25,
-    width: "90%",
-    display: "flex",
-    flexDirection: "column",
-  },
-  containerRow: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  ContainerButtons: {
-    marginTop: 12,
-    width: "100%",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 16,
-  },
-  buttonDelete: {
-    borderWidth: 1,
-    borderColor: "#999999",
-    backgroundColor: "transparent",
-    display: "flex",
+
+  // Time Container
+  timeContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    flex: 1,
+    padding: 16,
+    minHeight: 75,
+
   },
-  buttonViewChat: {
-    backgroundColor: "black",
-    display: "flex",
+  estimateTimeValue: {
+    fontSize: RFValue(24),
+    fontWeight: "700",
+    color: Colors.light.primary,
+    marginLeft: 12,
+    padding: "auto",
+    height: "100%",
+    paddingTop: 15,
+  },
+  estimateTimeUnit: {
+    fontSize: RFValue(16),
+    fontWeight: "400",
+    color: Colors.light.icon,
+    paddingTop: 20,
+  
+    
+
+  },
+
+  // Products
+  productsList: {
+    marginBottom: 16,
+  },
+
+  // Order Details
+  orderDetailsContainer: {
+    marginTop: 4,
+  },
+  detailItem: {
+    marginBottom: 12,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#f0f0f0",
+  },
+  detailLabel: {
+    fontSize: RFValue(12),
+    color: Colors.light.icon,
+    
+    marginBottom: 4,
+  },
+  detailValue: {
+    fontSize: RFValue(14),
+    fontWeight: "500",
+    color: Colors.light.text,
+  },
+  emptyDetailsContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+  },
+  emptyDetailsText: {
+    fontSize: RFValue(14),
+    color: Colors.light.icon,
+    marginTop: 8,
+  },
+
+  // Product Specifications
+  productSpecification: {
+    marginBottom: 12,
+  },
+  productSpecName: {
+    fontSize: RFValue(14),
+    fontWeight: "600",
+    color: Colors.light.text,
+    marginBottom: 6,
+  },
+  specificationBubble: {
+    backgroundColor: "rgba(18, 140, 126, 0.1)",
+    width: "100%",
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    alignSelf: "flex-start",
+    borderLeftWidth: 3,
+    borderLeftColor: Colors.light.secondary,
+  },
+  productSpecDetail: {
+    fontSize: RFValue(13),
+    color: Colors.light.text,
+  },
+  generalNotes: {
+    marginTop: 16,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: "#f0f0f0",
+  },
+  generalNotesLabel: {
+    fontSize: RFValue(14),
+    fontWeight: "600",
+    color: Colors.light.text,
+    marginBottom: 8,
+  },
+  notesContainer: {
+    backgroundColor: "rgba(7, 94, 84, 0.05)",
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderLeftWidth: 3,
+    borderLeftColor: Colors.light.primary,
+  },
+  generalNotesText: {
+    fontSize: RFValue(13),
+    color: Colors.light.text,
+    lineHeight: 20,
+  },
+
+  totalContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: "#f0f0f0",
+  },
+  totalLabel: {
+    fontSize: RFValue(16),
+    fontWeight: "600",
+    color: Colors.light.text,
+  },
+  totalValue: {
+    fontSize: RFValue(20),
+    fontWeight: "700",
+    color: Colors.light.primary,
+  },
+
+  // Chat Button
+  chatButton: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    flex: 1,
+    backgroundColor: Colors.light.primary,
+    borderRadius: 12,
+    paddingVertical: 16,
+    marginTop: 8,
+    shadowColor: Colors.light.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
   },
-});
+  chatButtonText: {
+    marginLeft: 8,
+    fontSize: RFValue(16),
+    fontWeight: "600",
+    color: "white",
+  },
+})

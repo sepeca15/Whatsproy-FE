@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  View,
   Text,
   TextInput,
   TouchableOpacity,
@@ -11,7 +10,6 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import * as ImagePicker from "expo-image-picker";
 import { AntDesign } from "@expo/vector-icons";
 import { styles } from "./AddProductStyle";
 import { useRouter } from "expo-router";
@@ -23,6 +21,9 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { useUser } from "@/hooks/redux/useUser";
 import useValidateForm from "../../../../utils/validate_Products/useValidateForm";
 import useImagePicker from "../../../../utils/ImagePicker/useImagePicker";
+import { View } from "native-base";
+import MultiSelectInput from "@/components/MultiSelectInput";
+import { ICategoryData } from "../../Categories/components/CardCategory/CardCategory";
 
 const AddProduct: React.FC = () => {
   const { showToast } = useToastContext();
@@ -36,17 +37,22 @@ const AddProduct: React.FC = () => {
     descripcion: "",
     plazoDuracionEstimadoMinutos: 0,
     disponible: false,
+    categoryIds: []
   });
 
   const { user } = useUser();
   const currencies = user?.currencies;
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [allCategories, setAllCategories] = useState<ICategoryData[]>([]);
 
   const [loading, setLoading] = useState<boolean>(false);
 
 
-  const validateForm = useValidateForm(formData);
+  React.useEffect(() => {
+    loadAllCategories()
+  }, [])
 
+  const validateForm = useValidateForm(formData);
 
   const { pickImage, setImageUri, imageUri } = useImagePicker({
     toastErrorMessage: "Error al seleccionar la imagen",
@@ -54,16 +60,25 @@ const AddProduct: React.FC = () => {
     onImagePicked: ({ localUri }) => {
       if (localUri) {
         setSelectedImage(localUri);
-
       }
     },
   });
 
+  const loadAllCategories = async () => {
+    try {
+      const resp = await api.category.getAll()
 
+      if (resp.ok) {
+        setAllCategories(resp.data)
+      }
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const handleImagePick = async () => {
     pickImage(setFormData);
-
   };
 
 
@@ -72,9 +87,6 @@ const AddProduct: React.FC = () => {
       return;
     }
     setLoading(true);
-
-
-
     try {
       const response = await api.products.create({
         ...formData,
@@ -84,8 +96,8 @@ const AddProduct: React.FC = () => {
 
       showToast({ title: "Producto creado con éxito", status: "success" });
       router.push("/(tabs)/productos");
-    } catch (error) {
-      console.error("Error al crear el producto:", error);
+    } catch (error: any) {
+      console.error("Error al crear el producto:", error.response.data.message);
       if (error instanceof Error && (error as any)?.response?.data?.message) {
         showToast({ title: (error as any).response.data.message, status: "error" });
       } else {
@@ -101,8 +113,8 @@ const AddProduct: React.FC = () => {
       style={styles.container}
       resetScrollToCoords={{ x: 0, y: 0 }}
       scrollEnabled={true}
-      enableOnAndroid={true} // Específico para Android
-      extraScrollHeight={Platform.OS === 'ios' ? 20 : 50} // Ajuste fino en el desplazamiento
+      enableOnAndroid={true}
+      extraScrollHeight={Platform.OS === 'ios' ? 20 : 50}
     >
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Text style={styles.title}>
@@ -163,9 +175,9 @@ const AddProduct: React.FC = () => {
                     setFormData({ ...formData, currency_id: value });
                   }}
                 >
-                  {currencies.map((currency: any) => (
+                  {currencies.map((currency: any, index: number) => (
                     <Picker.Item
-                      key={currency?.codigo}
+                      key={index}
                       label={`${currency?.codigo} (${currency?.simbolo})`}
                       value={currency?.id}
                     />
@@ -174,7 +186,6 @@ const AddProduct: React.FC = () => {
               </View>
             </View>
           </View>
-
           <Text style={styles.label}>
             <FormattedMessage id="estimatedDuration" />
           </Text>
@@ -191,6 +202,34 @@ const AddProduct: React.FC = () => {
             placeholder="Ej: 30 minutos"
           />
 
+          {
+            <View mb={4} style={styles.column}>
+              <Text style={styles.label}>
+                Categoria
+              </Text>
+              <View color={'red.100'} >
+                <MultiSelectInput
+                  sizeText={16}
+                  height={50}
+                  isMultiple
+                  placeholder="Seleccionar categorías"
+                  options={allCategories.map((cat) => ({
+                    label: cat.name,
+                    value: cat.id.toString(),
+                    placeholder: cat.name,
+                  }))}
+                  setItemsSelected={(selectedIds: number[]) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      categoryIds: selectedIds,
+                    }));
+                  }}
+                  onSearch={(query: string) => {
+                  }}
+                />
+              </View>
+            </View>
+          }
           <Text style={styles.label}>
             <FormattedMessage id="description" />
           </Text>

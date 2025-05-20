@@ -1,14 +1,29 @@
 import * as React from "react";
-import { View, ScrollView, StyleSheet, Text, Pressable } from "react-native";
-import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons.js";
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  Text,
+  Pressable,
+  RefreshControl,
+} from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons.js";
 import OrdersFinished from "./components/OrdersFinished";
 import OrdersPending from "./components/OrdersPending";
 import { useUser } from "@/hooks/redux/useUser";
 import CreateOrderModal from "@/components/CreateOrderModal";
 import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
+import CustomText from "@/components/CustomText";
+import Animated from "react-native-reanimated";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Feather, Ionicons } from "@expo/vector-icons";
+import OrdersActive from "./components/OrdersActive";
+import { globalStyles } from "@/components/globalStyles";
+import { styles } from "./PedidosStyles";
 
-type pagesOrder = "finished" | "pending";
+type pagesOrder = "finished" | "pending" | "active";
+
+
 
 const PedidosEIngresos: React.FC = () => {
   const [selected, setSelected] = React.useState<pagesOrder>("pending");
@@ -20,16 +35,23 @@ const PedidosEIngresos: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>
-        {user.tipo_servicioNombre === "Delivery" ? (
-          <FormattedMessage id="orders" defaultMessage="Orders" />
-        ) : (
-          <FormattedMessage id="reservations" defaultMessage="Reservations" />
-        )}
-      </Text>
+    <SafeAreaView style={styles.container}>
+
+      <Animated.View style={globalStyles.header}>
+        <View style={globalStyles.headerContent}>
+          <View style={globalStyles.headerLeft}>
+            <CustomText
+              style={globalStyles.businessName}
+              accessibilityLabel="Pedidos"
+            >
+              <FormattedMessage id="orders" />
+            </CustomText>
+          </View>
+        </View>
+      </Animated.View>
+
       <View style={styles.tab}>
-        {["pending", "finished"].map((key) => (
+        {["pending", "active", "finished"].map((key) => (
           <View key={key} style={styles.containerTabItem}>
             <Pressable
               onPress={() => handleSelectPage(key as pagesOrder)}
@@ -40,16 +62,23 @@ const PedidosEIngresos: React.FC = () => {
                 <View style={styles.row}>
                   {key === "pending" ? (
                     <MaterialCommunityIcons size={16} name="camera-timer" />
+                  ) : key === "finished" ? (
+                    <Feather size={16} name="check-square" />
                   ) : (
-                    <SimpleLineIcons size={16} name="notebook" />
+                    <Feather name="activity" size={16} />
                   )}
                   <Text style={styles.text}>
                     {key === "pending" ? (
                       <FormattedMessage id="pending" defaultMessage="Pending" />
-                    ) : (
+                    ) : key === "finished" ? (
                       <FormattedMessage
                         id="finished"
                         defaultMessage="Finished"
+                      />
+                    ) : (
+                      <FormattedMessage
+                        id="activeOrdersTitle"
+                        defaultMessage="Active"
                       />
                     )}
                   </Text>
@@ -60,17 +89,27 @@ const PedidosEIngresos: React.FC = () => {
           </View>
         ))}
       </View>
-      <ScrollView style={styles.orders}>
-        {selected === "finished" ? <OrdersFinished /> : <OrdersPending />}
-      </ScrollView>
-      <View style={styles.buttonContainer}>
+      <View
+        style={styles.orders}
+      >
+       
+          {selected === "finished" ? (
+            <OrdersFinished />
+          ) : selected === "pending" ? (
+            <OrdersPending />
+          ) : (
+            <OrdersActive />
+          )}
+       
+      </View>
+      <View style={globalStyles.buttonContainer}>
         <Pressable
-          style={styles.addButton}
+          style={globalStyles.addButton}
           onPress={() => {
             setOpenAddModal((prevState) => !prevState);
           }}
         >
-          <Text style={styles.addButtonText}>+</Text>
+          <Ionicons name="add" style={globalStyles.addtext} color="#fff" />
         </Pressable>
       </View>
       {openAddModal && (
@@ -79,106 +118,11 @@ const PedidosEIngresos: React.FC = () => {
           onClose={() => setOpenAddModal((prevState) => !prevState)}
         />
       )}
-    </View>
+
+    </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  chartWrapper: {
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 30,
-    textAlign: "center",
-  },
-  orders: {
-    marginTop: 20,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    flex: 1,
-  },
-  Corders: {
-    flex: 1,
-    height: "100%",
-    backgroundColor: "red",
-  },
-  tab: {
-    marginVertical: 12,
-    width: "100%",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderBottomColor: "#d4ece8",
-    borderBottomWidth: 4,
-  },
-  containerTabItem: {
-    position: "relative",
-    display: "flex",
-    flexDirection: "row",
-    alignContent: "center",
-    justifyContent: "center",
-    flex: 1 / 2,
-  },
-  pressable: {
-    position: "relative",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 12,
-    width: "60%",
-    paddingVertical: 12,
-  },
-  selected: {
-    height: 4,
-    width: "100%",
-    backgroundColor: "#075e54",
-    position: "absolute",
-    bottom: -16,
-    borderRadius: 12,
-  },
-  text: {
-    textAlign: "center",
-  },
-  column: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  row: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 4,
-  },
-  buttonContainer: {
-    position: "absolute",
-    bottom: 20,
-    right: 20,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 1,
-  },
-  addButton: {
-    backgroundColor: "#075e54",
-    width: 45,
-    height: 45,
-    borderRadius: 60,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  addButtonText: {
-    color: "#ffffff",
-    fontSize: 24,
-    fontWeight: "semibold",
-  },
-});
+
 
 export default PedidosEIngresos;

@@ -7,11 +7,14 @@ export const Login = async ({
   email: string;
   password: string;
 }) => {
-  const { data } = await ApiInstances("global").post(`auth/login`, {
-    email,
-    password,
-  });
-  return data;
+  try {
+    const { data } = await ApiInstances("global").post(`auth/login`, {
+      email,
+      password,
+    });
+    return data;
+  } catch (error) {
+  }
 };
 
 export const GetMyAccountData = async () => {

@@ -9,6 +9,8 @@ import Animated, {
 import { Colors } from "../../../../constants/Colors";
 import CustomText from "./CustomText";
 import styles from "../HomeStyles";
+import { Shadow } from 'react-native-shadow-2';
+
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
@@ -48,29 +50,38 @@ const LastActivityCard: React.FC<LastActivityCardProps> = ({
   };
 
   return (
-    <AnimatedTouchable
-      style={[styles.lastActivityCard, animatedStyle]}
-      onPress={onPress}
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
+    <Shadow
+      distance={5}
+      startColor={'rgba(0, 0, 0, 0.05)'}
+      endColor={'rgba(0, 0, 0, 0.01)'}
+      offset={[0, 2]}
+      style={{ width: '100%', marginBottom: 12 }}
     >
-      <View style={styles.lastActivityHeader}>
-        <CustomText style={styles.lastActivityTitle}>{title}</CustomText>
-        <CustomText style={styles.lastActivityTime}>{time}</CustomText>
-      </View>
-      <View style={styles.lastActivityContent}>
-        <Icon name={icon} size={24} color={Colors.light.primary} />
-        <View style={styles.lastActivityInfo}>
-          <CustomText style={styles.lastActivityId}>#{address}</CustomText>
-          {amount && (
-            <CustomText style={styles.lastActivityAmount}>{amount}</CustomText>
-          )}
-          {info && (
-            <CustomText style={styles.lastActivityExtra}>{info}</CustomText>
-          )}
+      <AnimatedTouchable
+        style={[styles.lastActivityCard, animatedStyle]}
+        onPress={onPress}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+      >
+        <View style={styles.lastActivityHeader}>
+          <CustomText style={styles.lastActivityTitle}>{title}</CustomText>
+          <CustomText style={styles.lastActivityTime}>{time}</CustomText>
         </View>
-      </View>
-    </AnimatedTouchable>
+        <View style={styles.lastActivityContent}>
+          <Icon name={icon} size={24} color={Colors.light.primary} />
+          <View style={styles.lastActivityInfo}>
+            <CustomText style={styles.lastActivityId}>{address}</CustomText>
+            {amount && (
+              <CustomText style={styles.lastActivityAmount}>{amount}</CustomText>
+            )}
+            {info && (
+              <CustomText style={styles.lastActivityExtra}>{info}</CustomText>
+            )}
+          </View>
+        </View>
+      </AnimatedTouchable>
+    </Shadow>
+
   );
 };
 

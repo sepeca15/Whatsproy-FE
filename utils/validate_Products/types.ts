@@ -7,6 +7,7 @@ interface ProductoTypes {
   plazoDuracionEstimadoMinutos: number;
   disponible: boolean;
   currency_id?: any;
+  categoryIds?: any[]
 }
 
 export default ProductoTypes;

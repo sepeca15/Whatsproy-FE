@@ -10,13 +10,16 @@ import {
   greenApiConfigured,
   onApiConfigured,
   onUserConfigured,
+  onUpdateFcm,
 } from "@/services/redux/Slices/userSlice/userSlice";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export const useUser = () => {
   const { showToast } = useToastContext();
   const Dispatch = useDispatch();
   const { user } = useSelector((state: any) => state.user);
+  const [loading, setLoading] = useState(false);
 
   const Mensaje = () => {
     Dispatch(mostrarMensaje("hola soy un nuevo mensaje ;D"));
@@ -24,14 +27,22 @@ export const useUser = () => {
 
   const handleAddUserData = async () => {
     try {
+      setLoading(true);
       const userData = await api.auth.me();
       if (userData) {
         Dispatch(onAddUserData(userData));
       }
+      return userData;
     } catch (error) {
       console.log("error:", error);
+    } finally {
+      setLoading(false);
     }
   };
+
+  const handlePayOk = () => {
+    Dispatch(onPurchasedPlan());
+  }
 
   const handleAssignUserToPlan = async ({
     id_empresa,
@@ -64,6 +75,15 @@ export const useUser = () => {
       console.log(error);
     }
   };
+
+  const handleUpdateFCM = async (fcm: any) => {
+    try {
+      Dispatch(onUpdateFcm(fcm));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
 
   const handleUpdateApiConfigured = async () => {
     try {
@@ -100,7 +120,7 @@ export const useUser = () => {
       await api.user.update(user.id, userData);
       Dispatch(onUserConfigured({ data: userData }));
     } catch (error: any) {
-      console.log(error.response.data.message);
+      console.log(error.response.message);
     }
   };
 
@@ -113,5 +133,7 @@ export const useUser = () => {
     handleUpdateGreenApiConfig,
     handleUpdateApiConfigured,
     user,
+    handleUpdateFCM,
+    handlePayOk,
   };
 };

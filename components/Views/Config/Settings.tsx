@@ -1,170 +1,133 @@
-import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
-import { useRouter } from "expo-router";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import Feather from "react-native-vector-icons/Feather";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import IonIcons from "react-native-vector-icons/Ionicons";
-import CustomText from "@/components/CustomText";
-import { Center } from "native-base";
-import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
 
-const settingsPage = [
-  {
-    title: "generalSettings",
-    href: "/(tabs)/generalSettings",
-    description: "manageHours",
-    icon: <Feather size={20} color={"white"} name="settings" />,
-  },
-  {
-    title: "user",
-    href: "/(tabs)/usuarios",
-    description: "createUsers",
-    icon: <FontAwesome5 name="users" size={20} color={"white"} />,
-  },
-  {
-    title: "notifications",
-    href: "",
-    description: "notificationsDescription",
-    icon: <IonIcons name="notifications-outline" size={20} color={"white"} />,
-  },
-  {
-    title: "privacySecurity",
-    href: "",
-    description: "privacyDescription",
-    icon: <Feather size={20} color={"white"} name="shield" />,
-  },
-  {
-    title: "membership",
-    href: "",
-    description: "membershipDescription",
-    icon: <AntDesign name="creditcard" size={20} color={"white"} />,
-  },
-  {
-    title: "orderData",
-    href: "/(tabs)/datosPedido",
-    description: "orderDataDescription",
-    icon: <IonIcons size={20} color={"white"} name="newspaper-outline" />,
-  },
-];
+import { View, Text, StatusBar, FlatList } from "react-native"
+import { useRouter } from "expo-router"
+import Feather from "react-native-vector-icons/Feather"
+import Entypo from "react-native-vector-icons/Entypo"
+
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5"
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
+import IonIcons from "react-native-vector-icons/Ionicons"
+import { FormattedMessage, useIntl } from "react-intl"
+import { useColorScheme } from "react-native"
+import { Colors } from "@/constants/Colors"
+import Animated from "react-native-reanimated"
+import styles from "./SettingsStyles"
+import SettingCard from "@/hooks/settingsCards/SettingCard"
+import * as Animatable from "react-native-animatable";
+
 
 const Settings = () => {
-  const router = useRouter();
+  const intl = useIntl()
+  const router = useRouter()
+  const colorScheme = useColorScheme()
+  const isDark = colorScheme === "dark"
+  const colors = isDark ? Colors.dark : Colors.light
+
+  const settingsPage = [
+    {
+      title: intl.formatMessage({ id: "generalSettings", defaultMessage: "General Settings" }),
+      href: "/(tabs)/generalSettings",
+      description: intl.formatMessage({
+        id: "manageHours",
+        defaultMessage: "Manage your working hours and preferences",
+      }),
+      icon: <Feather size={22} color={"white"} name="settings" />,
+    },
+    {
+      title: intl.formatMessage({ id: "subscription ", defaultMessage: "Subscription" }),
+      href: "/(tabs)/subscriptions",
+      description: intl.formatMessage({ id: "manageSubscription", defaultMessage: "Manage your working hours and preferences" }),
+      icon: <Entypo size={22} color={"white"} name="wallet" />,
+    },
+    {
+      title: intl.formatMessage({ id: "users", defaultMessage: "Users" }),
+      href: "/(tabs)/usuarios",
+      description: intl.formatMessage({ id: "createUsers", defaultMessage: "Create and manage users" }),
+      icon: <FontAwesome5 name="users" size={22} color={"white"} />,
+    },
+    {
+      title: intl.formatMessage({ id: "status", defaultMessage: "Status" }),
+      href: "/(tabs)/status",
+      description: intl.formatMessage({ id: "statusDescription", defaultMessage: "View and manage statuses" }),
+      icon: <MaterialCommunityIcons name="list-status" size={22} color={"white"} />,
+    },
+    // {
+    //   title: intl.formatMessage({ id: "notifications", defaultMessage: "Notifications" }),
+    //   href: "",
+    //   description: intl.formatMessage({ id: "notificationsDescription", defaultMessage: "Manage notification preferences" }),
+    //   icon: <IonIcons name="notifications-outline" size={22} color={"white"} />,
+    // },
+    {
+      title: intl.formatMessage({ id: "privacySecurity", defaultMessage: "Privacy & Security" }),
+      href: "/(tabs)/privacy",
+      description: intl.formatMessage({ id: "privacyDescription", defaultMessage: "View privacy and security policies" }),
+      icon: <Feather size={22} color={"white"} name="shield" />,
+    },
+    {
+      title: intl.formatMessage({ id: "orderData", defaultMessage: "Order Data" }),
+      href: "/(tabs)/datosPedido",
+      description: intl.formatMessage({ id: "orderDataDescription", defaultMessage: "Manage order-related data" }),
+      icon: <IonIcons size={22} color={"white"} name="newspaper-outline" />,
+    },
+    {
+      title: intl.formatMessage({ id: "categories", defaultMessage: "Categories" }),
+      href: "/(tabs)/categories",
+      description: intl.formatMessage({ id: "categoriesDesc", defaultMessage: "Organize and manage categories" }),
+      icon: <MaterialCommunityIcons size={22} color={"white"} name="format-list-bulleted-type" />,
+    },
+    {
+      title: intl.formatMessage({ id: "cierreProvisorioTittleSettings", defaultMessage: "Cierre Provisorio" }),
+      href: "/(tabs)/cierre_provisorio",
+      description: intl.formatMessage({ id: "cierreProvisorioDescriptionSettings", defaultMessage: "Organiza tus cierres" }),
+      icon: <Entypo size={22} color={"white"} name="time-slot" />,
+    },
+    {
+      title: intl.formatMessage({ id: "trustedNumberSettingsTitle", defaultMessage: "Numeros de confianza" }),
+      href: "/(tabs)/numbers_trusted",
+      description: intl.formatMessage({ id: "trustedNumberSettingsDesc", defaultMessage: "Activa numeros con los cuales no se activará el bot" }),
+      icon: <IonIcons size={22} color={"white"} name="phone-portrait-outline" />,
+    },
+  ]
+
   return (
-    <Center style={styles.father}>
-      <ScrollView>
-      <View style={styles.container}>
-        <View style={styles.title}>
-          <CustomText
-            style={{
-              textAlign: "center",
-              fontSize: 25,
-              fontWeight: "bold",
-              color: "white",
-            }}
-          >
-            <FormattedMessage id="settings" />
-          </CustomText>
-        </View>
-        <View style={styles.containerItems}>
-          {settingsPage.map((item: any, index) => {
-            return (
-              <TouchableOpacity
-                key={index}
-                style={styles.card}
-                onPress={() => router.push(item.href)}
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    
 
-              >
-                <View style={styles.row}>
-                  <View style={styles.rounded}>{item.icon}</View>
-                  <View style={styles.col}>
-                    <Text style={styles.cardText}>
-                      <FormattedMessage id={item.title} />
-                    </Text>
-                    <CustomText style={styles.textDesc}>
-                      <FormattedMessage id={item.description} />
-                    </CustomText>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
+      {/* Header */}
+      <Animated.View style={[styles.header, { backgroundColor: colors.primary }]}>
+      <View style={styles.headerContent}>
+        <Text style={styles.headerTitle}>
+        <FormattedMessage id="settings" />
+        </Text>
       </View>
-      </ScrollView>
-    </Center>
-  );
-};
+      </Animated.View>
 
-const styles = StyleSheet.create({
-  father: {
-    flex: 1,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#f8f8f8",
-  },
-  container: {
-    flex: 1,
-    width: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "flex-start",
-    paddingTop: 40,
-  },
-  containerItems: {
-    width: "100%",
-    flex: 1,
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "flex-start",
-  },
-  title: {
-    backgroundColor: "black",
-    width: "60%",
-    paddingVertical: 6,
-    paddingHorizontal: 20,
-    borderTopEndRadius: 20,
-    borderTopStartRadius: 20,
-  },
-  card: {
-    backgroundColor: "white",
-    width: "100%",
-    borderBottomWidth: 0.5,
-    borderColor: "#dbdbdb",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 16,
-    paddingHorizontal: 10,
-  },
-  cardText: {
-    fontSize: 18,
-    color: "#333",
-    fontWeight: "bold",
-  },
-  textDesc: {
-    flexWrap: "wrap",
-    maxWidth: "90%",
-    color: "#939393",
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  col: {
-    flex: 1,
-    marginLeft: 12,
-  },
-  rounded: {
-    width: 45,
-    height: 45,
-    borderRadius: 100,
-    backgroundColor: "gray",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
+      {/* Lista de Ajustes */}
+      <FlatList
+      data={settingsPage}
+      keyExtractor={(item, index) => item.href || index.toString()}
+      renderItem={({ item, index }) => (
+        <Animatable.View
+        animation="fadeInUp"
+        duration={800}
+        delay={100 + index * 50}
+        style={styles.metricsContainer}
+        >
+        <SettingCard
+          item={item}
+          index={index}
+          isDark={isDark}
+          colors={colors}
+          onNavigate={(href) => router.push(href as any)}
+        />
+        </Animatable.View>
+      )}
+      contentContainerStyle={styles.scrollContent}
+      style={styles.scrollView}
+      showsVerticalScrollIndicator={false}
+      />
+    </View>
+  )
+}
 
-export default Settings;
+export default Settings

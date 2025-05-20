@@ -18,7 +18,6 @@ export const styles = StyleSheet.create({
   },
   buttonContinue: {
     width: 100,
-    backgroundColor: "black",
     borderRadius: 8,
   },
   buttonCancel: {

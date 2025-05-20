@@ -59,7 +59,7 @@ export const ModalStyles = StyleSheet.create({
   decorateDiv: {
     marginBottom: 12,
     width: "60%",
-    height: 12,
+    height: 8,
     borderRadius: 12,
     backgroundColor: "#818181",
   },

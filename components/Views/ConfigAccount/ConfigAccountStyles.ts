@@ -41,6 +41,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
   ContainerHeader: {
+    position:'relative',
     width: "100%",
     alignSelf: "flex-start",
   },
@@ -52,6 +53,7 @@ export const styles = StyleSheet.create({
   test: {
     width: "100%",
     display: "flex",
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",

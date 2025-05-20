@@ -60,6 +60,7 @@ interface IProps {
   tipoServicio: TipoServicioType;
   onSuccess?: () => void;
   currentOrders?: any[];
+  availableDates?: string[];
 }
 
 const initialValues: CreateOrderDTO = {
@@ -85,6 +86,7 @@ const CreateOrderModal = ({
   tipoServicio,
   onSuccess,
   currentOrders,
+  availableDates = [],
 }: IProps) => {
   const { showToast } = useToastContext();
   const { user } = useUser();
@@ -134,7 +136,7 @@ const CreateOrderModal = ({
           } else {
             return false;
           }
-        }),
+        })
       );
     } catch (error) {
       console.log(error);
@@ -160,7 +162,7 @@ const CreateOrderModal = ({
   React.useEffect(() => {
     handleChangeValue(
       "fecha",
-      new Date(defaultDate).setHours(getHourNumber(user?.hora_apertura)),
+      new Date(defaultDate).setHours(getHourNumber(user?.hora_apertura))
     );
   }, []);
 
@@ -221,7 +223,7 @@ const CreateOrderModal = ({
         messages: [],
         products: selectedProductsIds.map((prod) => {
           const productSend = prodCant.find(
-            (product) => product.prodId === parseInt(prod),
+            (product) => product.prodId === parseInt(prod)
           );
           return {
             productoId: prod,
@@ -263,9 +265,8 @@ const CreateOrderModal = ({
     try {
       setLoadingNextDateAvailable(true);
       const resp = await api.order.getNextDateAvailable();
-      console.log("resp is", resp)
       if (resp) {
-        handleChangeValue("fecha", moment(resp).add("hours", 3));
+        handleChangeValue("fecha", moment(resp));
       }
     } catch (error) {
       console.log("error", error);
@@ -323,7 +324,7 @@ const CreateOrderModal = ({
     if (isSelected) {
       setProdCant((prev: any) => {
         const productExists = prev.some(
-          (item: any) => item.prodId === parseInt(value),
+          (item: any) => item.prodId === parseInt(value)
         );
         if (!productExists) {
           return [...prev, { prodId: parseInt(value), cantidad: 1 }];
@@ -332,7 +333,7 @@ const CreateOrderModal = ({
       });
     } else {
       setProdCant((prev: any) =>
-        prev.filter((item: any) => item.prodId !== parseInt(value)),
+        prev.filter((item: any) => item.prodId !== parseInt(value))
       );
     }
   };
@@ -387,11 +388,12 @@ const CreateOrderModal = ({
                   currentOrders
                     ? filterOnlyHours(
                         currentOrders?.map((order) =>
-                          removeAmPm(order?.date ?? ""),
-                        ),
+                          removeAmPm(order?.date ?? "")
+                        )
                       )
                     : []
                 }
+                checkAvailable={(hour: string) => availableDates.includes(hour)}
                 date={form.fecha || localDate}
                 setDate={(val: any) => handleChangeValue("fecha", val)}
               />
@@ -426,6 +428,7 @@ const CreateOrderModal = ({
           <MultiSelectInput
             isRequired
             error={errors["products"]}
+            withAdd={false}
             setItemsSelected={setSelectedProductsIds}
             handleProductSelection={handleProductSelection}
             isMultiple
@@ -437,86 +440,97 @@ const CreateOrderModal = ({
               return {
                 label: (
                   <View
-                    key={prod.id}
-                    display={"flex"}
-                    flexDirection={"row"}
-                    justifyContent={"space-between"}
-                    height={"100%"}
-                    position={"relative"}
-                    width={"100%"}
-                    style={{ gap: 5, paddingBottom: 10 }}
+                    display="flex"
+                    flexDirection="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    width="100%"
+                    style={{ paddingBottom: 10, paddingRight: 4 }}
                   >
                     <View
-                      width={"70%"}
-                      display={"flex"}
-                      flexDir={"row"}
-                      alignItems={"center"}
                       style={{ gap: 5 }}
+                      flexDirection="row"
+                      alignItems="center"
+                      flex={1}
+                      minWidth={0}
                     >
                       <View
                         width={36}
                         height={36}
                         borderRadius={6}
-                        backgroundColor={"gray.400"}
+                        backgroundColor="gray.400"
                       />
                       <View
-                        display={"flex"}
-                        flexDirection={"column"}
-                        style={{ gap: 0 }}
-                        justifyContent={"start"}
-                        flexShrink={1}
+                        flexDirection="column"
+                        justifyContent="flex-start"
+                        flex={1}
+                        minWidth={0}
                       >
                         <Text
-                          maxW="100%"
-                          color={"gray.800"}
+                          color="gray.800"
                           fontSize={16}
-                          fontWeight={"medium"}
+                          fontWeight="medium"
+                          numberOfLines={1}
+                          ellipsizeMode="tail"
                         >
                           {prod?.nombre ?? ""}
                           {cantidad && " x" + cantidad}
                         </Text>
                         <Text
-                          isTruncated={false}
-                          numberOfLines={2}
-                          flexWrap="wrap"
-                          maxW={150}
                           fontSize={12}
-                          lineHeight={15}
-                          color={"gray.600"}
+                          color="gray.600"
+                          numberOfLines={2}
+                          ellipsizeMode="tail"
                         >
                           {prod?.descripcion ?? ""}
                         </Text>
                       </View>
                     </View>
+
                     <View
-                      width={"30%"}
-                      display={"flex"}
-                      flexDir={"row"}
-                      alignItems={"center"}
+                      flexDirection="row"
+                      alignItems="center"
+                      justifyContent="flex-end"
+                      paddingLeft={5}
                     >
-                      <View>
-                        <Text
-                          marginRight={1}
-                          fontWeight={"semibold"}
-                          color={"yellow.800"}
-                        >
-                          ${prod?.precio}
-                        </Text>
-                      </View>
-                      <View
-                        flexDir={"column"}
-                        justifyContent={"center"}
-                        alignItems={"center"}
+                      <Text
+                        marginRight={2}
+                        fontWeight="semibold"
+                        color="yellow.800"
+                        fontSize={14}
                       >
-                        <IconButton
-                          onPress={() => addCantForProduct(prod?.id, "more")}
-                          icon={<SimpleLineIcons size={12} name="arrow-up" />}
-                        />
-                        <IconButton
-                          onPress={() => addCantForProduct(prod?.id, "less")}
-                          icon={<SimpleLineIcons size={12} name="arrow-down" />}
-                        />
-                      </View>
+                        ${prod?.precio}
+                      </Text>
+
+                      {selectedProductsIds.includes(`${prod?.id ?? ""}`) && (
+                        <View
+                          flexDirection="column"
+                          alignItems="center"
+                          justifyContent="center"
+                          borderWidth={1}
+                          borderColor="gray.300"
+                          borderRadius={8}
+                          padding={1}
+                          marginLeft={2}
+                        >
+                          <IconButton
+                            onPress={() => addCantForProduct(prod?.id, "more")}
+                            icon={<SimpleLineIcons size={14} name="arrow-up" />}
+                            _icon={{ color: "green.600" }}
+                            size="sm"
+                            variant="ghost"
+                          />
+                          <IconButton
+                            onPress={() => addCantForProduct(prod?.id, "less")}
+                            icon={
+                              <SimpleLineIcons size={14} name="arrow-down" />
+                            }
+                            _icon={{ color: "red.600" }}
+                            size="sm"
+                            variant="ghost"
+                          />
+                        </View>
+                      )}
                     </View>
                   </View>
                 ),

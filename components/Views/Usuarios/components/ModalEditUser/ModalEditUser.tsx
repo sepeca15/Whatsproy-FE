@@ -7,6 +7,8 @@ import styles from "./ModalEditUserStyles";
 import api from "@/services/api/admin";
 import CustomButton from "@/components/CustomButton";
 import { useIntl } from "react-intl"; // Importa useIntl
+import useImagePicker from "@/utils/ImagePicker/useImagePicker";
+import { useToastContext } from "@/contexts/ToastContext";
 
 interface IEditUser {
   nombre: string;
@@ -31,8 +33,10 @@ const ModalEditUser = ({
   const [formData, setFormData] = useState<IEditUser>(userInfo);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
-  const intl = useIntl(); // Usa useIntl para obtener la instancia de intl
+  const intl = useIntl(); 
+  const { showToast } = useToastContext();
 
+  const [selectedImage, setSelectedImage] = useState<string | null>();
   useEffect(() => {
     if (userInfo) {
       setFormData(userInfo);
@@ -45,17 +49,35 @@ const ModalEditUser = ({
     },
     [],
   );
+  
 
-  const pickImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
+  const { pickImage } = useImagePicker({
+    toastErrorMessage: "Error al seleccionar la imagen",
+    onImagePicked: async ({ localUri, apiUrl }) => {
+      if (localUri) {
+        setSelectedImage(localUri.toString());
+      }
+      console.log('apiurl', apiUrl);
+      
+      if (apiUrl) {
+        setFormData((prevData) => ({
+          ...prevData,
+          image: apiUrl,
+        }));
+      }
+    },
+  });
 
-    if (!result.canceled) {
-      handleInputChange("photo", result.assets[0].uri);
+  const handleImagePick = async () => {
+    try {
+      await pickImage(setFormData);
+    } catch (error) {
+      console.error("Error selecting image:", error);
+      showToast({
+        title: intl.formatMessage({ id: "errorSelectingImage" }),
+        status: "error",
+      });
+    } finally {
     }
   };
 
@@ -75,19 +97,18 @@ const ModalEditUser = ({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async () => {
-    if (!validate()) return;
-    setLoading(true);
-    try {
-      const { nombre, apellido, photo, activo } = formData;
-      await api.user.update(userInfo.id, { nombre, apellido, photo, activo });
-      onToogleModal();
-      editUserSelected(userInfo.id, formData);
-    } catch (error) {
-      console.error("Error updating user:", error);
-    } finally {
-      setLoading(false);
-    }
+  const handleSubmit = async () => {    
+    console.log(validate());
+    
+      if (!validate()) return;
+      setLoading(true);
+      try {                
+        await editUserSelected(userInfo.id, formData);
+      } catch (error) {
+        console.error("Error updating user:", error);
+      } finally {
+        setLoading(false);
+      }
   };
 
   return (
@@ -102,11 +123,11 @@ const ModalEditUser = ({
         </Modal.Header>
         <Modal.Body>
           <ScrollView contentContainerStyle={styles.scrollContainer}>
-            <TouchableOpacity onPress={pickImage} style={styles.imageContainer}>
+            <TouchableOpacity onPress={handleImagePick} style={styles.imageContainer}>
               <Image
                 source={{
                   uri:
-                    formData.photo ||
+                    selectedImage ||
                     "https://static.vecteezy.com/system/resources/previews/036/280/651/non_2x/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-illustration-vector.jpg",
                 }}
                 style={styles.image}
@@ -183,6 +204,7 @@ const ModalEditUser = ({
                 })}
               </FormControl.Label>
               <Select
+                borderRadius={8}
                 selectedValue={formData.activo ? "Si" : "No"}
                 onValueChange={(value) =>
                   handleInputChange("activo", value === "Si")

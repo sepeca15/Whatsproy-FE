@@ -1,104 +1,144 @@
-import { useState, useCallback, useRef, useEffect } from "react";
-import api from "@/services/api/admin";
+// import { useState, useEffect } from "react";
+// import api from "@/services/api/admin";
 
-const getFormattedDate = (): string => new Date().toISOString().split("T")[0];
+// const getFormattedDate = (): string => new Date().toISOString().split("T")[0];
 
-const getTimeAgo = (date: string): string => {
-  const now = new Date();
-  const createdAt = new Date(date);
-  const diffInSeconds = Math.floor((now.getTime() - createdAt.getTime()) / 1000);
+// const getTimeAgo = (date: string): string => {
+//   const now = new Date();
+//   const createdAt = new Date(date);
+//   const diffInSeconds = Math.floor((now.getTime() - createdAt.getTime()) / 1000);
 
-  const minutes = Math.floor(diffInSeconds / 60);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
+//   const minutes = Math.floor(diffInSeconds / 60);
+//   const hours = Math.floor(minutes / 60);
+//   const days = Math.floor(hours / 24);
 
-  if (days > 0) return `hace ${days} día${days > 1 ? "s" : ""}`;
-  if (hours > 0) return `hace ${hours} hora${hours > 1 ? "s" : ""}`;
-  if (minutes > 0) return `hace ${minutes} minuto${minutes > 1 ? "s" : ""}`;
-  return "hace unos segundos";
-};
+//   if (days > 0) return `hace ${days} día${days > 1 ? "s" : ""}`;
+//   if (hours > 0) return `hace ${hours} hora${hours > 1 ? "s" : ""}`;
+//   if (minutes > 0) return `hace ${minutes} minuto${minutes > 1 ? "s" : ""}`;
+//   return "hace unos segundos";
+// };
 
-const useOrdersData = () => {
-  const [ordersCount, setOrdersCount] = useState(0);
-  const [dailyRevenue, setDailyRevenue] = useState(0);
-  const [lastOrders, setLastOrders] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  const isFetching = useRef(false);
+// // Tipos
+// interface Order {
+//   id: number;
+//   createdAt: string;
+//   total: number;
+//   status: string;
+//   infoLinesJson: string;
+// }
 
-  const getOrders = useCallback(async () => {
-    if (isFetching.current) return;
-    try {
-      isFetching.current = true;
-      setLoading(true);
-      const response = await api.order.lastThreeOrders();
-      const formattedOrders = response.data.map((order: any) => {
-        let costo = 0;
-        try {
-          const infoExtra = JSON.parse(order.infoLinesJson);
-          costo = infoExtra.Costo || 0;
-        } catch (error) {
-          console.error("Error parsing infoLinesJson:", error);
-        }
+// interface FormattedOrder {
+//   id: number;
+//   time: string;
+//   amount: string;
+//   icon: string;
+//   address: string;
+//   status: string;
+// }
 
-        return {
-          id: order.id,
-          time: getTimeAgo(order.createdAt),
-          amount: `$${costo}`,
-          icon: "receipt",
-        };
-      });
-      setLastOrders(formattedOrders);
-    } catch (error) {
-      console.error("Error al obtener pedidos:", error);
-    } finally {
-      isFetching.current = false;
-      setLoading(false);
-    }
-  }, []);
+// const useOrdersData = () => {
+//   const [ordersCount, setOrdersCount] = useState(0);
+//   const [dailyRevenue, setDailyRevenue] = useState(0);
+//   const [lastOrders, setLastOrders] = useState<FormattedOrder[]>([]);
+//   const [pendingOrders, setPendingOrders] = useState<Order[]>([]);
+//   const [rawOrders, setRawOrders] = useState<Order[]>([]);
+//   const [isFetching, setIsFetching] = useState(false);
 
-  const getOrdersByDate = useCallback(async () => {
-    if (isFetching.current) return;
-    try {
-      isFetching.current = true;
-      const today = getFormattedDate();
-      const response = await api.order.getOrdersByDate(today);
-      setOrdersCount(response.ordersDay || 0);
-    } catch (error) {
-      console.error("Error al obtener pedidos por fecha:", error);
-    } finally {
-      isFetching.current = false;
-    }
-  }, []);
+//   const getOrders = async () => {
+//     setIsFetching(true);
+//     try {
+//       const response = await api.order.lastThreeOrders();
+//       // console.log("recibo", response.data);
+//       setRawOrders(response.data);
+//       const formattedOrders = response.data.map((order: Order): FormattedOrder => {
+//         let address = "No disponible";
+//         let status = "sin status";
 
-  const moneyinday = useCallback(async () => {
-    if (isFetching.current) return;
-    try {
-      isFetching.current = true;
-      const today = getFormattedDate();
-      const response = await api.order.moneyinday(today);
-      setDailyRevenue(response.ganancia ?? 0);
-    } catch (error) {
-      console.error("Error al obtener ingresos del día:", error);
-    } finally {
-      isFetching.current = false;
-    }
-  }, []);
+//         try {
+//           const infoExtra = JSON.parse(order.infoLinesJson);
+//           address = infoExtra.Direccion?.trim() || "No disponible";
+//           status = order.status?.trim() || "sin status";
+//         } catch (error) {
+//           console.error("Error parsing infoLinesJson:", error);
+//         }
 
-  useEffect(() => {
-    getOrders();
-    getOrdersByDate();
-    moneyinday();
-  }, [getOrders, getOrdersByDate, moneyinday]);
+//         return {
+//           id: order.id,
+//           time: getTimeAgo(order.createdAt),
+//           amount: `$${order.total}`,
+//           icon: "receipt",
+//           address,
+//           status,
+//         };
+//       });
 
-  return {
-    ordersCount,
-    dailyRevenue,
-    lastOrders,
-    loading,
-    refreshData: async () => {
-      await Promise.all([getOrders(), getOrdersByDate(), moneyinday()]);
-    },
-  };
-};
+//       setLastOrders(formattedOrders);
+//     } catch (error) {
+//       console.error("Error al obtener pedidos:", error);
+//     } finally {
+//       setIsFetching(false);
+//     }
+//   };
 
-export default useOrdersData;
+//   const getOrdersByDate = async () => {
+//     setIsFetching(true);
+//     try {
+//       const today = getFormattedDate();
+//       const response = await api.order.getOrdersByDate(today);
+//       setOrdersCount(response.ordersDay || 0);
+//       // console.log("Pedidos del día:", response.ordersDay);
+//     } catch (error) {
+//       console.error("Error al obtener pedidos por fecha:", error);
+//     } finally {
+//       setIsFetching(false);
+//     }
+//   };
+
+//   const moneyinday = async () => {
+//     setIsFetching(true);
+//     try {
+//       const today = getFormattedDate();
+//       const response = await api.order.moneyinday(today);
+//       setDailyRevenue(response.ganancia ?? 0);
+//     } catch (error) {
+//       console.error("Error al obtener ingresos del día:", error);
+//     } finally {
+//       setIsFetching(false);
+//     }
+//   };
+
+//   const getPendingOrders = async () => {
+//     setIsFetching(true);
+//     try {
+//       const response = await api.order.getPending();
+//       setPendingOrders(response.data);
+//       // console.log("Pedidos pendientes:", response.data);
+//     } catch (error) {
+//       console.error("Error al obtener pedidos pendientes:", error);
+//     } finally {
+//       setIsFetching(false);
+//     }
+//   };
+
+//   const refreshData = async () => {
+//     setIsFetching(true);
+//     await Promise.all([getOrders(), getOrdersByDate(), moneyinday(), getPendingOrders()]);
+//     setIsFetching(false);
+//   };
+
+//   useEffect(() => {
+//     refreshData();
+//   }, []);
+
+//   return {
+//     ordersCount,
+//     dailyRevenue,
+//     lastOrders,
+//     loading: isFetching,
+//     refreshData,
+//     rawOrders,
+//     pendingOrders,
+//   };
+// };
+
+// export default useOrdersData;

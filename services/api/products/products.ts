@@ -2,8 +2,13 @@ import ApiInstances from "@/services/axios/axiosConfig";
 import ProductoTypes from "./types";
 
 export const findAllProducts = async () => {
-  const { data } = await ApiInstances("current").get(`producto`);
+  const { data, status } = await ApiInstances("current").get(`producto`);
   return data;
+};
+
+export const isEmpresaAvailable = async () => {
+  const { status } = await ApiInstances("current").get(`producto`);
+  return status;
 };
 
 export const findProductsWithQuery = async (query: string) => {

@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   VStack,
-  FormControl,
-  Input,
   Pressable,
-  ScrollView,
-  HStack,
   Badge,
   Text,
   Checkbox,
@@ -18,12 +14,47 @@ import InputField from "./InputField";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 import { useToastContext } from "@/contexts/ToastContext";
-import { TouchableOpacity } from "react-native";
+import { FlatList, TouchableOpacity } from "react-native";
+import TapSensitiveInput from "./TapSensitiveInput/TapSensitiveInput";
 
 interface itemAdd {
   name: string;
   type: string;
 }
+
+const RenderItem = React.memo(
+  ({ item, isSelected, toggleSelectionKeys, handleProductSelection }: any) => {
+    const itemValue = String(item.value);
+
+    return (
+      <TouchableOpacity
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          marginVertical: 10,
+          gap: 10,
+          width: "100%",
+          paddingVertical: 10,
+        }}
+        onPress={() => {
+          toggleSelectionKeys(item.value);
+          handleProductSelection?.(item.value, !isSelected);
+        }}
+      >
+        <Checkbox
+          value={itemValue}
+          isChecked={isSelected}
+          onChange={() => {
+            toggleSelectionKeys(item.value);
+            handleProductSelection?.(item.value, !isSelected);
+          }}
+          accessibilityRole="checkbox"
+        />
+        <Text style={{ flex: 1 }}>{item.label}</Text>
+      </TouchableOpacity>
+    );
+  }
+);
 
 interface MultiSelectInputProps {
   placeholder?: string;
@@ -38,6 +69,10 @@ interface MultiSelectInputProps {
   error?: any;
   initialStateAdd?: itemAdd[];
   actionToAddItem?: (data: any) => void;
+  height?: number;
+  sizeText?: number;
+  itemsSelected?: any[];
+  withAdd?: boolean;
 }
 
 let timeoutSearch: any = 0;
@@ -55,17 +90,26 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
   onSearch,
   initialStateAdd,
   actionToAddItem,
+  height,
+  sizeText,
+  withAdd = true,
+  itemsSelected,
 }) => {
   const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedItems, setSelectedItems] = useState<string[]>([]);
-  const [selectedItemsKeys, setSelectedItemsKeys] = useState<string[]>([]);
+  const [selectedItemsKeys, setSelectedItemsKeys] = useState<any[]>([]);
   const [query, setQuery] = useState("");
   const [loadingApi, setLoadingApi] = useState(false);
   const { showToast } = useToastContext();
   const [formValues, setFormValues] = React.useState<Record<string, string>>(
-    {},
+    {}
   );
+
+  useEffect(() => {
+    if (itemsSelected && Array.isArray(itemsSelected)) {
+      setSelectedItemsKeys(itemsSelected);
+    }
+  }, [itemsSelected]);
 
   useEffect(() => {
     if (onSearch) {
@@ -86,7 +130,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
     if (initialStateAdd) {
       const initialValues = initialStateAdd.reduce(
         (acc, item) => ({ ...acc, [item.name]: "" }),
-        {},
+        {}
       );
       setFormValues(initialValues);
     }
@@ -96,35 +140,23 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
     setFormValues((prev) => ({ ...prev, [name]: value }));
   };
 
-  const toggleSelection = (value: string) => {
-    if (!isMultiple) {
-      setSelectedItems([value]);
-      return;
-    }
-    setSelectedItems((prev) =>
-      prev.includes(value)
-        ? prev.filter((item) => item !== value)
-        : [...prev, value],
-    );
-  };
+  const toggleSelectionKeys = React.useCallback(
+    (value: string) => {
+      const stringValue = value.toString();
+      let updatedSelected: string[];
+      if (!isMultiple) {
+        updatedSelected = [stringValue];
+      } else {
+        updatedSelected = selectedItemsKeys.includes(stringValue)
+          ? selectedItemsKeys.filter((key) => key !== stringValue)
+          : [...selectedItemsKeys, stringValue];
+      }
 
-  const toggleSelectionKeys = (value: string) => {
-    if (!isMultiple) {
-      setItemsSelected([value]);
-      setSelectedItemsKeys([value]);
-      return;
-    }
-    setItemsSelected((prev: any) =>
-      prev.includes(value)
-        ? prev.filter((item: any) => item !== value)
-        : [...prev, value],
-    );
-    setSelectedItemsKeys((prev: any) =>
-      prev.includes(value)
-        ? prev.filter((item: any) => item !== value)
-        : [...prev, value],
-    );
-  };
+      setSelectedItemsKeys(updatedSelected);
+      setItemsSelected(updatedSelected);
+    },
+    [selectedItemsKeys, setItemsSelected, isMultiple]
+  );
 
   const areAllFieldsFilled = () => {
     return (
@@ -149,33 +181,25 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
 
   return (
     <VStack space={4}>
-      <FormControl isInvalid={error} isRequired={isRequired}>
-        <FormControl.Label>{label}</FormControl.Label>
-        <TouchableOpacity
-          onPress={() => {
-            setIsModalOpen(true);
-          }}
-          onPressIn={() => setIsModalOpen(true)}
-          onPressOut={() => setIsModalOpen(true)}
-        >
-          <Input
-            isReadOnly
-            value={selectedItemsKeys
-              ?.map((itm) => {
-                const option = options?.find((item) => item?.value === itm);
-                return option?.placeholder ?? "";
-              })
-              .join(", ")}
-            onPress={() => setIsModalOpen(true)}
-            placeholder={placeholder}
-            borderColor="coolGray.300"
-            backgroundColor="coolGray.50"
-          />
-        </TouchableOpacity>
-        {error && <FormControl.ErrorMessage>{error}</FormControl.ErrorMessage>}
-      </FormControl>
+      <TapSensitiveInput
+        label={label}
+        error={error}
+        isRequired={isRequired}
+        height={height}
+        sizeText={sizeText}
+        placeholder={placeholder}
+        setIsModalOpen={setIsModalOpen}
+        value={selectedItemsKeys
+          ?.map((itm) => {
+            const option = options?.find(
+              (item) => `${item?.value}` === `${itm}`
+            );
+            return option?.placeholder ?? "";
+          })
+          .join(", ")}
+      />
 
-      {selectedItems?.length > 0 && (
+      {selectedItemsKeys?.length > 0 && (
         <View
           width={"100%"}
           display={"flex"}
@@ -184,10 +208,10 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
           flexWrap={"wrap"}
         >
           {selectedItemsKeys.map((item, index) => {
-            const itm = options?.find((itm) => itm?.value === item);
+            const itm = options?.find((itm) => `${itm?.value}` === item);
             return (
               <Badge
-                key={index}
+                key={`badge-${index}`}
                 colorScheme="teal"
                 color={"white"}
                 variant="solid"
@@ -213,6 +237,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
       <GlobalModal
         isVisible={isModalOpen}
         label={label}
+        manyItems={true}
         onClose={() => setIsModalOpen(false)}
         actions={[
           <Button
@@ -223,6 +248,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
             backgroundColor={"#2C2C2C"}
             borderRadius={"6"}
             fontWeight={700}
+            accessibilityLabel={`Aceptar ${label}`}
           >
             <Text fontWeight={500} color={"white"}>
               Aceptar
@@ -230,90 +256,78 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
           </Button>,
         ]}
         content={
-          <VStack marginBottom={5} space={4}>
+          <View
+            style={{
+              flex: 1,
+              display: "flex",
+              marginBottom: 5,
+            }}
+          >
             {onSearch && (
-              <View marginBottom={4}>
-                <InputField
-                  isRequired={false}
-                  value={query}
-                  onChangeText={(text) => setQuery(text)}
-                  placeholder={`Buscar ${label}`}
-                />
-              </View>
-            )}
-            <View position={"relative"} maxHeight={500}>
-              {!loading ? (
-                <ScrollView horizontal={false}>
-                  {options.map((option, index) => (
-                    <View width={"100%"}>
-                      <Checkbox
-                        key={option.value + index}
-                        value={option.value}
-                        isChecked={selectedItemsKeys.includes(option.value)}
-                        onChange={(isSelected) => {
-                          if (handleProductSelection) {
-                            handleProductSelection(option.value, isSelected);
-                          }
-                          toggleSelection(option.label);
-                          toggleSelectionKeys(option.value);
-                        }}
-                      >
-                        {option.label}
-                      </Checkbox>
-                    </View>
-                  ))}
-                </ScrollView>
-              ) : (
-                <Spinner size={"lg"} />
-              )}
-            </View>
-            <Pressable
-              onPress={() => setIsModalOpenAdd(true)}
-              alignSelf={"center"}
-              display={"flex"}
-              flexDir={"row"}
-              alignItems={"center"}
-            >
-              <Ionicons
-                name="add-circle"
-                size={24}
-                color={Colors.light.primary}
+              <InputField
+                isRequired={false}
+                value={query}
+                onChangeText={setQuery}
+                placeholder={`Buscar ${label}`}
               />
-              <Text marginLeft={2} textAlign={"center"}>
-                Agregar {label}
-              </Text>
-            </Pressable>
-            {isModalOpenAdd && (
+            )}
+
+            <FlatList
+              data={options}
+              keyExtractor={(item, index) => `${item?.value}`}
+              extraData={selectedItemsKeys}
+              renderItem={({ item }) => {
+                const itemValue = String(item.value);
+                const isSelected = selectedItemsKeys.includes(itemValue);
+
+                return (
+                  <RenderItem
+                    item={item}
+                    isSelected={isSelected}
+                    toggleSelectionKeys={toggleSelectionKeys}
+                    handleProductSelection={handleProductSelection}
+                  />
+                );
+              }}
+            />
+            {withAdd && (
+              <Pressable
+                onPress={() => setIsModalOpenAdd(true)}
+                alignSelf="center"
+                flexDirection="row"
+                alignItems="center"
+                paddingBottom={5}
+                accessibilityLabel={`Agregar ${label}`}
+              >
+                <Ionicons
+                  name="add-circle"
+                  size={24}
+                  color={Colors.light.primary}
+                />
+                <Text ml={2}>Agregar {label}</Text>
+              </Pressable>
+            )}
+            {isModalOpenAdd && withAdd && (
               <GlobalModal
-                key={"addAction"}
+                key="addAction"
                 isVisible={isModalOpenAdd}
-                label={"Agregar " + label}
+                label={`Agregar ${label}`}
                 content={
-                  <View
-                    padding={"10px 20px"}
-                    width={"full"}
-                    display={"flex"}
-                    flexDir={"column"}
-                    alignItems={"center"}
-                  >
-                    {initialStateAdd &&
-                      initialStateAdd.map((item, index) => {
-                        return (
-                          <View width={"full"} marginBottom={5}>
-                            <InputField
-                              label={`Ingresar ${item.name}`}
-                              key={index}
-                              keyboardType={item.type}
-                              isRequired={true}
-                              value={formValues[item.name] || ""}
-                              placeholder={`Ingresar ${item.name}`}
-                              onChangeText={(value) =>
-                                handleFieldChange(item.name, value)
-                              }
-                            />
-                          </View>
-                        );
-                      })}
+                  <View padding="10px 20px" width="100%" alignItems="center">
+                    {initialStateAdd?.map((item, index) => (
+                      <View key={index} width="100%" mb={5}>
+                        <InputField
+                          label={`Ingresar ${item.name}`}
+                          keyboardType={item.type}
+                          isRequired
+                          value={formValues[item.name] || ""}
+                          placeholder={`Ingresar ${item.name}`}
+                          onChangeText={(value) =>
+                            handleFieldChange(item.name, value)
+                          }
+                        />
+                      </View>
+                    ))}
                   </View>
                 }
                 actions={[
@@ -322,15 +336,21 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
                     isLoading={false}
                     onPress={DispatchActionAdd}
                     size="sm"
-                    key="aceptar"
-                    backgroundColor={"#2C2C2C"}
-                    borderRadius={"6"}
+                    key="accept"
+                    backgroundColor="#2C2C2C"
+                    borderRadius={6}
+                    accessibilityLabel={`Crear ${label}`}
                     fontWeight={700}
                   >
                     {loadingApi ? (
-                      <Spinner color={"white"} size={20} />
+                      <Spinner
+                        accessibilityElementsHidden={true}
+                        style={{ marginTop: 10, marginBottom: 10 }}
+                        color="white"
+                        size={20}
+                      />
                     ) : (
-                      <Text fontWeight={500} color={"white"}>
+                      <Text fontWeight={500} color="white">
                         Crear {label}
                       </Text>
                     )}
@@ -339,7 +359,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
                 onClose={() => setIsModalOpenAdd(false)}
               />
             )}
-          </VStack>
+          </View>
         }
       />
     </VStack>

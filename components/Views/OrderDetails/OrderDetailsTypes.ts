@@ -1,3 +1,5 @@
+import { IEstado } from "../Status/Status";
+
 interface IClient {
   name: string;
   phone: string;
@@ -12,6 +14,7 @@ export interface IProductoInfo {
   descripcion: string;
   plazoDuracionEstimadoMinutos: number;
   disponible: boolean;
+  imagen: string;
 }
 
 interface IProduct {
@@ -37,4 +40,8 @@ export interface IOrderDetails {
   estimateTime: number;
   total: number;
   infoLines: any;
+  cambiosEstado: any[]
+  estadoActual: IEstado,
+  detalle: string | null
+  detalle_pedido?: string | null
 }

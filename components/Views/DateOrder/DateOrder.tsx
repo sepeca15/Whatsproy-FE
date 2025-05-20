@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import { styles } from "./DateOrderStyles";
 import api from "@/services/api/admin";
 import CustomText from "@/components/CustomText";
@@ -10,19 +10,58 @@ import MaterialIconss from "react-native-vector-icons/MaterialIcons";
 import * as Progress from "react-native-progress";
 import { Colors } from "@/constants/Colors";
 import { useToastContext } from "@/contexts/ToastContext";
-import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
+import { FormattedMessage, useIntl } from "react-intl"; // Importa FormattedMessage
+import Animated from "react-native-reanimated";
+import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmAction";
+import { globalStyles } from "@/components/globalStyles";
+import { useRouter } from "expo-router";
+import AntDesign from "react-native-vector-icons/AntDesign";
 
-const ItemsTable = ["Name", "Type", "Required", "isDefect", ""];
 
 const DateOrder: React.FC = () => {
+  const intl = useIntl()
+  const ItemsTable = [
+    {
+      element: intl.formatMessage({ id: "dateOrderTypeTitleName" }),
+      key: "Name"
+    },
+    {
+      element: intl.formatMessage({ id: "dateOrderTypeTitleType" }),
+      key: "Type"
+    },
+    {
+      element: intl.formatMessage({ id: "dateOrderTypeTitleRequired" }),
+      key: "Required"
+    },
+    {
+      element: intl.formatMessage({ id: "dateOrderTypeTitleIsDefault" }),
+      key: "isDefault"
+    },
+    {
+      element: "",
+      key: ""
+    },
+  ];
+
   const [orderDate, setOrderDate] = React.useState<any[]>([]);
   const [selectedItem, setSelectedItem] = React.useState<any>({});
   const [stateModal, setStateModal] = React.useState<boolean>(false);
   const [loading, setLoading] = React.useState<boolean>(false);
+  const [loadingDelete, setLoadingDelete] = React.useState<boolean>(false);
+  const [stateModalConfirm, setstateModalConfirm] = React.useState<boolean>(false)
+  const [itemToDeleteId, setItemToDeleteId] = React.useState<number | null>(null);
+  const router = useRouter()
   const { showToast } = useToastContext();
+
+  const toggleModalConfirm = () => setstateModalConfirm((prev) => !prev)
 
   const updateOrderData = (newOrderData: any) => {
     setOrderDate((prevState) => [...prevState, newOrderData]);
+  };
+
+  const openConfirmModal = (id: number) => {
+    setItemToDeleteId(id);
+    setstateModalConfirm(true);
   };
 
   const getAllOrderDate = async () => {
@@ -48,6 +87,7 @@ const DateOrder: React.FC = () => {
   };
 
   const onDeleteItem = async (id: number) => {
+    setLoadingDelete(true)
     try {
       const data = await api.dataOrder.delete(id);
       if (data) {
@@ -65,6 +105,8 @@ const DateOrder: React.FC = () => {
         status: "error",
       });
       console.log(error);
+    } finally {
+      setLoadingDelete(false)
     }
   };
 
@@ -82,19 +124,31 @@ const DateOrder: React.FC = () => {
     </View>
   ) : (
     <View style={styles.container}>
-      <View style={styles.ContainerHeader}>
-        <CustomText style={styles.title}>
-          <FormattedMessage id="orderData" />
-        </CustomText>
-      </View>
+      <Animated.View style={globalStyles.header}>
+        
+        <View style={globalStyles.headerContent}>
+           <TouchableOpacity style={styles.backButton} onPress={() => router.back()} activeOpacity={0.7}>
+            <AntDesign name="arrowleft" size={24} color="white" />
+          </TouchableOpacity>
+          <View style={globalStyles.headerLeft}>
+            <CustomText
+              style={globalStyles.businessName}
+              accessibilityLabel="Pedidos"
+            >
+              <FormattedMessage id="orderData" />
+            </CustomText>
+          </View>
+        </View>
+      </Animated.View>
+
       <View style={styles.message}>
         <MaterialIconss
           style={{ marginTop: 3 }}
-          color={"gray"}
+          color={Colors.light.secondary}
           size={16}
           name="error-outline"
         />
-        <CustomText style={{ flex: 1 }}>
+        <CustomText style={{ flex: 1, color: Colors.light.secondary }}>
           <FormattedMessage id="manageOrderData" />
         </CustomText>
       </View>
@@ -105,14 +159,14 @@ const DateOrder: React.FC = () => {
               <View
                 key={index}
                 style={
-                  item === "Name"
+                  item.key === "Name"
                     ? styles.columnName
-                    : item === ""
+                    : item.key === ""
                       ? styles.columnDelete
                       : styles.column
                 }
               >
-                <CustomText style={styles.text}>{item}</CustomText>
+                <CustomText style={styles.text}>{item.element}</CustomText>
               </View>
             );
           })}
@@ -124,7 +178,7 @@ const DateOrder: React.FC = () => {
               <DateOrderCard
                 isPar={isPar}
                 key={index}
-                onDeleteItem={onDeleteItem}
+                onDeleteItem={() => openConfirmModal(item.id)}
                 data={item}
               />
             );
@@ -141,6 +195,13 @@ const DateOrder: React.FC = () => {
           data={selectedItem}
         />
       )}
+      <ModalConfirmAction
+        isOpen={stateModalConfirm}
+        onClose={toggleModalConfirm}
+        loading={loadingDelete}
+        onContinue={() => onDeleteItem(itemToDeleteId ?? 0)}
+        title="Delete order data"
+      />
     </View>
   );
 };

@@ -11,9 +11,8 @@ import ConfigAccount from "@/components/Views/ConfigAccount";
 
 const TabLayout: React.FC = () => {
   const { user } = useUser();
-  // const {userConfigured, paymentMade, apiConfigured, greenApiConfigured } = user;
-  // const globalConfig = userConfigured && paymentMade && apiConfigured && greenApiConfigured
-  const globalConfig = true;
+  const {userConfigured, paymentMade, apiConfigured, greenApiConfigured } = user;
+  const globalConfig = userConfigured && paymentMade && apiConfigured && greenApiConfigured    
   return (
     <NativeBaseProvider>
       <Toast config={toastConfig} />

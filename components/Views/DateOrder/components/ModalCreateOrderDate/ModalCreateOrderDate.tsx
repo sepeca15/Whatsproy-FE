@@ -1,14 +1,15 @@
 import * as React from "react";
-import { Modal, Text, View, Pressable, StyleSheet } from "react-native";
+import { Modal, View, StyleSheet, Pressable } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
-import { Button, FormControl } from "native-base";
+import { Button, FormControl, Text } from "native-base";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 import CustomText from "@/components/CustomText";
 import InputField from "@/components/InputField";
 import { useUser } from "@/hooks/redux/useUser";
 import api from "@/services/api/admin";
 import { useToastContext } from "@/contexts/ToastContext";
-import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
+import { FormattedMessage, useIntl } from "react-intl";
+import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmAction";
 
 interface IDateOrder {
   es_defecto: boolean;
@@ -36,6 +37,9 @@ const initialValues = {
 const ModalCreateOrderDate = ({ data, onClose, updateOrder }: IProps) => {
   const { user } = useUser();
   const { showToast } = useToastContext();
+  const intl = useIntl();
+  const [loadingApi, setloadingApi] = React.useState<boolean>(false)
+  const [stateModalConfirm, setstateModalConfirm] = React.useState<boolean>(false)
 
   const [form, setForm] = React.useState<IDateOrder>(
     data ? data : initialValues,
@@ -49,7 +53,9 @@ const ModalCreateOrderDate = ({ data, onClose, updateOrder }: IProps) => {
     }));
   };
 
+
   const createOrderData = async () => {
+    setloadingApi(true)
     try {
       const data = await api.dataOrder.create({
         ...form,
@@ -65,6 +71,8 @@ const ModalCreateOrderDate = ({ data, onClose, updateOrder }: IProps) => {
       }
     } catch (error: any) {
       console.log(error.response.data.message);
+    } finally {
+      setloadingApi(false)
     }
   };
 
@@ -85,36 +93,44 @@ const ModalCreateOrderDate = ({ data, onClose, updateOrder }: IProps) => {
 
             <View style={styles.containerCreate}>
               <View style={styles.containerTitle}>
-                <Pressable onPress={onClose}>
+                <Button variant="unstyled" hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }} bg={'transparent'} onPress={onClose}>
                   <EvilIcons name="close" size={25} color={"white"} />
-                </Pressable>
+                </Button>
                 <CustomText style={{ color: "white", fontSize: 20 }}>
                   <FormattedMessage id="create" />
                 </CustomText>
               </View>
-              <Pressable
+              <Button
+                variant="unstyled"
+                hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
                 style={{ padding: 4 }}
                 onPress={createOrderData}
                 disabled={!isValidData}
+                bg={'transparent'}
+                isLoading={loadingApi}
+
               >
                 <CustomText
                   style={{ color: isValidData ? "white" : "#696969" }}
                 >
                   <FormattedMessage id="save" />
                 </CustomText>
-              </Pressable>
+              </Button>
             </View>
           </View>
           <View style={styles.bodyContent}>
             <InputField
               value={form.nombre}
               onChangeText={(text) => handleChangeValue("nombre", text)}
-              label={<FormattedMessage id="name" />}
-              placeholder={<FormattedMessage id="enterName" />}
+              label={<Text mx={1}> <FormattedMessage id="name" /> </Text>}
+              placeholder={"Enter name"}
             />
+
             <FormControl isRequired style={styles.containerInput}>
               <FormControl.Label>
-                <FormattedMessage id="required" />
+                <Text mx={1}>
+                  <FormattedMessage id="required" />
+                </Text>
               </FormControl.Label>
               <View style={styles.input}>
                 <RNPickerSelect
@@ -126,37 +142,34 @@ const ModalCreateOrderDate = ({ data, onClose, updateOrder }: IProps) => {
                     { label: "Si", value: true },
                     { label: "No", value: false },
                   ]}
+                  useNativeAndroidPickerStyle={false}
                   style={{
                     inputAndroid: styles.inputElement,
                     inputIOS: styles.inputElement,
-                  }}
-                  placeholder={{
-                    label: <FormattedMessage id="selectRequired" />,
-                    value: null,
                   }}
                 />
               </View>
             </FormControl>
             <FormControl isRequired style={styles.containerInput}>
               <FormControl.Label>
-                <FormattedMessage id="type" />
+                <Text mx={1}>
+                  <FormattedMessage id="type" />
+                </Text>
               </FormControl.Label>
               <View style={styles.input}>
                 <RNPickerSelect
                   value={form.tipo}
                   onValueChange={(value) => handleChangeValue("tipo", value)}
                   items={[
-                    { label: "string", value: "string" },
-                    { label: "number", value: "number" },
-                    { label: "boolean", value: "boolean" },
+                    { label: intl.formatMessage({ id: "dateOrderTypeText" }), value: "string" },
+                    { label: intl.formatMessage({ id: "dateOrderTypeNumber" }), value: "number" },
+                    { label: intl.formatMessage({ id: "dateOrderTypeBoolean" }), value: "boolean" },
+                    { label: intl.formatMessage({ id: "dateOrderTypeDate" }), value: "date" },
                   ]}
+                  useNativeAndroidPickerStyle={false}
                   style={{
                     inputAndroid: styles.inputElement,
                     inputIOS: styles.inputElement,
-                  }}
-                  placeholder={{
-                    label: <FormattedMessage id="selectType" />,
-                    value: null,
                   }}
                 />
               </View>
@@ -188,7 +201,7 @@ const styles = StyleSheet.create({
   headerContent: {
     borderTopEndRadius: 12,
     borderTopStartRadius: 12,
-    paddingHorizontal: 16,
+    paddingHorizontal: 8,
     paddingTop: 40,
     paddingBottom: 20,
     backgroundColor: "#2C2C2C",
@@ -199,7 +212,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    gap: 12,
+    gap: 4,
   },
   containerTitle: {
     flexDirection: "row",
@@ -218,7 +231,16 @@ const styles = StyleSheet.create({
     borderColor: "#cfcfcf",
     borderRadius: 5,
   },
-  inputElement: {},
+  inputElement: {
+    height: 40,
+    paddingVertical: 0,
+    paddingHorizontal: 8,
+    lineHeight: 40,
+    fontSize: 16,
+    color: 'black',
+    includeFontPadding: false, // 👈 solo en Android: remueve padding interno de la fuente
+    textAlignVertical: 'center', // 👈 centra el texto verticalmente en Android
+  },
   decorateDiv: {
     marginBottom: 12,
     width: "60%",

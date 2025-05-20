@@ -88,11 +88,12 @@ android {
 
     namespace 'com.whatsproy'
     defaultConfig {
+missingDimensionStrategy "store", "play"
         applicationId 'com.whatsproy'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0.0"
+        versionCode 10706
+        versionName "1.7.6"
     }
     signingConfigs {
         debug {
@@ -116,6 +117,25 @@ android {
             crunchPngs (findProperty('android.enablePngCrunchInReleaseBuilds')?.toBoolean() ?: true)
         }
     }
+
+
+    flavorDimensions "store", "env"
+
+    productFlavors {
+        play {
+            dimension "store"
+        }
+        amazon {
+            dimension "store"
+        }
+        internal {
+            dimension "env"
+        }
+        production {
+            dimension "env"
+        }
+    }
+
     packagingOptions {
         jniLibs {
             useLegacyPackaging (findProperty('expo.useLegacyPackaging')?.toBoolean() ?: false)

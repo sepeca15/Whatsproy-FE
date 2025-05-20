@@ -2,6 +2,7 @@ import { StyleSheet, Dimensions } from "react-native";
 import { Colors } from "../../../../constants/Colors";
 
 const { width } = Dimensions.get("window");
+const dynamicFontSize = width * 0.02; // Ajusta el porcentaje según sea necesario
 
 export const styles = StyleSheet.create({
   container: {
@@ -99,7 +100,7 @@ export const styles = StyleSheet.create({
     height: 50,
   },
   picker: {
-    height: 55,
+    display:'flex',
     alignContent: "center",
     justifyContent: "center",
     textAlign: "center",

@@ -1,5 +1,10 @@
 import React, { useState, useCallback } from "react";
-import { ScrollView, Text, KeyboardAvoidingView } from "react-native";
+import {
+  ScrollView,
+  Text,
+  KeyboardAvoidingView,
+  TouchableOpacity,
+} from "react-native";
 import { Center, View, VStack } from "native-base";
 import { useRouter } from "expo-router";
 import { FormattedMessage, useIntl } from "react-intl";
@@ -33,7 +38,6 @@ const LoginScreen: React.FC = () => {
         StoreData("token", res.access_token);
         const userData = await api.auth.me();
         StoreData("user", JSON.stringify(userData));
-        console.log("User data:", userData);
         router.push("/(tabs)/home");
       }
     } catch (error: any) {
@@ -91,33 +95,63 @@ const LoginScreen: React.FC = () => {
               />
             ))}
 
-            <CustomText style={styles.textPrimary}>
-              <FormattedMessage
-                id="forgotPassword"
-                defaultMessage="Forgot your password?"
-              />
-              <CustomText style={styles.textSecondary}>
-                <FormattedMessage id="resetPassword" defaultMessage=" Reset" />
-              </CustomText>
-            </CustomText>
-
-            <CustomText
+            <TouchableOpacity
               onPress={() => router.push("/(auth)/sign-up")}
               style={styles.textPrimary}
             >
-              <FormattedMessage
-                id="noAccount"
-                defaultMessage="Don't have an account?"
-              />
-              <CustomText style={styles.textSecondary}>
-                <FormattedMessage
-                  id="createAccount"
-                  defaultMessage=" Create one"
-                />
-              </CustomText>
-            </CustomText>
+              <View
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  flexDirection: "row",
+                  gap: 4,
+                  justifyContent: "flex-start",
+                }}
+              >
+                <CustomText>
+                  <FormattedMessage
+                    id="forgotPassword"
+                    defaultMessage="Forgot your password?"
+                  />
+                </CustomText>
+                <CustomText style={styles.textSecondary}>
+                  <FormattedMessage
+                    id="resetPassword"
+                    defaultMessage=" Reset"
+                  />
+                </CustomText>
+              </View>
+            </TouchableOpacity>
 
-            <CustomButton loading={loading} onPress={Login} colorSpiner="white">
+            <TouchableOpacity
+              onPress={() => router.push("/(auth)/sign-up")}
+              style={styles.textPrimary}
+            >
+              <View
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  flexDirection: "row",
+                  gap: 4,
+                  justifyContent: "flex-start",
+                }}
+              >
+                <Text>
+                  <FormattedMessage
+                    id="noAccount"
+                    defaultMessage="Don't have an account?"
+                  />
+                </Text>
+                <CustomText style={styles.textSecondary}>
+                  <FormattedMessage
+                    id="createAccount"
+                    defaultMessage=" Create one"
+                  />
+                </CustomText>
+              </View>
+            </TouchableOpacity>
+
+            <CustomButton loading={loading} onPress={Login} colorSpiner="white" borderRadius={10}>
               <FormattedMessage id="loginButton" defaultMessage="Login" />
             </CustomButton>
           </VStack>

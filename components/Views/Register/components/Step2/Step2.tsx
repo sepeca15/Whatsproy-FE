@@ -8,6 +8,11 @@ import * as Progress from "react-native-progress";
 import { Colors } from "@/constants/Colors";
 import AlertText from "../AlertText";
 import { useIntl } from "react-intl";
+import { Alert } from "react-native";
+import {
+  ID_TIPOSERVICIO_DELIVERY,
+  ID_TIPOSERVICIO_RESERVA,
+} from "@/services/api/tiposervicio/tiposervicio.type";
 
 interface IDataStep2 {
   hora_apertura: string;
@@ -22,41 +27,58 @@ interface IStep2 {
 }
 
 const Step2 = ({ formData, errors, handleInputChange }: IStep2) => {
-  const [services, setServices] = useState<any[]>([]);
-  const [isPending, startTransition] = useTransition();
   const intl = useIntl();
+  const services = [
+    {
+      id: ID_TIPOSERVICIO_DELIVERY,
+      nombre: intl.formatMessage({
+        id: "deliveryService",
+        defaultMessage: "Delivery/Envio",
+      }),
+    },
+    {
+      id: ID_TIPOSERVICIO_RESERVA,
+      nombre: intl.formatMessage({
+        id: "agendaService",
+        defaultMessage: "Agenda/Reserva",
+      }),
+    },
+  ];
+  const [isPending, startTransition] = useTransition();
 
   const isValidTimeFormat = (time: string): boolean => {
     const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
     return timeRegex.test(time);
   };
 
-  const getAllServices = async () => {
-    try {
-      const data = await api.typeServices.getAll();
-
-      startTransition(() => {
-        if (data.data) {
-          setServices(data.data);
-        }
-      });
-    } catch (error: any) {
-      console.log(error.response.data.message);
+  try {
+    // Código relacionado con el error  error E_IAP_NOT_AVAILABLE Prueba_borrar
+  } catch (error: any) {
+    if (error.code === "E_IAP_NOT_AVAILABLE") {
+      Alert.alert(
+        "IAP no disponible",
+        "Las compras dentro de la aplicación no están disponibles en este entorno."
+      );
+    } else {
+      console.error("Error de IAP:", error);
     }
-  };
-
-  useEffect(() => {
-    getAllServices();
-  }, []);
+  }
 
   return (
     <VStack space={4}>
+      <CustomText style={styles.textCenterLg}>
+        {intl.formatMessage({
+          id: "registerCompanyHours",
+          defaultMessage: "registerCompanyHours",
+        })}
+      </CustomText>
       <View>
         <InputField
           label={intl.formatMessage({
             id: "openingTime",
             defaultMessage: "Opening Time",
           })}
+          isTime
           placeholder={intl.formatMessage({
             id: "enterOpeningTime",
             defaultMessage: "E.g.: 09:00",
@@ -70,7 +92,7 @@ const Step2 = ({ formData, errors, handleInputChange }: IStep2) => {
                 intl.formatMessage({
                   id: "invalidTimeFormat",
                   defaultMessage: "Invalid time format. Use HH:mm (24 hours).",
-                }),
+                })
               );
             }
           }}
@@ -88,6 +110,7 @@ const Step2 = ({ formData, errors, handleInputChange }: IStep2) => {
             id: "enterClosingTime",
             defaultMessage: "E.g.: 10:00",
           })}
+          isTime
           value={formData.hora_cierre}
           onChangeText={(value) => handleInputChange("hora_cierre", value)}
           onBlur={() => {
@@ -97,7 +120,7 @@ const Step2 = ({ formData, errors, handleInputChange }: IStep2) => {
                 intl.formatMessage({
                   id: "invalidTimeFormat",
                   defaultMessage: "Invalid time format. Use HH:mm (24 hours).",
-                }),
+                })
               );
             }
           }}
@@ -126,9 +149,12 @@ const Step2 = ({ formData, errors, handleInputChange }: IStep2) => {
               id: "selectServiceType",
               defaultMessage: "Select a service type",
             })}
+            borderRadius={8}
             onValueChange={(value) =>
+            {
               handleInputChange("tipoServicioId", value)
-            }
+              console.log("value", value)
+            }}
           >
             {services.map((service) => {
               return (

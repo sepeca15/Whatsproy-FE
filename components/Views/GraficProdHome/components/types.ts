@@ -9,11 +9,13 @@ export interface Product {
   imageUrl: string;
   category: string;
   daydata: DayslySalesData;
+
   monthdata: DayslySalesData;
   rating: number;
   reviews: number;
   currency_id?: string;
   tags: string[];
+  disponible: string;
 }
 
 export interface SalesData {

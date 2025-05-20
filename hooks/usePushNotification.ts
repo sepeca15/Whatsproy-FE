@@ -35,7 +35,6 @@ export const usePushNotifications = () => {
 
       const token = (await Notifications.getDevicePushTokenAsync()).data;
       setExpoPushToken(token);
-      console.log("Token de Expo Push:", token);
     } catch (error) {
       console.error("Error al obtener el token de push:", error);
     } finally {
@@ -50,7 +49,6 @@ export const usePushNotifications = () => {
       const foregroundSubscription =
         Notifications.addNotificationReceivedListener((notification) => {
           console.log("Notificación recibida en primer plano:", notification);
-          // setReceivedNotification(notification);
         });
 
       const responseListener =
@@ -60,7 +58,6 @@ export const usePushNotifications = () => {
             "Respuesta a la notificación (notificación abierta):",
             notification
           );
-          // scheduleNotification(notification);
         });
 
       return () => {
@@ -89,7 +86,6 @@ export const usePushNotifications = () => {
         },
         trigger: null,
       });
-      console.log("Notificación programada.");
     } catch (error) {
       console.error("Error al programar la notificación:", error);
     }

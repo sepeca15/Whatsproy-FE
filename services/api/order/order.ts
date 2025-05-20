@@ -6,6 +6,11 @@ export const getDetailsOfOrder = async (id: any) => {
   return data;
 };
 
+export const getStatitics = async (filterType: any) => {
+  const { data } = await ApiInstances("current").get("pedido/statistics?type=" + filterType);
+  return data;
+};
+
 export const getOrderForCalendar = async (selectedDate: string) => {
   const { data } = await ApiInstances("current").get(
     "pedido/calendar/formatCalendar/" + selectedDate,
@@ -14,15 +19,33 @@ export const getOrderForCalendar = async (selectedDate: string) => {
   return data;
 };
 
-export const getAllFinished = async () => {
-  const { data } = await ApiInstances("current").get("pedido/finished");
+export const getAvailableDates = async (fecha: string) => {
+  const { data } = await ApiInstances("current").get(
+    `pedido/calendar/dates-avaiable?fecha=${fecha}&withPast=true`,
+  );
   return data;
 };
 
-export const getAllPending = async () => {
-  const { data } = await ApiInstances("current").get("pedido/pending");
+export const getAllFinished = async (offset: number, limit: number) => {
+  const { data } = await ApiInstances("current").get(`pedido/finished?offset=${offset}&limit=${limit}`);
   return data;
 };
+
+export const getAllPending = async (offset: number, limit: number) => {
+  const { data } = await ApiInstances("current").get(`pedido/pending?offset=${offset}&limit=${limit}`);
+  return data;
+};
+
+export const getAllActive = async (offset: number, limit: number) => {
+  const { data } = await ApiInstances("current").get(`pedido/active?offset=${offset}&limit=${limit}`);
+  return data;
+};
+
+export const subOrderStatus = async () => {
+  const { data } = await ApiInstances("current").get("pedido/orderPlanStatus");
+  return data;
+};
+
 
 export const confirmOrder = async (id: number) => {
   const { data } = await ApiInstances("current").get("pedido/confirm/" + id);
