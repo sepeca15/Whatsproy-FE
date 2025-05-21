@@ -30,6 +30,8 @@ export const useGetStatitics = () => {
       setLoading(true);
       const result = await api.order.getStatitics(filterType);
       setData(result);
+
+      return statitics
     } catch (error) {
       console.log(error);
     } finally {

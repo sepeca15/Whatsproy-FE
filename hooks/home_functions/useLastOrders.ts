@@ -77,7 +77,7 @@ export const useLastOrders = () => {
         return {
           id: order.id,
           time: getTimeAgo(order.createdAt),
-          fecha: order?.fecha ? moment(order?.fecha).format("YYYY-MM-DD HH:mm") : "-",
+          fecha: order?.fecha ? moment(order?.fecha).format("YYYY-MM-DD HH:mm") : new Date(),
           amount: intl.formatMessage({ id: "orders.currencyPrefix" }, { amount: order.total }),
           icon: "receipt",
           address,
@@ -86,6 +86,8 @@ export const useLastOrders = () => {
       });
 
       setLastOrders(formatted);
+      return formatted
+
     } catch (err) {
       console.error("Error en useLastOrders:", err);
     } finally {

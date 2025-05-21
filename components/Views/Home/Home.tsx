@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import {
   SafeAreaView,
-  RefreshControl,
   ActivityIndicator,
   ScrollView,
 } from "react-native";
@@ -15,7 +14,6 @@ import { router } from "expo-router";
 import LottieView from "lottie-react-native";
 import { FormattedMessage, useIntl } from "react-intl";
 import * as Animatable from "react-native-animatable";
-import { useOrdersDashboard } from "@/hooks/home_functions/useOrdersDashboard";
 import { useUser } from "@/hooks/redux/useUser";
 import { HStack, Icon, Image, Select, View } from "native-base";
 import { globalStyles } from "@/components/globalStyles";
@@ -24,49 +22,29 @@ import { useSubscriptionStatus } from "@/hooks/home_functions/useSubscriptionSta
 import { ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
 import { Ionicons } from "@expo/vector-icons";
 import moment from "moment";
+import { useHomeData } from "@/hooks/redux/useHomeData";
 
 const Home: React.FC = () => {
   const intl = useIntl();
   const [filterType, setFilterType] = React.useState<string | undefined>(
     "lastMonth"
   );
-  const { loading, refreshData, lastOrders, getStatitics, statitics } =
-    useOrdersDashboard(filterType);
-  const [refreshing, setRefreshing] = React.useState(false);
-  const lottieRef = React.useRef<LottieView>(null);
-
-  console.log("lastThree", lastOrders);
-
-  const { subStatus, refreshSubscriptionStatus } = useSubscriptionStatus();
-
-  useEffect(() => {
-    if (filterType) {
-      getStatitics(filterType);
-    }
-  }, [filterType]);
-
-  const ordersCount = 0;
-  const dailyRevenue = 0;
-  const onRefresh = async () => {
-    try {
-      setRefreshing(true);
-      await refreshData();
-      await refreshSubscriptionStatus();
-    } finally {
-      setRefreshing(false);
-    }
-  };
-
   const { user } = useUser();
+  const { lastThreeOrders, numberClientes, numberIngresos, numberPedidos, handleAddStatistics, loaded } = useHomeData()
   const empresaName = user?.empresaName ?? "Empresa Name";
   const isReserva = user?.id_rol === 1;
   const currentPlan = user?.payment?.plan;
   const currentPayment = user?.payment;
 
-  // // Extraer beneficios del plan actual
-  // const benefits = currentPayment?.subscription_sku
-  //   ? (subscriptionBenefits[currentPayment.subscription_sku] || "").split(",").map((b) => b.trim())
-  //   : []
+  const lottieRef = React.useRef<LottieView>(null);
+
+  const { subStatus } = useSubscriptionStatus();
+
+  useEffect(() => {
+    if (!loaded) {
+      handleAddStatistics(filterType)
+    }
+  }, []);
 
   const handleViewSubscriptionDetails = () => {
     router.push("/(tabs)/subscriptions");
@@ -82,7 +60,6 @@ const Home: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
       <View style={globalStyles.header}>
         <View style={globalStyles.headerContent}>
           <View style={globalStyles.headerLeft}>
@@ -104,8 +81,7 @@ const Home: React.FC = () => {
         </View>
       </View>
 
-      {/* Loading */}
-      {loading ? (
+      {!loaded ? (
         <ActivityIndicator
           size="large"
           color={Colors.light.primary}
@@ -115,15 +91,7 @@ const Home: React.FC = () => {
         <ScrollView
           style={styles.content}
           showsVerticalScrollIndicator
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              tintColor={Colors.light.primary}
-            />
-          }
         >
-          {/* Métricas */}
           <Animatable.View
             animation="fadeInUp"
             duration={800}
@@ -194,8 +162,8 @@ const Home: React.FC = () => {
                 id: isReserva ? "reservasToday.home" : "ordersToday.home",
                 defaultMessage: isReserva ? "Reservas Hoy" : "Pedidos Hoy",
               })}
-              value={statitics?.orders}
-              onPress={() => {}}
+              value={numberPedidos}
+              onPress={() => { }}
             />
             <MetricCard
               icon="account-group"
@@ -203,8 +171,8 @@ const Home: React.FC = () => {
                 id: "clients.home",
                 defaultMessage: "Clientes",
               })}
-              value={statitics?.clients}
-              onPress={() => {}}
+              value={numberClientes}
+              onPress={() => { }}
             />
             <MetricCard
               icon="cash-multiple"
@@ -212,8 +180,8 @@ const Home: React.FC = () => {
                 id: "revenue.home",
                 defaultMessage: "Ingresos",
               })}
-              value={`$${Number(statitics?.revenue ?? 0).toFixed(2)}`}
-              onPress={() => {}}
+              value={`$${Number(numberIngresos ?? 0).toFixed(2)}`}
+              onPress={() => { }}
             />
           </Animatable.View>
 
@@ -253,8 +221,8 @@ const Home: React.FC = () => {
               />
             </CustomText>
 
-            {lastOrders.length > 0 ? (
-              lastOrders.map((order) => {
+            {lastThreeOrders.length > 0 ? (
+              lastThreeOrders.map((order: any) => {
                 console.log(order);
                 return (
                   <LastActivityCard

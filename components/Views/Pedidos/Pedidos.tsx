@@ -23,8 +23,6 @@ import { styles } from "./PedidosStyles";
 
 type pagesOrder = "finished" | "pending" | "active";
 
-
-
 const PedidosEIngresos: React.FC = () => {
   const [selected, setSelected] = React.useState<pagesOrder>("pending");
   const [openAddModal, setOpenAddModal] = React.useState<boolean>(false);
@@ -33,6 +31,7 @@ const PedidosEIngresos: React.FC = () => {
   const handleSelectPage = (key: pagesOrder) => {
     setSelected(key);
   };
+  
 
   return (
     <SafeAreaView style={styles.container}>
@@ -92,15 +91,15 @@ const PedidosEIngresos: React.FC = () => {
       <View
         style={styles.orders}
       >
-       
-          {selected === "finished" ? (
-            <OrdersFinished />
-          ) : selected === "pending" ? (
-            <OrdersPending />
-          ) : (
-            <OrdersActive />
-          )}
-       
+
+        {selected === "finished" ? (
+          <OrdersFinished />
+        ) : selected === "pending" ? (
+          <OrdersPending />
+        ) : (
+          <OrdersActive />
+        )}
+
       </View>
       <View style={globalStyles.buttonContainer}>
         <Pressable
