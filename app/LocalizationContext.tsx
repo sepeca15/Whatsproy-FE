@@ -3,6 +3,7 @@ import { IntlProvider } from "react-intl";
 import translations from "./locales/translations.json";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { View, ActivityIndicator } from "react-native";
+import { configureCalendarLocale } from "@/components/Views/Calendar/locale.config";
 
 // Runtime validation for translation shape
 type Messages = Record<string, string> & {
@@ -42,7 +43,7 @@ interface LocalizationContextProps {
 
 const LocalizationContext = createContext<LocalizationContextProps>({
   locale: "en",
-  setLocale: async () => {},
+  setLocale: async () => { },
 });
 
 interface LocalizationProviderProps {
@@ -53,8 +54,12 @@ export const LocalizationProvider: React.FC<LocalizationProviderProps> = ({ chil
   const [locale, setLocaleState] = useState<LocaleKey>("en");
   const [hydrated, setHydrated] = useState(false);
 
+  const isValidLocale = (value: string): value is 'en' | 'es' | 'pt' => {
+    return ['en', 'es', 'pt'].includes(value);
+  };
   const setLocale = useCallback(async (newLocale: LocaleKey) => {
     setLocaleState(newLocale);
+    configureCalendarLocale(newLocale as 'en' | 'es' | 'pt');
     try {
       await AsyncStorage.setItem("locale", newLocale);
     } catch (e) {
@@ -66,12 +71,14 @@ export const LocalizationProvider: React.FC<LocalizationProviderProps> = ({ chil
     (async () => {
       try {
         const stored = await AsyncStorage.getItem("locale");
-        if (stored && stored in messages) {
-          setLocaleState(stored as LocaleKey);
+        if (stored && isValidLocale(stored)) {
+          setLocaleState(stored);
+          configureCalendarLocale(stored);
         } else {
           const sysLocale = Intl.DateTimeFormat().resolvedOptions().locale.split('-')[0];
-          const fallbackLocale = (Object.keys(messages).includes(sysLocale) ? sysLocale : 'en') as LocaleKey;
+          const fallbackLocale = isValidLocale(sysLocale) ? sysLocale : 'en';
           setLocaleState(fallbackLocale);
+          configureCalendarLocale(fallbackLocale);
           await AsyncStorage.setItem("locale", fallbackLocale);
         }
       } catch (error) {

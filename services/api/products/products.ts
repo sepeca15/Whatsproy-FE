@@ -17,6 +17,7 @@ export const findProductsWithQuery = async (query: string) => {
   );
   return data;
 };
+
 export const find = async (id: number) => {
   const data = await ApiInstances("current").get(`producto/${id}`);
   return data;

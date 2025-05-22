@@ -1,22 +1,16 @@
 import * as React from "react";
-import { Modal, Pressable, StyleSheet, TouchableOpacity } from "react-native";
-import RNPickerSelect from "react-native-picker-select";
+import { TouchableOpacity } from "react-native";
 import {
   Button,
-  FormControl,
   View,
   Text,
   IconButton,
-  VStack,
 } from "native-base";
-import EvilIcons from "react-native-vector-icons/EvilIcons";
-import CustomText from "@/components/CustomText";
 import InputField from "@/components/InputField";
 import { useUser } from "@/hooks/redux/useUser";
 import api from "@/services/api/admin";
 import { TipoServicio } from "../enums/TipoServicio";
 import MultiSelectInput from "@/components/MultiSelectInput";
-import { ModalStyles } from "@/components/ModalStyles";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 import { Cliente } from "@/services/api/clients/cliente.types";
@@ -35,16 +29,11 @@ import {
   TipoServicioType,
 } from "@/services/api/tiposervicio/tiposervicio.type";
 import {
-  FECHA_HORA_INFOLINE_RESERVA,
   InfoLineDTO,
 } from "@/services/api/dateOrder/dataOrder.type";
 import { DEFAULT_ESTADO_CREADO } from "@/services/api/estado/estado.type";
 import GlobalModal from "./Modal";
-import CustomButton from "./CustomButton";
-import Toast from "react-native-toast-message";
 import { useToastContext } from "@/contexts/ToastContext";
-import { data } from "./Views/Pedidos/components/data";
-import { getNextDateAvailable } from "@/services/api/order/order";
 import {
   filterOnlyHours,
   getHourNumber,
@@ -54,6 +43,7 @@ import {
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import TimePicker from "./TimePicker";
 import { useIntl } from "react-intl";
+import { useHomeData } from "@/hooks/redux/useHomeData";
 
 interface IProps {
   onClose: () => void;
@@ -91,8 +81,9 @@ const CreateOrderModal = ({
 }: IProps) => {
   const { showToast } = useToastContext();
   const { user } = useUser();
+  const { handleAddNewOrder } = useHomeData()
   const intl = useIntl();
-  const localDate = new Date((defaultDate || new Date()) + "T00:00");
+  const localDate = defaultDate ? new Date(defaultDate) : new Date();
   const [form, setForm] = React.useState({
     ...initialValues,
     fecha: localDate,
@@ -102,7 +93,6 @@ const CreateOrderModal = ({
   const [products, setProducts] = React.useState<Producto[]>([]);
   const [loadingClients, setLoadingClients] = React.useState(false);
   const [loadingProducts, setLoadingProducts] = React.useState(false);
-  const [loadingInfoLines, setLoadingInfoLines] = React.useState(false);
   const [loadingCreate, setLoadingCreate] = React.useState(false);
   const [selectedProductsIds, setSelectedProductsIds] = React.useState<
     string[]
@@ -127,7 +117,6 @@ const CreateOrderModal = ({
   }, []);
 
   const getAllOrderDate = async () => {
-    setLoadingInfoLines(true);
     try {
       const data = await api.dataOrder.getAll();
 
@@ -142,8 +131,6 @@ const CreateOrderModal = ({
       );
     } catch (error) {
       console.log(error);
-    } finally {
-      setLoadingInfoLines(false);
     }
   };
 
@@ -162,11 +149,12 @@ const CreateOrderModal = ({
   };
 
   React.useEffect(() => {
-    handleChangeValue(
-      "fecha",
-      new Date(defaultDate).setHours(getHourNumber(user?.hora_apertura))
-    );
-  }, []);
+    if (defaultDate && user?.hora_apertura) {
+      const dateWithHour = new Date(defaultDate);
+      dateWithHour.setHours(getHourNumber(user.hora_apertura));
+      handleChangeValue("fecha", dateWithHour);
+    }
+  }, [defaultDate, user?.hora_apertura]);
 
   React.useEffect(() => {
     if (hasErrors) {
@@ -233,10 +221,12 @@ const CreateOrderModal = ({
           };
         }),
         clienteId: form?.clienteId,
-        infoLinesJson: JSON.stringify(form.infoLinesJson),
+        infoLinesJson: JSON.stringify(form.infoLinesJson).replace(/\\+/g, ''),
         estadoId: DEFAULT_ESTADO_CREADO.id,
         fecha: removeTimeZone(form?.fecha),
       };
+      console.log('enviare', dataToSend);
+
       const data = await api.order.create(dataToSend);
 
       if (data?.ok) {
@@ -249,6 +239,7 @@ const CreateOrderModal = ({
           onSuccess();
         }
         onClose();
+        handleAddNewOrder(data?.formatToSendFrontend)
       } else {
         throw new Error("Error desconocido creando event");
       }
@@ -374,7 +365,7 @@ const CreateOrderModal = ({
           <Text fontWeight={500} color={"white"}>
             {intl.formatMessage({ id: "modalCreate" })}{" "}
             {tipoServicio === ID_TIPOSERVICIO_RESERVA
-              ? intl.formatMessage({ id: "event" })
+              ? intl.formatMessage({ id: "createEvent" })
               : intl.formatMessage({ id: "order" })}
           </Text>
         </Button>,
@@ -392,10 +383,10 @@ const CreateOrderModal = ({
                 occupiedTimes={
                   currentOrders
                     ? filterOnlyHours(
-                        currentOrders?.map((order) =>
-                          removeAmPm(order?.date ?? "")
-                        )
+                      currentOrders?.map((order) =>
+                        removeAmPm(order?.date ?? "")
                       )
+                    )
                     : []
                 }
                 checkAvailable={(hour: string) => availableDates.includes(hour)}
@@ -445,6 +436,7 @@ const CreateOrderModal = ({
               return {
                 label: (
                   <View
+                    key={prod.id}
                     display="flex"
                     flexDirection="row"
                     justifyContent="space-between"

@@ -38,7 +38,7 @@ const LastActivityCard: React.FC<LastActivityCardProps> = ({
   const scale = useSharedValue(1);
 
   const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
+    transform: [{ scale: scale.get() }],
   }));
 
   const handlePressIn = () => {

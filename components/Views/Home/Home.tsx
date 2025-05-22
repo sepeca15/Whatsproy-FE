@@ -29,6 +29,8 @@ const Home: React.FC = () => {
   const [filterType, setFilterType] = React.useState<string | undefined>(
     "lastMonth"
   );
+  const firstLoadRef = React.useRef(true);
+
   const { user } = useUser();
   const { lastThreeOrders, numberClientes, numberIngresos, numberPedidos, handleAddStatistics, loaded } = useHomeData()
   const empresaName = user?.empresaName ?? "Empresa Name";
@@ -45,6 +47,17 @@ const Home: React.FC = () => {
       handleAddStatistics(filterType)
     }
   }, []);
+
+  useEffect(() => {
+    if (firstLoadRef.current) {
+      firstLoadRef.current = false;
+      return;
+    }
+
+    if (filterType) {
+      handleAddStatistics(filterType);
+    }
+  }, [filterType]);
 
   const handleViewSubscriptionDetails = () => {
     router.push("/(tabs)/subscriptions");
@@ -205,7 +218,6 @@ const Home: React.FC = () => {
             </Animatable.View>
           )}
 
-          {/* Últimas actividades */}
           <Animatable.View
             animation="fadeInUp"
             duration={800}

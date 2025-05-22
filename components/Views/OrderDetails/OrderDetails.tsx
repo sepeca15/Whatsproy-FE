@@ -69,11 +69,11 @@ const OrderDetails = () => {
   const loadOrderDetail = async () => {
     try {
       const orderDetailsData = await api.order.getOrderDetails(orderId);
-      if (orderDetailsData.ok) {
+      if (orderDetailsData.ok) {        
         setDetailOfOrder({ loading: false, data: orderDetailsData.data });
       }
     } catch (error: any) {
-      console.log("error", JSON.stringify(error));
+      console.log("error", error.response.data.message);
       setDetailOfOrder({ loading: false, data: null });
     }
   };

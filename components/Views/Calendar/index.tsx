@@ -16,18 +16,16 @@ import ItemCalendar from "./components/ItemCalendar";
 import { IInfoItem } from "./types";
 import * as Progress from "react-native-progress";
 import { Colors } from "@/constants/Colors";
-
 import CustomText from "@/components/CustomText";
-import { useUser } from "@/hooks/redux/useUser";
 import CreateOrderModal from "@/components/CreateOrderModal";
-import Animated, { FadeIn } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 import { FormattedMessage } from "react-intl";
 import { globalStyles } from "@/components/globalStyles";
 import { styles as stylesPending } from "../Pedidos/components/OrdersPending/ordersPendingStyles";
 import { useToastContext } from "@/contexts/ToastContext";
 import { Animated as AnimatedNative, Easing } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { RefreshControl } from "react-native-gesture-handler";
+
 if (
   Platform.OS === "android" &&
   UIManager.setLayoutAnimationEnabledExperimental
@@ -45,17 +43,15 @@ export default function CalendarView() {
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split("T")[0]
   );
-  const [agendaKey, setAgendaKey] = useState(0);
-  const spinAnim = useRef(new AnimatedNative.Value(0)).current;
+  const [agendaKey, setAgendaKey] = useState(1);
+  const spinAnim = useRef(new AnimatedNative.Value(0)).current;  
+  const [loading, setLoading] = useState(true);
+  const [availableDates, setAvailableDates] = useState<string[]>([]);
+  const { showToast } = useToastContext();
 
   useEffect(() => {
     setAgendaKey((prev) => prev + 1);
   }, [selectedDate]);
-  const { user } = useUser();
-  const [loading, setLoading] = useState(true);
-
-  const [availableDates, setAvailableDates] = useState<string[]>([]);
-  const { showToast } = useToastContext();
 
   const startSpin = () => {
     spinAnim.setValue(0);
@@ -114,8 +110,6 @@ export default function CalendarView() {
             order.orderId === orderId ? { ...order, status: true } : order
           );
 
-          console.log("updatedOrders", updatedOrders);
-
           return {
             ...prevState,
             [firstDate]: [...updatedOrders],
@@ -155,6 +149,8 @@ export default function CalendarView() {
       console.log(error.response.data.message);
     }
   };
+
+
   useEffect(() => {
     if (selectedDate) {
       onLoadItems(selectedDate);

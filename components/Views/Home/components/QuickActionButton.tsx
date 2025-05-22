@@ -25,18 +25,15 @@ const QuickActionButton: React.FC<QuickActionButtonProps> = ({
   title,
   onPress,
 }) => {
-  // Obtener rol de usuario para condicionar iconos y títulos
   const { user } = useUser();
   const isReserva = user?.id_rol === 1;
 
-  // Ajustar icono: si es reserva y el icono es 'calendar', usar 'calendar-check' o similar
   const displayIcon = isReserva
     ? icon === "calendar" || icon === "calendar-outline"
       ? "calendar-check-outline"
       : icon
     : icon;
 
-  // Ajustar título: traducir 'Pedidos' a 'Reservas'
   const displayTitle = isReserva
     ? title.replace(/Pedidos/g, "Reservas").replace(/Pedido/g, "Reserva")
     : title;
@@ -44,7 +41,7 @@ const QuickActionButton: React.FC<QuickActionButtonProps> = ({
   const scale = useSharedValue(1);
 
   const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
+    transform: [{ scale: scale.get() }],
   }));
 
   const handlePressIn = () => {

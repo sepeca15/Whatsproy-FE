@@ -104,8 +104,10 @@ const Layout = ({ children }: any) => {
             key={page.name}
             style={styles.LinkContainer}
             onPress={() => {
-              setSelected(page.name);
-              router.push(page.path);
+              if (page.name !== selected) {
+                setSelected(page.name);
+                router.push(page.path);
+              }
             }}
           >
             {page.icon(page.name === selected)}

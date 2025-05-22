@@ -1,125 +1,111 @@
+import React, { useMemo } from "react";
+import { FormControl, Switch, View, Text, VStack } from "native-base";
+import DateTimePickerField from "./DateTimePickerField";
+import InputField from "./InputField";
 import { useUser } from "@/hooks/redux/useUser";
-import api from "@/services/api/admin";
+import * as moment from "moment-timezone";
 import {
-  FECHA_HORA_INFOLINE_RESERVA,
   InfoLineDTO,
   TipoInfoLine,
 } from "@/services/api/dateOrder/dataOrder.type";
-import { FormControl, Switch, View, Text } from "native-base";
-import DateTimePickerField from "./DateTimePickerField";
-import InputField from "./InputField";
-import * as moment from "moment-timezone";
 
 interface Props {
   value: Record<string, any>;
   setValue: (val: Record<string, any>) => void;
   infoLines: InfoLineDTO[];
-  errors: any;
+  errors: Record<string, string>;
 }
 
-const InfoLineForm = ({ setValue, value, infoLines, errors }: Props) => {
-  if (infoLines?.length === 0) {
-    return null;
-  }
+const InfoLineForm: React.FC<Props> = ({
+  value,
+  setValue,
+  infoLines,
+  errors,
+}) => {
   const { user } = useUser();
 
-  const handleRenderInfoLineInput = (infoLine: InfoLineDTO) => {
-    const inputValue = value[infoLine.nombre];
-    const error = errors[infoLine.nombre];
+  // fallback memoizado para la zona horaria
+  const defaultDate = useMemo(() => {
+    const tz = user?.timeZone ?? moment.tz.guess();
+    return moment.tz(tz);
+  }, [user?.timeZone]);
 
-    switch (infoLine.tipo) {
-      case TipoInfoLine.boolean:
+  if (infoLines.length === 0) return null;
+
+  return (
+    <VStack space={4} width="100%">
+      {infoLines.map((infoLine) => {
+        const fieldVal = value[infoLine.nombre];
+        const errorMsg = errors[infoLine.nombre];
+
         return (
-          <FormControl isInvalid={error}>
-            <View flexDirection="row" alignItems="center">
-              <FormControl.Label>
-                <Text mr={2}>{infoLine.nombre}</Text>
-              </FormControl.Label>
+          <FormControl
+            key={infoLine.nombre}
+            isInvalid={!!errorMsg}
+            isRequired={infoLine.requerido}
+          >
+            <FormControl.Label>
+              <Text>{infoLine.nombre}</Text>
+            </FormControl.Label>
+
+            {infoLine.tipo === TipoInfoLine.boolean && (
               <Switch
-                isChecked={!!inputValue}
+                isChecked={!!fieldVal}
                 onToggle={(val) =>
-                  setValue({
-                    ...value,
-                    [infoLine.nombre]: val,
-                  })
+                  setValue({ ...value, [infoLine.nombre]: val })
                 }
               />
-            </View>
-            {error && (
-              <FormControl.ErrorMessage>{error}</FormControl.ErrorMessage>
+            )}
+
+            {infoLine.tipo === TipoInfoLine.number && (
+              <InputField
+                label={infoLine.nombre}
+                placeholder={`Ingresar ${infoLine.nombre}`}
+                keyboardType="numeric"
+                value={fieldVal?.toString() ?? ""}
+                onChangeText={(t) =>
+                  setValue({
+                    ...value,
+                    [infoLine.nombre]: parseFloat(t) || "",
+                  })
+                }
+                error={errorMsg}
+              />
+            )}
+
+            {infoLine.tipo === TipoInfoLine.string && (
+              <InputField
+                label={infoLine.nombre}
+                placeholder={`Ingresar ${infoLine.nombre}`}
+                value={fieldVal ?? ""}
+                onChangeText={(t) =>
+                  setValue({ ...value, [infoLine.nombre]: t })
+                }
+                error={errorMsg}
+              />
+            )}
+
+            {infoLine.tipo === TipoInfoLine.date && (
+              <DateTimePickerField
+                type="datetime"
+                date={fieldVal ?? defaultDate}
+                setDate={(dt: any) =>
+                  setValue({ ...value, [infoLine.nombre]: dt })
+                }
+                error={errorMsg}
+              />
+            )}
+
+            {errorMsg && (
+              <FormControl.ErrorMessage>
+                {errorMsg}
+              </FormControl.ErrorMessage>
             )}
           </FormControl>
         );
-      case TipoInfoLine.number:
-        return (
-          <InputField
-            error={error}
-            keyboardType="numeric"
-            label={infoLine?.nombre}
-            placeholder={`Ingresar ${infoLine.nombre}`}
-            value={inputValue?.toString() || ""}
-            onChangeText={(text) =>
-              setValue({
-                ...value,
-                [infoLine.nombre]: parseFloat(text) || "",
-              })
-            }
-          />
-        );
-      case TipoInfoLine.string:
-        return (
-          <InputField
-            label={infoLine.nombre}
-            placeholder={`Ingresar ${infoLine.nombre}`}
-            value={inputValue || ""}
-            type="text"
-            error={error}
-            onChangeText={(text) =>
-              setValue({
-                ...value,
-                [infoLine.nombre]: text,
-              })
-            }
-          />
-        );
-      case TipoInfoLine.date:
-        return (
-          <DateTimePickerField
-            error={error}
-            type="datetime"
-            date={inputValue || moment.tz(user.timeZone)}
-            setDate={(val: any) => {
-              setValue({
-                ...value,
-                [infoLine.nombre]: val,
-              });
-            }}
-          />
-        );
-      default:
-        return null;
-    }
-  };
-
-  return (
-    <View
-      width="100%"
-      display="flex"
-      flexDir="column"
-      style={{ gap: 5 }}
-      alignItems="center"
-      justifyContent="center"
-    >
-      {infoLines?.map((infoLine) => (
-        <FormControl
-          key={infoLine.nombre}
-          isRequired={infoLine.requerido}
-        >
-          {handleRenderInfoLineInput(infoLine)}
-        </FormControl>
-      ))}
-    </View>
+      })}
+    </VStack>
   );
 };
 
-export default InfoLineForm;
+export default React.memo(InfoLineForm);

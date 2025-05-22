@@ -46,7 +46,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
   const scale = useSharedValue(1);
 
   const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
+    transform: [{ scale: scale.get() }],
   }));
 
   const handlePressIn = () => {

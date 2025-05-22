@@ -28,23 +28,22 @@ const homeDataSlice = createSlice({
       state.loaded = true
     },
     onAddNewOrder: (state, { payload } : {payload : any}) => {
-      state.numberPedidos += 1;
-      state.numberIngresos += payload.total;
-
       const updatedOrders = [payload, ...state.lastThreeOrders];
 
       updatedOrders.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
       state.lastThreeOrders = updatedOrders.slice(0, 3);
+    },
+    loadingData: (state ) => {
+      state.loaded = false
     }
-
-
   }
 });
 
 export const {
   onAddStaticsAndData,
-  onAddNewOrder
+  onAddNewOrder,
+  loadingData
 } = homeDataSlice.actions;
 
 export default homeDataSlice;
