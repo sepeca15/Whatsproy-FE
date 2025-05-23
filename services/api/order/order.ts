@@ -54,6 +54,7 @@ export const confirmOrder = async (id: number) => {
 };
 
 export const createOrder = async (info: CreateOrderDTO) => {
+
   const { data } = await ApiInstances("current").post("pedido/", info);
   return data;
 };

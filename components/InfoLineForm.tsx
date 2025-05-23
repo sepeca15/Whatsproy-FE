@@ -31,16 +31,17 @@ const InfoLineForm: React.FC<Props> = ({
   }, [user?.timeZone]);
 
   if (infoLines.length === 0) return null;
+  
 
   return (
     <VStack space={4} width="100%">
-      {infoLines.map((infoLine) => {
+      {infoLines.map((infoLine, index) => {
         const fieldVal = value[infoLine.nombre];
         const errorMsg = errors[infoLine.nombre];
 
         return (
           <FormControl
-            key={infoLine.nombre}
+            key={infoLine.nombre + index}
             isInvalid={!!errorMsg}
             isRequired={infoLine.requerido}
           >
@@ -87,6 +88,7 @@ const InfoLineForm: React.FC<Props> = ({
 
             {infoLine.tipo === TipoInfoLine.date && (
               <DateTimePickerField
+                onlyDate={true}
                 type="datetime"
                 date={fieldVal ?? defaultDate}
                 setDate={(dt: any) =>

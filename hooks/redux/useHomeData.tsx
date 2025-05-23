@@ -24,10 +24,9 @@ export const useHomeData = () => {
         }
     };
 
-    const handleAddNewOrder = (data: any) => {
-        Dispatch(onAddNewOrder(data))
+    const handleAddNewOrder = (data: any) => {        
+        Dispatch(onAddNewOrder({...data, time: data.createdAt, amount: data.total, address: data.direccion }))
     }
-
 
     return {
         loaded,

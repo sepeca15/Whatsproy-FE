@@ -11,7 +11,8 @@ const DateTimeInputField = ({
   setDate,
   isRequired = true,
   error,
-  direction = 'col'
+  direction = 'col',
+  onlyDate = false
 }: any) => {
   const [showPicker, setShowPicker] = useState(false);
   const [mode, setMode] = useState<"date" | "time">("date");
@@ -34,7 +35,7 @@ const DateTimeInputField = ({
   const formattedTime = moment(date).format("HH:mm");
 
   return (
-    <VStack flex={1} style={{gap: direction === 'row' ? 4 : 0}} display={'flex'} flexDir={direction === 'col' ? 'column' : 'row'}  space={4}>
+    <VStack flex={1} style={{ gap: direction === 'row' ? 4 : 0 }} display={'flex'} flexDir={direction === 'col' ? 'column' : 'row'} space={4}>
       <TouchableWithoutFeedback onPress={() => handleOpenPicker("date")}>
         <FormControl flex={'1'} isRequired={isRequired}>
           <FormControl.Label _text={{ fontWeight: "bold" }}>
@@ -51,24 +52,26 @@ const DateTimeInputField = ({
         </FormControl>
       </TouchableWithoutFeedback>
 
-      <TouchableWithoutFeedback onPress={() => handleOpenPicker("time")}>
-        <FormControl flex={1} isInvalid={error} isRequired={isRequired}>
-          <FormControl.Label _text={{ fontWeight: "bold" }}>
-            Hora
-          </FormControl.Label>
-          <Input
-            isReadOnly
-            onPress={() => handleOpenPicker("time")}
-            value={formattedTime}
-            placeholder="Seleccionar hora"
-            borderColor="coolGray.300"
-            backgroundColor="coolGray.50"
-          />
-          {error && (
-            <FormControl.ErrorMessage>{error}</FormControl.ErrorMessage>
-          )}
-        </FormControl>
-      </TouchableWithoutFeedback>
+      {!onlyDate && (
+        <TouchableWithoutFeedback onPress={() => handleOpenPicker("time")}>
+          <FormControl flex={1} isInvalid={error} isRequired={isRequired}>
+            <FormControl.Label _text={{ fontWeight: "bold" }}>
+              Hora
+            </FormControl.Label>
+            <Input
+              isReadOnly
+              onPress={() => handleOpenPicker("time")}
+              value={formattedTime}
+              placeholder="Seleccionar hora"
+              borderColor="coolGray.300"
+              backgroundColor="coolGray.50"
+            />
+            {error && (
+              <FormControl.ErrorMessage>{error}</FormControl.ErrorMessage>
+            )}
+          </FormControl>
+        </TouchableWithoutFeedback>
+      )}
 
       {showPicker && Platform.OS === "android" && (
         <DateTimePicker

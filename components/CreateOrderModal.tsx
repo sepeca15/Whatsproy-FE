@@ -58,7 +58,9 @@ const initialValues: CreateOrderDTO = {
   confirmado: true,
   estadoId: OrderEstadoDefault.CREADO,
   clientName: "",
+  clienteId: 0,
   products: [],
+  numberSender: 0,
   empresaType: "",
   messages: [],
   detalles: "",
@@ -205,12 +207,11 @@ const CreateOrderModal = ({
 
     try {
       setLoadingCreate(true);
-      const dataToSend = {
+      const dataToSend: any = {
         ...form,
         tipoServicio: tipoServicio,
         confirmado: true,
         empresaType: EmpresaTypeStr[tipoServicio],
-        messages: [],
         products: selectedProductsIds.map((prod) => {
           const productSend = prodCant.find(
             (product) => product.prodId === parseInt(prod)
@@ -220,13 +221,33 @@ const CreateOrderModal = ({
             cantidad: productSend?.cantidad,
           };
         }),
+        withIA: false,
         clienteId: form?.clienteId,
-        infoLinesJson: JSON.stringify(form.infoLinesJson).replace(/\\+/g, ''),
+        clientName: form?.clientName,
+        numberSender: form?.numberSender,
+        infoLinesJson: JSON.stringify(form.infoLinesJson),
         estadoId: DEFAULT_ESTADO_CREADO.id,
         fecha: removeTimeZone(form?.fecha),
       };
-      console.log('enviare', dataToSend);
 
+      if (tipoServicio === TipoServicio.RESERVA) {
+        const parsedInfo = JSON.parse(dataToSend.infoLinesJson);
+        const fechaMoment = moment.tz(parsedInfo["Fecha y Hora"], user.timeZone);
+        const horaMoment = moment.tz(form.fecha, user.timeZone);
+
+        const fechaFinal = fechaMoment
+          .set({
+            hour: horaMoment.hour(),
+            minute: horaMoment.minute(),
+            second: 0,
+          })
+          .format("YYYY-MM-DD HH:mm");
+
+        dataToSend.fecha = fechaFinal;
+        parsedInfo["Fecha y Hora"] = fechaFinal;
+        dataToSend.infoLinesJson = JSON.stringify(parsedInfo);
+      }
+      
       const data = await api.order.create(dataToSend);
 
       if (data?.ok) {
@@ -239,11 +260,12 @@ const CreateOrderModal = ({
           onSuccess();
         }
         onClose();
-        handleAddNewOrder(data?.formatToSendFrontend)
       } else {
         throw new Error("Error desconocido creando event");
       }
     } catch (error: any) {
+      console.log(error);
+
       setLoadingCreate(false);
 
       showToast({
@@ -551,11 +573,14 @@ const CreateOrderModal = ({
           <MultiSelectInput
             actionToAddItem={(data: any) => addClient(data)}
             setItemsSelected={(data: string[]) => {
-              const clientId = data[0] as any;
+              console.log(data);
+
+              const clientId = parseInt(data[0]) as any;
               const clientInfo = clients?.find((c) => c.id === clientId);
 
               handleChangeValue("clienteId", clientId);
               handleChangeValue("clientName", clientInfo?.nombre ?? "");
+              handleChangeValue("numberSender", clientInfo?.telefono ?? "");
             }}
             initialStateAdd={[
               {
