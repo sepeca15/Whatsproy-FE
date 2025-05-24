@@ -50,6 +50,8 @@ const OrderDetails = () => {
   const { user } = useUser();
   const [detailOfOrder, setDetailOfOrder] =
     React.useState<IDetailsOrder>(initialState);
+
+    console.log("detailOfOrder", detailOfOrder)
   const { orderId, keyDeleteType } = useLocalSearchParams();
   const resolvedKeyDeleteType = keyDeleteType as "pending" | "finished";
   const [stateModalStatus, setStateModalStatus] =
