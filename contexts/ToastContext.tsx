@@ -1,61 +1,70 @@
-import React, { createContext, useContext, useState } from "react";
-import { Box, Text, VStack, HStack, Icon, useToast } from "native-base";
-import { Ionicons } from "@expo/vector-icons";
-import { RootSiblingParent } from "react-native-root-siblings";
+import React, { createContext, useContext } from "react";
+import { View, Dimensions } from "react-native";
+import { useToast, Box, Text, VStack } from "native-base";
+import { useIntl } from "react-intl";
 
 const ToastContext = createContext<any>(null);
 
 export const ToastProvider = ({ children }: any) => {
+  const intl = useIntl();
   const toast = useToast();
+  const screenWidth = Dimensions.get("window").width;
 
   const showToast = ({ title, description, status }: any) => {
+    const resolveToString = (value: any): string => {
+      if (typeof value === "string") return value;
+      if (value?.props?.id && value?.props?.defaultMessage) {
+        return intl.formatMessage({
+          id: value.props.id,
+          defaultMessage: value.props.defaultMessage,
+        });
+      }
+      return "";
+    };
+
+    const titleText = resolveToString(title);
+    const descriptionText = resolveToString(description);
+
     toast.show({
       placement: "top",
-      duration: 4000,
+      duration: 3000,
       render: () => (
-        <Box
-          marginTop={-5}
-          bg={status === "success" ? "green.600" : "red.600"}
-          maxWidth="95%"
-          alignSelf="center"
-          rounded="xl"
-          width={"95%"}
-          px="4"
-          py="3"
-          shadow="9"
-          borderLeftWidth={6}
-          borderColor={status === "success" ? "green.300" : "red.300"}
-        >
-          <HStack space={3} alignItems="flex-start">
-            <Icon
-              as={Ionicons}
-              name={status === "success" ? "checkmark-circle" : "alert-circle"}
-              color="white"
-              size="lg"
-              mt={0.5}
-            />
-            <VStack flexShrink={1}>
-              <Text color="white" bold fontSize="md">
-                {title}
+        <View style={{ width: screenWidth * 0.9, alignSelf: "center" }}>
+          <Box
+            bg="coolGray.200"
+            px="4"
+            py="3"
+            rounded="xl"
+            shadow={3}
+            borderLeftWidth={6}
+            borderLeftColor={
+              status === "success"
+                ? "green.600"
+                : status === "error"
+                ? "red.600"
+                : "yellow.600"
+            }
+          >
+            <VStack space={1}>
+              <Text fontWeight="bold" color="coolGray.800">
+                {titleText}
               </Text>
-              {description && (
-                <Text color="white" fontSize="sm" flexWrap="wrap">
-                  {description}
+              {descriptionText ? (
+                <Text fontSize="sm" color="coolGray.600">
+                  {descriptionText}
                 </Text>
-              )}
+              ) : null}
             </VStack>
-          </HStack>
-        </Box>
+          </Box>
+        </View>
       ),
     });
   };
 
   return (
-    <RootSiblingParent>
-      <ToastContext.Provider value={{ showToast }}>
-        {children}
-      </ToastContext.Provider>
-    </RootSiblingParent>
+    <ToastContext.Provider value={{ showToast }}>
+      {children}
+    </ToastContext.Provider>
   );
 };
 

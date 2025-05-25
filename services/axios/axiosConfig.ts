@@ -16,6 +16,8 @@ const ApiInstances = (key: KeysApis) => {
   });
 
 
+  console.log("baseUrl", baseUrl)
+
   globalApi.interceptors.request.use(
     async (config) => {
       const state = store.getState();
