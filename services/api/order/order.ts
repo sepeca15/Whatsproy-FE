@@ -90,3 +90,12 @@ export const getOrdersByDate = async (date: string) => {
   );
   return data;
 };
+
+export const filterOrderWithQuery = async (query: string, selectedInfoLine: string) => {
+  const { data } = await ApiInstances("current").get(
+    `/pedido/filter/searchWIthQuery?query=${query}&keyInfoline=${selectedInfoLine}`,
+  );
+
+  return data;
+};
+

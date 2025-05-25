@@ -89,7 +89,7 @@ export const useLastOrders = () => {
       return formatted
 
     } catch (err: any) {
-      console.error("Error en useLastOrders:", err.response.data.messasge);
+      console.error("Error en useLastOrders:", err);
     } finally {
       setLoading(false);
     }

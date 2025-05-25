@@ -1,5 +1,6 @@
 {
   "en": {
+    "enterAdressSearch":"Enter the address to search",
     "company.name": "Name",
     "companyUpdatedOk": "Company updated successfully",
     "companyUpdatedOkDesc": "The company details have been saved correctly.",
@@ -410,6 +411,7 @@
     "privacyPolicy.contactTitle": "Contact",
     "privacyPolicy.contact": "If you have any questions about this policy, you can contact us via email at soporte@tuapp.com.",
     "showLess": "Show less",
+    "titleLogin": "Bienvenido",
     "assistentEnabled": "Assistent enabled",
     "performanceMetrics": "Performance Metrics",
     "bestPerforming": "Best Performing",
@@ -472,6 +474,7 @@
     "evento": "Evento"
   },
   "es": {
+    "enterAdressSearch":"Ingrese la direccion a buscar",
     "resetPasswordinput1": "Contraseña",
     "resetPasswordinput2": "Repetir contraseña",
     "resetPasswordButtonSend": "Restablecer",
@@ -485,7 +488,7 @@
     "sendLinkSuccess": "Codigo enviado exitosamente, por favor chequee su casilla de correo o spam",
     "sendLinkError": "El correo electrónico que proporcioné no existe",
     "sendLinkSuccessTitle": "Enviado",
-    "titleLogin": "Welcome back",
+    "titleLogin": "Bienvenido",
     "stepsRegisterDesc1": "Start managing your business",
     "stepsRegisterDesc2": "Set up your schedule and the type of service you offer",
     "stepsRegisterDesc3": "Finish the process by creating the company admin user",
@@ -951,6 +954,7 @@
     "createEvent": "Evento"
   },
   "pt": {
+    "enterAdressSearch":"Digite o endereço para pesquisar",
     "createEvent": "Evento",
     "stepsRegisterTitle1": "Create your company",
     "stepsRegisterTitle2": "Set up schedules",
@@ -959,7 +963,7 @@
     "stepsRegisterDesc2": "Set your hours and the type of service you offe",
     "stepsRegisterDesc3": "Finalize the process by creating the company administrator user",
     "activeOrdersTitle": "Ativos",
-    "titleLogin": "Welcome Back",
+    "titleLogin": "Bem-vindo",
     "noDetailsInOrdersDetails": "Nenhum detalhe fornecido.",
     "userChangeStatusDetailsMessagge": "Um usuário alterou o status do seu pedido para:",
     "statusUpdatedOrderDetails": "Status atualizado",

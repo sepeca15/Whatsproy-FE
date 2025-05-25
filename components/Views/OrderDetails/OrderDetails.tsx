@@ -115,7 +115,6 @@ const OrderDetails = () => {
     if (detailOfOrder.data?.id && keyDeleteType) {
       try {
         const response = await api.order.remove(detailOfOrder.data.id);
-        console.log("API Response:", response);
         if (response.ok) {
           await handleDeleteOrder(detailOfOrder.data.id, resolvedKeyDeleteType);
           if (user?.tipo_servicio === ID_TIPOSERVICIO_RESERVA) {

@@ -235,7 +235,6 @@ const Home: React.FC = () => {
 
             {lastThreeOrders.length > 0 ? (
               lastThreeOrders.map((order: any) => {
-                console.log(order);
                 return (
                   <LastActivityCard
                     key={order.id}

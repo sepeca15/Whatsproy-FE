@@ -56,13 +56,16 @@ export const useOrders = () => {
     try {
       const data = await api.order.getPending(offsetPending, limit);
 
+      console.log(data);
+      
+
       if (data.ok === true && data.data.length > 0) {
         Dispatch(onLoadOrdersPending({ data: data.data, total: data.totalItems }));
         Dispatch(setOffsetPending(offsetPending + limit))
       }
 
     } catch (error: any) {
-      console.log("error", error.response.data.message);
+      console.log("errorr", error.response.data.message);
     } finally {
       Dispatch(onFinishLoadingApi());
     }
@@ -72,6 +75,8 @@ export const useOrders = () => {
     Dispatch(onLoadingApi());
     try {
       const data = await api.order.getActive(offsetActive, limit);
+
+      console.log(data);
 
       if (data.ok === true && data.data.length > 0) {
         Dispatch(odLoadOrdersActive({ data: data.data, total: data.totalItems }));

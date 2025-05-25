@@ -93,7 +93,6 @@ export const styles = StyleSheet.create({
       textAlign: "center",
     },
     orders: {
-      marginTop: 20,
       paddingHorizontal: 12,
       paddingVertical: 6,
       flex: 1,
@@ -101,7 +100,6 @@ export const styles = StyleSheet.create({
     Corders: {
       flex: 1,
       height: "100%",
-      backgroundColor: "red",
     },
     tab: {
       marginVertical: 12,
