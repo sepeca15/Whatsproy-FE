@@ -3,7 +3,7 @@ import api from "@/services/api/admin";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { FlatList, Image, Pressable, Select, Text, View } from "native-base"
 import * as React from "react";
-import { useIntl } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import * as Progress from "react-native-progress";
 import CardNewPedido from "../CardNewPedido.tsx";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -78,7 +78,6 @@ const FilterSearch = () => {
 
 
 
-
     return (
         <View style={{ paddingHorizontal: 12, paddingVertical: 6, gap: 20 }} flex={1} display={'flex'} flexDir={'column'} >
             <View w={'full'} display={'flex'} flexDir={'column'} alignItems={'center'} style={{ gap: 8 }}>
@@ -96,7 +95,7 @@ const FilterSearch = () => {
                     onValueChange={(value) => setSelectedInfoLine(JSON.parse(value))}
                     selectedValue={JSON.stringify(selectedInfoLine)}
                     _selectedItem={{
-                        color:"white",
+                        color: "white",
                         bg: "teal.500",
                         endIcon: <View flex={1} display={'flex'} flexDir={'row'} alignItems={'center'} justifyContent={'flex-end'}>
                             <View p={2} bg={'white'} rounded={'full'} color={'teal.500'}>
@@ -143,7 +142,7 @@ const FilterSearch = () => {
                             selectedInfoLine?.tipo === 'date' ?
                                 <Pressable mt={2} onPress={togglePicker} w={'full'} display={'flex'} style={{ gap: 8 }} flexDirection={'row'} alignItems={'center'} px={4} py={3} rounded={'full'} bg={'white'} >
                                     <Ionicons name="time-outline" size={18} />
-                                    <Text fontSize={14} color={'gray.400'}>{valueSearch !== '' ? valueSearch : "Select a time"}</Text>
+                                    <Text fontSize={14} color={'gray.400'}>{valueSearch !== '' ? valueSearch : <FormattedMessage id="selectTimeFilters" />}</Text>
                                     {
                                         showPicker &&
                                         <DateTimePicker
@@ -185,13 +184,17 @@ const FilterSearch = () => {
                                     >
                                         <Select.Item
                                             rounded="md"
-                                            label={"Yes"}
-                                            value={"Yes"}
+                                            label={intl.formatMessage({
+                                                id: `selectYesFiltersOrder`,
+                                            })}
+                                            value={"true"}
                                         />
                                         <Select.Item
                                             rounded="md"
-                                            label={"No"}
-                                            value={"No"}
+                                            label={intl.formatMessage({
+                                                id: `selectNoFiltersOrder`,
+                                            })}
+                                            value={"false"}
                                         />
                                     </Select>
                                     :
