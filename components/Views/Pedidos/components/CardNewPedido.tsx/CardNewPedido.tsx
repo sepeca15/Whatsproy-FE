@@ -33,10 +33,7 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
   const [loading, setLoading] = React.useState({
     deleteState: false,
     confirmState: false,
-  });
-
-  console.log(orderData);
-  
+  });  
 
   const router = useRouter();
   const [statusModalDelete, setStateModalDelete] = useState<boolean>(false);
