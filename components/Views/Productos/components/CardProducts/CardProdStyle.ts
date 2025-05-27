@@ -101,6 +101,12 @@ export const styles = StyleSheet.create({
   modalIcon: {
     marginRight: 10,
   },
+  deleteText: {
+    color: "#e74c3c",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  
   modalOptionText: {
     fontSize: 16,
   },

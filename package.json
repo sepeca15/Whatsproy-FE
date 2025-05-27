@@ -18,6 +18,8 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@chakra-ui/react": "^3.19.1",
+    "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@expo/cli": "^0.22.26",
     "@expo/vector-icons": "^14.0.2",
@@ -50,7 +52,7 @@
     "expo-updates": "~0.27.4",
     "expo-web-browser": "~14.0.2",
     "firebase": "^11.5.0",
-    "framer-motion": "^12.4.9",
+    "framer-motion": "^12.12.2",
     "googleapis": "^148.0.0",
     "lottie-ios": "^4.5.1",
     "lottie-react-native": "7.1.0",
@@ -65,6 +67,7 @@
     "react-intl": "^7.1.6",
     "react-native": "0.76.9",
     "react-native-animatable": "^1.4.0",
+    "react-native-awesome-alerts": "^2.0.0",
     "react-native-calendars": "^1.1307.0",
     "react-native-chart-kit": "^6.12.0",
     "react-native-date-picker": "^5.0.8",

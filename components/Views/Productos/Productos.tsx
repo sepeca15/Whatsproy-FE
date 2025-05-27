@@ -7,7 +7,7 @@ import {
   Animated,
   RefreshControl,
 } from "react-native";
-import { ProductCard } from "./components/CardProducts/CardProduct";
+import ProductCard from "./components/CardProducts/CardProduct"
 import ProductCardSkeleton from "./components/ProductCardSkeleton";
 import {
   sampleProducts,
