@@ -1,9 +1,9 @@
-import { StyleSheet } from "react-native"
-import { Colors } from "@/constants/Colors"
+import { StyleSheet } from "react-native";
+import { Colors } from "../../../constants/Colors";
 
 // Colores principales
-const primaryColor = Colors.light.primary
-const secondaryColor = Colors.light.secondary
+const primaryColor = Colors.light.primary;
+const secondaryColor = Colors.light.secondary;
 
 export const styles = StyleSheet.create({
   container: {
@@ -118,4 +118,4 @@ export const styles = StyleSheet.create({
     color: "#94A3B8",
     fontSize: 14,
   },
-})
+});
