@@ -7,6 +7,32 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f5f5f5",
   },
+  reclamoContainer: {
+    backgroundColor: "#FEF3C7",
+    padding: 12,
+    borderRadius: 10,
+    borderColor: "#FBBF24",
+    borderWidth: 1,
+  },
+  reclamoDate: {
+    fontSize: 12,
+    color: "#6b7280",
+    marginTop: 4,
+  },
+  reclamoHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 6,
+  },
+  reclamoTitle: {
+    color: "#92400e",
+    fontWeight: "bold",
+    marginLeft: 6,
+  },
+  reclamoText: {
+    color: "#92400e",
+    fontSize: 14,
+  },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
@@ -234,8 +260,8 @@ export const styles = StyleSheet.create({
     fontWeight: "400",
     color: Colors.light.icon,
     paddingTop: 20,
-  
-    
+
+
 
   },
 
@@ -257,7 +283,7 @@ export const styles = StyleSheet.create({
   detailLabel: {
     fontSize: RFValue(12),
     color: Colors.light.icon,
-    
+
     marginBottom: 4,
   },
   detailValue: {

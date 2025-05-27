@@ -476,10 +476,16 @@
     "stepsRegisterDesc3": "Finish the process by creating the company admin user",
     "stepsRegisterTitle1": "Create your company",
     "stepsRegisterTitle2": "Set up schedule",
-    "stepsRegisterTitle3": "Create user"
+    "hasClaim": "Has a claim",
+    "stepsRegisterTitle3": "Create user",
+    "claimIndicator": "Claim received:",
+    "claimDate": "Date: {date}"
   },
   "es": {
+    "claimDate": "Fecha: {date}",
     "resetPasswordinput1": "Contraseña",
+    "hasClaim": "Tiene un reclamo",
+    "claimIndicator": "Reclamo recibido:",
     "resetPasswordinput2": "Repetir contraseña",
     "resetPasswordButtonSend": "Restablecer",
     "passwordResetedSuccessTitle": "Contraseña restablecida",

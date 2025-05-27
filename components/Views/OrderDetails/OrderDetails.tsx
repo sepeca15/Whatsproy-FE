@@ -51,7 +51,7 @@ const OrderDetails = () => {
   const [detailOfOrder, setDetailOfOrder] =
     React.useState<IDetailsOrder>(initialState);
 
-    console.log("detailOfOrder", detailOfOrder)
+  console.log("detailOfOrder", detailOfOrder)
   const { orderId, keyDeleteType } = useLocalSearchParams();
   const resolvedKeyDeleteType = keyDeleteType as "pending" | "finished";
   const [stateModalStatus, setStateModalStatus] =
@@ -71,7 +71,7 @@ const OrderDetails = () => {
   const loadOrderDetail = async () => {
     try {
       const orderDetailsData = await api.order.getOrderDetails(orderId);
-      if (orderDetailsData.ok) {        
+      if (orderDetailsData.ok) {
         setDetailOfOrder({ loading: false, data: orderDetailsData.data });
       }
     } catch (error: any) {
@@ -261,6 +261,41 @@ const OrderDetails = () => {
         contentContainerStyle={styles.scrollViewContent}
         showsVerticalScrollIndicator={false}
       >
+ {detailOfOrder.data?.reclamo && (
+  <Animated.View
+    style={[
+      styles.orderSummaryCard,
+      { opacity: fadeAnim, transform: [{ translateY: slideAnim }] },
+    ]}
+  >
+    <View style={styles.reclamoContainer}>
+      <View style={styles.reclamoHeader}>
+        <MaterialCommunityIcons name="alert-circle-outline" size={20} color="#92400e" />
+        <Text style={styles.reclamoTitle}>
+          <FormattedMessage id="claimIndicator" defaultMessage="Claim received:" />
+        </Text>
+      </View>
+
+      <Text style={styles.reclamoText}>{detailOfOrder.data.reclamo?.texto ?? "-"}</Text>
+
+      <Text style={styles.reclamoDate}>
+        <FormattedMessage
+          id="claimDate"
+          defaultMessage="Date: {date}"
+          values={{
+            date: new Date(detailOfOrder.data.reclamo.createdAt).toLocaleDateString('en-GB', {
+              day: '2-digit',
+              month: 'long',
+              year: 'numeric',
+              hour: "numeric",
+              minute: "numeric"
+            }),
+          }}
+        />
+      </Text>
+    </View>
+  </Animated.View>
+)}
         {/* Order Summary Card */}
         <Animated.View
           style={[
@@ -400,19 +435,19 @@ const OrderDetails = () => {
                 size={36}
                 color={Colors.light.primary}
               />
-                <Text style={styles.estimateTimeValue}>
+              <Text style={styles.estimateTimeValue}>
                 {detailOfOrder.data?.estimateTime! >= 60
                   ? Math.floor(detailOfOrder?.data?.estimateTime / 60)
                   : detailOfOrder.data?.estimateTime}
                 {" "}
                 <Text style={styles.estimateTimeUnit}>
                   {detailOfOrder.data?.estimateTime! >= 60 ? (
-                  <FormattedMessage id="hours" />
+                    <FormattedMessage id="hours" />
                   ) : (
-                  <FormattedMessage id="minutes" />
+                    <FormattedMessage id="minutes" />
                   )}
                 </Text>
-                </Text>
+              </Text>
             </View>
           )}
         </Animated.View>

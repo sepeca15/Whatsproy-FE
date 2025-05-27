@@ -13,6 +13,31 @@ export const styles = StyleSheet.create({
   text: {
     color: "#D1D5DB",
   },
+  reclamoBox: {
+    marginTop: 16,
+    padding: 8,
+    backgroundColor: "#FEF3C7",
+    borderRadius: 8,
+    borderLeftWidth: 4,
+    borderLeftColor: "#FBBF24",
+  },
+
+  reclamoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  reclamoText: {
+    color: "#92400e",
+    fontWeight: "bold",
+    marginLeft: 6,
+  },
+
+  reclamoDate: {
+    marginTop: 2,
+    fontSize: 12,
+    color: "#78350f",
+  },
   container: {
     position: "relative",
     flex: 1,
@@ -54,6 +79,12 @@ export const styles = StyleSheet.create({
     borderTopEndRadius: 12,
     borderTopStartRadius: 12,
   },
+    row3: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
   row2: {
     display: "flex",
     flexDirection: "row",
@@ -86,7 +117,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   buttonTransparent: {
-    backgroundColor:'transparent'
+    backgroundColor: 'transparent'
   },
   separator: {
     marginTop: 10,
