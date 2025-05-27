@@ -16,6 +16,7 @@ interface InputFieldProps {
   error?: any;
   icon?: any;
   isTime?: boolean;
+  bg?:string 
 }
 
 const RoundedInputField: React.FC<InputFieldProps> = ({
@@ -31,6 +32,7 @@ const RoundedInputField: React.FC<InputFieldProps> = ({
   error,
   isTime,
   isDisabled,
+  bg,
   ...props
 }) => {
   const inputRef = useRef<any>(null);
@@ -42,7 +44,7 @@ const RoundedInputField: React.FC<InputFieldProps> = ({
       style={{ marginTop: marginTop }}
       isRequired={isRequired}
     >
-      <View display={'flex'} flexDir={'row'} alignItems={'center'} justifyContent={'center'} rounded={'full'} bg={'gray.100'} px={6} py={2}>
+      <View display={'flex'} flexDir={'row'} alignItems={'center'} justifyContent={'center'} rounded={'full'} bg={bg? bg : 'gray.100'} px={6} py={2}>
         {icon}
         <Input
           ref={inputRef}

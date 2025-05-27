@@ -105,7 +105,6 @@ const ItemCalendar = ({
       try {
         setLoading(true);
         const resp = await confirmOrder(InfoItem.orderId);
-        console.log("resp is", resp)
       } catch (error) {
         console.log("error is", error)
       } finally {

@@ -57,7 +57,6 @@ const ModalEditUser = ({
       if (localUri) {
         setSelectedImage(localUri.toString());
       }
-      console.log('apiurl', apiUrl);
       
       if (apiUrl) {
         setFormData((prevData) => ({
