@@ -4,6 +4,10 @@ import {
   StatusBar,
   TouchableOpacity,
   Animated,
+  Button,
+  Platform,
+  Alert,
+  Linking,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import * as Progress from "react-native-progress";
@@ -33,11 +37,17 @@ import { useUser } from "@/hooks/redux/useUser";
 import { io } from "socket.io-client";
 import { useToastContext } from "@/contexts/ToastContext";
 import { ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
-
+import { WebView } from 'react-native-webview';
+import { useThermalPrint } from '../../../hooks/PDF/PDFGenerate';
+import { useState } from "react";
+import RNFS from 'react-native-fs';
+// Types
 interface IDetailsOrder {
   loading: boolean;
   data: IOrderDetails | null;
 }
+
+
 
 const initialState: IDetailsOrder = {
   loading: true,
@@ -45,6 +55,11 @@ const initialState: IDetailsOrder = {
 };
 
 const OrderDetails = () => {
+  // State for PDF generation
+  const [pdfPath, setPdfPath] = useState<string | null>(null);
+  const { printHTML, loading } = useThermalPrint();
+
+
   const { handleDeleteOrder } = useOrders();
   const router = useRouter();
   const { user } = useUser();
@@ -230,6 +245,109 @@ const OrderDetails = () => {
     Boolean(p.detalle?.trim())
   );
 
+ const comandaHTML = `
+<html>
+  <head>
+    <style>
+      @media print {
+        body {
+          width: 58mm;
+          font-size: 12px;
+          font-family: monospace, monospace;
+          margin: 0;
+          padding: 15px 5px; /* un poco más de padding */
+          -webkit-print-color-adjust: exact;
+        }
+        .header {
+          text-align: center;
+          font-weight: bold;
+          margin-bottom: 20px; /* más espacio debajo */
+        }
+        .header .local-name {
+          font-size: 24px; /* mucho más grande */
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 8px; /* espacio entre icono y texto */
+        }
+        .icon-food {
+          width: 24px;
+          height: 24px;
+          /* Puedes usar SVG embebido o emoji */
+        }
+        .line {
+          border-top: 1px dashed #000;
+          margin: 20px 0; /* más espacio arriba y abajo */
+        }
+        .item {
+          margin-bottom: 15px; /* más espacio entre items */
+        }
+      }
+      body {
+        width: 58mm;
+        font-size: 12px;
+        font-family: monospace, monospace;
+        margin: 0 auto;
+        padding: 15px 5px;
+      }
+      .header {
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 20px;
+      }
+      .header .local-name {
+        font-size: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+      }
+      .line {
+        border-top: 1px dashed #000;
+        margin: 20px 0;
+      }
+      .item {
+        margin-bottom: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div class="local-name">
+        <span class="icon-food">🍔</span> <!-- emoji comida -->
+        <span>roti-parrilla</span>
+      </div>
+    </div>
+
+    <div class="header">18 de Julio 607 esquina Sarandí</div>
+    <div class="header">Nº 054989</div>
+
+    <div class="line"></div>
+
+    <div class="item"><strong>CHIVITO:</strong> sin huevo</div>
+    <div class="item">BO 412</div>
+    <div class="item">Total: <strong>$490</strong></div>
+
+    <div class="line"></div>
+
+    <div class="header">Tel: 4343 0971</div>
+  </body>
+</html>
+
+
+  `;
+
+
+  // const handleGeneratePdf = async () => {
+  //   const path = await generatePDF(htmlContent, "mi_factura_4");
+  //   if (path) {
+  //     setPdfPath(path);
+  //     Alert.alert("PDF generado!", `Guardado en:\n${path}`);
+  //   } else {
+  //     Alert.alert("Error", "No se pudo generar el PDF");
+  //   }
+  // };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       {/* Header */}
@@ -260,41 +378,41 @@ const OrderDetails = () => {
         contentContainerStyle={styles.scrollViewContent}
         showsVerticalScrollIndicator={false}
       >
- {detailOfOrder.data?.reclamo && (
-  <Animated.View
-    style={[
-      styles.orderSummaryCard,
-      { opacity: fadeAnim, transform: [{ translateY: slideAnim }] },
-    ]}
-  >
-    <View style={styles.reclamoContainer}>
-      <View style={styles.reclamoHeader}>
-        <MaterialCommunityIcons name="alert-circle-outline" size={20} color="#92400e" />
-        <Text style={styles.reclamoTitle}>
-          <FormattedMessage id="claimIndicator" defaultMessage="Claim received:" />
-        </Text>
-      </View>
+        {detailOfOrder.data?.reclamo && (
+          <Animated.View
+            style={[
+              styles.orderSummaryCard,
+              { opacity: fadeAnim, transform: [{ translateY: slideAnim }] },
+            ]}
+          >
+            <View style={styles.reclamoContainer}>
+              <View style={styles.reclamoHeader}>
+                <MaterialCommunityIcons name="alert-circle-outline" size={20} color="#92400e" />
+                <Text style={styles.reclamoTitle}>
+                  <FormattedMessage id="claimIndicator" defaultMessage="Claim received:" />
+                </Text>
+              </View>
 
-      <Text style={styles.reclamoText}>{detailOfOrder.data.reclamo?.texto ?? "-"}</Text>
+              <Text style={styles.reclamoText}>{detailOfOrder.data.reclamo?.texto ?? "-"}</Text>
 
-      <Text style={styles.reclamoDate}>
-        <FormattedMessage
-          id="claimDate"
-          defaultMessage="Date: {date}"
-          values={{
-            date: new Date(detailOfOrder.data.reclamo.createdAt).toLocaleDateString('en-GB', {
-              day: '2-digit',
-              month: 'long',
-              year: 'numeric',
-              hour: "numeric",
-              minute: "numeric"
-            }),
-          }}
-        />
-      </Text>
-    </View>
-  </Animated.View>
-)}
+              <Text style={styles.reclamoDate}>
+                <FormattedMessage
+                  id="claimDate"
+                  defaultMessage="Date: {date}"
+                  values={{
+                    date: new Date(detailOfOrder.data.reclamo.createdAt).toLocaleDateString('en-GB', {
+                      day: '2-digit',
+                      month: 'long',
+                      year: 'numeric',
+                      hour: "numeric",
+                      minute: "numeric"
+                    }),
+                  }}
+                />
+              </Text>
+            </View>
+          </Animated.View>
+        )}
         {/* Order Summary Card */}
         <Animated.View
           style={[
@@ -552,6 +670,12 @@ const OrderDetails = () => {
             </View>
           )}
         </Animated.View>
+
+      <Button
+      title={loading ? "Imprimiendo..." : "Imprimir Comanda"}
+      onPress={() => printHTML(comandaHTML)}
+      disabled={loading}
+    />
 
         {/* Chat Button */}
         <TouchableOpacity
