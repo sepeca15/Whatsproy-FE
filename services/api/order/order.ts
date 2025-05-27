@@ -66,6 +66,14 @@ export const getNextDateAvailable = async () => {
   return data;
 };
 
+export const getNextDateAvailableForSingleDay = async (fecha: string) => {
+  console.log("xd", fecha)
+  const { data } = await ApiInstances("current").get(
+    `pedido/calendar/dates-avaiable?fecha=${fecha}&withPast=true`,
+  );
+  return data;
+};
+
 export const removeOrder = async (id: number) => {
   const { data } = await ApiInstances("current").delete("pedido/" + id);
 

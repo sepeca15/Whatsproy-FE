@@ -7,4 +7,5 @@ export interface IInfoItem {
   date: string;
   status: boolean;
   product: string;
+  fecha?: string;
 }

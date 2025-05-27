@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TouchableWithoutFeedback } from "react-native";
 import {
   VStack,
@@ -16,20 +16,47 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import moment from "moment"; // Importamos moment
 import GlobalModal from "./Modal";
 import { Colors } from "@/constants/Colors";
+import { useIntl } from "react-intl";
 
 const generateTimeSlots = (
+  date: string | moment.Moment,
   startHour: number,
   endHour: number,
   interval: number
 ) => {
+  const baseDate = moment.isMoment(date) ? date.clone() : moment(date);
+  const now = moment();
+  const isToday = baseDate.isSame(now, "day");
+
   const times = [];
   for (let hour = startHour; hour < endHour; hour++) {
     for (let minute = 0; minute < 60; minute += interval) {
-      const time = moment().set({ hour, minute, second: 0, millisecond: 0 });
+      const time = baseDate.clone().set({
+        hour,
+        minute,
+        second: 0,
+        millisecond: 0,
+      });
+
+      if (isToday && time.isBefore(now, "minute")) {
+        continue;
+      }
+
       times.push(time);
     }
   }
-  return times;
+
+  return times.filter((item) => {
+    const now = moment();
+    const isToday = item.isSame(now, "day");
+    if (isToday) {
+      return item.isSameOrAfter(now, "minute");
+    }
+    return true;
+    ;
+  }).map((itm) => {
+    return itm;
+  });
 };
 
 const TimePicker = ({
@@ -42,11 +69,12 @@ const TimePicker = ({
   isRequired = true,
   error,
   checkAvailable,
+  setAllOcupped,
   occupiedTimes = [],
 }: any) => {
   const [showPicker, setShowPicker] = useState(false);
   const formattedDate = moment(date).format("DD/MM/YYYY");
-
+  const { formatMessage } = useIntl();
   const formattedTime = moment(date).format("HH:mm");
   const formattedDateTime = `${formattedDate} ${formattedTime}`;
 
@@ -56,18 +84,32 @@ const TimePicker = ({
     return formattedDateTime;
   };
 
-  const timeSlots = generateTimeSlots(startHour, endHour, interval);
+  const timeSlots = generateTimeSlots(moment(date).add("3", "hours").format("YYYY-MM-DD"), startHour, endHour, interval);
 
-  const isOccupied = (time: moment.Moment) =>
-    occupiedTimes.some((occupiedTime: string | Date) => {
-      if (typeof occupiedTime === "string") {
-        const [hours, minutes] = occupiedTime.split(":").map(Number);
-        const occupiedDate = moment().set({ hour: hours, minute: minutes });
-        return occupiedDate.isSame(time, "minute");
-      }
+const isOccupied = (time: moment.Moment) =>
+  occupiedTimes.some((occupiedTime: string | Date) => {
+    if (typeof occupiedTime === "string") {
+      const [hours, minutes] = occupiedTime.split(":").map(Number);
+      const occupiedFormatted = moment()
+        .set({ hour: hours, minute: minutes, second: 0, millisecond: 0 })
+        .format("HH:mm");
 
-      return moment(occupiedTime).isSame(time, "minute");
-    });
+      const timeFormatted = time.format("HH:mm");
+
+      return occupiedFormatted === timeFormatted;
+    }
+
+    return moment(occupiedTime).isSame(time, "minute");
+  });
+
+  const isAllOcupped = timeSlots.every((datetime) => isOccupied(datetime))
+
+  useEffect(() => {
+    if (isAllOcupped && setAllOcupped) {
+      setAllOcupped(true)
+    }
+  }, [])
+  
 
   const handleTimeSelect = (time: moment.Moment) => {
     if (!isOccupied(time)) {
@@ -77,7 +119,7 @@ const TimePicker = ({
         second: 0,
         millisecond: 0,
       });
-      setDate(updatedDate.toDate()); // Convertimos de nuevo a Date para actualizar el estado
+      setDate(updatedDate.toDate());
       setShowPicker(false);
     }
   };
@@ -110,12 +152,11 @@ const TimePicker = ({
             />
             <Text ml={3} flex={1} color="coolGray.800">
               {getFormattedValue() ||
-                `Seleccionar ${
-                  type === "date"
-                    ? "fecha"
-                    : type === "time"
-                      ? "hora"
-                      : "fecha y hora"
+                `Seleccionar ${type === "date"
+                  ? "fecha"
+                  : type === "time"
+                    ? "hora"
+                    : "fecha y hora"
                 }`}
             </Text>
           </HStack>
@@ -127,7 +168,7 @@ const TimePicker = ({
 
       {showPicker && (
         <GlobalModal
-          label={type === "date" ? "Seleccionar Fecha" : "Seleccionar Hora"}
+          label={type === "date" ? formatMessage({ id: "selectDate" }) : formatMessage({ id: "selectTime" })}
           isVisible={showPicker}
           onClose={() => setShowPicker(false)}
           actions={[
@@ -139,7 +180,7 @@ const TimePicker = ({
               borderRadius="md"
             >
               <Text fontSize={14} color={"white"} fontWeight={500}>
-                Cancelar
+                {formatMessage({ id: "cancel" })}
               </Text>
             </Button>,
           ]}
@@ -184,11 +225,7 @@ const TimePicker = ({
                           {item.format("HH:mm")}
                         </Text>
                         {occupied ? (
-                          <Ionicons
-                            name="close-circle"
-                            size={20}
-                            color="gray.500"
-                          />
+                          <Ionicons name="close-circle" size={20} color="gray.500" />
                         ) : (
                           <Ionicons
                             name="checkmark-circle"
@@ -200,6 +237,7 @@ const TimePicker = ({
                     );
                   }}
                 />
+
               )}
             </>
           }

@@ -25,6 +25,7 @@ import { styles as stylesPending } from "../Pedidos/components/OrdersPending/ord
 import { useToastContext } from "@/contexts/ToastContext";
 import { Animated as AnimatedNative, Easing } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { ordenarPedidosPorHora, OrderPerDays } from "@/utils/date";
 
 if (
   Platform.OS === "android" &&
@@ -33,21 +34,20 @@ if (
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
-type OrderPerDays = {
-  [date: string]: IInfoItem[];
-};
 
 export default function CalendarView() {
-  const [orderPerDays, setOrderPerDays] = useState<OrderPerDays>({});
+  const [orderPerDaysAll, setOrderPerDays] = useState<OrderPerDays>({});
   const [openAddModal, setOpenAddModal] = useState(false);
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split("T")[0]
   );
   const [agendaKey, setAgendaKey] = useState(1);
-  const spinAnim = useRef(new AnimatedNative.Value(0)).current;  
+  const spinAnim = useRef(new AnimatedNative.Value(0)).current;
   const [loading, setLoading] = useState(true);
   const [availableDates, setAvailableDates] = useState<string[]>([]);
   const { showToast } = useToastContext();
+
+  const orderPerDays = ordenarPedidosPorHora(orderPerDaysAll);
 
   useEffect(() => {
     setAgendaKey((prev) => prev + 1);
@@ -82,17 +82,23 @@ export default function CalendarView() {
     try {
       const data = await api.order.getCalendarOrders(selectedDate);
 
+      console.log(selectedDate, selectedDate)
       const availableDates = await api.order.getAvailableDates(selectedDate);
+
+      // debugger;
       if (availableDates?.length > 0) {
         setAvailableDates(availableDates);
       }
       setOrderPerDays(data.data);
+      setAgendaKey((prev) => prev + 1)
     } catch (error: any) {
       console.log(error.response.data.message);
     } finally {
       setLoading(false);
     }
   };
+
+  console.log("orderPerDays", orderPerDays);
 
   const confirmOrder = async (orderId: number) => {
     try {
@@ -156,6 +162,8 @@ export default function CalendarView() {
       onLoadItems(selectedDate);
     }
   }, [selectedDate]);
+
+  console.log(orderPerDays)
 
   return (
     <View style={styles.container}>
@@ -244,15 +252,19 @@ export default function CalendarView() {
                 />
               </View>
             )}
-            renderItem={(data: IInfoItem) => (
-              <ItemCalendar
-                key={data.orderId}
-                confirmOrder={confirmOrder}
-                deleteOrder={deleteOrder}
-                InfoItem={data}
-                confirmed={data.status}
-              />
-            )}
+            renderItem={(data: IInfoItem) => {
+              console.log("data", data);
+              return (
+
+                <ItemCalendar
+                  key={`${data.orderId}-${data.date}`}
+                  confirmOrder={confirmOrder}
+                  deleteOrder={deleteOrder}
+                  InfoItem={data}
+                  confirmed={data.status}
+                />
+              )
+            }}
             renderEmptyData={() => (
               <View style={styles.emptyDate}>
                 {loading ? (
@@ -280,9 +292,10 @@ export default function CalendarView() {
               </View>
             )}
             rowHasChanged={(r1: any, r2: any) =>
-              r1.name !== r2.name ||
-              r1?.expanded !== r2?.expanded ||
-              r1?.status !== r2?.status
+              r1.orderId !== r2.orderId ||
+              r1.date !== r2.date ||
+              r1.productName !== r2.productName ||
+              r1.status !== r2.status
             }
             theme={{
               agendaDayTextColor: "#333",

@@ -16,6 +16,7 @@ import { Colors } from "@/constants/Colors";
 import { useToastContext } from "@/contexts/ToastContext";
 import { FlatList, TouchableOpacity } from "react-native";
 import TapSensitiveInput from "./TapSensitiveInput/TapSensitiveInput";
+import { useIntl } from "react-intl";
 
 interface itemAdd {
   name: string;
@@ -104,6 +105,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
   const [formValues, setFormValues] = React.useState<Record<string, string>>(
     {}
   );
+  const { formatMessage } = useIntl();
 
   useEffect(() => {
     if (itemsSelected && Array.isArray(itemsSelected)) {
@@ -251,7 +253,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
             accessibilityLabel={`Aceptar ${label}`}
           >
             <Text fontWeight={500} color={"white"}>
-              Aceptar
+              {formatMessage({ id: "accept" })}
             </Text>
           </Button>,
         ]}
@@ -273,6 +275,13 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
             )}
 
             <FlatList
+              ListEmptyComponent={() => (
+                <View alignItems="center" mt={5}>
+                  <Text fontSize="md" color="gray.500">
+                    {formatMessage({ id: "noResultsFound" })}
+                  </Text>
+                </View>
+              )}
               data={options}
               keyExtractor={(item, index) => `${item?.value}`}
               extraData={selectedItemsKeys}
@@ -304,7 +313,8 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
                   size={24}
                   color={Colors.light.primary}
                 />
-                <Text ml={2}>Agregar {label}</Text>
+                <Text ml={2}>{formatMessage({ id: "add" })} {" "}
+                  {label}</Text>
               </Pressable>
             )}
             {isModalOpenAdd && withAdd && (
@@ -351,7 +361,8 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
                       />
                     ) : (
                       <Text fontWeight={500} color="white">
-                        Crear {label}
+                        {formatMessage({ id: "create" })} {" "}
+                        {label}
                       </Text>
                     )}
                   </Button>,

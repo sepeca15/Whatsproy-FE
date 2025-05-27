@@ -21,13 +21,7 @@ interface FormattedOrder {
   status: string;
 }
 
-export const useLastOrders = () => {
-  const [lastOrders, setLastOrders] = useState<FormattedOrder[]>([]);
-  const [rawOrders, setRawOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(false);
-  const intl = useIntl();
-
-  const getTimeAgo = (date: string): string => {
+export const getTimeAgo = (date: string, intl: any): string => {
     const now = new Date();
     const createdAt = new Date(date);
     const diff = Math.floor((now.getTime() - createdAt.getTime()) / 1000);
@@ -55,6 +49,13 @@ export const useLastOrders = () => {
     return intl.formatMessage({ id: "orders.justNow" });
   };
 
+export const useLastOrders = () => {
+  const [lastOrders, setLastOrders] = useState<FormattedOrder[]>([]);
+  const [rawOrders, setRawOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(false);
+  const intl = useIntl();
+
+
   const refreshLastOrders = async () => {
     setLoading(true);
     try {
@@ -76,12 +77,13 @@ export const useLastOrders = () => {
 
         return {
           id: order.id,
-          time: getTimeAgo(order.createdAt),
+          time: getTimeAgo(order.createdAt, intl),
           fecha: order?.fecha ? moment(order?.fecha).format("YYYY-MM-DD HH:mm") : new Date(),
           amount: intl.formatMessage({ id: "orders.currencyPrefix" }, { amount: order.total }),
           icon: "receipt",
           address,
           status,
+          createdAt: order?.createdAt,
         };
       });
 
