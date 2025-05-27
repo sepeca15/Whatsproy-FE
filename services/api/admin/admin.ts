@@ -84,6 +84,7 @@ const api = {
     lastThreeOrders: order.lastThreeOrders,
     getOrdersByDate: order.getOrdersByDate,
     getNextDateAvailable: order.getNextDateAvailable,
+    filterByQuery: order.filterOrderWithQuery
   },
   typeServices: {
     getAll: typeServices.getAll,

@@ -28,7 +28,14 @@ const LoginScreen: React.FC = () => {
   }, []);
 
   const Login = useCallback(async () => {
-    if (!formValues.email || !formValues.password) return;
+    if (!formValues.email || !formValues.password) {
+      showToast({
+        title: "Error",
+        description: "Completa los campos requeridos",
+        status: "error",
+      });
+      return;
+    };
 
     try {
       setLoading(true);
@@ -82,6 +89,7 @@ const LoginScreen: React.FC = () => {
               {["email", "password"].map((field) => (
                 <RoundedInputField
                   key={field}
+                  isRequired={true}
                   onChangeText={(text) => handleChangeValue(field, text)}
                   icon={field === 'email' ? <AntDesign size={16} name="user" /> : <EvilIcons name="lock" size={20} />}
                   marginTop={8}

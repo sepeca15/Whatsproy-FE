@@ -50,6 +50,8 @@ const OrderDetails = () => {
   const { user } = useUser();
   const [detailOfOrder, setDetailOfOrder] =
     React.useState<IDetailsOrder>(initialState);
+
+    console.log("detailOfOrder", detailOfOrder)
   const { orderId, keyDeleteType } = useLocalSearchParams();
   const resolvedKeyDeleteType = keyDeleteType as "pending" | "finished";
   const [stateModalStatus, setStateModalStatus] =
@@ -115,7 +117,6 @@ const OrderDetails = () => {
     if (detailOfOrder.data?.id && keyDeleteType) {
       try {
         const response = await api.order.remove(detailOfOrder.data.id);
-        console.log("API Response:", response);
         if (response.ok) {
           await handleDeleteOrder(detailOfOrder.data.id, resolvedKeyDeleteType);
           if (user?.tipo_servicio === ID_TIPOSERVICIO_RESERVA) {

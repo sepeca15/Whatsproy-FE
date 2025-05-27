@@ -6,7 +6,6 @@ export const styles = StyleSheet.create({
     height: "100%",
   },
   containerSpiner: {
-    marginTop: 250,
     flex: 1,
     display: "flex",
     flexDirection: "row",

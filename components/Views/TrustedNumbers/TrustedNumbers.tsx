@@ -112,7 +112,6 @@ const TrustedNumbers = () => {
             }
 
         } catch (error: any) {
-            console.log("nooOOOoooO", error.response.data.message);
         } setLoadingAll(false)
     }
 
