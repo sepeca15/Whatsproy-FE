@@ -246,7 +246,7 @@ const OrderDetails = () => {
   );
 
  const comandaHTML = `
-   <html>
+<html>
   <head>
     <style>
       @media print {
@@ -255,46 +255,70 @@ const OrderDetails = () => {
           font-size: 12px;
           font-family: monospace, monospace;
           margin: 0;
-          padding: 10px 5px; /* un poco menos a los lados */
-          -webkit-print-color-adjust: exact; /* para impresión más fiel */
+          padding: 15px 5px; /* un poco más de padding */
+          -webkit-print-color-adjust: exact;
         }
         .header {
           text-align: center;
           font-weight: bold;
-          margin-bottom: 10px;
+          margin-bottom: 20px; /* más espacio debajo */
+        }
+        .header .local-name {
+          font-size: 24px; /* mucho más grande */
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 8px; /* espacio entre icono y texto */
+        }
+        .icon-food {
+          width: 24px;
+          height: 24px;
+          /* Puedes usar SVG embebido o emoji */
         }
         .line {
           border-top: 1px dashed #000;
-          margin: 10px 0;
+          margin: 20px 0; /* más espacio arriba y abajo */
         }
         .item {
-          margin-bottom: 5px;
+          margin-bottom: 15px; /* más espacio entre items */
         }
       }
-      /* Opcional para vista previa en pantalla */
       body {
         width: 58mm;
         font-size: 12px;
         font-family: monospace, monospace;
         margin: 0 auto;
-        padding: 10px 5px;
+        padding: 15px 5px;
       }
       .header {
         text-align: center;
         font-weight: bold;
-        margin-bottom: 10px;
+        margin-bottom: 20px;
+      }
+      .header .local-name {
+        font-size: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
       }
       .line {
         border-top: 1px dashed #000;
-        margin: 10px 0;
+        margin: 20px 0;
       }
       .item {
-        margin-bottom: 5px;
+        margin-bottom: 15px;
       }
     </style>
   </head>
   <body>
-    <div class="header">roti-parrilla</div>
+    <div class="header">
+      <div class="local-name">
+        <span class="icon-food">🍔</span> <!-- emoji comida -->
+        <span>roti-parrilla</span>
+      </div>
+    </div>
+
     <div class="header">18 de Julio 607 esquina Sarandí</div>
     <div class="header">Nº 054989</div>
 
@@ -309,6 +333,7 @@ const OrderDetails = () => {
     <div class="header">Tel: 4343 0971</div>
   </body>
 </html>
+
 
   `;
 
