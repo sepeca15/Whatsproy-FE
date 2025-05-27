@@ -480,9 +480,13 @@
     "stepsRegisterTitle3": "Create user",
     "selectTimeFilters": "Select a time",
     "selectYesFiltersOrder": "Yes",
-    "selectNoFiltersOrder": "No"
+    "selectNoFiltersOrder": "No",
+    "hasClaim": "Has a claim",
+    "claimIndicator": "Claim received:",
+    "claimDate": "Date: {date}"
   },
   "es": {
+    "claimDate": "Fecha: {date}",
     "selectYesFiltersOrder": "Si",
     "selectNoFiltersOrder": "No",
     "selectTimeFilters": "Seleccione una fecha",
