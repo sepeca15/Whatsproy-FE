@@ -83,7 +83,7 @@ export const useOrders = () => {
         Dispatch(setOffsetActive(offsetActive + limit))
       }
     } catch (error: any) {
-      console.log("error", error.response.data.message);
+      console.log("error xd", error?.response?.data);
     } finally {
       Dispatch(onFinishLoadingApi());
     }

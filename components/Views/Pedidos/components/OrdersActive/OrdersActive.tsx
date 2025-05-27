@@ -12,6 +12,7 @@ const OrdersActive = () => {
   const { loadingApi, ordersActive, handleLoadingOrdersActive, totalItemsActive } = useOrders();
   const [refreshing, setRefreshing] = useState(false);
 
+
   React.useEffect(() => {
     if (ordersActive.length === 0) {
       handleLoadingOrdersActive();

@@ -22,6 +22,10 @@ interface IOrderData {
   estado: any;
   orderId: number;
   createdAt?: string;
+  reclamo?: {
+    createdAt: string;
+    texto: string;
+  };
 }
 
 interface ICardNewPedido {
@@ -30,7 +34,7 @@ interface ICardNewPedido {
 }
 
 const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
-  const [loading, setLoading] = React.useState({
+  const [loading, setLoading] = useState({
     deleteState: false,
     confirmState: false,
   });  
@@ -44,8 +48,7 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
   const direccion = orderData?.direccion ?? "No direction";
   const intl = useIntl();
   const createdAt = orderData?.createdAt;
-  const fromNow =  createdAt ? moment(createdAt)?.fromNow() : "";
-  
+  const fromNow = createdAt ? moment(createdAt)?.fromNow() : "";
 
   const toggleOptionLoading = (key: string) => {
     setLoading((prev: any) => ({
@@ -90,29 +93,47 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
       <View style={styles.column}>
         <View style={styles.row1}>
           <View style={styles.column}>
-            <CustomText style={styles.name}><FormattedMessage id="client" />: {clientName}</CustomText>
-            <CustomText style={{ color: "#abcbfb", fontSize: 12}}>{fromNow ?? "-"}</CustomText>
-            <View style={styles.miniSeparator}></View>
-            <CustomText style={styles.text}>{direccion}</CustomText>
-            <View style={styles.separator}></View>
-            <CustomText style={styles.text}>
-              {intl.formatMessage({ id: "phone", defaultMessage: "Tel" })}:{" "}
-              {numberSender}
-            </CustomText>
-          </View>
-          <View style={styles.column2}>
-            <View style={styles.buttonsTop}>
-              <CustomText style={styles.nuevo}>
-                {!orderData?.status
-                  ? intl.formatMessage({ id: "new", defaultMessage: "New" })
-                  : orderData?.estado?.nombre}
+            <View style={styles.row3}><View style={styles.column}>
+              <CustomText style={styles.name}>
+                <FormattedMessage id="client" defaultMessage="Client" />: {clientName}
+              </CustomText>
+              <CustomText style={{ color: "#abcbfb", fontSize: 12 }}>
+                {fromNow ?? "-"}
+              </CustomText>
+              <View style={styles.miniSeparator}></View>
+              <CustomText style={styles.text}>{direccion}</CustomText>
+              <View style={styles.separator}></View>
+              <CustomText style={styles.text}>
+                {intl.formatMessage({ id: "phone", defaultMessage: "Tel" })}: {numberSender}
               </CustomText>
             </View>
-            <CustomText style={styles.semiBold}>
-              {intl.formatMessage({ id: "total", defaultMessage: "Total" })}: ${" "}
-              {total}
-            </CustomText>
+              <View style={styles.column2}>
+                <View style={styles.buttonsTop}>
+                  <CustomText style={styles.nuevo}>
+                    {!orderData?.status
+                      ? intl.formatMessage({ id: "new", defaultMessage: "New" })
+                      : orderData?.estado?.nombre}
+                  </CustomText>
+                </View>
+                <CustomText style={styles.semiBold}>
+                  {intl.formatMessage({ id: "total", defaultMessage: "Total" })}: ${total}
+                </CustomText>
+              </View></View>
+            {orderData?.reclamo && pending && (
+              <View style={styles.reclamoBox}>
+                <View style={styles.reclamoRow}>
+                  <MaterialIconss name="alert-circle-outline" size={18} color="#f59e0b" />
+                  <CustomText style={styles.reclamoText}>
+                    <FormattedMessage id="hasClaim" defaultMessage="Has a claim" />
+                  </CustomText>
+                </View>
+                <CustomText style={styles.reclamoDate}>
+                  {moment(orderData.reclamo.createdAt).fromNow()}
+                </CustomText>
+              </View>
+            )}
           </View>
+
         </View>
         <View style={styles.row2}>
           <Pressable
@@ -123,7 +144,7 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
           >
             <AntDesign color={"black"} name="eyeo" size={16} />
             <CustomText style={{ color: "black" }}>
-              {intl.formatMessage({ id: "details", defaultMessage: "Details" })}
+              <FormattedMessage id="details" defaultMessage="Details" />
             </CustomText>
           </Pressable>
           {pending === true ? (
@@ -143,7 +164,7 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
               <Button
                 style={styles.buttonTransparent}
                 onPress={handleConfirmOrder}
-                isLoading={loading.deleteState}
+                isLoading={loading.confirmState}
                 spinner={<Spinner color="black" />}
                 hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
               >
