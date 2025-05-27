@@ -246,46 +246,70 @@ const OrderDetails = () => {
   );
 
  const comandaHTML = `
-    <html>
-      <head>
-        <style>
-          body {
-            width: 58mm;
-            font-size: 12px;
-            font-family: monospace;
-            margin: 0;
-            padding: 10px;
-          }
-          .header {
-            text-align: center;
-            font-weight: bold;
-            margin-bottom: 10px;
-          }
-          .line {
-            border-top: 1px dashed #000;
-            margin: 10px 0;
-          }
-          .item {
-            margin-bottom: 5px;
-          }
-        </style>
-      </head>
-      <body>
-        <div class="header">roti-parrilla</div>
-        <div class="header">18 de Julio 607 esquina Sarandí</div>
-        <div class="header">Nº 054989</div>
+   <html>
+  <head>
+    <style>
+      @media print {
+        body {
+          width: 58mm;
+          font-size: 12px;
+          font-family: monospace, monospace;
+          margin: 0;
+          padding: 10px 5px; /* un poco menos a los lados */
+          -webkit-print-color-adjust: exact; /* para impresión más fiel */
+        }
+        .header {
+          text-align: center;
+          font-weight: bold;
+          margin-bottom: 10px;
+        }
+        .line {
+          border-top: 1px dashed #000;
+          margin: 10px 0;
+        }
+        .item {
+          margin-bottom: 5px;
+        }
+      }
+      /* Opcional para vista previa en pantalla */
+      body {
+        width: 58mm;
+        font-size: 12px;
+        font-family: monospace, monospace;
+        margin: 0 auto;
+        padding: 10px 5px;
+      }
+      .header {
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+      .line {
+        border-top: 1px dashed #000;
+        margin: 10px 0;
+      }
+      .item {
+        margin-bottom: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">roti-parrilla</div>
+    <div class="header">18 de Julio 607 esquina Sarandí</div>
+    <div class="header">Nº 054989</div>
 
-        <div class="line"></div>
+    <div class="line"></div>
 
-        <div class="item"><strong>CHIVITO:</strong> sin huevo</div>
-        <div class="item">BO 412</div>
-        <div class="item">Total: <strong>$490</strong></div>
+    <div class="item"><strong>CHIVITO:</strong> sin huevo</div>
+    <div class="item">BO 412</div>
+    <div class="item">Total: <strong>$490</strong></div>
 
-        <div class="line"></div>
+    <div class="line"></div>
 
-        <div class="header">Tel: 4343 0971</div>
-      </body>
-    </html>
+    <div class="header">Tel: 4343 0971</div>
+  </body>
+</html>
+
   `;
 
 
