@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import {
   ScrollView,
   KeyboardAvoidingView,
@@ -10,15 +10,12 @@ import { FormattedMessage, useIntl } from "react-intl";
 import CustomButton from "@/components/CustomButton";
 import LogoContainer from "@/components/LogoContainer";
 import api from "@/services/api/admin";
-import * as SecureStore from "expo-secure-store";
+import { StoreData } from "@/storage/localStorage";
 import { styles } from "./LoginStyles";
 import { useToastContext } from "@/contexts/ToastContext";
 import RoundedInputField from "@/components/RoundedInputField";
 import { AntDesign, EvilIcons, FontAwesome5 } from "@expo/vector-icons";
 import * as LocalAuthentication from "expo-local-authentication";
-
-const EMAIL_KEY = "userEmail";
-const PASSWORD_KEY = "userPassword";
 
 const LoginScreen: React.FC = () => {
   const [formValues, setFormValues] = useState({ email: "", password: "" });
@@ -27,34 +24,9 @@ const LoginScreen: React.FC = () => {
   const router = useRouter();
   const { showToast } = useToastContext();
 
-  // Cargar email y password guardados al montar el componente
-  useEffect(() => {
-    const loadCredentials = async () => {
-      try {
-        const savedEmail = await SecureStore.getItemAsync(EMAIL_KEY);
-        const savedPassword = await SecureStore.getItemAsync(PASSWORD_KEY);
-        if (savedEmail && savedPassword) {
-          setFormValues({ email: savedEmail, password: savedPassword });
-        }
-      } catch (e) {
-        // Podés loguear si querés, pero no es crítico
-      }
-    };
-    loadCredentials();
-  }, []);
-
   const handleChangeValue = useCallback((key: string, value: string) => {
     setFormValues((prev) => ({ ...prev, [key]: value }));
   }, []);
-
-  const saveCredentials = async (email: string, password: string) => {
-    try {
-      await SecureStore.setItemAsync(EMAIL_KEY, email);
-      await SecureStore.setItemAsync(PASSWORD_KEY, password);
-    } catch (e) {
-      // Podés mostrar error si querés, no crítico
-    }
-  };
 
   const Login = useCallback(async () => {
     if (!formValues.email || !formValues.password) {
@@ -70,8 +42,9 @@ const LoginScreen: React.FC = () => {
       setLoading(true);
       const res = await api.auth.login(formValues);
       if (res.access_token) {
-        // Guardar token y datos usuario
-        await saveCredentials(formValues.email, formValues.password);
+        StoreData("token", res.access_token);
+        const userData = await api.auth.me();
+        StoreData("user", JSON.stringify(userData));
         router.push("/(tabs)/home");
       }
     } catch (error: any) {
@@ -115,35 +88,7 @@ const LoginScreen: React.FC = () => {
     });
 
     if (result.success) {
-      // Leer credenciales guardadas
-      const savedEmail = await SecureStore.getItemAsync(EMAIL_KEY);
-      const savedPassword = await SecureStore.getItemAsync(PASSWORD_KEY);
-
-      if (savedEmail && savedPassword) {
-        setFormValues({ email: savedEmail, password: savedPassword });
-        // Ejecutar login con datos guardados
-        try {
-          setLoading(true);
-          const res = await api.auth.login({ email: savedEmail, password: savedPassword });
-          if (res.access_token) {
-            router.push("/(tabs)/home");
-          }
-        } catch (error: any) {
-          showToast({
-            title: "Error al iniciar sesión",
-            description: "No se pudo iniciar sesión con las credenciales guardadas.",
-            status: "error",
-          });
-        } finally {
-          setLoading(false);
-        }
-      } else {
-        showToast({
-          title: "Credenciales no guardadas",
-          description: "Primero iniciá sesión con tu email y contraseña para usar la huella.",
-          status: "warning",
-        });
-      }
+      Login();
     } else {
       showToast({
         title: "Huella incorrecta",
@@ -151,7 +96,7 @@ const LoginScreen: React.FC = () => {
         status: "error",
       });
     }
-  }, [router, showToast]);
+  }, [Login, showToast]);
 
   return (
     <KeyboardAvoidingView behavior="padding" style={{ flex: 1, height: '100%' }}>
@@ -174,7 +119,7 @@ const LoginScreen: React.FC = () => {
                 <FormattedMessage id="loginButton" />
               </Text>
 
-              {(["email", "password"] as Array<keyof typeof formValues>).map((field) => (
+              {["email", "password"].map((field) => (
                 <RoundedInputField
                   key={field}
                   isRequired={true}
@@ -186,7 +131,6 @@ const LoginScreen: React.FC = () => {
                     defaultMessage: `Enter your ${field}`,
                   })}
                   type={field === "password" ? "password" : "text"}
-                  value={formValues[field]}
                 />
               ))}
 
