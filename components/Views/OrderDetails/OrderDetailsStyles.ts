@@ -392,4 +392,27 @@ export const styles = StyleSheet.create({
     fontWeight: "600",
     color: "white",
   },
+
+  printButtom: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: Colors.light.primary,
+    borderRadius: 12,
+    paddingVertical: 16,
+    marginTop: 8,
+    shadowColor: Colors.light.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
+
+  },
+  printButtonText:{
+     marginLeft: 8,
+    fontSize: RFValue(16),
+    fontWeight: "600",
+    color: "white",
+  },
+
 })
