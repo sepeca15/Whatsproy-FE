@@ -10,26 +10,50 @@ import Toast from "react-native-toast-message";
 import ConfigAccount from "@/components/Views/ConfigAccount";
 import { io } from "socket.io-client";
 import { useHomeData } from "@/hooks/redux/useHomeData";
+import moment from "moment";
+import { useIntl } from "react-intl";
+import { getTimeAgo } from "@/hooks/home_functions/useLastOrders";
 
 const TabLayout: React.FC = () => {
   const { user } = useUser();
-  const { handleAddNewOrder } = useHomeData()
-  const {userConfigured, paymentMade, apiConfigured, greenApiConfigured } = user;
-  const globalConfig = userConfigured && paymentMade && apiConfigured && greenApiConfigured 
-
+  const { handleAddNewOrderNormal } = useHomeData()
+  const { userConfigured, paymentMade, apiConfigured, greenApiConfigured } = user;
+  const globalConfig = userConfigured && paymentMade && apiConfigured && greenApiConfigured
+  const intl = useIntl()
 
   React.useEffect(() => {
     const socketIo = io(user.apiUrl);
 
-    socketIo.on("sendOrderRealTime", (data) => {      
-      handleAddNewOrder(data)
+    socketIo.on("sendOrderRealTime", (data) => {
+      let address = intl.formatMessage({ id: "orders.noAddress" });
+      let status = intl.formatMessage({ id: "orders.noStatus" });
+
+      try {
+        const info = JSON.parse(data.infoLinesJson);
+        address = info?.Direccion?.trim() || address;
+      } catch (error) {
+        console.error("Error al parsear infoLinesJson", error);
+      }
+
+      const newOrderInfo = {
+        id: data.id,
+        time: getTimeAgo(data.createdAt, intl),
+        fecha: data?.fecha ? moment(data?.fecha).format("YYYY-MM-DD HH:mm") : new Date(),
+        amount: intl.formatMessage({ id: "orders.currencyPrefix" }, { amount: data.total }),
+        icon: "receipt",
+        address,
+        status,
+        createdAt: data?.createdAt,
+      };
+
+      handleAddNewOrderNormal(newOrderInfo)
     });
 
     return () => {
       socketIo.disconnect();
     };
   }, []);
-  
+
   return (
     <NativeBaseProvider>
       <Toast config={toastConfig} />

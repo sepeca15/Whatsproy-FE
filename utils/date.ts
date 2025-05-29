@@ -1,3 +1,4 @@
+import { IInfoItem } from "@/components/Views/Calendar/types";
 import moment from "moment";
 
 export const removeTimeZone = (dateString: any) => {
@@ -22,4 +23,23 @@ export const removeAmPm = (time: string) => {
 
 export const filterOnlyHours = (items: any) => {
   return items.filter((item: any) => /^\d{1,2}:\d{2}$/.test(item));
+};
+
+
+export type OrderPerDays = {
+  [date: string]: IInfoItem[];
+};
+
+export const ordenarPedidosPorHora = (orderPerDays: OrderPerDays): OrderPerDays => {
+  const ordenado: OrderPerDays = {};
+
+  for (const fecha in orderPerDays) {
+    ordenado[fecha] = (orderPerDays[fecha] ?? []).sort((a, b) => {
+      const fechaA = moment(a.fecha);
+      const fechaB = moment(b.fecha);
+      return fechaA.diff(fechaB);
+    });
+  }
+
+  return ordenado;
 };

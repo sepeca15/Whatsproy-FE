@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
   containerButton: {
     height: 45,
     display: "flex",
+    minWidth: 140,
     paddingLeft: 20,
     paddingRight: 20,
     gap: 4,

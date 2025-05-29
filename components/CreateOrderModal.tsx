@@ -5,6 +5,9 @@ import {
   View,
   Text,
   IconButton,
+  Center,
+  HStack,
+  Alert,
 } from "native-base";
 import InputField from "@/components/InputField";
 import { useUser } from "@/hooks/redux/useUser";
@@ -44,6 +47,8 @@ import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import TimePicker from "./TimePicker";
 import { useIntl } from "react-intl";
 import { useHomeData } from "@/hooks/redux/useHomeData";
+import CustomText from "./CustomText";
+import CustomButton from "./CustomButton";
 
 interface IProps {
   onClose: () => void;
@@ -65,7 +70,7 @@ const initialValues: CreateOrderDTO = {
   messages: [],
   detalles: "",
   infoLinesJson: {},
-  fecha: new Date(),
+  fecha: undefined,
 };
 
 interface prodItems {
@@ -85,10 +90,8 @@ const CreateOrderModal = ({
   const { user } = useUser();
   const { handleAddNewOrder } = useHomeData()
   const intl = useIntl();
-  const localDate = defaultDate ? new Date(defaultDate) : new Date();
   const [form, setForm] = React.useState({
     ...initialValues,
-    fecha: localDate,
   });
 
   const [clients, setClients] = React.useState<Cliente[]>([]);
@@ -106,6 +109,7 @@ const CreateOrderModal = ({
   const [errors, setErrors] = React.useState<any>({});
   const [infoLines, setInfoLines] = React.useState<InfoLineDTO[]>([]);
   const hasErrors = Object.keys(errors).length > 0;
+  const [allOcupped, setAllOcupped] = React.useState(false);
 
   const handleChangeValue = (key: string, value: any) => {
     setForm((prevState) => ({
@@ -130,6 +134,19 @@ const CreateOrderModal = ({
             return false;
           }
         })
+          .map((infoline: InfoLineDTO) => {
+            if (infoline.nombre === "Fecha y Hora" && tipoServicio === TipoServicio.RESERVA) {
+              return {
+                ...infoline,
+                show: false,
+              }
+            }
+            return {
+              ...infoline,
+              show: true,
+            }
+
+          })
       );
     } catch (error) {
       console.log(error);
@@ -151,12 +168,10 @@ const CreateOrderModal = ({
   };
 
   React.useEffect(() => {
-    if (defaultDate && user?.hora_apertura) {
-      const dateWithHour = new Date(defaultDate);
-      dateWithHour.setHours(getHourNumber(user.hora_apertura));
-      handleChangeValue("fecha", dateWithHour);
+    if (defaultDate) {
+      handleLoadNextAvaialbleDateForSignleDay();
     }
-  }, [defaultDate, user?.hora_apertura]);
+  }, [defaultDate]);
 
   React.useEffect(() => {
     if (hasErrors) {
@@ -169,10 +184,10 @@ const CreateOrderModal = ({
     if (selectedProductsIds?.length <= 0) {
       errors["products"] = "Debes agregar al menos un producto";
     }
-    if (tipoServicio === TipoServicio.RESERVA && !form.fecha) {
+    if (tipoServicio === TipoServicio.RESERVA && !defaultDate) {
       errors["date"] = "Debes agregar al menos un producto";
     }
-    infoLines.forEach((infoline) => {
+    infoLines.filter((itm) => itm?.show).forEach((infoline) => {
       if (infoline) {
         if (infoline?.requerido && !form.infoLinesJson[infoline.nombre]) {
           errors[infoline.nombre] = `El campo ${infoline.nombre} es requerido`;
@@ -199,15 +214,15 @@ const CreateOrderModal = ({
   };
 
   const createOrderData = async () => {
-    setIsDirty(true);
-    let isValidForm = handleValidateForm();
-    if (!isValidForm) {
-      return;
-    }
-
     try {
       setLoadingCreate(true);
-      const dataToSend: any = {
+      setIsDirty(true);
+      let isValidForm = handleValidateForm();
+      if (!isValidForm) {
+        return;
+      }
+
+      let dataToSend: any = {
         ...form,
         tipoServicio: tipoServicio,
         confirmado: true,
@@ -227,27 +242,16 @@ const CreateOrderModal = ({
         numberSender: form?.numberSender,
         infoLinesJson: JSON.stringify(form.infoLinesJson),
         estadoId: DEFAULT_ESTADO_CREADO.id,
-        fecha: removeTimeZone(form?.fecha),
+        fecha: form.fecha ? moment(form?.fecha).format("YYYY-MM-DD HH:mm") : moment(),
       };
 
       if (tipoServicio === TipoServicio.RESERVA) {
-        const parsedInfo = JSON.parse(dataToSend.infoLinesJson);
-        const fechaMoment = moment.tz(parsedInfo["Fecha y Hora"], user.timeZone);
-        const horaMoment = moment.tz(form.fecha, user.timeZone);
-
-        const fechaFinal = fechaMoment
-          .set({
-            hour: horaMoment.hour(),
-            minute: horaMoment.minute(),
-            second: 0,
-          })
-          .format("YYYY-MM-DD HH:mm");
-
-        dataToSend.fecha = fechaFinal;
-        parsedInfo["Fecha y Hora"] = fechaFinal;
-        dataToSend.infoLinesJson = JSON.stringify(parsedInfo);
+        let infoLines = JSON.parse(dataToSend.infoLinesJson);
+        const fechaMoment = moment.tz(infoLines["Fecha y Hora"], user.timeZone);
+        infoLines["Fecha y Hora"] = fechaMoment.format("YYYY-MM-DD HH:mm")
+        dataToSend.infoLinesJson = JSON.stringify(infoLines);
       }
-      
+
       const data = await api.order.create(dataToSend);
 
       if (data?.ok) {
@@ -264,24 +268,33 @@ const CreateOrderModal = ({
         throw new Error("Error desconocido creando event");
       }
     } catch (error: any) {
-      console.log(error);
-
       setLoadingCreate(false);
 
       showToast({
         title: "Error creando evento",
-        description: error?.message,
+        description: error?.message?.data?.message ?? error?.message ?? "Error desconocido creando cuenta",
         status: "error",
       });
+    } finally {
+      setLoadingCreate(false)
     }
   };
 
-  const handleLoadNextAvaialbleDate = async () => {
+  const handleLoadNextAvaialbleDateForSignleDay = async () => {
     try {
       setLoadingNextDateAvailable(true);
-      const resp = await api.order.getNextDateAvailable();
-      if (resp) {
-        handleChangeValue("fecha", moment(resp));
+      const availableDates = await api.order.getNextDateAvailableForSingleDay(moment(defaultDate)?.format("YYYY-MM-DD"));
+      console.log("defaultDate", defaultDate)
+      if (availableDates && availableDates?.length > 0) {
+        console.log("availableDates", availableDates)
+        handleChangeValue("fecha", moment(availableDates[0]));
+      } else {
+        showToast({
+          title: intl.formatMessage({ id: "dispErrorTitle" }),
+          description: intl.formatMessage({ id: "dispErrorDesc" }),
+          status: "error",
+        });
+        setAllOcupped(true);
       }
     } catch (error) {
       console.log("error", error);
@@ -290,6 +303,7 @@ const CreateOrderModal = ({
       setLoadingNextDateAvailable(false);
     }
   };
+
 
   const addClient = async (newClient: { nombre: string; telefono: string }) => {
     try {
@@ -375,10 +389,11 @@ const CreateOrderModal = ({
             {intl.formatMessage({ id: "cancel" })}
           </Text>
         </Button>,
-        <Button
+        <CustomButton
           isLoading={loadingCreate || loadingNextDateAvailable}
           onPress={() => createOrderData()}
           size="sm"
+          isDisabled={allOcupped}
           marginLeft={2}
           backgroundColor={"#2C2C2C"}
           borderRadius={"6"}
@@ -390,13 +405,35 @@ const CreateOrderModal = ({
               ? intl.formatMessage({ id: "createEvent" })
               : intl.formatMessage({ id: "order" })}
           </Text>
-        </Button>,
+        </CustomButton>,
       ]}
       content={
         <>
+          {!allOcupped && <Center mb={4}>
+            <HStack space={2} alignItems="center">
+              <Ionicons name="calendar-outline" size={20} color={Colors.light.primary} />
+              <Text fontSize="md" fontWeight="medium" color="gray.800">
+                {intl.formatMessage({ id: "reservation.addTo" })}{" "}
+                <Text color={Colors.light.primary}>
+                  {moment(defaultDate).format("dddd, DD MMMM YYYY")}
+                </Text>
+              </Text>
+            </HStack>
+          </Center>}
+          {allOcupped && (
+            <Alert status="warning" variant="left-accent" borderRadius="md" mb={4}>
+              <HStack space={2} alignItems="center">
+                <Alert.Icon />
+                <Text fontSize="sm" color="gray.800">
+                  {intl.formatMessage({ id: "allTimesOccupied", defaultMessage: "No hay horarios disponibles para esta fecha." })}
+                </Text>
+              </HStack>
+            </Alert>
+          )}
           {tipoServicio === ID_TIPOSERVICIO_RESERVA && (
             <>
               <TimePicker
+                setAllOcupped={setAllOcupped}
                 type="time"
                 interval={user?.intervaloTiempoCalendario ?? 30}
                 startHour={getHourNumber(user?.hora_apertura)}
@@ -412,8 +449,11 @@ const CreateOrderModal = ({
                     : []
                 }
                 checkAvailable={(hour: string) => availableDates.includes(hour)}
-                date={form.fecha || localDate}
-                setDate={(val: any) => handleChangeValue("fecha", val)}
+                date={form?.fecha}
+                setDate={(val: any) => {
+                  handleChangeValue("fecha", val)
+
+                }}
               />
               <View
                 display="flex"
@@ -426,7 +466,7 @@ const CreateOrderModal = ({
                   name="sparkles-outline"
                   size={20}
                 />
-                <TouchableOpacity onPress={() => handleLoadNextAvaialbleDate()}>
+                <TouchableOpacity onPress={() => handleLoadNextAvaialbleDateForSignleDay()}>
                   <Text
                     style={{
                       textDecorationLine: "underline",
@@ -436,7 +476,7 @@ const CreateOrderModal = ({
                       color: Colors.light.primary,
                     }}
                   >
-                    Mostrar siguiente horario disponible
+                    {intl.formatMessage({ id: "nextDateAvailable" })}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -573,8 +613,6 @@ const CreateOrderModal = ({
           <MultiSelectInput
             actionToAddItem={(data: any) => addClient(data)}
             setItemsSelected={(data: string[]) => {
-              console.log(data);
-
               const clientId = parseInt(data[0]) as any;
               const clientInfo = clients?.find((c) => c.id === clientId);
 
@@ -641,7 +679,7 @@ const CreateOrderModal = ({
           />
           <InfoLineForm
             errors={errors}
-            infoLines={infoLines}
+            infoLines={infoLines.filter((itm) => itm?.show)}
             value={form.infoLinesJson ?? {}}
             setValue={(val) => handleChangeValue("infoLinesJson", val)}
           />

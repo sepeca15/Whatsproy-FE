@@ -1,4 +1,4 @@
-import { onAddNewOrder, onAddStaticsAndData , loadingData} from "@/services/redux/Slices/homeDataSlice/homeDataSlice";
+import { onAddNewOrder, onAddStaticsAndData, loadingData } from "@/services/redux/Slices/homeDataSlice/homeDataSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useLastOrders } from "../home_functions/useLastOrders";
 import api from "@/services/api/admin";
@@ -24,8 +24,12 @@ export const useHomeData = () => {
         }
     };
 
-    const handleAddNewOrder = (data: any) => {        
-        Dispatch(onAddNewOrder({...data, time: data.createdAt, amount: data.total, address: data.direccion }))
+    const handleAddNewOrder = (data: any) => {
+        Dispatch(onAddNewOrder({ ...data, time: data.createdAt, amount: data.total, address: data.direccion }))
+    }
+
+    const handleAddNewOrderNormal = (data: any) => {
+        Dispatch(onAddNewOrder({ ...data }))
     }
 
     return {
@@ -35,6 +39,7 @@ export const useHomeData = () => {
         numberIngresos,
         lastThreeOrders,
         handleAddStatistics,
-        handleAddNewOrder
+        handleAddNewOrder,
+        handleAddNewOrderNormal
     };
 };

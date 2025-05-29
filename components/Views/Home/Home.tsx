@@ -23,6 +23,7 @@ import { ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervici
 import { Ionicons } from "@expo/vector-icons";
 import moment from "moment";
 import { useHomeData } from "@/hooks/redux/useHomeData";
+import { getTimeAgo } from "@/hooks/home_functions/useLastOrders";
 
 const Home: React.FC = () => {
   const intl = useIntl();
@@ -242,7 +243,7 @@ const Home: React.FC = () => {
                       id: isReserva ? "reserva.card.home" : "pedido.card.home",
                       defaultMessage: isReserva ? "reserva" : "pedido",
                     })} #${order.id}`}
-                    time={order.time || "Desconocido"}
+                    time={getTimeAgo(order?.createdAt, intl)}
                     id={order.id.toString()}
                     amount={order.amount || "$0"}
                     icon={order.icon || "receipt"}

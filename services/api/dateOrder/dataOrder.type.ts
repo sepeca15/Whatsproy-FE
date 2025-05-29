@@ -4,6 +4,7 @@ export interface InfoLineDTO {
   requerido: boolean;
   es_defecto: boolean;
   tipo: TipoInfoLine;
+  show?: boolean;
   id_tipo_servicio: number;
 }
 
