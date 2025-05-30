@@ -139,7 +139,7 @@ const LoginScreen: React.FC = () => {
                 <FormattedMessage id="loginButton" />
               </Text>
 
-              {(["email", "password"] as Array<keyof typeof errors>).map((field) => (
+              {(["email", "password"] as const).map((field) => (
                 <RoundedInputField
                   key={field}
                   isRequired={true}
@@ -151,7 +151,7 @@ const LoginScreen: React.FC = () => {
                     defaultMessage: `Enter your ${field}`,
                   })}
                   type={field === "password" ? "password" : "text"}
-                  error={!!errors[field]}
+                  error={errors[field]} // Esto puede ser undefined o un string
                 />
               ))}
 
