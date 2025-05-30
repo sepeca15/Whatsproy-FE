@@ -163,7 +163,7 @@ const AddProduct: React.FC = () => {
             <FormattedMessage id="productName" />
           </Text>
           <InputField
-            label="Nombre"
+          
             placeholder="Ej: Milanesa de pollo"
             value={formData.nombre}
             onChangeText={(text) => setFormData({ ...formData, nombre: text })}
@@ -176,18 +176,17 @@ const AddProduct: React.FC = () => {
               <Text style={styles.label}>
                 <FormattedMessage id="price" />
               </Text>
-              <TextInput
-                style={styles.input}
+              <InputField
+              
+                placeholder="0.00"
+                keyboardType="numeric"
+                value={formData.precio ? formData.precio.toString() : ""}
                 onChangeText={(text) => {
                   const value = parseFloat(text);
-                  if (!isNaN(value)) {
-                    setFormData((prev) => ({ ...prev, precio: value }));
-                  } else {
-                    setFormData((prev) => ({ ...prev, precio: 0 }));
-                  }
+                  setFormData({ ...formData, precio: isNaN(value) ? 0 : value });
                 }}
-                keyboardType="numeric"
-                placeholder="0.00"
+                error={errors.precio}
+                 style={styles.input}
               />
             </View>
 
