@@ -168,6 +168,7 @@ const AddProduct: React.FC = () => {
             value={formData.nombre}
             onChangeText={(text) => setFormData({ ...formData, nombre: text })}
             error={errors.nombre}
+            style={styles.input}
           />
 
           <View style={styles.row}>
