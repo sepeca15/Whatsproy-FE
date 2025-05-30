@@ -265,7 +265,7 @@ const AddProduct: React.FC = () => {
             <FormattedMessage id="description" />
           </Text>
           <InputField
-          
+
             placeholder="Ej: Plato clásico con papas fritas"
             isTextArea
             value={formData.descripcion}
