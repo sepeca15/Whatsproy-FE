@@ -39,7 +39,7 @@ const InputField: React.FC<InputFieldProps> = ({
     <FormControl
       isDisabled={isDisabled}
       isInvalid={error}
-      style={styles.input}
+      // style={styles.input}
       isRequired={isRequired}
     >
       {label && <FormControl.Label>{label}</FormControl.Label>}
@@ -95,15 +95,15 @@ const InputField: React.FC<InputFieldProps> = ({
 
 export default InputField;
 
-const styles = StyleSheet.create({
- input: {
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    height: 50,
-    padding: 12,
-    marginBottom: 16,
-    fontSize: 16,
-    backgroundColor: "#f9f9f9",
-  },
-});
+// const styles = StyleSheet.create({
+//  input: {
+//     borderWidth: 1,
+//     borderColor: "#ddd",
+//     borderRadius: 8,
+//     height: 50,
+//     padding: 12,
+//     marginBottom: 16,
+//     fontSize: 16,
+//     backgroundColor: "#f9f9f9",
+//   },
+// });
