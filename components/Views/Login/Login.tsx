@@ -14,7 +14,8 @@ import { StoreData } from "@/storage/localStorage";
 import { styles } from "./LoginStyles";
 import { useToastContext } from "@/contexts/ToastContext";
 import RoundedInputField from "@/components/RoundedInputField";
-import { AntDesign, EvilIcons } from "@expo/vector-icons";
+import { AntDesign, EvilIcons, FontAwesome5 } from "@expo/vector-icons";
+import * as LocalAuthentication from "expo-local-authentication";
 
 const LoginScreen: React.FC = () => {
   const [formValues, setFormValues] = useState({ email: "", password: "" });
@@ -26,16 +27,31 @@ const LoginScreen: React.FC = () => {
   const handleChangeValue = useCallback((key: string, value: string) => {
     setFormValues((prev) => ({ ...prev, [key]: value }));
   }, []);
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
 
   const Login = useCallback(async () => {
-    if (!formValues.email || !formValues.password) {
+    const newErrors: { email?: string; password?: string } = {};
+
+    if (!formValues.email) {
+      newErrors.email = "Email requerido";
+    }
+
+    if (!formValues.password) {
+      newErrors.password = "Contraseña requerida";
+    }
+
+    // Si hay errores, los setea y no continúa con el login
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       showToast({
         title: "Error",
         description: "Completa los campos requeridos",
         status: "error",
       });
       return;
-    };
+    }
+
+    setErrors({}); // limpia errores si todo está ok
 
     try {
       setLoading(true);
@@ -67,26 +83,63 @@ const LoginScreen: React.FC = () => {
     }
   }, [formValues, router, showToast]);
 
+
+
+
+  const handleBiometricAuth = useCallback(async () => {
+    // verificar si el dispositivo tiene hardware de autenticación biométrica y si hay huellas registradas
+    const hasHardware = await LocalAuthentication.hasHardwareAsync();
+    const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+    // si no hay hardware o no hay huellas registradas, mostrar un mensaje de error
+    if (!hasHardware || !isEnrolled) {
+      showToast({
+        title: "Huella no disponible",
+        description: "Tu dispositivo no tiene lector o no hay huellas registradas.",
+        status: "error",
+      });
+      return;
+    }
+    // si hay hardware y huellas registradas, proceder con la autenticación biométrica
+    // solicitar autenticación biométrica
+    const result = await LocalAuthentication.authenticateAsync({
+      promptMessage: "Ingresá con tu huella digital",
+      fallbackLabel: "Usar contraseña",
+      disableDeviceFallback: true,
+    });
+    // si la autenticación es exitosa, llamar a la función de login
+    if (result.success) {
+      Login();
+    } else {
+      showToast({
+        title: "Huella incorrecta",
+        description: "No se pudo verificar tu identidad",
+        status: "error",
+      });
+    }
+  }, [Login, showToast]);
+
   return (
     <KeyboardAvoidingView behavior="padding" style={{ flex: 1, height: '100%' }}>
       <ScrollView
         contentContainerStyle={styles.scrollView}
         keyboardShouldPersistTaps="handled"
       >
-        <Center w={'full'} h={'full'} display={'flex'} flexDir={'column'} backgroundColor={'teal.700'}>
+        <Center w={'full'} h={'full'} flexDir={'column'} backgroundColor={'teal.700'}>
           <View w={'full'} height={'30%'} flex={1} background={'teal.700'} style={styles.containerImage}>
             <LogoContainer />
           </View>
-          <VStack bg={'white'} roundedTop={30} space={4} w="full" display={'flex'} flexDir={'column'} alignItems={'center'} justifyItems={'center'} height={'70%'}>
+
+          <VStack bg={'white'} roundedTop={30} space={4} w="full" alignItems={'center'} height={'70%'}>
             <View w={'90%'} mt={8} style={{ gap: 12 }}>
-              <Text textAlign={'center'} fontSize={35} fontWeight={'semibold'} >
+              <Text textAlign={'center'} fontSize={35} fontWeight={'semibold'}>
                 <FormattedMessage id="titleLogin" />
               </Text>
 
-              <Text mb={2} textAlign={'center'} fontSize={20} fontWeight={'semibold'} >
+              <Text mb={2} textAlign={'center'} fontSize={20} fontWeight={'semibold'}>
                 <FormattedMessage id="loginButton" />
               </Text>
-              {["email", "password"].map((field) => (
+
+              {(["email", "password"] as const).map((field) => (
                 <RoundedInputField
                   key={field}
                   isRequired={true}
@@ -98,21 +151,16 @@ const LoginScreen: React.FC = () => {
                     defaultMessage: `Enter your ${field}`,
                   })}
                   type={field === "password" ? "password" : "text"}
+                  error={errors[field]} // <- pasás el mensaje directamente (puede ser undefined o un string)
                 />
               ))}
+
+
               <TouchableOpacity
                 onPress={() => router.push("/(auth)/sendLinkEmail")}
                 style={styles.textPrimary}
               >
-                <View
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    flexDirection: "row",
-                    gap: 4,
-                    justifyContent: "flex-end",
-                  }}
-                >
+                <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
                   <Text color={'teal.700'}>
                     <FormattedMessage
                       id="forgotPassword"
@@ -126,19 +174,16 @@ const LoginScreen: React.FC = () => {
                 <FormattedMessage id="loginButton" defaultMessage="Login" />
               </CustomButton>
 
+              <CustomButton onPress={handleBiometricAuth} colorSpiner="white" borderRadius={1000}>
+                <FontAwesome5 name="fingerprint" size={20} />
+                <Text ml={2}>Ingresar con huella</Text>
+              </CustomButton>
+
               <TouchableOpacity
                 onPress={() => router.push("/(auth)/sign-up")}
                 style={styles.textPrimary}
               >
-                <View
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    flexDirection: "row",
-                    gap: 4,
-                    justifyContent: "center",
-                  }}
-                >
+                <View style={{ flexDirection: "row", justifyContent: "center" }}>
                   <Text>
                     <FormattedMessage
                       id="noAccount"
@@ -154,7 +199,6 @@ const LoginScreen: React.FC = () => {
                 </View>
               </TouchableOpacity>
             </View>
-
           </VStack>
         </Center>
       </ScrollView>

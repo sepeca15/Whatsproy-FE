@@ -81,7 +81,8 @@
         {
           "photosPermission": "Necesitamos acceder a la camara para subir archivos."
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true

@@ -414,5 +414,11 @@ export const styles = StyleSheet.create({
     fontWeight: "600",
     color: "white",
   },
+  printButtonTouchable: {
+    flex: 1,
+    alignItems: "center",
+      
+
+  }
 
 })

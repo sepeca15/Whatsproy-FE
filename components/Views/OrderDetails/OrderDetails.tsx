@@ -697,12 +697,17 @@ const OrderDetails = () => {
           )}
         </Animated.View>
 
-        <Button
-          title={loading ? "Imprimiendo..." : "Imprimir Comanda"}
-          onPress={() => printHTML(comandaHTML)}
-          disabled={loading}
-      
-          />
+        <View style={styles.printButtom}>
+          <TouchableOpacity
+            onPress={() => printHTML(comandaHTML)}
+            disabled={loading}
+            style={styles.printButtonTouchable}
+          >
+            <Text style={styles.printButtonText}>
+              {loading ? "Imprimiendo..." : "Imprimir Comanda"}
+            </Text>
+          </TouchableOpacity>
+        </View>
 
 
 
