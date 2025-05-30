@@ -104,6 +104,8 @@ const AddProduct: React.FC = () => {
           <FormattedMessage id="addProduct" />
         </Text>
 
+        
+
         <View style={styles.switchRow}>
           <Text style={styles.label}>
             <FormattedMessage id="available" defaultMessage="Disponible" />
@@ -115,6 +117,8 @@ const AddProduct: React.FC = () => {
             }
           />
         </View>
+
+        
 
         <TouchableOpacity style={styles.imageUpload} onPress={handleImagePick}>
           {selectedImage ? (
