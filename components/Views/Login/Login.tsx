@@ -27,6 +27,7 @@ const LoginScreen: React.FC = () => {
   const handleChangeValue = useCallback((key: string, value: string) => {
     setFormValues((prev) => ({ ...prev, [key]: value }));
   }, []);
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
 
   const Login = useCallback(async () => {
     if (!formValues.email || !formValues.password) {
