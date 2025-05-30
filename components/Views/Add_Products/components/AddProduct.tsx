@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Text,
+  TextInput,
   TouchableOpacity,
   Image,
   ScrollView,
   Platform,
   ActivityIndicator,
   Switch,
+  Alert,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { AntDesign } from "@expo/vector-icons";
@@ -17,13 +19,10 @@ import api from "@/services/api/admin";
 import { FormattedMessage, useIntl } from "react-intl";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useUser } from "@/hooks/redux/useUser";
-import useValidateForm from "../../../../utils/validate_Products/useValidateForm";
 import useImagePicker from "../../../../utils/ImagePicker/useImagePicker";
 import { View } from "native-base";
 import MultiSelectInput from "@/components/MultiSelectInput";
 import { ICategoryData } from "../../Categories/components/CardCategory/CardCategory";
-
-import InputField from "@/components/InputField"; // <-- importás tu InputField personalizado
 
 const AddProduct: React.FC = () => {
   const router = useRouter();
@@ -40,16 +39,15 @@ const AddProduct: React.FC = () => {
   });
 
   const { user } = useUser();
-  const currencies = user?.currencies ?? [];
+  const currencies = user?.currencies || [];
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [allCategories, setAllCategories] = useState<ICategoryData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [errors, setErrors] = useState<{ [key: string]: string | null }>({});
 
-  useEffect(() => {
+  React.useEffect(() => {
     loadAllCategories();
   }, []);
-
-  const validateForm = useValidateForm(formData);
 
   const { pickImage, setImageUri, imageUri } = useImagePicker({
     toastErrorMessage: "Error al seleccionar la imagen",
@@ -75,8 +73,35 @@ const AddProduct: React.FC = () => {
     pickImage(setFormData);
   };
 
+  // Nueva función simple de validación
+  const validateForm = () => {
+    const newErrors: { [key: string]: string } = {};
+
+    if (!formData.nombre.trim()) {
+      newErrors.nombre = "El nombre del producto es obligatorio";
+    }
+
+    if (formData.precio <= 0) {
+      newErrors.precio = "El precio debe ser mayor que cero";
+    }
+
+    if (!(formData.categoryIds?.length ?? 0)) {
+      newErrors.categoryIds = "Seleccione al menos una categoría";
+    }
+
+    if (formData.plazoDuracionEstimadoMinutos <= 0) {
+      newErrors.plazoDuracionEstimadoMinutos =
+        "La duración estimada debe ser mayor que cero minutos";
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async () => {
     if (!validateForm()) return;
+
     setLoading(true);
     try {
       await api.products.create({
@@ -116,9 +141,7 @@ const AddProduct: React.FC = () => {
           </Text>
           <Switch
             value={formData.disponible}
-            onValueChange={(value) =>
-              setFormData({ ...formData, disponible: value })
-            }
+            onValueChange={(value) => setFormData({ ...formData, disponible: value })}
           />
         </View>
 
@@ -136,30 +159,33 @@ const AddProduct: React.FC = () => {
         </TouchableOpacity>
 
         <View style={styles.formContainer}>
-          {/* Nombre */}
-          <InputField
-            label={intl.formatMessage({ id: "productName" })}
-            placeholder="Ej: Milanesa de pollo"
+          <Text style={styles.label}>
+            <FormattedMessage id="productName" />
+          </Text>
+          <TextInput
+            style={styles.input}
             value={formData.nombre}
             onChangeText={(text) => setFormData({ ...formData, nombre: text })}
+            placeholder="Ej: Milanesa de pollo"
           />
 
-          {/* Precio y moneda */}
           <View style={styles.row}>
             <View style={styles.column}>
-              <InputField
-                label={intl.formatMessage({ id: "price" })}
-                placeholder="0.00"
-                keyboardType="numeric"
-                value={formData.precio ? formData.precio.toString() : ""}
+              <Text style={styles.label}>
+                <FormattedMessage id="price" />
+              </Text>
+              <TextInput
+                style={styles.input}
                 onChangeText={(text) => {
                   const value = parseFloat(text);
                   if (!isNaN(value)) {
                     setFormData((prev) => ({ ...prev, precio: value }));
-                  } else if (text === "") {
+                  } else {
                     setFormData((prev) => ({ ...prev, precio: 0 }));
                   }
                 }}
+                keyboardType="numeric"
+                placeholder="0.00"
               />
             </View>
 
@@ -187,54 +213,55 @@ const AddProduct: React.FC = () => {
             </View>
           </View>
 
-          {/* Duración estimada */}
-          <InputField
-            label={intl.formatMessage({ id: "estimatedDuration" })}
-            placeholder="Ej: 30 minutos"
-            keyboardType="numeric"
-            value={
-              formData.plazoDuracionEstimadoMinutos
-                ? formData.plazoDuracionEstimadoMinutos.toString()
-                : ""
-            }
+          <Text style={styles.label}>
+            <FormattedMessage id="estimatedDuration" />
+          </Text>
+          <TextInput
+            style={styles.input}
             onChangeText={(number) =>
               setFormData({
                 ...formData,
                 plazoDuracionEstimadoMinutos: parseFloat(number),
               })
             }
+            keyboardAppearance="dark"
+            keyboardType="numeric"
+            placeholder="Ej: 30 minutos"
           />
 
-          {/* Categorías */}
           <View mb={4} style={styles.column}>
             <Text style={styles.label}>Categoria</Text>
-            <MultiSelectInput
-              sizeText={16}
-              height={50}
-              isMultiple
-              placeholder="Seleccionar categorías"
-              options={allCategories.map((cat) => ({
-                label: cat.name,
-                value: cat.id.toString(),
-                placeholder: cat.name,
-              }))}
-              setItemsSelected={(selectedIds: number[]) => {
-                setFormData((prev) => ({
-                  ...prev,
-                  categoryIds: selectedIds,
-                }));
-              }}
-              onSearch={() => {}}
-            />
+            <View>
+              <MultiSelectInput
+                sizeText={16}
+                height={50}
+                isMultiple
+                placeholder="Seleccionar categorías"
+                options={allCategories.map((cat) => ({
+                  label: cat.name,
+                  value: cat.id.toString(),
+                  placeholder: cat.name,
+                }))}
+                setItemsSelected={(selectedIds: number[]) => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    categoryIds: selectedIds,
+                  }));
+                }}
+                onSearch={() => { }}
+              />
+            </View>
           </View>
 
-          {/* Descripción */}
-          <InputField
-            label={intl.formatMessage({ id: "description" })}
-            placeholder="Describe el producto"
-            value={formData.descripcion}
+          <Text style={styles.label}>
+            <FormattedMessage id="description" />
+          </Text>
+          <TextInput
+            style={[styles.input, styles.textArea]}
             onChangeText={(text) => setFormData({ ...formData, descripcion: text })}
-            isTextArea
+            placeholder="Describe el producto"
+            multiline
+            numberOfLines={4}
           />
 
           <TouchableOpacity
