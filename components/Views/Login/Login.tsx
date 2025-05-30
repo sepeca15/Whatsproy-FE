@@ -68,10 +68,13 @@ const LoginScreen: React.FC = () => {
     }
   }, [formValues, router, showToast]);
 
+
+
   const handleBiometricAuth = useCallback(async () => {
+    // verificar si el dispositivo tiene hardware de autenticación biométrica y si hay huellas registradas
     const hasHardware = await LocalAuthentication.hasHardwareAsync();
     const isEnrolled = await LocalAuthentication.isEnrolledAsync();
-
+    // si no hay hardware o no hay huellas registradas, mostrar un mensaje de error
     if (!hasHardware || !isEnrolled) {
       showToast({
         title: "Huella no disponible",
@@ -80,13 +83,14 @@ const LoginScreen: React.FC = () => {
       });
       return;
     }
-
+    // si hay hardware y huellas registradas, proceder con la autenticación biométrica
+    // solicitar autenticación biométrica
     const result = await LocalAuthentication.authenticateAsync({
       promptMessage: "Ingresá con tu huella digital",
       fallbackLabel: "Usar contraseña",
       disableDeviceFallback: true,
     });
-
+    // si la autenticación es exitosa, llamar a la función de login
     if (result.success) {
       Login();
     } else {
