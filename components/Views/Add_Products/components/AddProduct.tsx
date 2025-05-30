@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Text,
-  TextInput,
   TouchableOpacity,
   Image,
   ScrollView,
@@ -24,6 +23,8 @@ import { View } from "native-base";
 import MultiSelectInput from "@/components/MultiSelectInput";
 import { ICategoryData } from "../../Categories/components/CardCategory/CardCategory";
 
+import InputField from "@/components/InputField"; // <-- importás tu InputField personalizado
+
 const AddProduct: React.FC = () => {
   const router = useRouter();
   const intl = useIntl();
@@ -35,18 +36,18 @@ const AddProduct: React.FC = () => {
     descripcion: "",
     plazoDuracionEstimadoMinutos: 0,
     disponible: false,
-    categoryIds: []
+    categoryIds: [],
   });
 
   const { user } = useUser();
-  const currencies = user?.currencies;
+  const currencies = user?.currencies ?? [];
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [allCategories, setAllCategories] = useState<ICategoryData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  React.useEffect(() => {
-    loadAllCategories()
-  }, [])
+  useEffect(() => {
+    loadAllCategories();
+  }, []);
 
   const validateForm = useValidateForm(formData);
 
@@ -61,14 +62,14 @@ const AddProduct: React.FC = () => {
 
   const loadAllCategories = async () => {
     try {
-      const resp = await api.category.getAll()
+      const resp = await api.category.getAll();
       if (resp.ok) {
-        setAllCategories(resp.data)
+        setAllCategories(resp.data);
       }
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const handleImagePick = async () => {
     pickImage(setFormData);
@@ -81,11 +82,16 @@ const AddProduct: React.FC = () => {
       await api.products.create({
         ...formData,
         precio: parseFloat(formData.precio.toString()),
-        plazoDuracionEstimadoMinutos: parseFloat(formData.plazoDuracionEstimadoMinutos.toString()),
+        plazoDuracionEstimadoMinutos: parseFloat(
+          formData.plazoDuracionEstimadoMinutos.toString()
+        ),
       });
       router.push("/(tabs)/productos");
     } catch (error: any) {
-      console.error("Error al crear el producto:", error?.response?.data?.message || error);
+      console.error(
+        "Error al crear el producto:",
+        error?.response?.data?.message || error
+      );
     } finally {
       setLoading(false);
     }
@@ -97,14 +103,12 @@ const AddProduct: React.FC = () => {
       resetScrollToCoords={{ x: 0, y: 0 }}
       scrollEnabled={true}
       enableOnAndroid={true}
-      extraScrollHeight={Platform.OS === 'ios' ? 20 : 50}
+      extraScrollHeight={Platform.OS === "ios" ? 20 : 50}
     >
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Text style={styles.title}>
           <FormattedMessage id="addProduct" />
         </Text>
-
-        
 
         <View style={styles.switchRow}>
           <Text style={styles.label}>
@@ -112,13 +116,11 @@ const AddProduct: React.FC = () => {
           </Text>
           <Switch
             value={formData.disponible}
-            onValueChange={(value)  =>
+            onValueChange={(value) =>
               setFormData({ ...formData, disponible: value })
             }
           />
         </View>
-
-        
 
         <TouchableOpacity style={styles.imageUpload} onPress={handleImagePick}>
           {selectedImage ? (
@@ -134,31 +136,30 @@ const AddProduct: React.FC = () => {
         </TouchableOpacity>
 
         <View style={styles.formContainer}>
-          <Text style={styles.label}>
-            <FormattedMessage id="productName" />
-          </Text>
-          <TextInput
-            style={styles.input}
+          {/* Nombre */}
+          <InputField
+            label={intl.formatMessage({ id: "productName" })}
+            placeholder="Ej: Milanesa de pollo"
             value={formData.nombre}
             onChangeText={(text) => setFormData({ ...formData, nombre: text })}
-            placeholder="Ej: Milanesa de pollo"
           />
 
+          {/* Precio y moneda */}
           <View style={styles.row}>
             <View style={styles.column}>
-              <Text style={styles.label}>
-                <FormattedMessage id="price" />
-              </Text>
-              <TextInput
-                style={styles.input}
+              <InputField
+                label={intl.formatMessage({ id: "price" })}
+                placeholder="0.00"
+                keyboardType="numeric"
+                value={formData.precio ? formData.precio.toString() : ""}
                 onChangeText={(text) => {
                   const value = parseFloat(text);
                   if (!isNaN(value)) {
                     setFormData((prev) => ({ ...prev, precio: value }));
+                  } else if (text === "") {
+                    setFormData((prev) => ({ ...prev, precio: 0 }));
                   }
                 }}
-                keyboardType="numeric"
-                placeholder="0.00"
               />
             </View>
 
@@ -186,57 +187,54 @@ const AddProduct: React.FC = () => {
             </View>
           </View>
 
-          <Text style={styles.label}>
-            <FormattedMessage id="estimatedDuration" />
-          </Text>
-          <TextInput
-            style={styles.input}
+          {/* Duración estimada */}
+          <InputField
+            label={intl.formatMessage({ id: "estimatedDuration" })}
+            placeholder="Ej: 30 minutos"
+            keyboardType="numeric"
+            value={
+              formData.plazoDuracionEstimadoMinutos
+                ? formData.plazoDuracionEstimadoMinutos.toString()
+                : ""
+            }
             onChangeText={(number) =>
               setFormData({
                 ...formData,
                 plazoDuracionEstimadoMinutos: parseFloat(number),
               })
             }
-            keyboardAppearance="dark"
-            keyboardType="numeric"
-            placeholder="Ej: 30 minutos"
           />
 
+          {/* Categorías */}
           <View mb={4} style={styles.column}>
             <Text style={styles.label}>Categoria</Text>
-            <View>
-              <MultiSelectInput
-                sizeText={16}
-                height={50}
-                isMultiple
-                placeholder="Seleccionar categorías"
-                options={allCategories.map((cat) => ({
-                  label: cat.name,
-                  value: cat.id.toString(),
-                  placeholder: cat.name,
-                }))}
-                setItemsSelected={(selectedIds: number[]) => {
-                  setFormData((prev) => ({
-                    ...prev,
-                    categoryIds: selectedIds,
-                  }));
-                }}
-                onSearch={() => { }}
-              />
-            </View>
+            <MultiSelectInput
+              sizeText={16}
+              height={50}
+              isMultiple
+              placeholder="Seleccionar categorías"
+              options={allCategories.map((cat) => ({
+                label: cat.name,
+                value: cat.id.toString(),
+                placeholder: cat.name,
+              }))}
+              setItemsSelected={(selectedIds: number[]) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  categoryIds: selectedIds,
+                }));
+              }}
+              onSearch={() => {}}
+            />
           </View>
 
-          <Text style={styles.label}>
-            <FormattedMessage id="description" />
-          </Text>
-          <TextInput
-            style={[styles.input, styles.textArea]}
-            onChangeText={(text) =>
-              setFormData({ ...formData, descripcion: text })
-            }
+          {/* Descripción */}
+          <InputField
+            label={intl.formatMessage({ id: "description" })}
             placeholder="Describe el producto"
-            multiline
-            numberOfLines={4}
+            value={formData.descripcion}
+            onChangeText={(text) => setFormData({ ...formData, descripcion: text })}
+            isTextArea
           />
 
           <TouchableOpacity
