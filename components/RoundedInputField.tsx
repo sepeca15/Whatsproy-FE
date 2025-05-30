@@ -59,7 +59,7 @@ const RoundedInputField: React.FC<InputFieldProps> = ({
 
       </View>
 
-      {error && (
+      {typeof error === 'string' && (
         <FormControl.ErrorMessage ml={2}>
           {error}
         </FormControl.ErrorMessage>
