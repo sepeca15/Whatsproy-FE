@@ -30,44 +30,59 @@ const LoginScreen: React.FC = () => {
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
 
   const Login = useCallback(async () => {
-    if (!formValues.email || !formValues.password) {
-      showToast({
-        title: "Error",
-        description: "Completa los campos requeridos",
-        status: "error",
-      });
-      return;
-    }
+  const newErrors: { email?: string; password?: string } = {};
 
-    try {
-      setLoading(true);
-      const res = await api.auth.login(formValues);
-      if (res.access_token) {
-        StoreData("token", res.access_token);
-        const userData = await api.auth.me();
-        StoreData("user", JSON.stringify(userData));
-        router.push("/(tabs)/home");
-      }
-    } catch (error: any) {
-      showToast({
-        title: (
-          <FormattedMessage
-            id="authErrorTitle"
-            defaultMessage="Authentication Error"
-          />
-        ),
-        description: error.response?.data?.message || (
-          <FormattedMessage
-            id="authErrorDescription"
-            defaultMessage="Error logging in."
-          />
-        ),
-        status: "error",
-      });
-    } finally {
-      setLoading(false);
+  if (!formValues.email) {
+    newErrors.email = "Email requerido";
+  }
+
+  if (!formValues.password) {
+    newErrors.password = "Contraseña requerida";
+  }
+
+  // Si hay errores, los setea y no continúa con el login
+  if (Object.keys(newErrors).length > 0) {
+    setErrors(newErrors);
+    showToast({
+      title: "Error",
+      description: "Completa los campos requeridos",
+      status: "error",
+    });
+    return;
+  }
+
+  setErrors({}); // limpia errores si todo está ok
+
+  try {
+    setLoading(true);
+    const res = await api.auth.login(formValues);
+    if (res.access_token) {
+      StoreData("token", res.access_token);
+      const userData = await api.auth.me();
+      StoreData("user", JSON.stringify(userData));
+      router.push("/(tabs)/home");
     }
-  }, [formValues, router, showToast]);
+  } catch (error: any) {
+    showToast({
+      title: (
+        <FormattedMessage
+          id="authErrorTitle"
+          defaultMessage="Authentication Error"
+        />
+      ),
+      description: error.response?.data?.message || (
+        <FormattedMessage
+          id="authErrorDescription"
+          defaultMessage="Error logging in."
+        />
+      ),
+      status: "error",
+    });
+  } finally {
+    setLoading(false);
+  }
+}, [formValues, router, showToast]);
+
 
 
 
