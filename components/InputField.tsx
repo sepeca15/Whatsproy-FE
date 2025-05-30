@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { FormControl, Input, TextArea } from "native-base";
 import MaskInput from "react-native-mask-input";
-
+import { StyleSheet } from "react-native";
 interface InputFieldProps {
   label?: React.ReactNode;
   placeholder: React.ReactNode;
@@ -39,7 +39,7 @@ const InputField: React.FC<InputFieldProps> = ({
     <FormControl
       isDisabled={isDisabled}
       isInvalid={error}
-      style={{ marginTop: marginTop }}
+      style={styles.input}
       isRequired={isRequired}
     >
       {label && <FormControl.Label>{label}</FormControl.Label>}
@@ -94,3 +94,16 @@ const InputField: React.FC<InputFieldProps> = ({
 };
 
 export default InputField;
+
+const styles = StyleSheet.create({
+ input: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 8,
+    height: 50,
+    padding: 12,
+    marginBottom: 16,
+    fontSize: 16,
+    backgroundColor: "#f9f9f9",
+  },
+});

@@ -23,7 +23,7 @@ import useImagePicker from "../../../../utils/ImagePicker/useImagePicker";
 import { View } from "native-base";
 import MultiSelectInput from "@/components/MultiSelectInput";
 import { ICategoryData } from "../../Categories/components/CardCategory/CardCategory";
-
+import InputField from "@/components/InputField";
 const AddProduct: React.FC = () => {
   const router = useRouter();
   const intl = useIntl();
@@ -162,11 +162,12 @@ const AddProduct: React.FC = () => {
           <Text style={styles.label}>
             <FormattedMessage id="productName" />
           </Text>
-          <TextInput
-            style={styles.input}
+          <InputField
+            label="Nombre"
+            placeholder="Ej: Milanesa de pollo"
             value={formData.nombre}
             onChangeText={(text) => setFormData({ ...formData, nombre: text })}
-            placeholder="Ej: Milanesa de pollo"
+            error={errors.nombre}
           />
 
           <View style={styles.row}>
