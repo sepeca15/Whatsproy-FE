@@ -151,7 +151,7 @@ const LoginScreen: React.FC = () => {
                     defaultMessage: `Enter your ${field}`,
                   })}
                   type={field === "password" ? "password" : "text"}
-                  error={errors[field]} // Esto puede ser undefined o un string
+                  error={errors[field]} // <- pasás el mensaje directamente (puede ser undefined o un string)
                 />
               ))}
 
