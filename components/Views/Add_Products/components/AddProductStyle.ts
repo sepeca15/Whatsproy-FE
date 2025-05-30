@@ -81,12 +81,17 @@ export const styles = StyleSheet.create({
     fontWeight: "600",
   },
   input: {
-    borderWidth: 1,
+  
     borderColor: "#ddd",
     borderRadius: 8,
     height: 50,
     padding: 12,
    
+    fontSize: 16,
+    backgroundColor: "#f9f9f9",
+  },
+    inputarea: {
+ 
     fontSize: 16,
     backgroundColor: "#f9f9f9",
   },

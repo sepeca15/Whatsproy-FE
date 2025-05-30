@@ -163,7 +163,7 @@ const AddProduct: React.FC = () => {
             <FormattedMessage id="productName" />
           </Text>
           <InputField
-          
+
             placeholder="Ej: Milanesa de pollo"
             value={formData.nombre}
             onChangeText={(text) => setFormData({ ...formData, nombre: text })}
@@ -177,7 +177,7 @@ const AddProduct: React.FC = () => {
                 <FormattedMessage id="price" />
               </Text>
               <InputField
-              
+
                 placeholder="0.00"
                 keyboardType="numeric"
                 value={formData.precio ? formData.precio.toString() : ""}
@@ -186,7 +186,7 @@ const AddProduct: React.FC = () => {
                   setFormData({ ...formData, precio: isNaN(value) ? 0 : value });
                 }}
                 error={errors.precio}
-                 style={styles.input}
+                style={styles.input}
               />
             </View>
 
@@ -217,17 +217,24 @@ const AddProduct: React.FC = () => {
           <Text style={styles.label}>
             <FormattedMessage id="estimatedDuration" />
           </Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={(number) =>
+          <InputField
+
+            placeholder="Ej: 45"
+            keyboardType="numeric"
+            value={
+              formData.plazoDuracionEstimadoMinutos
+                ? formData.plazoDuracionEstimadoMinutos.toString()
+                : ""
+            }
+            onChangeText={(text) => {
+              const value = parseInt(text);
               setFormData({
                 ...formData,
-                plazoDuracionEstimadoMinutos: parseFloat(number),
-              })
-            }
-            keyboardAppearance="dark"
-            keyboardType="numeric"
-            placeholder="Ej: 30 minutos"
+                plazoDuracionEstimadoMinutos: isNaN(value) ? 0 : value,
+              });
+            }}
+            error={errors.plazoDuracionEstimadoMinutos}
+            style={styles.input}
           />
 
           <View mb={4} style={styles.column}>
@@ -257,12 +264,14 @@ const AddProduct: React.FC = () => {
           <Text style={styles.label}>
             <FormattedMessage id="description" />
           </Text>
-          <TextInput
-            style={[styles.input, styles.textArea]}
+          <InputField
+          
+            placeholder="Ej: Plato clásico con papas fritas"
+            isTextArea
+            value={formData.descripcion}
             onChangeText={(text) => setFormData({ ...formData, descripcion: text })}
-            placeholder="Describe el producto"
-            multiline
-            numberOfLines={4}
+            error={errors.descripcion}
+            style={styles.inputarea}
           />
 
           <TouchableOpacity
