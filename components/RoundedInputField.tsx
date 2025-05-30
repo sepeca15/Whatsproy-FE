@@ -38,33 +38,43 @@ const RoundedInputField: React.FC<InputFieldProps> = ({
   const inputRef = useRef<any>(null);
 
   return (
-    <FormControl
-      isDisabled={isDisabled}
-      isInvalid={error}
-      style={{ marginTop: marginTop }}
-      isRequired={isRequired}
+   <FormControl
+  isDisabled={isDisabled}
+  isInvalid={!!error}
+  style={{ marginTop: marginTop }}
+  isRequired={isRequired}
+>
+  <View>
+    <View
+      display="flex"
+      flexDirection="row"
+      alignItems="center"
+      rounded="full"
+      bg={bg ? bg : "gray.100"}
+      px={6}
+      py={2}
     >
-      <View display={'flex'} flexDir={'row'} alignItems={'center'} justifyContent={'center'} rounded={'full'} bg={bg ? bg : 'gray.100'} px={6} py={2}>
-        {icon}
-        <Input
-          ref={inputRef}
-          autoFocus={false}
-          keyboardType={keyboardType}
-          type={type}
-          placeholder={typeof placeholder === "string" ? placeholder : undefined}
-          onChangeText={onChangeText}
-          variant={'unstyled'}
-          {...props}
-        />
+      {icon}
+      <Input
+        ref={inputRef}
+        autoFocus={false}
+        keyboardType={keyboardType}
+        type={type}
+        placeholder={typeof placeholder === "string" ? placeholder : undefined}
+        onChangeText={onChangeText}
+        variant="unstyled"
+        {...props}
+      />
+    </View>
 
-      </View>
+    {error && (
+      <FormControl.ErrorMessage mt={1} ml={3}>
+        {error}
+      </FormControl.ErrorMessage>
+    )}
+  </View>
+</FormControl>
 
-      {typeof error === 'string' && (
-        <FormControl.ErrorMessage ml={2}>
-          {error}
-        </FormControl.ErrorMessage>
-      )}
-    </FormControl>
   );
 };
 
