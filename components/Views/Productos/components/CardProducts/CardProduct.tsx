@@ -134,6 +134,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       },
     });
   };
+  
 
   const handleView = () => {
     router.push({
@@ -158,6 +159,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
       },
     });
   };
+
+
   /* ------------------------------------------- */
 
   /* --------- Disponibilizar / Deshabilitar --------- */

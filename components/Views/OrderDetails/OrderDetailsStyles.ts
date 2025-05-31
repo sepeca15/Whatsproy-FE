@@ -393,51 +393,80 @@ export const styles = StyleSheet.create({
     color: "white",
   },
   paymentLabel: {
-  fontWeight: 'bold',
-  fontSize: 16,
-  marginBottom: 4,
-},
-paymentValue: {
-  fontSize: 16,
-  marginBottom: 4,
-},
-paymentDescription: {
-  fontSize: 14,
-  color: '#555',
-  marginBottom: 8,
-},
-paymentSpecs: {
-  fontSize: 14,
-  color: '#333',
-  marginBottom: 8,
-},
-transferProofContainer: {
-  marginTop: 8,
-},
-transferProofLabel: {
-  fontWeight: 'bold',
-  fontSize: 14,
-  marginBottom: 4,
-},
-transferProofImage: {
-  width: '100%',
-  height: 200,
-  borderRadius: 8,
-},
-modalBackground: {
-  flex: 1,
-  display: "flex",
-  backgroundColor: 'rgba(0,0,0,0.95)',
-  justifyContent: 'center',
-  alignItems: 'center',
-},
-fullscreenImage: {
-  width: '100%',
-  height: '100%',
-},
-closeButton: {
-  position: 'absolute',
-  top: 120,
-  zIndex: 2,
-},
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginBottom: 4,
+  },
+  paymentValue: {
+    fontSize: 16,
+    marginBottom: 4,
+  },
+  paymentDescription: {
+    fontSize: 14,
+    color: '#555',
+    marginBottom: 8,
+  },
+  paymentSpecs: {
+    fontSize: 14,
+    color: '#333',
+    marginBottom: 8,
+  },
+  transferProofContainer: {
+    marginTop: 8,
+  },
+  transferProofLabel: {
+    fontWeight: 'bold',
+    fontSize: 14,
+    marginBottom: 4,
+  },
+  transferProofImage: {
+    width: '100%',
+    height: 200,
+    borderRadius: 8,
+  },
+  modalBackground: {
+    flex: 1,
+    display: "flex",
+    backgroundColor: 'rgba(0,0,0,0.95)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  fullscreenImage: {
+    width: '100%',
+    height: '100%',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 120,
+    zIndex: 2,
+  },
+
+  printButtom: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: Colors.light.primary,
+    borderRadius: 12,
+    paddingVertical: 16,
+    marginTop: 8,
+    shadowColor: Colors.light.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
+
+  },
+  printButtonText: {
+    marginLeft: 8,
+    fontSize: RFValue(16),
+    fontWeight: "600",
+    color: "white",
+  },
+  printButtonTouchable: {
+    flex: 1,
+    alignItems: "center",
+
+
+  }
+
 })

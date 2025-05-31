@@ -67,6 +67,13 @@ export const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
+  switchRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    marginBottom: 16,
+  },
   label: {
     fontSize: 16,
     marginBottom: 8,
@@ -74,12 +81,17 @@ export const styles = StyleSheet.create({
     fontWeight: "600",
   },
   input: {
-    borderWidth: 1,
+  
     borderColor: "#ddd",
     borderRadius: 8,
     height: 50,
     padding: 12,
-    marginBottom: 16,
+   
+    fontSize: 16,
+    backgroundColor: "#f9f9f9",
+  },
+    inputarea: {
+ 
     fontSize: 16,
     backgroundColor: "#f9f9f9",
   },
