@@ -12,6 +12,7 @@ import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmActi
 import { FormattedMessage, useIntl } from "react-intl";
 import { Button, Pressable, Spinner } from "native-base";
 import moment from "moment";
+import { MaterialIcons } from "@expo/vector-icons";
 
 interface IOrderData {
   clientName: string;
@@ -19,6 +20,7 @@ interface IOrderData {
   numberSender: string;
   total: number;
   status?: boolean;
+  transferUrl?: any;
   estado: any;
   orderId: number;
   createdAt?: string;
@@ -37,7 +39,7 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
   const [loading, setLoading] = useState({
     deleteState: false,
     confirmState: false,
-  });  
+  });
 
   const router = useRouter();
   const [statusModalDelete, setStateModalDelete] = useState<boolean>(false);
@@ -132,6 +134,32 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
                 </CustomText>
               </View>
             )}
+
+
+            {orderData.transferUrl && (
+              <View
+                style={{
+                  backgroundColor: "#e0f2fe",
+                  paddingVertical: 4,
+                  paddingHorizontal: 10,
+                  borderRadius: 12,
+                  alignSelf: "flex-start",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginTop: 12,
+                }}
+              >
+                <MaterialIcons name="attach-file" size={16} color="#0284c7" />
+                <CustomText style={{ marginLeft: 6, fontSize: 13, color: "#0284c7" }}>
+                  <FormattedMessage
+                    id="attachedTransferProof"
+                    defaultMessage="Comprobante de transferencia adjunto"
+                  />
+                </CustomText>
+              </View>
+            )}
+
+
           </View>
 
         </View>

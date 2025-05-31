@@ -1,3 +1,8 @@
 {
-    "gitdoc.enabled": true
+    "gitdoc.enabled": true,
+    "workbench.colorCustomizations": {
+        "activityBar.background": "#541824",
+        "titleBar.activeBackground": "#762132",
+        "titleBar.activeForeground": "#FEFBFC"
+    }
 }

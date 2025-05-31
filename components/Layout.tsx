@@ -131,6 +131,8 @@ const styles = StyleSheet.create({
     height: 60,
     alignItems: "center",
     justifyContent: "space-between",
+    borderTopColor: "#B8B8B8",
+    borderTopWidth: 1,
   },
   LinkContainer: {
     height: 60,

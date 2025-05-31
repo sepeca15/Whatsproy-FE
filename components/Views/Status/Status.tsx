@@ -14,6 +14,7 @@ import ModalCreateOrEditStatus from "./components/ModalCreateOrEditStatus"
 import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmAction"
 import { useColorScheme } from "react-native"
 import { styles } from "./StatusStyles"
+import { globalStyles } from "@/components/globalStyles"
 
 export interface IEstado {
     id: number
@@ -172,13 +173,13 @@ const StatusView = () => {
     return (
         <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.background }}>
             {/* Header */}
-            <Animated.View entering={FadeIn.duration(500)} style={[styles.header, { backgroundColor: colors.primary }]}>
-                <View style={styles.headerContent}>
-                    <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+            <Animated.View entering={FadeIn.duration(500)} style={[globalStyles.header, { backgroundColor: colors.primary }]}>
+                <View style={globalStyles.headerContent}>
+                    <TouchableOpacity style={globalStyles.backButton} onPress={() => router.back()}>
                         <AntDesign name="arrowleft" size={22} color="white" />
                     </TouchableOpacity>
-                    <View style={styles.headerTitleContainer}>
-                        <CustomText style={styles.headerTitle}>
+                    <View style={globalStyles.headerLeft}>
+                        <CustomText style={globalStyles.businessName}>
                             <FormattedMessage id="statusTitlePage" />
                         </CustomText>
                     </View>

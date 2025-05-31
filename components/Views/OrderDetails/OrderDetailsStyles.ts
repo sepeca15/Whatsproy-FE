@@ -392,4 +392,52 @@ export const styles = StyleSheet.create({
     fontWeight: "600",
     color: "white",
   },
+  paymentLabel: {
+  fontWeight: 'bold',
+  fontSize: 16,
+  marginBottom: 4,
+},
+paymentValue: {
+  fontSize: 16,
+  marginBottom: 4,
+},
+paymentDescription: {
+  fontSize: 14,
+  color: '#555',
+  marginBottom: 8,
+},
+paymentSpecs: {
+  fontSize: 14,
+  color: '#333',
+  marginBottom: 8,
+},
+transferProofContainer: {
+  marginTop: 8,
+},
+transferProofLabel: {
+  fontWeight: 'bold',
+  fontSize: 14,
+  marginBottom: 4,
+},
+transferProofImage: {
+  width: '100%',
+  height: 200,
+  borderRadius: 8,
+},
+modalBackground: {
+  flex: 1,
+  display: "flex",
+  backgroundColor: 'rgba(0,0,0,0.95)',
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+fullscreenImage: {
+  width: '100%',
+  height: '100%',
+},
+closeButton: {
+  position: 'absolute',
+  top: 120,
+  zIndex: 2,
+},
 })

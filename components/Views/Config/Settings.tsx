@@ -14,6 +14,7 @@ import styles from "./SettingsStyles";
 import SettingCard from "@/hooks/settingsCards/SettingCard";
 import * as Animatable from "react-native-animatable";
 import { useUser } from "@/hooks/redux/useUser";
+import { ID_TIPOSERVICIO_DELIVERY, ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
 
 const Settings = () => {
   const intl = useIntl();
@@ -23,23 +24,25 @@ const Settings = () => {
   const colors = isDark ? Colors.dark : Colors.light;
 
   const { user } = useUser();
+  const isAdmin = user?.isAdmin;
+  const isDelivery = user?.tipo_servicio === ID_TIPOSERVICIO_DELIVERY;
 
   const settingsPage = [
     ...(user?.isSuperAdmin
       ? [
-          {
-            title: intl.formatMessage({
-              id: "companies",
-              defaultMessage: "Companies",
-            }),
-            href: "/(tabs)/companies",
-            description: intl.formatMessage({
-              id: "companiesDesc",
-              defaultMessage: "Manage companies and deploy its",
-            }),
-            icon: <Feather size={22} color={"white"} name="list" />,
-          },
-        ]
+        {
+          title: intl.formatMessage({
+            id: "companies",
+            defaultMessage: "Companies",
+          }),
+          href: "/(tabs)/companies",
+          description: intl.formatMessage({
+            id: "companiesDesc",
+            defaultMessage: "Manage companies and deploy its",
+          }),
+          icon: <Feather size={22} color={"white"} name="list" />,
+        },
+      ]
       : []),
     {
       title: intl.formatMessage({
@@ -53,7 +56,7 @@ const Settings = () => {
       }),
       icon: <Feather size={22} color={"white"} name="settings" />,
     },
-    {
+    ...(isAdmin ? [{
       title: intl.formatMessage({
         id: "subscription ",
         defaultMessage: "Subscription",
@@ -64,8 +67,8 @@ const Settings = () => {
         defaultMessage: "Manage your working hours and preferences",
       }),
       icon: <Entypo size={22} color={"white"} name="wallet" />,
-    },
-    {
+    }] : []),
+    ...(isAdmin ? [{
       title: intl.formatMessage({ id: "users", defaultMessage: "Users" }),
       href: "/(tabs)/usuarios",
       description: intl.formatMessage({
@@ -85,24 +88,6 @@ const Settings = () => {
         <MaterialCommunityIcons name="list-status" size={22} color={"white"} />
       ),
     },
-    // {
-    //   title: intl.formatMessage({ id: "notifications", defaultMessage: "Notifications" }),
-    //   href: "",
-    //   description: intl.formatMessage({ id: "notificationsDescription", defaultMessage: "Manage notification preferences" }),
-    //   icon: <IonIcons name="notifications-outline" size={22} color={"white"} />,
-    // },
-    {
-      title: intl.formatMessage({
-        id: "privacySecurity",
-        defaultMessage: "Privacy & Security",
-      }),
-      href: "/(tabs)/privacy",
-      description: intl.formatMessage({
-        id: "privacyDescription",
-        defaultMessage: "View privacy and security policies",
-      }),
-      icon: <Feather size={22} color={"white"} name="shield" />,
-    },
     {
       title: intl.formatMessage({
         id: "orderData",
@@ -114,6 +99,19 @@ const Settings = () => {
         defaultMessage: "Manage order-related data",
       }),
       icon: <IonIcons size={22} color={"white"} name="newspaper-outline" />,
+    }
+    ] : []),
+    {
+      title: intl.formatMessage({
+        id: "privacySecurity",
+        defaultMessage: "Privacy & Security",
+      }),
+      href: "/(tabs)/privacy",
+      description: intl.formatMessage({
+        id: "privacyDescription",
+        defaultMessage: "View privacy and security policies",
+      }),
+      icon: <Feather size={22} color={"white"} name="shield" />,
     },
     {
       title: intl.formatMessage({
@@ -159,6 +157,20 @@ const Settings = () => {
         <IonIcons size={22} color={"white"} name="phone-portrait-outline" />
       ),
     },
+    ...(isDelivery && isAdmin ? [{
+      title: intl.formatMessage({
+        id: "paymentMethods",
+        defaultMessage: "Payment Methods",
+      }),
+      href: "/(tabs)/paymentMethods",
+      description: intl.formatMessage({
+        id: "paymentMethodsDesc",
+        defaultMessage: "Choose your payment methods, enable and edit it",
+      }),
+      icon: (
+        <IonIcons size={22} color={"white"} name="card-outline" />
+      ),
+    }] : [])
   ];
 
   return (

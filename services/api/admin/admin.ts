@@ -1,4 +1,5 @@
 import * as auth from "../auth/auth";
+import * as paymentMethods from "../paymentMethods/paymentMethods";
 import * as products from "../products/products";
 import * as company from "../company/company";
 import * as plan from "../plan/plan";
@@ -26,6 +27,10 @@ const api = {
     me: auth.GetMyAccountData,
     resetPassword: auth.resetPassword,
     sendLink: auth.sendLinkToGmail
+  },
+   paymentMethods: {
+    getPaymentMethods: paymentMethods.getPaymentMethods,
+    editPaymentMethod: paymentMethods.editPaymentMethod,
   },
   products: {
     getAll: products.findAllProducts,

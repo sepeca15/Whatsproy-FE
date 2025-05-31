@@ -8,11 +8,12 @@ import {
   Platform,
   Alert,
   Linking,
+  Modal,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import * as Progress from "react-native-progress";
 import api from "@/services/api/admin";
-import { ScrollView, Text, View } from "native-base";
+import { Image, ScrollView, Text, View } from "native-base";
 import moment from "moment";
 import "moment/locale/es";
 import { FormattedMessage } from "react-intl";
@@ -66,7 +67,6 @@ const OrderDetails = () => {
   const [detailOfOrder, setDetailOfOrder] =
     React.useState<IDetailsOrder>(initialState);
 
-  console.log("detailOfOrder", detailOfOrder)
   const { orderId, keyDeleteType } = useLocalSearchParams();
   const resolvedKeyDeleteType = keyDeleteType as "pending" | "finished";
   const [stateModalStatus, setStateModalStatus] =
@@ -80,6 +80,9 @@ const OrderDetails = () => {
   const [allStatus, setAllStatus] = React.useState<IEstado[]>([]);
   const [sendingChangeStatus, setSendingChangeStatus] =
     React.useState<boolean>(false);
+
+  const [isImagePreviewVisible, setImagePreviewVisible] = useState(false);
+  const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
 
   const toggleModalStatus = () => setStateModalStatus((prev) => !prev);
 
@@ -245,7 +248,7 @@ const OrderDetails = () => {
     Boolean(p.detalle?.trim())
   );
 
- const comandaHTML = `
+  const comandaHTML = `
 <html>
   <head>
     <style>
@@ -410,6 +413,54 @@ const OrderDetails = () => {
                   }}
                 />
               </Text>
+            </View>
+          </Animated.View>
+        )}
+
+        {detailOfOrder.data?.paymentMethod && (
+          <Animated.View
+            style={[
+              styles.sectionCard,
+              { opacity: fadeAnim, transform: [{ translateY: slideAnim }] },
+            ]}
+          >
+            <View style={styles.sectionHeader}>
+              <MaterialIcons name="payment" size={20} color={Colors.light.primary} />
+              <Text style={styles.sectionTitle}>
+                <FormattedMessage id="paymentInfo" defaultMessage="Información de pago" />
+              </Text>
+            </View>
+
+            <View style={{ marginTop: 8 }}>
+              <Text style={styles.paymentLabel}>
+                <FormattedMessage id="paymentMethod" defaultMessage="Método de pago" />:
+              </Text>
+              <Text style={styles.paymentValue}>{detailOfOrder.data.paymentMethod.name}</Text>
+
+              <Text style={styles.paymentDescription}>{detailOfOrder.data.paymentMethod.description}</Text>
+
+              {detailOfOrder.data.transferUrl && (
+                <View style={styles.transferProofContainer}>
+                  <Text style={styles.transferProofLabel}>
+                    <FormattedMessage
+                      id="transferProof"
+                      defaultMessage="Captura del comprobante de transferencia:"
+                    />
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setPreviewImageUrl(detailOfOrder?.data?.transferUrl ?? "");
+                      setImagePreviewVisible(true);
+                    }}
+                  >
+                    <Image
+                      source={{ uri: detailOfOrder.data.transferUrl }}
+                      style={styles.transferProofImage}
+                      resizeMode="contain"
+                    />
+                  </TouchableOpacity>
+                </View>
+              )}
             </View>
           </Animated.View>
         )}
@@ -671,11 +722,11 @@ const OrderDetails = () => {
           )}
         </Animated.View>
 
-      <Button
-      title={loading ? "Imprimiendo..." : "Imprimir Comanda"}
-      onPress={() => printHTML(comandaHTML)}
-      disabled={loading}
-    />
+        <Button
+          title={loading ? "Imprimiendo..." : "Imprimir Comanda"}
+          onPress={() => printHTML(comandaHTML)}
+          disabled={loading}
+        />
 
         {/* Chat Button */}
         <TouchableOpacity
@@ -701,6 +752,21 @@ const OrderDetails = () => {
         isVisible={stateModalStatus}
         onClose={toggleModalStatus}
       />
+
+      <Modal visible={isImagePreviewVisible} transparent={true}>
+        <View style={styles.modalBackground}>
+          <TouchableOpacity style={styles.closeButton} onPress={() => setImagePreviewVisible(false)}>
+            <MaterialIcons name="close" size={30} color="#fff" />
+          </TouchableOpacity>
+          {previewImageUrl && (
+            <Image
+              source={{ uri: previewImageUrl }}
+              style={styles.fullscreenImage}
+              resizeMode="contain"
+            />
+          )}
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };

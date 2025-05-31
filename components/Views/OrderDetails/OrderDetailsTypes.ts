@@ -34,6 +34,8 @@ export interface IOrderDetails {
   client: IClient;
   products: IProduct[];
   reclamo?: any;
+  paymentMethod?: any;
+  transferUrl?: string;
   chatId: IChatId;
   date: string;
   confirm: boolean;
