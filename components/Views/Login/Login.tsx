@@ -174,10 +174,10 @@ const LoginScreen: React.FC = () => {
                 <FormattedMessage id="loginButton" defaultMessage="Login" />
               </CustomButton>
 
-              <CustomButton onPress={handleBiometricAuth} colorSpiner="white" borderRadius={1000}>
+              {/* <CustomButton onPress={handleBiometricAuth} colorSpiner="white" borderRadius={1000}>
                 <FontAwesome5 name="fingerprint" size={20} />
                 <Text ml={2}>Ingresar con huella</Text>
-              </CustomButton>
+              </CustomButton> */}
 
               <TouchableOpacity
                 onPress={() => router.push("/(auth)/sign-up")}

@@ -68,9 +68,17 @@ const ModalCreateOrderDate = ({ data, onClose, updateOrder }: IProps) => {
           title: <FormattedMessage id="orderCreatedSuccess" />,
           status: "success",
         });
+      } else {
+         showToast({
+          title: <FormattedMessage id="unknownError" />,
+          status: "error",
+        });
       }
     } catch (error: any) {
-      console.log(error.response.data.message);
+      showToast({
+          title: error.response.data.message ?? <FormattedMessage id="unknownError" />,
+          status: "error",
+        });
     } finally {
       setloadingApi(false)
     }

@@ -200,7 +200,7 @@ const Home: React.FC = () => {
           </Animatable.View>
 
           {/* Componente de Suscripción - Ahora ubicado después de las métricas */}
-          {currentPlan && (
+          {currentPlan && subStatus && (
             <Animatable.View
               animation="fadeInUp"
               duration={800}
