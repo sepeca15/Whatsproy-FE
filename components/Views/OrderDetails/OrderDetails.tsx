@@ -42,6 +42,7 @@ import { WebView } from 'react-native-webview';
 import { useThermalPrint } from '../../../hooks/PDF/PDFGenerate';
 import { useState } from "react";
 import RNFS from 'react-native-fs';
+import { Product } from '../GraficProdHome/components/types';
 // Types
 interface IDetailsOrder {
   loading: boolean;
@@ -60,10 +61,12 @@ const OrderDetails = () => {
   const [pdfPath, setPdfPath] = useState<string | null>(null);
   const { printHTML, downloadPDF, loading } = useThermalPrint();
 
-
+  
   const { handleDeleteOrder } = useOrders();
   const router = useRouter();
   const { user } = useUser();
+  const empresaName = user?.empresaName ?? "Mi Empresa";
+  // const empresaLogo = user?.empresaLogo ?? "https://example.com/logo.png"; // Default logo if not provided
   const [detailOfOrder, setDetailOfOrder] =
     React.useState<IDetailsOrder>(initialState);
 
@@ -106,7 +109,7 @@ const OrderDetails = () => {
       console.log(error);
     }
   };
-
+console.log("detalles orde1122???datan", user);
   React.useEffect(() => {
     if (orderId) {
       loadAllStatus();
@@ -248,7 +251,25 @@ const OrderDetails = () => {
     Boolean(p.detalle?.trim())
   );
 
-  const comandaHTML = `
+const data = detailOfOrder.data;
+
+
+console.log("pedidosoooooooooooos",  detailOfOrder.data?.products);
+// console.log("data", data);
+const productosHTML = detailOfOrder.data && Array.isArray(detailOfOrder.data.products)
+  ? detailOfOrder.data.products.map(prod => {
+      const nombre = prod.productoInfo?.nombre || "Producto sin nombre";
+      const cantidad = prod.cantidad || 1;
+      const detalle = prod.detalle || "Sin detalle";
+      return `
+        <div class="item"><strong>Producto:</strong> ${nombre}</div>
+        <div class="item"><strong>Cantidad:</strong> ${cantidad}</div>
+        <div class="item"><strong>Detalle:</strong> ${detalle}</div>
+      `;
+    }).join('')
+  : '';
+
+const comandaHTML = `
 <html>
   <head>
     <style>
@@ -266,12 +287,14 @@ const OrderDetails = () => {
           font-weight: bold;
         }
         .header .local-name {
-          font-size: 24px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          gap: 8px;
-          margin-bottom: 10px;
+          font-size: 35px;
+          display: block;
+          margin-bottom: 30px;
+        }
+        .icon-food {
+          font-size: 28px;
+          display: block;
+          margin-bottom: 5px;
         }
         .line {
           border-top: 1px dashed #000;
@@ -286,7 +309,13 @@ const OrderDetails = () => {
         main {
           margin: 20px 0;
         }
+        .item-payment-centered {
+          text-align: center;
+          font-weight: bold;
+          margin: 10px 0;
+        }
       }
+
       body {
         width: 58mm;
         font-size: 12px;
@@ -294,73 +323,70 @@ const OrderDetails = () => {
         margin: 0 auto;
         padding: 15px 5px;
       }
+
       .header, .footer {
         text-align: center;
         font-weight: bold;
       }
-      .header .local-name {
-        font-size: 24px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 10px;
+
+      .icon-food {
+        font-size: 28px;
+        display: block;
+        margin-bottom: 5px;
       }
+
       .line {
         border-top: 1px dashed #000;
         margin: 20px 0;
       }
+
       .item {
         margin-bottom: 15px;
       }
+
       .phone {
         font-size: 18px;
       }
+
       main {
         margin: 20px 0;
+      }
+
+      .item-payment-centered {
+        text-align: center;
+        font-weight: bold;
+        margin: 10px 0;
       }
     </style>
   </head>
   <body>
     <div class="header">
-      <div class="local-name">
-        <span class="icon-food">🍔</span>
-        <span>roti-parrilla</span>
-      </div>
+      <div class="icon-food">🍔</div>
+      <div class="local-name">${empresaName}</div>
     </div>
 
     <main>
-      <div class="item"><strong>Cliente:</strong> Maxi Olivera</div>
-      <div class="item"><strong>Dirección:</strong> Belgica 1013</div>
-      <div class="item"><strong>Teléfono:</strong> 098719635</div>
+      <div class="item"><strong>Cliente:</strong> ${data?.client?.name ?? 'Sin este dato'}</div>
+      <div class="item"><strong>Dirección:</strong> ${data?.infoLines?.Direccion || 'No indicada'}</div>
+      <div class="item"><strong>Teléfono:</strong> ${data?.client?.phone ?? '------'}</div>
+      <div class="item"><strong>Fecha:</strong> ${moment(data?.date).locale("es").format("D MMM YYYY")}</div>
+
+      ${data?.paymentMethod ? `<div class="item-payment-centered">${data.paymentMethod.name}</div>` : ''}
 
       <div class="line"></div>
 
-      <div class="item"><strong>Producto:</strong> Chivito</div>
-      <div class="item"><strong>Cantidad:</strong> 1</div>
-      <div class="item"><strong>Detalle:</strong> No detalle</div>
-
-        <div class="item"><strong>Producto:</strong> Chivito</div>
-      <div class="item"><strong>Cantidad:</strong> 1</div>
-      <div class="item"><strong>Detalle:</strong> No detalle</div>
-      
-
-        <div class="item"><strong>Producto:</strong> Chivito</div>
-      <div class="item"><strong>Cantidad:</strong> 1</div>
-      <div class="item"><strong>Detalle:</strong> No detalle</div>
-      
+      ${productosHTML}
 
       <div class="line"></div>
 
-      <div class="item">Total: <strong>$10</strong></div>
+      <div class="item">Total: <strong>$${data?.total ?? 'Error al calcular'}</strong></div>
     </main>
 
-    <div class="footer phone">Tel: 4343 0971</div>
+    <div class="footer phone">Tel: ${data?.client.phone ?? '4343 0971'}</div>
   </body>
 </html>
+`;
 
-
-  `;
 
 
   // const handleGeneratePdf = async () => {
