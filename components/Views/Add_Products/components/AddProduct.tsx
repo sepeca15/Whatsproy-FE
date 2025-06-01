@@ -238,7 +238,7 @@ const AddProduct: React.FC = () => {
           />
 
           <View mb={4} style={styles.column}>
-            <Text style={styles.label}>Categoria</Text>
+            <Text style={styles.label}>Categoría</Text>
             <View>
               <MultiSelectInput
                 sizeText={16}
@@ -258,6 +258,9 @@ const AddProduct: React.FC = () => {
                 }}
                 onSearch={() => { }}
               />
+              {errors.categoryIds && (
+                <Text style={{ color: "red", marginTop: 4 }}>{errors.categoryIds}</Text>
+              )}+
             </View>
           </View>
 
