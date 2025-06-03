@@ -40,7 +40,7 @@ const Categories = () => {
       const resp = await api.category.getAll();
 
       if (resp.ok) {
-        // setAllCategories(resp.data);
+        setAllCategories(resp.data);
       }
     } catch (error) {
       console.log(error);

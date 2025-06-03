@@ -4,6 +4,7 @@ import { View, Input, Switch, Text, Button } from "native-base"
 import api from '@/services/api/admin';
 import { useUser } from '@/hooks/redux/useUser';
 import { IEstado } from '../../Status';
+import { useIntl } from 'react-intl';
 
 interface IModalCreateOrEditStatus {
     isOpen: boolean,
@@ -32,8 +33,8 @@ export const ModalCreateOrEditStatus = ({ isOpen, onClose, addOrEditNewStatus, s
     const [status, setStatus] = React.useState<ICreateStatus>(initialState)
     const [error, setError] = React.useState<any>({})
     const [loadingApi, setLoadingApi] = React.useState<any>(false)
-
     const { user } = useUser()
+    const intl = useIntl()
 
     React.useEffect(() => {
         if (isOpen && selectedItem) {
@@ -95,39 +96,44 @@ export const ModalCreateOrEditStatus = ({ isOpen, onClose, addOrEditNewStatus, s
         }
     }
 
+
     return (
         <GlobalModal
             isVisible={isOpen}
             onClose={onClose}
-            label={selectedItem ? "Editar estado" : "Crear estado"}
+            label={
+                selectedItem
+                    ? intl.formatMessage({ id: 'status.editTitle', defaultMessage: 'Editar estado' })
+                    : intl.formatMessage({ id: 'status.createTitle', defaultMessage: 'Crear estado' })
+            }
             content={
                 <View w="full" pb={4}>
-                    <View w={'full'} display={'flex'} style={{ gap: 12 }} flexDir={'row'} alignItems={'center'}>
-                        <View flex={1} display={'flex'} mb={2} flexDir={'column'} alignItems={'flex-start'}>
-                            <Text>Name</Text>
+                    <View w="full" display="flex" style={{ gap: 12 }} flexDir="row" alignItems="center">
+                        <View flex={1} display="flex" mb={2} flexDir="column" alignItems="flex-start">
+                            <Text>{intl.formatMessage({ id: 'status.nameLabel', defaultMessage: 'Nombre' })}</Text>
                             <Input
                                 mt={1}
-                                placeholder="Nombre"
+                                placeholder={intl.formatMessage({ id: 'status.namePlaceholder', defaultMessage: 'Nombre' })}
                                 value={status.nombre}
                                 onChangeText={(text) => handleChange('nombre', text)}
-                                w={'full'}
+                                w="full"
                             />
                         </View>
 
-                        <View w={'1/3'} mb={2} display={'flex'} flexDir={'column'} alignItems={'flex-start'}>
-                            <Text>Number order</Text>
+                        <View w="1/3" mb={2} display="flex" flexDir="column" alignItems="flex-start">
+                            <Text>{intl.formatMessage({ id: 'status.orderLabel', defaultMessage: 'Orden' })}</Text>
                             <Input
                                 mt={1}
-                                placeholder="Orden"
+                                placeholder={intl.formatMessage({ id: 'status.orderPlaceholder', defaultMessage: 'Orden' })}
                                 keyboardType="numeric"
                                 value={status.order.toString()}
                                 onChangeText={(text) => handleChange('order', parseInt(text) || 0)}
-                                w={'full'}
+                                w="full"
                             />
                         </View>
                     </View>
 
-                    <View w={'full'} display={'flex'} flexDir={'column'} style={{ gap: 4 }}>
+                    <View w="full" display="flex" flexDir="column" style={{ gap: 4 }}>
                         {error.nombre && (
                             <Text color="red.500" fontSize="xs">{error.nombre}</Text>
                         )}
@@ -139,23 +145,25 @@ export const ModalCreateOrEditStatus = ({ isOpen, onClose, addOrEditNewStatus, s
                         )}
                     </View>
 
-                    <View flex={1} display={'flex'} mb={2} flexDir={'column'} alignItems={'flex-start'}>
-                        <Text>Message</Text>
+                    <View flex={1} display="flex" mb={2} flexDir="column" alignItems="flex-start">
+                        <Text>{intl.formatMessage({ id: 'status.messageLabel', defaultMessage: 'Mensaje' })}</Text>
                         <Input
                             mt={1}
-                            placeholder="Message"
+                            placeholder={intl.formatMessage({ id: 'status.messagePlaceholder', defaultMessage: 'Mensaje' })}
                             value={status.mensaje}
                             onChangeText={(text) => handleChange('mensaje', text)}
-                            w={'full'}
+                            w="full"
                         />
                     </View>
 
-                    <View my={1} w={'full'} borderColor={'blue.600'} borderWidth={1} rounded={'md'} bg={'blue.100'} display={'flex'} alignItems={'center'} justifyContent={'center'} px={2} py={2}>
-                        <Text fontSize={12} color={'blue.600'} >Este mensaje le enviaremos al usuario cuando el estado cambie.</Text>
+                    <View my={1} w="full" borderColor="blue.600" borderWidth={1} rounded="md" bg="blue.100" display="flex" alignItems="center" justifyContent="center" px={2} py={2}>
+                        <Text fontSize={12} color="blue.600">
+                            {intl.formatMessage({ id: 'status.messageNote', defaultMessage: 'Este mensaje le enviaremos al usuario cuando el estado cambie.' })}
+                        </Text>
                     </View>
 
                     <View flexDir="row" alignItems="center" justifyContent="space-between">
-                        <Text>Es finalizador</Text>
+                        <Text>{intl.formatMessage({ id: 'status.isFinalLabel', defaultMessage: 'Es finalizador' })}</Text>
                         <Switch
                             isChecked={status.finalizador}
                             onToggle={() => handleChange('finalizador', !status.finalizador)}
@@ -169,29 +177,33 @@ export const ModalCreateOrEditStatus = ({ isOpen, onClose, addOrEditNewStatus, s
                         onPress={onClose}
                         key="Cancel"
                         size="md"
-                        background={'gray.50'}
+                        background="gray.50"
                         borderWidth={1}
-                        borderColor={"gray.500"}
+                        borderColor="gray.500"
                         borderRadius="md"
                         marginRight={4}
                     >
-                        <Text color={'gray.500'}>
-                            Cancel
+                        <Text color="gray.500">
+                            {intl.formatMessage({ id: 'common.cancel', defaultMessage: 'Cancelar' })}
                         </Text>
                     </Button>,
                     <Button
                         key="Accept"
                         size="md"
-                        backgroundColor={"#2C2C2C"}
+                        backgroundColor="#2C2C2C"
                         borderRadius="md"
                         onPress={createOrUpdateStatus}
                         isLoading={loadingApi}
                     >
-                        {selectedItem ? 'Guardar' : 'Crear'}
+                        {intl.formatMessage({
+                            id: selectedItem ? 'common.save' : 'common.create',
+                            defaultMessage: selectedItem ? 'Guardar' : 'Crear'
+                        })}
                     </Button>
                 ]
             ]}
         />
     )
+
 }
 

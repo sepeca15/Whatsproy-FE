@@ -43,6 +43,7 @@ import { useThermalPrint } from '../../../hooks/PDF/PDFGenerate';
 import { useState } from "react";
 import RNFS from 'react-native-fs';
 import { Product } from '../GraficProdHome/components/types';
+import { globalStyles } from "@/components/globalStyles";
 // Types
 interface IDetailsOrder {
   loading: boolean;
@@ -61,7 +62,7 @@ const OrderDetails = () => {
   const [pdfPath, setPdfPath] = useState<string | null>(null);
   const { printHTML, downloadPDF, loading } = useThermalPrint();
 
-  
+
   const { handleDeleteOrder } = useOrders();
   const router = useRouter();
   const { user } = useUser();
@@ -109,7 +110,6 @@ const OrderDetails = () => {
       console.log(error);
     }
   };
-console.log("detalles orde1122???datan", user);
   React.useEffect(() => {
     if (orderId) {
       loadAllStatus();
@@ -251,13 +251,11 @@ console.log("detalles orde1122???datan", user);
     Boolean(p.detalle?.trim())
   );
 
-const data = detailOfOrder.data;
+  const data = detailOfOrder.data;
 
 
-console.log("pedidosoooooooooooos",  detailOfOrder.data?.products);
-// console.log("data", data);
-const productosHTML = detailOfOrder.data && Array.isArray(detailOfOrder.data.products)
-  ? detailOfOrder.data.products.map(prod => {
+  const productosHTML = detailOfOrder.data && Array.isArray(detailOfOrder.data.products)
+    ? detailOfOrder.data.products.map(prod => {
       const nombre = prod.productoInfo?.nombre || "Producto sin nombre";
       const cantidad = prod.cantidad || 1;
       const detalle = prod.detalle || "Sin detalle";
@@ -267,9 +265,9 @@ const productosHTML = detailOfOrder.data && Array.isArray(detailOfOrder.data.pro
         <div class="item"><strong>Detalle:</strong> ${detalle}</div>
       `;
     }).join('')
-  : '';
+    : '';
 
-const comandaHTML = `
+  const comandaHTML = `
 <html>
   <head>
     <style>
@@ -408,7 +406,7 @@ const comandaHTML = `
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity
-          style={styles.backButton}
+          style={globalStyles.backButton}
           onPress={() => router.back()}
         >
           <AntDesign name="arrowleft" size={22} color="white" />
@@ -504,12 +502,19 @@ const comandaHTML = `
                       setPreviewImageUrl(detailOfOrder?.data?.transferUrl ?? "");
                       setImagePreviewVisible(true);
                     }}
+
                   >
-                    <Image
-                      source={{ uri: detailOfOrder.data.transferUrl }}
-                      style={styles.transferProofImage}
-                      resizeMode="contain"
-                    />
+                    <View style={{
+                      borderRadius: 20,
+                      overflow: "hidden",
+                    }}>
+                      <Image
+                        source={{ uri: detailOfOrder.data.transferUrl }}
+                        style={styles.transferProofImage}
+                        resizeMode="cover"
+                      />
+                    </View>
+
                   </TouchableOpacity>
                 </View>
               )}
@@ -781,7 +786,7 @@ const comandaHTML = `
             style={styles.printButtonTouchable}
           >
             <Text style={styles.printButtonText}>
-              {loading ? "Imprimiendo..." : "Imprimir Comanda"}
+              {loading ? <FormattedMessage id="printing" /> : <FormattedMessage id="printComanda" />}
             </Text>
           </TouchableOpacity>
         </View>

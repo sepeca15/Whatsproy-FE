@@ -136,4 +136,10 @@ export const globalStyles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "rgba(255,255,255,0.15)",
   },
+  containerPage: {
+    width: "100%",
+    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+  },
 });

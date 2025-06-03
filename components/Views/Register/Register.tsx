@@ -99,16 +99,6 @@ const Register: React.FC = () => {
     }
 
     if (currentStep === 2) {
-      if (!/^([01]\d|2[0-3]):([0-5]\d)$/.test(formData.hora_apertura))
-        error.hora_apertura = intl.formatMessage({
-          id: "validOpeningTime",
-          defaultMessage: "Please enter a valid opening time (HH:mm format)",
-        });
-      if (!/^([01]\d|2[0-3]):([0-5]\d)$/.test(formData.hora_cierre))
-        error.hora_cierre = intl.formatMessage({
-          id: "validClosingTime",
-          defaultMessage: "Please enter a valid closing time (HH:mm format)",
-        });
       if (!formData.tipoServicioId)
         error.tipoServicioId = intl.formatMessage({
           id: "validServiceType",

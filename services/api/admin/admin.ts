@@ -18,6 +18,7 @@ import * as getchat from "../chat/chatData";
 import * as payments from "../payments/payment";
 import * as cierreProvisorio from "../cierre_provisoro/cierreProvisorio";
 import * as numeroConfianza from "../numeroConfianza/numeroConfianza";
+import * as schedules from "../schedules/schedules";
 
 
 
@@ -44,6 +45,11 @@ const api = {
     createInitial: payments.createInitial,
     verifyPaymentIsOk: payments.verifyPaymentIsOk,
     getPlans: payments.getPlans,
+  },
+  schedules: {
+    create: schedules.create,
+    getAll: schedules.getAll,
+    remove: schedules.remove,
   },
   plans: {
     getAll: plan.getAllPlans,

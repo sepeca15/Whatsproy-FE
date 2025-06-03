@@ -422,7 +422,7 @@ export const styles = StyleSheet.create({
   transferProofImage: {
     width: '100%',
     height: 200,
-    borderRadius: 8,
+    borderRadius: 20,
   },
   modalBackground: {
     flex: 1,

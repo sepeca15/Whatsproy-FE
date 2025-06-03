@@ -67,7 +67,20 @@ const Settings = () => {
         defaultMessage: "Manage your working hours and preferences",
       }),
       icon: <Entypo size={22} color={"white"} name="wallet" />,
-    }] : []),
+    },
+    {
+    title: intl.formatMessage({
+      id: "schedules",
+      defaultMessage: "Schedules",
+    }),
+    href: "/(tabs)/schedules",
+    description: intl.formatMessage({
+      id: "manageSchedules",
+      defaultMessage: "Set your business hours and availability",
+    }),
+    icon: <Feather size={22} color={"white"} name="clock" />,
+  }
+  ] : []),
     ...(isAdmin ? [{
       title: intl.formatMessage({ id: "users", defaultMessage: "Users" }),
       href: "/(tabs)/usuarios",

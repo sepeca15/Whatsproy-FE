@@ -98,7 +98,7 @@ const PaymentMethodsView = () => {
                     </TouchableOpacity>
                     <View style={globalStyles.headerLeft}>
                         <CustomText style={globalStyles.businessName}>
-                            <FormattedMessage id="statusTitlePage" />
+                            <FormattedMessage id="paymentMethods" />
                         </CustomText>
                     </View>
                 </View>

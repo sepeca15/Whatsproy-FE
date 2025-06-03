@@ -128,7 +128,7 @@ const DateOrder: React.FC = () => {
     <View style={styles.container}>
       <Animated.View style={globalStyles.header2}>
         <TouchableOpacity
-          style={styles.backButton}
+          style={globalStyles.backButton}
           onPress={() => router.back()}
           activeOpacity={0.7}
         >
