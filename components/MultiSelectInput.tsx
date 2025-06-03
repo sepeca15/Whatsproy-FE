@@ -80,7 +80,7 @@ let timeoutSearch: any = 0;
 
 const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
   placeholder = "Seleccionar opciones",
-  label = "Seleccionar",
+  label,
   options,
   isRequired = false,
   loading,

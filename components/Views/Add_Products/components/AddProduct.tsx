@@ -24,6 +24,9 @@ import { View } from "native-base";
 import MultiSelectInput from "@/components/MultiSelectInput";
 import { ICategoryData } from "../../Categories/components/CardCategory/CardCategory";
 import InputField from "@/components/InputField";
+import SelectField from "@/hooks/SelectField/SelectField";
+import { useToastContext } from "@/contexts/ToastContext";
+
 const AddProduct: React.FC = () => {
   const router = useRouter();
   const intl = useIntl();
@@ -36,6 +39,7 @@ const AddProduct: React.FC = () => {
     plazoDuracionEstimadoMinutos: 0,
     disponible: false,
     categoryIds: [],
+    currency_id: null,
   });
 
   const { user } = useUser();
@@ -44,6 +48,7 @@ const AddProduct: React.FC = () => {
   const [allCategories, setAllCategories] = useState<ICategoryData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<{ [key: string]: string | null }>({});
+  const { showToast } = useToastContext();
 
   React.useEffect(() => {
     loadAllCategories();
@@ -77,6 +82,14 @@ const AddProduct: React.FC = () => {
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
 
+     if (!selectedImage) {
+    showToast({
+      title: "Imagen requerida",
+      description: "Debe seleccionar una imagen para el producto",
+      status: "error",
+    });
+  }
+
     if (!formData.nombre.trim()) {
       newErrors.nombre = "El nombre del producto es obligatorio";
     }
@@ -92,6 +105,9 @@ const AddProduct: React.FC = () => {
     if (formData.plazoDuracionEstimadoMinutos <= 0) {
       newErrors.plazoDuracionEstimadoMinutos =
         "La duración estimada debe ser mayor que cero minutos";
+    }
+    if (!formData.currency_id) {
+      newErrors.currency_id = "Debe seleccionar una moneda";
     }
 
     setErrors(newErrors);
@@ -135,7 +151,7 @@ const AddProduct: React.FC = () => {
           <FormattedMessage id="addProduct" />
         </Text>
 
-        <View style={styles.switchRow}>
+        {/* <View style={styles.switchRow}>
           <Text style={styles.label}>
             <FormattedMessage id="available" defaultMessage="Disponible" />
           </Text>
@@ -143,7 +159,7 @@ const AddProduct: React.FC = () => {
             value={formData.disponible}
             onValueChange={(value) => setFormData({ ...formData, disponible: value })}
           />
-        </View>
+        </View> */}
 
         <TouchableOpacity style={styles.imageUpload} onPress={handleImagePick}>
           {selectedImage ? (
@@ -162,120 +178,158 @@ const AddProduct: React.FC = () => {
           <Text style={styles.label}>
             <FormattedMessage id="productName" />
           </Text>
-          <InputField
-
-            placeholder="Ej: Milanesa de pollo"
-            value={formData.nombre}
-            onChangeText={(text) => setFormData({ ...formData, nombre: text })}
-            error={errors.nombre}
-            style={styles.input}
-          />
+            <View style={styles.inputfile}>
+            <InputField
+              placeholder={intl.formatMessage({
+              id: "productNamePlaceholder",
+              defaultMessage: "Ej: Milanesa de pollo",
+              })}
+              value={formData.nombre}
+              onChangeText={(text) => {
+              setFormData({ ...formData, nombre: text });
+              if (text.trim()) {
+                setErrors((prev) => ({ ...prev, nombre: null }));
+              }
+              }}
+              error={errors.nombre}
+              style={styles.input}
+            />
+            </View>
 
           <View style={styles.row}>
             <View style={styles.column}>
               <Text style={styles.label}>
                 <FormattedMessage id="price" />
               </Text>
-              <InputField
-
-                placeholder="0.00"
-                keyboardType="numeric"
-                value={formData.precio ? formData.precio.toString() : ""}
-                onChangeText={(text) => {
-                  const value = parseFloat(text);
-                  setFormData({ ...formData, precio: isNaN(value) ? 0 : value });
-                }}
-                error={errors.precio}
-                style={styles.input}
-              />
+              <View style={styles.inputfile}>
+                <InputField
+                  placeholder="0.00"
+                  keyboardType="numeric"
+                  value={formData.precio ? formData.precio.toString() : ""}
+                  onChangeText={(text) => {
+                    const value = parseFloat(text);
+                    setFormData({ ...formData, precio: isNaN(value) ? 0 : value });
+                    if (!isNaN(value) && value > 0) {
+                      setErrors((prev) => ({ ...prev, precio: null }));
+                    }
+                  }}
+                  error={errors.precio}
+                  style={styles.input}
+                />
+              </View>
             </View>
 
             <View style={styles.column}>
               <Text style={styles.label}>
                 <FormattedMessage id="currency" />
               </Text>
-              <View style={styles.pickerContainer}>
-                <Picker
-                  style={styles.picker}
-                  selectedValue={formData.currency_id}
-                  onValueChange={(value) => {
-                    setFormData({ ...formData, currency_id: value });
-                  }}
-                >
-                  {currencies.map((currency: any, index: number) => (
-                    <Picker.Item
-                      key={index}
-                      label={`${currency?.codigo} (${currency?.simbolo})`}
-                      value={currency?.id}
-                    />
-                  ))}
-                </Picker>
-              </View>
+              <SelectField
+
+                selectedValue={formData.currency_id}
+                onValueChange={(value) => {
+                  setFormData({ ...formData, currency_id: value });
+                  setErrors((prev) => ({ ...prev, currency_id: null }));
+                }}
+                placeholder="Seleccione una moneda"
+                options={currencies.map((c: { codigo: string; simbolo: string; id: number }) => ({
+                  label: `${c.codigo} (${c.simbolo})`,
+                  value: c.id,
+                }))}
+                error={errors.currency_id ?? undefined}
+              />
+
+
             </View>
           </View>
 
           <Text style={styles.label}>
             <FormattedMessage id="estimatedDuration" />
           </Text>
-          <InputField
-
-            placeholder="Ej: 45"
-            keyboardType="numeric"
-            value={
-              formData.plazoDuracionEstimadoMinutos
-                ? formData.plazoDuracionEstimadoMinutos.toString()
-                : ""
-            }
-            onChangeText={(text) => {
-              const value = parseInt(text);
-              setFormData({
-                ...formData,
-                plazoDuracionEstimadoMinutos: isNaN(value) ? 0 : value,
-              });
-            }}
-            error={errors.plazoDuracionEstimadoMinutos}
-            style={styles.input}
-          />
+          <View style={styles.inputfile}>
+            <InputField
+              placeholder="Ej: 45"
+              keyboardType="numeric"
+              value={
+                formData.plazoDuracionEstimadoMinutos
+                  ? formData.plazoDuracionEstimadoMinutos.toString()
+                  : ""
+              }
+              onChangeText={(text) => {
+                const value = parseInt(text);
+                setFormData({
+                  ...formData,
+                  plazoDuracionEstimadoMinutos: isNaN(value) ? 0 : value,
+                });
+                if (!isNaN(value) && value > 0) {
+                  setErrors((prev) => ({ ...prev, plazoDuracionEstimadoMinutos: null }));
+                }
+              }}
+              error={errors.plazoDuracionEstimadoMinutos}
+              style={styles.input}
+            />
+          </View>
 
           <View mb={4} style={styles.column}>
-            <Text style={styles.label}>Categoría</Text>
+            <Text style={styles.label}>
+              <FormattedMessage id="category" defaultMessage="Categoría" />
+            </Text>
             <View>
               <MultiSelectInput
                 sizeText={16}
                 height={50}
                 isMultiple
-                placeholder="Seleccionar categorías"
+                placeholder={intl.formatMessage({ id: "selectCategory", defaultMessage: "Seleccionar categoría" })}
                 options={allCategories.map((cat) => ({
                   label: cat.name,
                   value: cat.id.toString(),
                   placeholder: cat.name,
                 }))}
+
+
                 setItemsSelected={(selectedIds: number[]) => {
                   setFormData((prev) => ({
                     ...prev,
                     categoryIds: selectedIds,
                   }));
+
+                  if (selectedIds.length > 0 && errors.categoryIds) {
+                    setErrors((prev) => ({
+                      ...prev,
+                      categoryIds: null,
+                    }));
+                  }
                 }}
+
+
+
                 onSearch={() => { }}
+                error={errors.categoryIds}
               />
-              {errors.categoryIds && (
-                <Text style={{ color: "red", marginTop: 4 }}>{errors.categoryIds}</Text>
-              )}+
             </View>
           </View>
+
 
           <Text style={styles.label}>
             <FormattedMessage id="description" />
           </Text>
-          <InputField
-          
-            placeholder="Ej: Plato clásico con papas fritas"
-            isTextArea
-            value={formData.descripcion}
-            onChangeText={(text) => setFormData({ ...formData, descripcion: text })}
-            error={errors.descripcion}
-            style={styles.inputarea}
-          />
+            <View style={styles.inputfile}>
+            <InputField
+              placeholder={intl.formatMessage({
+              id: "productDescriptionPlaceholder",
+              defaultMessage: "Ej: Plato clásico con papas fritas",
+              })}
+              isTextArea
+              value={formData.descripcion}
+              onChangeText={(text) => {
+              setFormData({ ...formData, descripcion: text });
+              if (text.trim()) {
+                setErrors((prev) => ({ ...prev, descripcion: null }));
+              }
+              }}
+              error={errors.descripcion}
+              style={styles.inputarea}
+            />
+            </View>
 
           <TouchableOpacity
             style={styles.button}

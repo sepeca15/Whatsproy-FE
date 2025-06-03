@@ -90,6 +90,12 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     backgroundColor: "#f9f9f9",
   },
+  inputfile: {
+  marginBottom: 20,
+  },
+
+
+
     inputarea: {
  
     fontSize: 16,

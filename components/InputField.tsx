@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { FormControl, Input, TextArea } from "native-base";
 import MaskInput from "react-native-mask-input";
-import { StyleSheet } from "react-native";
+
 interface InputFieldProps {
   label?: React.ReactNode;
   placeholder: React.ReactNode;
@@ -36,12 +36,7 @@ const InputField: React.FC<InputFieldProps> = ({
   const inputRef = useRef<any>(null);
 
   return (
-    <FormControl
-      isDisabled={isDisabled}
-      isInvalid={error}
-      // style={styles.input}
-      isRequired={isRequired}
-    >
+    <FormControl isDisabled={isDisabled} isInvalid={!!error} isRequired={isRequired}>
       {label && <FormControl.Label>{label}</FormControl.Label>}
       {isTime ? (
         <MaskInput
@@ -65,9 +60,7 @@ const InputField: React.FC<InputFieldProps> = ({
           keyboardType={keyboardType}
           autoCompleteType={""}
           borderRadius={8}
-          placeholder={
-            typeof placeholder === "string" ? placeholder : undefined
-          }
+          placeholder={typeof placeholder === "string" ? placeholder : undefined}
           onChangeText={onChangeText}
           _stack={{ style: {} }}
           {...(props as any)}
@@ -81,10 +74,9 @@ const InputField: React.FC<InputFieldProps> = ({
           InputLeftElement={icon}
           keyboardType={keyboardType}
           type={type}
-          placeholder={
-            typeof placeholder === "string" ? placeholder : undefined
-          }
+          placeholder={typeof placeholder === "string" ? placeholder : undefined}
           onChangeText={onChangeText}
+          value={props.value}
           {...props}
         />
       )}
@@ -94,16 +86,3 @@ const InputField: React.FC<InputFieldProps> = ({
 };
 
 export default InputField;
-
-// const styles = StyleSheet.create({
-//  input: {
-//     borderWidth: 1,
-//     borderColor: "#ddd",
-//     borderRadius: 8,
-//     height: 50,
-//     padding: 12,
-//     marginBottom: 16,
-//     fontSize: 16,
-//     backgroundColor: "#f9f9f9",
-//   },
-// });
