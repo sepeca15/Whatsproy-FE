@@ -361,12 +361,12 @@ export const styles = StyleSheet.create({
     borderTopColor: "#f0f0f0",
   },
   totalLabel: {
-    fontSize: RFValue(16),
+    fontSize: 20,
     fontWeight: "600",
     color: Colors.light.text,
   },
   totalValue: {
-    fontSize: RFValue(20),
+    fontSize: 20,
     fontWeight: "700",
     color: Colors.light.primary,
   },
