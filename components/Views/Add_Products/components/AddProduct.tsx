@@ -178,23 +178,23 @@ const AddProduct: React.FC = () => {
           <Text style={styles.label}>
             <FormattedMessage id="productName" />
           </Text>
-            <View style={styles.inputfile}>
+          <View style={styles.inputfile}>
             <InputField
               placeholder={intl.formatMessage({
-              id: "productNamePlaceholder",
-              defaultMessage: "Ej: Milanesa de pollo",
+                id: "productNamePlaceholder",
+                defaultMessage: "Ej: Milanesa de pollo",
               })}
               value={formData.nombre}
               onChangeText={(text) => {
-              setFormData({ ...formData, nombre: text });
-              if (text.trim()) {
-                setErrors((prev) => ({ ...prev, nombre: null }));
-              }
+                setFormData({ ...formData, nombre: text });
+                if (text.trim()) {
+                  setErrors((prev) => ({ ...prev, nombre: null }));
+                }
               }}
               error={errors.nombre}
               style={styles.input}
             />
-            </View>
+          </View>
 
           <View style={styles.row}>
             <View style={styles.column}>

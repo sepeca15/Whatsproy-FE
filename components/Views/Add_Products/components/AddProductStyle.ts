@@ -91,13 +91,13 @@ export const styles = StyleSheet.create({
     backgroundColor: "#f9f9f9",
   },
   inputfile: {
-  marginBottom: 20,
+    marginBottom: 20,
   },
 
 
 
-    inputarea: {
- 
+  inputarea: {
+
     fontSize: 16,
     backgroundColor: "#f9f9f9",
   },
