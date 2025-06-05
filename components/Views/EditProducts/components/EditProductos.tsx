@@ -375,6 +375,7 @@ const EditProduct = ({
                     }));
                   }
                 }}
+                
                 onSearch={() => { }}
                 error={errors.categoryIds}
               />
