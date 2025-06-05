@@ -30,7 +30,7 @@ import type { ICategoryData } from "../Categories/components/CardCategory/CardCa
 import AnimatedTwo from "react-native-reanimated";
 import CustomText from "@/components/CustomText";
 import { globalStyles } from "@/components/globalStyles";
-import AddButton from "..../../hooks/add_Button/Add_button"; 
+import AddButton from "..../../hooks/add_Button/Add_button";
 
 const Productos: React.FC = () => {
   const router = useRouter();
@@ -73,17 +73,26 @@ const Productos: React.FC = () => {
 
   const loadProductsFromCategory = async () => {
     try {
+      console.log('llamare');
+      
       setLoadingProducts(true);
       if (selectCategory) {
+
+        console.log('si');
+        
         const resp = await api.category.getProducts({
           categoryId: selectCategory,
         });
+        console.log('respp esssss', resp);
+
         if (resp.ok) {
+          console.log('los productos son', resp.data);
+
           setProducts(resp.data);
         }
       }
     } catch (error: any) {
-      console.log(error.response?.data?.message);
+      console.log('xdxd',error.response?.data?.message);
     } finally {
       setLoadingProducts(false);
     }
@@ -407,7 +416,7 @@ const Productos: React.FC = () => {
           )}
         </ScrollView>
       </View>
-       <AddButton route="/(tabs)/addpro" />
+      <AddButton route="/(tabs)/addpro" />
     </View>
   );
 };

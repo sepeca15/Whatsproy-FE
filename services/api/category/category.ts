@@ -19,7 +19,13 @@ export const getProductFromCategory = async({categoryId} : {categoryId : number}
     return data
 } 
 
-export const deleteCategory = async({categoryId} : {categoryId : number}) => {
+export const updateCategory = async({categoryId, dataUpdate} : {categoryId : number, dataUpdate: any}) => {
+    const { data } = await ApiInstances('current').patch('api/category/' + categoryId, dataUpdate)
+    
+    return data
+} 
+
+export const deleteCategory = async({categoryId} : {categoryId : number}) => {    
     const { data } = await ApiInstances('current').delete('api/category/' + categoryId)
 
     return data

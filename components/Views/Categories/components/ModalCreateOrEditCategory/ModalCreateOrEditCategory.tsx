@@ -3,39 +3,54 @@ import InputField from "@/components/InputField";
 import GlobalModal from "@/components/Modal";
 import { Button, Image, Text, View } from "native-base";
 import useImagePicker from "@/utils/ImagePicker/useImagePicker";
-import api from "@/services/api/admin";
 import { FormattedMessage } from "react-intl";
 import { MaterialIcons } from "@expo/vector-icons";
+import { ICategoryData } from "../CardCategory/CardCategory";
 
 interface IModalCreateCategory {
   onClose: () => void;
   isOpen: boolean;
-  addCategory: (newCategory: any) => void;
+  categorySelected: ICategoryData | null;
+  editCategorie: (editedCategory: ICategoryData) => void;
+  createCategory: (createdCategory: ICategoryData) => void;
 }
 
 const initialState = {
   name: "",
   description: "",
-  imagen: "",
+  image: "",
 };
 
-const ModalCreateCategory = ({
+const ModalCreateOrEditCategory = ({
   isOpen,
   onClose,
-  addCategory,
+  categorySelected,
+  editCategorie,
+  createCategory
 }: IModalCreateCategory) => {
-  const [formData, setFormData] = React.useState(initialState);
+  const [formData, setFormData] = React.useState<Partial<ICategoryData>>(categorySelected ? { ...categorySelected } : initialState);
   const [errors, setErrors] = React.useState<any>({});
   const [loadingApi, setLoadingApi] = React.useState<boolean>(false);
   const [selectedImage, setSelectedImage] = React.useState<any>(null);
 
   React.useEffect(() => {
     if (isOpen) {
-      setFormData(initialState);
-      setErrors({});
-      setSelectedImage(null);
+      if (categorySelected) {
+        setSelectedImage(formData.image)
+      }
+    }
+    return () => {
+      setFormData(initialState)
+      setSelectedImage(null)
+      setErrors({})
     }
   }, [isOpen]);
+
+  React.useEffect(() => {
+    if (selectedImage) {
+      handleChangeValue('image', selectedImage)
+    }
+  }, [selectedImage]);
 
   const handleChangeValue = (key: string, value: any) => {
     setFormData((prev: any) => ({
@@ -59,49 +74,41 @@ const ModalCreateCategory = ({
   });
 
   const validData = () => {
-    try {
-      setLoadingApi(true);
-
-      if (!formData.imagen) {
-        setErrors((prevState: any) => ({
-          ...prevState,
-          imagen: "Please enter a valid image (pref png)",
-        }));
-        return;
-      }
-      if (!formData.name) {
-        setErrors((prevState: any) => ({
-          ...prevState,
-          name: "Please enter a valid name",
-        }));
-        return;
-      }
-      if (!formData.description) {
-        setErrors((prevState: any) => ({
-          ...prevState,
-          description: "Please enter a valid description",
-        }));
-        return;
-      }
-      onSubmit();
-    } catch (error) {
-    } finally {
-      setLoadingApi(false);
+    if (!formData.image) {
+      setErrors((prevState: any) => ({
+        ...prevState,
+        image: "Please enter a valid image (pref png)",
+      }));
+      return;
     }
+    if (!formData.name) {
+      setErrors((prevState: any) => ({
+        ...prevState,
+        name: "Please enter a valid name",
+      }));
+      return;
+    }
+    if (!formData.description) {
+      setErrors((prevState: any) => ({
+        ...prevState,
+        description: "Please enter a valid description",
+      }));
+      return;
+    }
+    onSubmit();
+
   };
 
   const onSubmit = async () => {
-    setLoadingApi(true);
     try {
-      const resp = await api.category.create({
-        ...formData,
-        image: formData.imagen,
-      });
+      setLoadingApi(true)
 
-      if (resp.ok) {
-        onClose();
-        addCategory(resp.data);
+      if (categorySelected) {
+        await editCategorie(formData as ICategoryData)
+      } else {
+        await createCategory(formData as ICategoryData);
       }
+
     } catch (error) {
       console.log(error);
     } finally {
@@ -156,9 +163,9 @@ const ModalCreateCategory = ({
                 </Text>
               </View>
             </Button>
-            {errors.imagen && (
+            {errors.image && (
               <Text color={"red.400"} my={1}>
-                {errors.imagen}
+                {errors.image}
               </Text>
             )}
           </View>
@@ -194,7 +201,9 @@ const ModalCreateCategory = ({
           borderRadius="md"
           marginRight={4}
         >
-          <Text color={"gray.500"}>Cancel</Text>
+          <Text color={"gray.500"}>
+            <FormattedMessage id="cancel" />
+          </Text>
         </Button>,
         <Button
           isLoading={loadingApi}
@@ -204,11 +213,18 @@ const ModalCreateCategory = ({
           borderRadius="md"
           onPress={validData}
         >
-          Aceptar
+          <Text color={'white'}>
+            {
+              categorySelected ?
+                <FormattedMessage id="saveButton" />
+                :
+                <FormattedMessage id="accept" />
+            }
+          </Text>
         </Button>,
       ]}
     />
   );
 };
 
-export default ModalCreateCategory;
+export default ModalCreateOrEditCategory;

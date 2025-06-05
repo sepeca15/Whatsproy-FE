@@ -118,6 +118,7 @@ const api = {
     create: category.createCategory,
     getAll: category.getAllCategories,
     getProducts: category.getProductFromCategory,
+    update: category.updateCategory,
     delete: category.deleteCategory,
   },
   status: {
