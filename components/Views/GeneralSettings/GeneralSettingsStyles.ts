@@ -69,6 +69,7 @@ export const styles = StyleSheet.create({
         display: "flex",
         flexDirection: "column",
         borderBottomWidth: 0.3,
+        paddingBottom:4,
         borderColor: 'gray'
     },
     row1: {

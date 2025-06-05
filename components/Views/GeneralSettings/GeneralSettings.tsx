@@ -107,60 +107,6 @@ const GeneralConfig = () => {
         <View style={styles.containerGlobal}>
           <View style={styles.form}>
             <View style={styles.container1}>
-              <View style={styles.inputContainer}>
-                <CustomText style={styles.textInput}>
-                  <FormattedMessage
-                    id="openingTimeLabel"
-                    defaultMessage={"Hora de apertura"}
-                  />
-                </CustomText>
-                <InputField
-                  isDisabled={!isAdmin}
-                  icon={
-                    <SimpleLineIcons
-                      style={{ marginLeft: 12 }}
-                      color={"#b6b6b6"}
-                      name="clock"
-                      size={16}
-                    />
-                  }
-                  placeholder={intl.formatMessage({
-                    id: "enterOpeningTime",
-                    defaultMessage: "Ingresa la hora de apertura",
-                  })}
-                  value={form.hora_apertura}
-                  onChangeText={(value) =>
-                    handleInputChange("hora_apertura", value)
-                  }
-                />
-              </View>
-              <View style={styles.inputContainer}>
-                <CustomText style={styles.textInput}>
-                  <FormattedMessage
-                    id="closingTimeLabel"
-                    defaultMessage={"Hora de cierre"}
-                  />
-                </CustomText>
-                <InputField
-                  isDisabled={!isAdmin}
-                  icon={
-                    <SimpleLineIcons
-                      style={{ marginLeft: 12 }}
-                      color={"#b6b6b6"}
-                      name="clock"
-                      size={16}
-                    />
-                  }
-                  placeholder={intl.formatMessage({
-                    id: "enterClosingTime",
-                    defaultMessage: "Ingresa la hora de cierre",
-                  })}
-                  value={form.hora_cierre}
-                  onChangeText={(value) =>
-                    handleInputChange("hora_cierre", value)
-                  }
-                />
-              </View>
               <View style={styles.notifReserva}>
                 <View style={styles.row1}>
                   <CustomText style={styles.textInput}>

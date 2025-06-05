@@ -23,3 +23,7 @@ expo-env.d.ts
 /assets/google-services.json
 
 ./assets/google-services.json
+# Expo
+.expo
+dist/
+web-build/

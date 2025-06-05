@@ -33,8 +33,8 @@ const PrivacyView = () => {
         </View>
       </Animated.View>
 
-      <ScrollView pb={20} px={5} py={4}>
-        <VStack pb={10} space={5}>
+      <ScrollView p={3}>
+        <VStack shadow={1} mb={8} pb={12} bg={'white'} p={8} borderRadius={12} space={5}>
           <Box>
             <Text fontSize="lg" fontWeight="bold">
               <FormattedMessage id="privacyPolicy.introTitle" />
