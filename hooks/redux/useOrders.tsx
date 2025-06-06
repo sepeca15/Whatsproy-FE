@@ -14,26 +14,56 @@ import {
   finishOrderActive,
   setOffsetPending,
   setOffsetActive,
-  setOffsetFinished
+  setOffsetFinished,
+  onLoadOrdersPendingFirst,
+  odLoadOrdersActiveFirst,
+  onLoadOrdersFinishedFirst,
 } from "@/services/redux/Slices/ordersSlice/orderSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 export const useOrders = () => {
   const Dispatch = useDispatch();
   const limit = 20;
-  const { loadingApi, ordersFinished, ordersPending, ordersActive, loadingApiAction, offsetFinished, offsetPending, offsetActive, totalItemsFinished, totalItemsPending, totalItemsActive } = useSelector(
-    (state: any) => state.orders,
-  );
+  const {
+    loadingApi,
+    ordersFinished,
+    ordersPending,
+    ordersActive,
+    loadingApiAction,
+    offsetFinished,
+    offsetPending,
+    offsetActive,
+    totalItemsFinished,
+    totalItemsPending,
+    totalItemsActive,
+  } = useSelector((state: any) => state.orders);
   const { showToast } = useToastContext();
 
-  const handleLoadOrdersFinished = async () => {
+  const handleLoadOrdersFinished = async (isRefresh?: boolean) => {
     Dispatch(onLoadingApi());
     try {
-      const data = await api.order.getFinished(offsetFinished, limit);
+      const data = await api.order.getFinished(
+        isRefresh ? 0 : offsetFinished,
+        limit
+      );
 
       if (data.ok === true && data.data.length > 0) {
-        Dispatch(onLoadOrdersFinished({ data: data.data, total: data.totalItems }));
-        Dispatch(setOffsetFinished(offsetFinished + limit))
+        if (isRefresh) {
+          Dispatch(
+            onLoadOrdersFinishedFirst({
+              data: data.data,
+              total: data.totalItems,
+            })
+          );
+        } else {
+          Dispatch(
+            onLoadOrdersFinished({ data: data.data, total: data.totalItems })
+          );
+        }
+
+        if (!isRefresh) {
+          Dispatch(setOffsetFinished(offsetFinished + limit));
+        }
       }
     } catch (error: any) {
       console.log("error", error.response.data.message);
@@ -44,26 +74,37 @@ export const useOrders = () => {
 
   const handleFinishOrderActive = (order: any) => {
     try {
-      Dispatch(finishOrderActive(order))
-
+      Dispatch(finishOrderActive(order));
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
-  const handleLoadOrdersPending = async () => {
+  const handleLoadOrdersPending = async (isRefresh?: boolean) => {
     Dispatch(onLoadingApi());
     try {
-      const data = await api.order.getPending(offsetPending, limit);
-
-      console.log(data);
-      
+      const data = await api.order.getPending(
+        isRefresh ? 0 : offsetPending,
+        limit
+      );
 
       if (data.ok === true && data.data.length > 0) {
-        Dispatch(onLoadOrdersPending({ data: data.data, total: data.totalItems }));
-        Dispatch(setOffsetPending(offsetPending + limit))
+        if (isRefresh) {
+          Dispatch(
+            onLoadOrdersPendingFirst({
+              data: data.data,
+              total: data.totalItems,
+            })
+          );
+        } else {
+          Dispatch(
+            onLoadOrdersPending({ data: data.data, total: data.totalItems })
+          );
+        }
+        if (!isRefresh) {
+          Dispatch(setOffsetPending(offsetPending + limit));
+        }
       }
-
     } catch (error: any) {
       console.log("errorr", error.response.data.message);
     } finally {
@@ -71,16 +112,29 @@ export const useOrders = () => {
     }
   };
 
-  const handleLoadingOrdersActive = async () => {
+  const handleLoadingOrdersActive = async (isRefresh?: boolean) => {
     Dispatch(onLoadingApi());
     try {
-      const data = await api.order.getActive(offsetActive, limit);
+      const data = await api.order.getActive(
+        isRefresh ? 0 : offsetActive,
+        limit
+      );
 
       console.log(data);
 
       if (data.ok === true && data.data.length > 0) {
-        Dispatch(odLoadOrdersActive({ data: data.data, total: data.totalItems }));
-        Dispatch(setOffsetActive(offsetActive + limit))
+        if (isRefresh) {
+          Dispatch(
+            odLoadOrdersActiveFirst({ data: data.data, total: data.totalItems })
+          );
+        } else {
+          Dispatch(
+            odLoadOrdersActive({ data: data.data, total: data.totalItems })
+          );
+        }
+        if (!isRefresh) {
+          Dispatch(setOffsetActive(offsetActive + limit));
+        }
       }
     } catch (error: any) {
       console.log("error xd", error?.response?.data);
@@ -143,14 +197,12 @@ export const useOrders = () => {
 
   const addOffsetToOrdersPending = () => {
     try {
-      Dispatch(setOffsetPending(offsetPending + 1))
+      Dispatch(setOffsetPending(offsetPending + 1));
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
-
-  
   return {
     loadingApiAction,
     loadingApi,
@@ -167,6 +219,6 @@ export const useOrders = () => {
     handleAddNewOrderPending,
     handleLoadingOrdersActive,
     handleFinishOrderActive,
-    addOffsetToOrdersPending
+    addOffsetToOrdersPending,
   };
 };

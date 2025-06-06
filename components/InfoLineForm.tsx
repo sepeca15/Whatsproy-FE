@@ -60,7 +60,6 @@ const InfoLineForm: React.FC<Props> = ({
 
             {infoLine.tipo === TipoInfoLine.number && (
               <InputField
-                label={infoLine.nombre}
                 placeholder={`Ingresar ${infoLine.nombre}`}
                 keyboardType="numeric"
                 value={fieldVal?.toString() ?? ""}
@@ -76,7 +75,6 @@ const InfoLineForm: React.FC<Props> = ({
 
             {infoLine.tipo === TipoInfoLine.string && (
               <InputField
-                label={infoLine.nombre}
                 placeholder={`Ingresar ${infoLine.nombre}`}
                 value={fieldVal ?? ""}
                 onChangeText={(t) =>

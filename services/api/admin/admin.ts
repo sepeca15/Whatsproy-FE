@@ -68,6 +68,8 @@ const api = {
   user: {
     create: user.createUser,
     update: user.updateUser,
+    findWorkers: user.findWorkers,
+    findHorarios: user.findHorarios,
     findAll: user.findAllUsers,
     find: user.findUser,
     updateFcm: user.updateFCM,
@@ -86,6 +88,7 @@ const api = {
     getAvailableDates: order.getAvailableDates,
     getActive: order.getAllActive,
     getFinished: order.getAllFinished,
+    getAvailableDatesByMonth: order.getAvailableDatesByMonth,
     getPending: order.getAllPending,
     subOrderStatus: order.subOrderStatus,
     remove: order.removeOrder,

@@ -559,11 +559,13 @@
     "modalDelete.title": "Delete status",
     "modalDelete.message": "Are you sure you want to delete this status?",
     "printing": "Printing...",
-    "printComanda": "Print Order"
+    "printComanda": "Print Order",
+    "selectWorker": "Select worker"
   },
   "es": {
     "common.yes": "SI",
     "common.no": "NO",
+    "selectWorker": "Elige un trabajador",
     "printing": "Imprimiendo...",
     "printComanda": "Imprimir Orden",
     "statusDragDropInfo": "¡Arrastra y suelta los elementos y crea el estado para el orden que quieras!",

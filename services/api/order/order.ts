@@ -11,20 +11,28 @@ export const getStatitics = async (filterType: any) => {
   return data;
 };
 
-export const getOrderForCalendar = async (selectedDate: string) => {
+export const getOrderForCalendar = async (selectedDate: string, userId?: string) => {
   const { data } = await ApiInstances("current").get(
-    "pedido/calendar/formatCalendar/" + selectedDate,
+    "pedido/calendar/formatCalendar/" + selectedDate + `?userId=${userId}`,
   );
 
   return data;
 };
 
-export const getAvailableDates = async (fecha: string) => {
+export const getAvailableDates = async (fecha: string, workerId?: string) => {
   const { data } = await ApiInstances("current").get(
-    `pedido/calendar/dates-avaiable?fecha=${fecha}&withPast=true`,
+    `pedido/calendar/dates-avaiable?fecha=${fecha}&withPast=true&userId=${workerId}`,
   );
   return data;
 };
+
+export const getAvailableDatesByMonth = async (anio: string, mes: string, workerId?: string) => {
+  const { data } = await ApiInstances("current").get(
+    `pedido/calendar/dates-avaiable-by-month?anio=${anio}&mes=${mes}&userId=${workerId}`,
+  );
+  return data;
+};
+
 
 export const getAllFinished = async (offset: number, limit: number) => {
   const { data } = await ApiInstances("current").get(`pedido/finished?offset=${offset}&limit=${limit}`);
@@ -66,10 +74,10 @@ export const getNextDateAvailable = async () => {
   return data;
 };
 
-export const getNextDateAvailableForSingleDay = async (fecha: string) => {
+export const getNextDateAvailableForSingleDay = async (fecha: string, selectedWorkerId?: string) => {
   console.log("xd", fecha)
   const { data } = await ApiInstances("current").get(
-    `pedido/calendar/dates-avaiable?fecha=${fecha}&withPast=true`,
+    `pedido/calendar/dates-avaiable?fecha=${fecha}&withPast=false&userId${selectedWorkerId}`,
   );
   return data;
 };

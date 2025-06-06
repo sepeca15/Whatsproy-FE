@@ -11,7 +11,7 @@ const initialState = {
   totalItemsPending: 0,
   totalItemsActive: 0,
   loadingApi: false,
-  loadingApiAction: false
+  loadingApiAction: false,
 };
 
 const orderSlice = createSlice({
@@ -20,12 +20,23 @@ const orderSlice = createSlice({
   reducers: {
     onLoadOrdersPending: (state, { payload }) => {
       state.ordersPending = [...state.ordersPending, ...payload.data];
-      state.totalItemsPending = payload.total
+      state.totalItemsPending = payload.total;
+      state.loadingApi = false;
+    },
+    onLoadOrdersPendingFirst: (state, { payload }) => {
+      state.ordersPending = [...payload.data];
+      state.totalItemsPending = payload.total;
       state.loadingApi = false;
     },
     onLoadOrdersFinished: (state, { payload }) => {
       state.ordersFinished = [...state.ordersFinished, ...payload.data];
-      state.totalItemsFinished = payload.total
+      state.totalItemsFinished = payload.total;
+
+      state.loadingApi = false;
+    },
+    onLoadOrdersFinishedFirst: (state, { payload }) => {
+      state.ordersFinished = [...payload.data];
+      state.totalItemsFinished = payload.total;
 
       state.loadingApi = false;
     },
@@ -40,19 +51,22 @@ const orderSlice = createSlice({
     },
     odLoadOrdersActive: (state, { payload }) => {
       state.ordersActive = [...state.ordersActive, ...payload.data];
-      state.totalItemsActive = payload.total
+      state.totalItemsActive = payload.total;
+
+      state.loadingApi = false;
+    },
+    odLoadOrdersActiveFirst: (state, { payload }) => {
+      state.ordersActive = [...payload.data];
+      state.totalItemsActive = payload.total;
 
       state.loadingApi = false;
     },
     onConfirmOrder: (state, { payload }) => {
       const newOrderConfirmed = payload;
       const newStateOrdersPending = state.ordersPending.filter(
-        (order: any) => order.orderId !== newOrderConfirmed.orderId,
+        (order: any) => order.orderId !== newOrderConfirmed.orderId
       );
-      const newStateOrdersActive = [
-        ...state.ordersActive,
-        newOrderConfirmed,
-      ];
+      const newStateOrdersActive = [...state.ordersActive, newOrderConfirmed];
       state.ordersPending = newStateOrdersPending;
       state.ordersActive = newStateOrdersActive;
     },
@@ -61,12 +75,12 @@ const orderSlice = createSlice({
 
       if (key === "pending") {
         const newState = state.ordersPending.filter(
-          (order: any) => order.orderId !== orderId,
+          (order: any) => order.orderId !== orderId
         );
         state.ordersPending = newState;
       } else {
         const newState = state.ordersFinished.filter(
-          (order: any) => order.orderId !== orderId,
+          (order: any) => order.orderId !== orderId
         );
         state.ordersFinished = newState;
       }
@@ -75,22 +89,16 @@ const orderSlice = createSlice({
       const newOrder = payload;
       let findOrder;
 
-      const newStateOrdersActive = state.ordersActive.filter(
-        (order: any) => {
-          if (order.orderId === newOrder.id) {
-            findOrder = order
-            return;
-          }
-          return order
-        },
-      );
-      const newStateOrdersFinished = [
-        ...state.ordersFinished,
-        findOrder,
-      ];
+      const newStateOrdersActive = state.ordersActive.filter((order: any) => {
+        if (order.orderId === newOrder.id) {
+          findOrder = order;
+          return;
+        }
+        return order;
+      });
+      const newStateOrdersFinished = [...state.ordersFinished, findOrder];
       state.ordersActive = newStateOrdersActive;
       state.ordersFinished = newStateOrdersFinished;
-
     },
     onLoadingApi: (state) => {
       state.loadingApi = true;
@@ -106,7 +114,7 @@ const orderSlice = createSlice({
     },
     onAddOrderPending: (state, { payload }) => {
       state.ordersPending = [...state.ordersPending, payload];
-      state.offsetPending = state.offsetPending + 1
+      state.offsetPending = state.offsetPending + 1;
     },
   },
 });
@@ -124,8 +132,11 @@ export const {
   onFinishLoadingApiAction,
   finishOrderActive,
   setOffsetPending,
+  onLoadOrdersPendingFirst,
+  odLoadOrdersActiveFirst,
+  onLoadOrdersFinishedFirst,
   setOffsetActive,
-  setOffsetFinished
+  setOffsetFinished,
 } = orderSlice.actions;
 
 export default orderSlice;

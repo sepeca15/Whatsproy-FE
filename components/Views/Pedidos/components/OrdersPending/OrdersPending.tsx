@@ -40,7 +40,7 @@ const OrdersPending = () => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await handleLoadOrdersPending();
+    await handleLoadOrdersPending(true);
     setRefreshing(false);
   };
 
