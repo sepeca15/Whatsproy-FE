@@ -20,7 +20,7 @@ const OrdersFinished = () => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await handleLoadOrdersFinished();
+    await handleLoadOrdersFinished(true);
     setRefreshing(false);
   };
 

@@ -129,8 +129,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
         imageUrl: productBDD.imagen || "../errorimage.png",
         duration: productBDD.plazoDuracionEstimadoMinutos.toString(),
         currency_id: productBDD.currency_id,
-        disponible: productBDD.disponible.toString(),
-        category: productBDD.category.map((cat) => cat.id).join(","),
+        disponible: productBDD?.disponible?.toString(),
+        category: productBDD?.category?.map((cat) => cat.id).join(","),
       },
     });
   };

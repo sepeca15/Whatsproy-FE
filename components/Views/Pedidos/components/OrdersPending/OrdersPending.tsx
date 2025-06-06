@@ -26,7 +26,10 @@ const OrdersPending = () => {
     const socketIo = io(user.apiUrl);
 
     socketIo.on("sendOrderRealTime", (data) => {
-      handleAddNewOrderPending(data);
+      handleAddNewOrderPending({
+        ...data,
+        orderId: data?.id,
+      });
     });
 
     if (ordersPending.length === 0) {
@@ -60,7 +63,7 @@ const OrdersPending = () => {
               pending={true}
             />
           )}
-          keyExtractor={(item) => item.orderId.toString()}
+          keyExtractor={(item) => (item?.orderId ?? item?.id ?? "")?.toString()}
           onEndReached={() => {
             if (ordersPending.length < totalItemsPending && !loadingApi) {
               handleLoadOrdersPending();

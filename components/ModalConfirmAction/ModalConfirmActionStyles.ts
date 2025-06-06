@@ -16,6 +16,11 @@ export const styles = StyleSheet.create({
     justifyContent: "flex-end",
     gap: 10,
   },
+  textArea: {
+    height: 100,
+    marginTop: 20,
+    textAlignVertical: "top",
+  },
   buttonContinue: {
     width: 100,
     borderRadius: 8,

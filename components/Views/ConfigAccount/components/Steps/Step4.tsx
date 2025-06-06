@@ -8,7 +8,7 @@ import LoadQR from "../LoadQR";
 import { useUser } from "@/hooks/redux/useUser";
 import CustomButton from "@/components/CustomButton";
 import { useToastContext } from "@/contexts/ToastContext";
-import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
+import { FormattedMessage, useIntl } from "react-intl"; // Importa FormattedMessage
 import TutorialGreenApi from "../../TotorialGreenApi";
 
 type buttons = "Auth" | "QR";
@@ -28,22 +28,24 @@ const Step4 = () => {
     QRCode: null,
     AuthCode: null,
   });
+  const intl = useIntl();
   const { showToast } = useToastContext();
 
   const FinishConfigGreenApi = async () => {
     try {
       setLoadingChecking(true);
       const resp = await isGreenApiConfigured();
+      console.log("xd3", resp)
       if (resp?.isDone) {
         showToast({
-          description: <FormattedMessage id="configSuccessDescription" />,
-          title: <FormattedMessage id="configSuccessTitle" />,
+          description: intl.formatMessage({ id: 'configSuccessDescription' }),
+          title: intl.formatMessage({ id: 'configSuccessTitle' }),
           status: "success",
         });
       } else {
         showToast({
-          description: <FormattedMessage id="configErrorDesc" />,
-          title: <FormattedMessage id="ooops" />,
+          description: intl.formatMessage({ id: "configErrorDesc" }),
+          title: intl.formatMessage({ id: 'ooops' }),
           status: "error",
         });
       }

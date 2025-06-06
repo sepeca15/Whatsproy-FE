@@ -85,9 +85,9 @@ const AddProduct: React.FC = () => {
       newErrors.precio = "El precio debe ser mayor que cero";
     }
 
-    if (!(formData.categoryIds?.length ?? 0)) {
-      newErrors.categoryIds = "Seleccione al menos una categoría";
-    }
+    // if (!(formData.categoryIds?.length ?? 0)) {
+    //   newErrors.categoryIds = "Seleccione al menos una categoría";
+    // }
 
     if (formData.plazoDuracionEstimadoMinutos <= 0) {
       newErrors.plazoDuracionEstimadoMinutos =

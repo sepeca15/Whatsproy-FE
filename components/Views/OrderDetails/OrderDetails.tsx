@@ -16,7 +16,7 @@ import api from "@/services/api/admin";
 import { Image, ScrollView, Text, View } from "native-base";
 import moment from "moment";
 import "moment/locale/es";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import { Colors } from "@/constants/Colors";
 import type { IEstado } from "../Status/Status";
 import { styles } from "./OrderDetailsStyles";
@@ -38,19 +38,18 @@ import { useUser } from "@/hooks/redux/useUser";
 import { io } from "socket.io-client";
 import { useToastContext } from "@/contexts/ToastContext";
 import { ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
-import { WebView } from 'react-native-webview';
-import { useThermalPrint } from '../../../hooks/PDF/PDFGenerate';
+import { WebView } from "react-native-webview";
+import { useThermalPrint } from "../../../hooks/PDF/PDFGenerate";
 import { useState } from "react";
-import RNFS from 'react-native-fs';
-import { Product } from '../GraficProdHome/components/types';
+import RNFS from "react-native-fs";
+import { Product } from "../GraficProdHome/components/types";
 import { globalStyles } from "@/components/globalStyles";
+import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmAction";
 // Types
 interface IDetailsOrder {
   loading: boolean;
   data: IOrderDetails | null;
 }
-
-
 
 const initialState: IDetailsOrder = {
   loading: true,
@@ -62,7 +61,6 @@ const OrderDetails = () => {
   const [pdfPath, setPdfPath] = useState<string | null>(null);
   const { printHTML, downloadPDF, loading } = useThermalPrint();
 
-
   const { handleDeleteOrder } = useOrders();
   const router = useRouter();
   const { user } = useUser();
@@ -70,12 +68,15 @@ const OrderDetails = () => {
   // const empresaLogo = user?.empresaLogo ?? "https://example.com/logo.png"; // Default logo if not provided
   const [detailOfOrder, setDetailOfOrder] =
     React.useState<IDetailsOrder>(initialState);
+  const [reason, setReason] = useState("");
 
   const { orderId, keyDeleteType } = useLocalSearchParams();
   const resolvedKeyDeleteType = keyDeleteType as "pending" | "finished";
   const [stateModalStatus, setStateModalStatus] =
     React.useState<boolean>(false);
   const { showToast } = useToastContext();
+  const intl = useIntl();
+  const [loadingDelete, setLoadingDelete] = useState(false);
 
   // Animation values
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
@@ -87,6 +88,7 @@ const OrderDetails = () => {
 
   const [isImagePreviewVisible, setImagePreviewVisible] = useState(false);
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
+  const [ordrDeleteModalConfirm, setOrdrDeleteModalConfirm] = useState(false);
 
   const toggleModalStatus = () => setStateModalStatus((prev) => !prev);
 
@@ -135,24 +137,38 @@ const OrderDetails = () => {
   }, [detailOfOrder.loading]);
 
   const DeleteOrder = async () => {
-    if (detailOfOrder.data?.id && keyDeleteType) {
-      try {
-        const response = await api.order.remove(detailOfOrder.data.id);
-        if (response.ok) {
-          await handleDeleteOrder(detailOfOrder.data.id, resolvedKeyDeleteType);
-          if (user?.tipo_servicio === ID_TIPOSERVICIO_RESERVA) {
-            router.push("/(tabs)/calendar");
+    try {
+      setLoadingDelete(true);
+      if (detailOfOrder.data?.id && keyDeleteType) {
+        try {
+          const response = await api.order.remove(detailOfOrder.data.id);
+          if (response.ok) {
+            await handleDeleteOrder(
+              detailOfOrder.data.id,
+              resolvedKeyDeleteType,
+              reason
+            );
+            if (user?.tipo_servicio === ID_TIPOSERVICIO_RESERVA) {
+              router.push("/(tabs)/calendar");
+            } else {
+              router.push("/(tabs)/pedidos");
+            }
           } else {
-            router.push("/(tabs)/pedidos");
+            console.error("Failed to delete order:", response.message);
           }
-        } else {
-          console.error("Failed to delete order:", response.message);
+        } catch (error) {
+          throw new Error("Error deleting order:");
         }
-      } catch (error) {
-        console.error("Error deleting order:", error);
+      } else {
+        console.error("Missing required data to delete the order.");
       }
-    } else {
-      console.error("Missing required data to delete the order.");
+    } catch (error) {
+      showToast({
+        title: <FormattedMessage id="unknownError" />,
+        status: "error",
+      });
+    } finally {
+      setLoadingDelete(false);
     }
   };
 
@@ -253,19 +269,21 @@ const OrderDetails = () => {
 
   const data = detailOfOrder.data;
 
-
-  const productosHTML = detailOfOrder.data && Array.isArray(detailOfOrder.data.products)
-    ? detailOfOrder.data.products.map(prod => {
-      const nombre = prod.productoInfo?.nombre || "Producto sin nombre";
-      const cantidad = prod.cantidad || 1;
-      const detalle = prod.detalle || "Sin detalle";
-      return `
+  const productosHTML =
+    detailOfOrder.data && Array.isArray(detailOfOrder.data.products)
+      ? detailOfOrder.data.products
+          .map((prod) => {
+            const nombre = prod.productoInfo?.nombre || "Producto sin nombre";
+            const cantidad = prod.cantidad || 1;
+            const detalle = prod.detalle || "Sin detalle";
+            return `
         <div class="item"><strong>Producto:</strong> ${nombre}</div>
         <div class="item"><strong>Cantidad:</strong> ${cantidad}</div>
         <div class="item"><strong>Detalle:</strong> ${detalle}</div>
       `;
-    }).join('')
-    : '';
+          })
+          .join("")
+      : "";
 
   const comandaHTML = `
 <html>
@@ -364,12 +382,12 @@ const OrderDetails = () => {
     </div>
 
     <main>
-      <div class="item"><strong>Cliente:</strong> ${data?.client?.name ?? 'Sin este dato'}</div>
-      <div class="item"><strong>Dirección:</strong> ${data?.infoLines?.Direccion || 'No indicada'}</div>
-      <div class="item"><strong>Teléfono:</strong> ${data?.client?.phone ?? '------'}</div>
+      <div class="item"><strong>Cliente:</strong> ${data?.client?.name ?? "Sin este dato"}</div>
+      <div class="item"><strong>Dirección:</strong> ${data?.infoLines?.Direccion || "No indicada"}</div>
+      <div class="item"><strong>Teléfono:</strong> ${data?.client?.phone ?? "------"}</div>
       <div class="item"><strong>Fecha:</strong> ${moment(data?.date).locale("es").format("D MMM YYYY")}</div>
 
-      ${data?.paymentMethod ? `<div class="item-payment-centered">${data.paymentMethod.name}</div>` : ''}
+      ${data?.paymentMethod ? `<div class="item-payment-centered">${data.paymentMethod.name}</div>` : ""}
 
       <div class="line"></div>
 
@@ -377,15 +395,13 @@ const OrderDetails = () => {
 
       <div class="line"></div>
 
-      <div class="item">Total: <strong>$${data?.total ?? 'Error al calcular'}</strong></div>
+      <div class="item">Total: <strong>$${data?.total ?? "Error al calcular"}</strong></div>
     </main>
 
-    <div class="footer phone">Tel: ${data?.client.phone ?? '4343 0971'}</div>
+    <div class="footer phone">Tel: ${data?.client.phone ?? "4343 0971"}</div>
   </body>
 </html>
 `;
-
-
 
   // const handleGeneratePdf = async () => {
   //   const path = await generatePDF(htmlContent, "mi_factura_4");
@@ -396,7 +412,6 @@ const OrderDetails = () => {
   //     Alert.alert("Error", "No se pudo generar el PDF");
   //   }
   // };
-
 
   const handleDownload = () => {
     downloadPDF(comandaHTML);
@@ -420,7 +435,7 @@ const OrderDetails = () => {
         <View style={styles.headerRight}>
           <TouchableOpacity
             style={styles.headerActionButton}
-            onPress={DeleteOrder}
+            onPress={() => setOrdrDeleteModalConfirm(true)}
           >
             <MaterialIcons name="delete-outline" size={22} color="white" />
           </TouchableOpacity>
@@ -440,25 +455,36 @@ const OrderDetails = () => {
           >
             <View style={styles.reclamoContainer}>
               <View style={styles.reclamoHeader}>
-                <MaterialCommunityIcons name="alert-circle-outline" size={20} color="#92400e" />
+                <MaterialCommunityIcons
+                  name="alert-circle-outline"
+                  size={20}
+                  color="#92400e"
+                />
                 <Text style={styles.reclamoTitle}>
-                  <FormattedMessage id="claimIndicator" defaultMessage="Claim received:" />
+                  <FormattedMessage
+                    id="claimIndicator"
+                    defaultMessage="Claim received:"
+                  />
                 </Text>
               </View>
 
-              <Text style={styles.reclamoText}>{detailOfOrder.data.reclamo?.texto ?? "-"}</Text>
+              <Text style={styles.reclamoText}>
+                {detailOfOrder.data.reclamo?.texto ?? "-"}
+              </Text>
 
               <Text style={styles.reclamoDate}>
                 <FormattedMessage
                   id="claimDate"
                   defaultMessage="Date: {date}"
                   values={{
-                    date: new Date(detailOfOrder.data.reclamo.createdAt).toLocaleDateString('en-GB', {
-                      day: '2-digit',
-                      month: 'long',
-                      year: 'numeric',
+                    date: new Date(
+                      detailOfOrder.data.reclamo.createdAt
+                    ).toLocaleDateString("en-GB", {
+                      day: "2-digit",
+                      month: "long",
+                      year: "numeric",
                       hour: "numeric",
-                      minute: "numeric"
+                      minute: "numeric",
                     }),
                   }}
                 />
@@ -475,19 +501,34 @@ const OrderDetails = () => {
             ]}
           >
             <View style={styles.sectionHeader}>
-              <MaterialIcons name="payment" size={20} color={Colors.light.primary} />
+              <MaterialIcons
+                name="payment"
+                size={20}
+                color={Colors.light.primary}
+              />
               <Text style={styles.sectionTitle}>
-                <FormattedMessage id="paymentInfo" defaultMessage="Información de pago" />
+                <FormattedMessage
+                  id="paymentInfo"
+                  defaultMessage="Información de pago"
+                />
               </Text>
             </View>
 
             <View style={{ marginTop: 8 }}>
               <Text style={styles.paymentLabel}>
-                <FormattedMessage id="paymentMethod" defaultMessage="Método de pago" />:
+                <FormattedMessage
+                  id="paymentMethod"
+                  defaultMessage="Método de pago"
+                />
+                :
               </Text>
-              <Text style={styles.paymentValue}>{detailOfOrder.data.paymentMethod.name}</Text>
+              <Text style={styles.paymentValue}>
+                {detailOfOrder.data.paymentMethod.name}
+              </Text>
 
-              <Text style={styles.paymentDescription}>{detailOfOrder.data.paymentMethod.description}</Text>
+              <Text style={styles.paymentDescription}>
+                {detailOfOrder.data.paymentMethod.description}
+              </Text>
 
               {detailOfOrder.data.transferUrl && (
                 <View style={styles.transferProofContainer}>
@@ -499,22 +540,24 @@ const OrderDetails = () => {
                   </Text>
                   <TouchableOpacity
                     onPress={() => {
-                      setPreviewImageUrl(detailOfOrder?.data?.transferUrl ?? "");
+                      setPreviewImageUrl(
+                        detailOfOrder?.data?.transferUrl ?? ""
+                      );
                       setImagePreviewVisible(true);
                     }}
-
                   >
-                    <View style={{
-                      borderRadius: 20,
-                      overflow: "hidden",
-                    }}>
+                    <View
+                      style={{
+                        borderRadius: 20,
+                        overflow: "hidden",
+                      }}
+                    >
                       <Image
                         source={{ uri: detailOfOrder.data.transferUrl }}
                         style={styles.transferProofImage}
                         resizeMode="cover"
                       />
                     </View>
-
                   </TouchableOpacity>
                 </View>
               )}
@@ -663,8 +706,7 @@ const OrderDetails = () => {
               <Text style={styles.estimateTimeValue}>
                 {detailOfOrder.data?.estimateTime! >= 60
                   ? Math.floor(detailOfOrder?.data?.estimateTime / 60)
-                  : detailOfOrder.data?.estimateTime}
-                {" "}
+                  : detailOfOrder.data?.estimateTime}{" "}
                 <Text style={styles.estimateTimeUnit}>
                   {detailOfOrder.data?.estimateTime! >= 60 ? (
                     <FormattedMessage id="hours" />
@@ -786,12 +828,14 @@ const OrderDetails = () => {
             style={styles.printButtonTouchable}
           >
             <Text style={styles.printButtonText}>
-              {loading ? <FormattedMessage id="printing" /> : <FormattedMessage id="printComanda" />}
+              {loading ? (
+                <FormattedMessage id="printing" />
+              ) : (
+                <FormattedMessage id="printComanda" />
+              )}
             </Text>
           </TouchableOpacity>
         </View>
-
-
 
         {/* Chat Button */}
         <TouchableOpacity
@@ -818,9 +862,33 @@ const OrderDetails = () => {
         onClose={toggleModalStatus}
       />
 
+      {ordrDeleteModalConfirm && (
+        <ModalConfirmAction
+          loading={loadingDelete}
+          onContinue={() => DeleteOrder()}
+          title={intl.formatMessage({
+            id: "deleteOrderTitle",
+            defaultMessage: "Delete order",
+          })}
+          message={intl.formatMessage({
+            id: "deleteOrderMessage",
+            defaultMessage:
+              "If you delete this order, you will not see it here but it will affect your company's statistics.",
+          })}
+          withReason={true}
+          onClose={() => setOrdrDeleteModalConfirm(false)}
+          reason={reason}
+          setReason={setReason}
+          isOpen={ordrDeleteModalConfirm}
+        />
+      )}
+
       <Modal visible={isImagePreviewVisible} transparent={true}>
         <View style={styles.modalBackground}>
-          <TouchableOpacity style={styles.closeButton} onPress={() => setImagePreviewVisible(false)}>
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={() => setImagePreviewVisible(false)}
+          >
             <MaterialIcons name="close" size={30} color="#fff" />
           </TouchableOpacity>
           {previewImageUrl && (
