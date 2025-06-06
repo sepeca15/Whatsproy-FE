@@ -25,7 +25,7 @@ import MultiSelectInput from "@/components/MultiSelectInput";
 import { ICategoryData } from "../../Categories/components/CardCategory/CardCategory";
 import InputField from "@/components/InputField";
 import SelectField from "@/hooks/SelectField/SelectField";
-import { useToastContext } from "@/contexts/ToastContext";
+import { useEditProductValidation } from "@/hooks/productValidation/useProductValidation";
 
 const AddProduct: React.FC = () => {
   const router = useRouter();
@@ -48,7 +48,7 @@ const AddProduct: React.FC = () => {
   const [allCategories, setAllCategories] = useState<ICategoryData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<{ [key: string]: string | null }>({});
-  const { showToast } = useToastContext();
+  const { validateForm } = useEditProductValidation();
 
   React.useEffect(() => {
     loadAllCategories();
@@ -78,65 +78,32 @@ const AddProduct: React.FC = () => {
     pickImage(setFormData);
   };
 
-  // Nueva función simple de validación
-  const validateForm = () => {
-    const newErrors: { [key: string]: string } = {};
+  // Nueva hook simple de validación
 
-     if (!selectedImage) {
-    showToast({
-      title: "Imagen requerida",
-      description: "Debe seleccionar una imagen para el producto",
-      status: "error",
+
+
+const handleSubmit = async () => {
+  if (!validateForm(formData, selectedImage, setErrors)) return;
+
+  setLoading(true);
+  try {
+    await api.products.create({
+      ...formData,
+      precio: parseFloat(formData.precio.toString()),
+      plazoDuracionEstimadoMinutos: parseFloat(
+        formData.plazoDuracionEstimadoMinutos.toString()
+      ),
     });
+    router.push("/(tabs)/productos");
+  } catch (error: any) {
+    console.error(
+      "Error al crear el producto:",
+      error?.response?.data?.message || error
+    );
+  } finally {
+    setLoading(false);
   }
-
-    if (!formData.nombre.trim()) {
-      newErrors.nombre = "El nombre del producto es obligatorio";
-    }
-
-    if (formData.precio <= 0) {
-      newErrors.precio = "El precio debe ser mayor que cero";
-    }
-
-    // if (!(formData.categoryIds?.length ?? 0)) {
-    //   newErrors.categoryIds = "Seleccione al menos una categoría";
-    // }
-
-    if (formData.plazoDuracionEstimadoMinutos <= 0) {
-      newErrors.plazoDuracionEstimadoMinutos =
-        "La duración estimada debe ser mayor que cero minutos";
-    }
-    if (!formData.currency_id) {
-      newErrors.currency_id = "Debe seleccionar una moneda";
-    }
-
-    setErrors(newErrors);
-
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async () => {
-    if (!validateForm()) return;
-
-    setLoading(true);
-    try {
-      await api.products.create({
-        ...formData,
-        precio: parseFloat(formData.precio.toString()),
-        plazoDuracionEstimadoMinutos: parseFloat(
-          formData.plazoDuracionEstimadoMinutos.toString()
-        ),
-      });
-      router.push("/(tabs)/productos");
-    } catch (error: any) {
-      console.error(
-        "Error al crear el producto:",
-        error?.response?.data?.message || error
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+};
 
   return (
     <KeyboardAwareScrollView
@@ -312,24 +279,24 @@ const AddProduct: React.FC = () => {
           <Text style={styles.label}>
             <FormattedMessage id="description" />
           </Text>
-            <View style={styles.inputfile}>
+          <View style={styles.inputfile}>
             <InputField
               placeholder={intl.formatMessage({
-              id: "productDescriptionPlaceholder",
-              defaultMessage: "Ej: Plato clásico con papas fritas",
+                id: "productDescriptionPlaceholder",
+                defaultMessage: "Ej: Plato clásico con papas fritas",
               })}
               isTextArea
               value={formData.descripcion}
               onChangeText={(text) => {
-              setFormData({ ...formData, descripcion: text });
-              if (text.trim()) {
-                setErrors((prev) => ({ ...prev, descripcion: null }));
-              }
+                setFormData({ ...formData, descripcion: text });
+                if (text.trim()) {
+                  setErrors((prev) => ({ ...prev, descripcion: null }));
+                }
               }}
               error={errors.descripcion}
               style={styles.inputarea}
             />
-            </View>
+          </View>
 
           <TouchableOpacity
             style={styles.button}

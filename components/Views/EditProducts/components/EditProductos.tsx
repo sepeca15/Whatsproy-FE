@@ -29,6 +29,10 @@ import MultiSelectInput from "@/components/MultiSelectInput";
 import { View } from "native-base";
 import InputField from "@/components/InputField";
 import SelectField from "@/hooks/SelectField/SelectField";
+import { useEditProductValidation } from "@/hooks/productValidation/useProductValidation";
+
+
+
 interface ProductFormData {
   id: number;
   nombre: string;
@@ -95,8 +99,8 @@ const EditProduct = ({
   const { showToast } = useToastContext();
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string | null }>({});
-
   const [allCategories, setAllCategories] = useState<ICategoryData[]>([]);
+  const { validateForm } = useEditProductValidation();
 
   React.useEffect(() => {
     loadAllCategories()
@@ -114,42 +118,7 @@ const EditProduct = ({
     }
   }
 
-  // Nueva función simple de validación
-  const validateForm = () => {
-    const newErrors: { [key: string]: string } = {};
 
-    if (!selectedImage) {
-      showToast({
-        title: "Imagen requerida",
-        description: "Debe seleccionar una imagen para el producto",
-        status: "error",
-      });
-    }
-
-    if (!formData.nombre.trim()) {
-      newErrors.nombre = "El nombre del producto es obligatorio";
-    }
-
-    if (formData.precio <= 0) {
-      newErrors.precio = "El precio debe ser mayor que cero";
-    }
-
-    if (!(formData.categoryIds?.length ?? 0)) {
-      newErrors.categoryIds = "Seleccione al menos una categoría";
-    }
-
-    if (formData.plazoDuracionEstimadoMinutos <= 0) {
-      newErrors.plazoDuracionEstimadoMinutos =
-        "La duración estimada debe ser mayor que cero minutos";
-    }
-    if (!formData.currency_id) {
-      newErrors.currency_id = "Debe seleccionar una moneda";
-    }
-
-    setErrors(newErrors);
-
-    return Object.keys(newErrors).length === 0;
-  };
 
 
   const { pickImage } = useImagePicker({
@@ -183,7 +152,8 @@ const EditProduct = ({
 
 
   const handleSubmit = async () => {
-    if (!validateForm()) return;
+     if (!validateForm(formData, selectedImage, setErrors)) return;
+
 
     if (loadingimage) {
       showToast({
@@ -375,7 +345,7 @@ const EditProduct = ({
                     }));
                   }
                 }}
-                
+
                 onSearch={() => { }}
                 error={errors.categoryIds}
               />
