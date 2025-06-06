@@ -168,10 +168,14 @@ export const useOrders = () => {
     }
   };
 
-  const handleDeleteOrder = async (id: number, key: "pending" | "finished") => {
+  const handleDeleteOrder = async (
+    id: number,
+    key: "pending" | "finished",
+    reason: string
+  ) => {
     Dispatch(onLoadingApiAction());
     try {
-      const data = await api.order.remove(id);
+      const data = await api.order.remove(id, reason);
 
       if (data.ok === true) {
         Dispatch(onDeleteOrder({ orderId: id, key: key }));

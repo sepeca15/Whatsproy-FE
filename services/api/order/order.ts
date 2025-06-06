@@ -82,8 +82,8 @@ export const getNextDateAvailableForSingleDay = async (fecha: string, selectedWo
   return data;
 };
 
-export const removeOrder = async (id: number) => {
-  const { data } = await ApiInstances("current").delete("pedido/" + id);
+export const removeOrder = async (id: number, reason?: string) => {
+  const { data } = await ApiInstances("current").delete("pedido/" + id, { data: { reason: reason } });
 
   return data;
 };

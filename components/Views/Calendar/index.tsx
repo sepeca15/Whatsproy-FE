@@ -20,7 +20,7 @@ import { Colors } from "@/constants/Colors";
 import CustomText from "@/components/CustomText";
 import CreateOrderModal from "@/components/CreateOrderModal";
 import Animated from "react-native-reanimated";
-import { FormattedMessage } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import { globalStyles } from "@/components/globalStyles";
 import { styles as stylesPending } from "../Pedidos/components/OrdersPending/ordersPendingStyles";
 import { useToastContext } from "@/contexts/ToastContext";
@@ -32,6 +32,7 @@ import { WorkerUser } from "@/services/api/user/user.types";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Box } from "native-base";
 import WorkerSelect from "@/components/WorkerSelect/WorkerSelect";
+import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmAction";
 
 if (
   Platform.OS === "android" &&
@@ -60,6 +61,7 @@ export default function CalendarView() {
   const [selectedMonth, setSelectedMonth] = useState<any>("");
   const [selectedYear, setSelectedYear] = useState<any>("");
   const [disabledDates, setDisabledDates] = useState({});
+  const [oredrToDelete, setOrderToDelete] = useState<any>(null)
   const orderPerDays = ordenarPedidosPorHora(orderPerDaysAll);
 
   useEffect(() => {
@@ -67,6 +69,11 @@ export default function CalendarView() {
   }, [selectedDate]);
 
   const [loadWorkers, setLoadWorkers] = useState(false);
+  const [ordrDeleteModalConfirm, setOrdrDeleteModalConfirm] = useState(false);
+  const [reason, setReason] = useState("");
+  const [loadingDelete, setLoadingDelete] = useState(false);
+
+  const intl = useIntl();
 
   const [loadingCalendarCupos, setLoadingCalendarCupos] = useState(false);
 
@@ -366,7 +373,10 @@ export default function CalendarView() {
                 <ItemCalendar
                   key={`${data.orderId}-${data.date}`}
                   confirmOrder={confirmOrder}
-                  deleteOrder={deleteOrder}
+                  deleteOrder={(orderId) => {
+                    setOrdrDeleteModalConfirm(true);
+                    setOrderToDelete(orderId);
+                  }}
                   InfoItem={data}
                   confirmed={data.status}
                 />
@@ -443,6 +453,26 @@ export default function CalendarView() {
           <Text style={globalStyles.addButtonText}>+</Text>
         </TouchableOpacity>
       </View>
+
+      {ordrDeleteModalConfirm && (
+        <ModalConfirmAction
+          loading={loadingDelete}
+          onContinue={() => deleteOrder(oredrToDelete)}
+          title={intl.formatMessage({
+            id: "deleteReservationTitle",
+            defaultMessage: "Delete order",
+          })}
+          message={intl.formatMessage({
+            id: "deleteReservationMessage",
+            defaultMessage: "",
+          })}
+          withReason={true}
+          onClose={() => setOrdrDeleteModalConfirm(false)}
+          reason={reason}
+          setReason={setReason}
+          isOpen={ordrDeleteModalConfirm}
+        />
+      )}
     </View>
   );
 }

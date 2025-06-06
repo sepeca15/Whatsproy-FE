@@ -113,7 +113,7 @@ const orderSlice = createSlice({
       state.loadingApi = false;
     },
     onAddOrderPending: (state, { payload }) => {
-      state.ordersPending = [...state.ordersPending, payload];
+      state.ordersPending = [payload, ...state.ordersPending];
       state.offsetPending = state.offsetPending + 1;
     },
   },

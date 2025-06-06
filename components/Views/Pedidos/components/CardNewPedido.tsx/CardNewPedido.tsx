@@ -41,6 +41,8 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
     confirmState: false,
   });
 
+  console.log("orderData", orderData)
+
   const router = useRouter();
   const [statusModalDelete, setStateModalDelete] = useState<boolean>(false);
   const { handleDeleteOrder, confirmOrder, loadingApiAction } = useOrders();
@@ -51,6 +53,7 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
   const intl = useIntl();
   const createdAt = orderData?.createdAt;
   const fromNow = createdAt ? moment(createdAt)?.fromNow() : "";
+  const [reason, setReason] = useState("");
 
   const toggleOptionLoading = (key: string) => {
     setLoading((prev: any) => ({
@@ -83,7 +86,7 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
   const handleDeleteEntryOrder = async () => {
     toggleOptionLoading("deleteState");
     try {
-      await handleDeleteOrder(orderId, keyDeleteType);
+      await handleDeleteOrder(orderId, keyDeleteType, reason);
     } catch (error) {
     } finally {
       toggleOptionLoading("deleteState");
@@ -180,7 +183,7 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
               <Button
                 isLoading={loading.deleteState}
                 isDisabled={loadingApiAction}
-                onPress={handleDeleteEntryOrder}
+                onPress={() => handleModal(true)}
                 style={styles.buttonTransparent}
                 spinner={<Spinner color="black" />}
                 hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
@@ -223,7 +226,10 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
             defaultMessage:
               "If you delete this order, you will not see it here but it will affect your company's statistics.",
           })}
+          withReason={true}
           onClose={() => handleModal(false)}
+          reason={reason}
+          setReason={setReason}
           isOpen={statusModalDelete}
         />
       )}

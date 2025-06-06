@@ -13,8 +13,8 @@ const useValidateForm = (formData: ProductoTypes) => {
       errors.push(intl.formatMessage({ id: "imageRequired" }));
     if (!formData.nombre)
       errors.push(intl.formatMessage({ id: "nameRequired" }));
-    if (formData.categoryIds?.length === 0)
-      errors.push(intl.formatMessage({ id: "categoryRequired" }));
+    // if (formData.categoryIds?.length === 0)
+    //   errors.push(intl.formatMessage({ id: "categoryRequired" }));
 
     if (!formData.precio || formData.precio <= 0)
       errors.push(intl.formatMessage({ id: "priceRequired" }));
