@@ -12,3 +12,13 @@ export interface IUserCreate {
   password: string;
   id_empresa: number;
 }
+
+
+export interface WorkerUser {
+  id: number;
+  nombre: string;
+  apellido: string;
+  activo: boolean;
+  image: string;
+  createdAt: string;
+}

@@ -41,13 +41,11 @@ import {
   filterOnlyHours,
   getHourNumber,
   removeAmPm,
-  removeTimeZone,
 } from "@/utils/date";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import TimePicker from "./TimePicker";
 import { useIntl } from "react-intl";
 import { useHomeData } from "@/hooks/redux/useHomeData";
-import CustomText from "./CustomText";
 import CustomButton from "./CustomButton";
 
 interface IProps {
@@ -55,8 +53,10 @@ interface IProps {
   defaultDate?: any;
   tipoServicio: TipoServicioType;
   onSuccess?: () => void;
+  selectedWorkerId?: any;
   currentOrders?: any[];
   availableDates?: string[];
+  horarios: any[];
 }
 
 const initialValues: CreateOrderDTO = {
@@ -80,10 +80,12 @@ interface prodItems {
 
 const CreateOrderModal = ({
   onClose,
+  selectedWorkerId,
   defaultDate,
   tipoServicio,
   onSuccess,
   currentOrders,
+  horarios,
   availableDates = [],
 }: IProps) => {
   const { showToast } = useToastContext();
@@ -246,6 +248,7 @@ const CreateOrderModal = ({
       };
 
       if (tipoServicio === TipoServicio.RESERVA) {
+        dataToSend.userId = selectedWorkerId;
         let infoLines = JSON.parse(dataToSend.infoLinesJson);
         const fechaMoment = moment.tz(infoLines["Fecha y Hora"], user.timeZone);
         infoLines["Fecha y Hora"] = fechaMoment.format("YYYY-MM-DD HH:mm")
@@ -283,10 +286,8 @@ const CreateOrderModal = ({
   const handleLoadNextAvaialbleDateForSignleDay = async () => {
     try {
       setLoadingNextDateAvailable(true);
-      const availableDates = await api.order.getNextDateAvailableForSingleDay(moment(defaultDate)?.format("YYYY-MM-DD"));
-      console.log("defaultDate", defaultDate)
+      const availableDates = await api.order.getNextDateAvailableForSingleDay(moment(defaultDate)?.format("YYYY-MM-DD"), selectedWorkerId);
       if (availableDates && availableDates?.length > 0) {
-        console.log("availableDates", availableDates)
         handleChangeValue("fecha", moment(availableDates[0]));
       } else {
         showToast({
@@ -435,6 +436,7 @@ const CreateOrderModal = ({
               <TimePicker
                 setAllOcupped={setAllOcupped}
                 type="time"
+                horario={horarios}
                 interval={user?.intervaloTiempoCalendario ?? 30}
                 startHour={getHourNumber(user?.hora_apertura)}
                 endHour={getHourNumber(user?.hora_cierre)}

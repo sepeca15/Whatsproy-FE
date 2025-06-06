@@ -8,6 +8,7 @@ import {
   UIManager,
   Image,
 } from "react-native";
+import moment from "moment";
 
 import { Agenda } from "react-native-calendars";
 import { ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
@@ -26,6 +27,11 @@ import { useToastContext } from "@/contexts/ToastContext";
 import { Animated as AnimatedNative, Easing } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { ordenarPedidosPorHora, OrderPerDays } from "@/utils/date";
+import { useUser } from "@/hooks/redux/useUser";
+import { WorkerUser } from "@/services/api/user/user.types";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Box } from "native-base";
+import WorkerSelect from "@/components/WorkerSelect/WorkerSelect";
 
 if (
   Platform.OS === "android" &&
@@ -33,7 +39,6 @@ if (
 ) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
-
 
 export default function CalendarView() {
   const [orderPerDaysAll, setOrderPerDays] = useState<OrderPerDays>({});
@@ -46,12 +51,94 @@ export default function CalendarView() {
   const [loading, setLoading] = useState(true);
   const [availableDates, setAvailableDates] = useState<string[]>([]);
   const { showToast } = useToastContext();
-
+  const { user } = useUser();
+  const [workers, setWorkers] = useState<WorkerUser[]>([]);
+  const [selectedWorkerId, setSelectedWorkerId] = useState<
+    any | number | undefined
+  >();
+  const [horarios, setHorarios] = useState<any[]>([]);
+  const [selectedMonth, setSelectedMonth] = useState<any>("");
+  const [selectedYear, setSelectedYear] = useState<any>("");
+  const [disabledDates, setDisabledDates] = useState({});
   const orderPerDays = ordenarPedidosPorHora(orderPerDaysAll);
 
   useEffect(() => {
     setAgendaKey((prev) => prev + 1);
   }, [selectedDate]);
+
+  const [loadWorkers, setLoadWorkers] = useState(false);
+
+  const [loadingCalendarCupos, setLoadingCalendarCupos] = useState(false);
+
+  const handleLoadWorkers = async () => {
+    try {
+      setLoadWorkers(true);
+      const workers = await api.user.findWorkers(user?.id_empresa);
+      setWorkers(workers.data);
+      if (workers?.data && workers?.data?.length > 0) {
+        setSelectedWorkerId(workers?.data[0]?.id);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadWorkers(false);
+    }
+  };
+
+  const handleLoadDisabledDates = async () => {
+    try {
+      setLoadingCalendarCupos(true);
+      const availableDates = await api.order.getAvailableDatesByMonth(
+        selectedYear,
+        selectedMonth,
+        user?.id
+      );
+            console.log("availableDates", selectedYear, selectedMonth, user?.id)
+
+      let disabledDatesCurrentMonth: any = {};
+
+      (availableDates as any[]).forEach((itm) => {
+        if (itm?.cuposDisponibles === 0) {
+          disabledDatesCurrentMonth[itm?.fecha] = {
+            disabled: true,
+            disableTouchEvent: true,
+            marked: false,
+          };
+        }
+      });
+      setDisabledDates(disabledDatesCurrentMonth);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingCalendarCupos(false);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedDate) {
+      const date = moment(selectedDate);
+      setSelectedMonth(date.month() + 1);
+      setSelectedYear(date.year());
+    }
+  }, [selectedDate]);
+
+  useEffect(() => {
+    if (selectedYear && selectedMonth) {
+      handleLoadDisabledDates();
+    }
+  }, [selectedMonth, selectedYear]);
+
+  const handleLoadHorarios = async () => {
+    try {
+      setLoading(true);
+      const dataHorarios = await api.user.findHorarios();
+      setHorarios(dataHorarios);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const startSpin = () => {
     spinAnim.setValue(0);
@@ -64,6 +151,18 @@ export default function CalendarView() {
       })
     ).start();
   };
+
+  useEffect(() => {
+    if (user?.id_empresa) {
+      handleLoadWorkers();
+    }
+  }, [user?.id_empresa]);
+
+  useEffect(() => {
+    if (user?.id_empresa) {
+      handleLoadHorarios();
+    }
+  }, [user?.id_empresa]);
 
   const stopSpin = () => {
     spinAnim.stopAnimation(() => {
@@ -80,25 +179,25 @@ export default function CalendarView() {
   const onLoadItems = async (selectedDate: string) => {
     setLoading(true);
     try {
-      const data = await api.order.getCalendarOrders(selectedDate);
-
-      console.log(selectedDate, selectedDate)
-      const availableDates = await api.order.getAvailableDates(selectedDate);
-
-      // debugger;
+      const data = await api.order.getCalendarOrders(
+        selectedDate,
+        selectedWorkerId
+      );
+      const availableDates = await api.order.getAvailableDates(
+        selectedDate,
+        selectedWorkerId
+      );
       if (availableDates?.length > 0) {
         setAvailableDates(availableDates);
       }
       setOrderPerDays(data.data);
-      setAgendaKey((prev) => prev + 1)
+      setAgendaKey((prev) => prev + 1);
     } catch (error: any) {
       console.log(error.response.data.message);
     } finally {
       setLoading(false);
     }
   };
-
-  console.log("orderPerDays", orderPerDays);
 
   const confirmOrder = async (orderId: number) => {
     try {
@@ -156,14 +255,11 @@ export default function CalendarView() {
     }
   };
 
-
   useEffect(() => {
-    if (selectedDate) {
+    if (selectedDate && selectedWorkerId) {
       onLoadItems(selectedDate);
     }
-  }, [selectedDate]);
-
-  console.log(orderPerDays)
+  }, [selectedDate, selectedWorkerId]);
 
   return (
     <View style={styles.container}>
@@ -205,7 +301,15 @@ export default function CalendarView() {
             />
           </Text>
         </View>
-
+        {!loadWorkers && (
+          <Box my={4} pb={6} flex={1} width={"full"}>
+            <WorkerSelect
+              workers={workers}
+              selectedId={selectedWorkerId}
+              onSelect={setSelectedWorkerId}
+            />
+          </Box>
+        )}
         <View style={styles.buttonRefresh}>
           <TouchableOpacity disabled={loading} onPress={() => onRefresh()}>
             <AnimatedNative.View
@@ -229,15 +333,20 @@ export default function CalendarView() {
       {
         <View style={styles.calendarContent}>
           <Agenda
-            key={agendaKey}
+            markedDates={disabledDates}
             items={orderPerDays}
             selected={selectedDate}
-            refreshing={loading}
-            displayLoadingIndicator={true}
+            refreshing={loading || loadWorkers || loadingCalendarCupos}
+            displayLoadingIndicator={
+              loadWorkers || loading || loadingCalendarCupos
+            }
             showOnlySelectedDayItems={true}
             showClosingKnob={true}
             onDayPress={(day: any) => {
+              console.log("day", day)
               setSelectedDate(day.dateString);
+              setSelectedMonth(day?.month.toString());
+              setSelectedYear(day?.year.toString());
             }}
             onRefresh={onRefresh}
             renderKnob={() => (
@@ -253,9 +362,7 @@ export default function CalendarView() {
               </View>
             )}
             renderItem={(data: IInfoItem) => {
-              console.log("data", data);
               return (
-
                 <ItemCalendar
                   key={`${data.orderId}-${data.date}`}
                   confirmOrder={confirmOrder}
@@ -263,11 +370,11 @@ export default function CalendarView() {
                   InfoItem={data}
                   confirmed={data.status}
                 />
-              )
+              );
             }}
             renderEmptyData={() => (
               <View style={styles.emptyDate}>
-                {loading ? (
+                {loading || loadWorkers || loadingCalendarCupos ? (
                   <Progress.Circle
                     color={Colors.light.primary}
                     indeterminate={true}
@@ -311,6 +418,8 @@ export default function CalendarView() {
 
       {openAddModal && selectedDate && (
         <CreateOrderModal
+          horarios={horarios}
+          selectedWorkerId={selectedWorkerId}
           currentOrders={
             orderPerDays[selectedDate] ? orderPerDays[selectedDate] : []
           }

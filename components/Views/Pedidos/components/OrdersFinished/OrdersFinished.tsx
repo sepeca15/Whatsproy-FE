@@ -43,7 +43,7 @@ const OrdersFinished = () => {
           keyExtractor={(item) => item.orderId.toString()}
           onEndReached={() => {
             if (ordersFinished.length < totalItemsFinished && !loadingApi) {
-              handleLoadOrdersFinished();
+              handleLoadOrdersFinished(true);
             }
           }}
           onEndReachedThreshold={0.2}

@@ -1,8 +1,20 @@
 import ApiInstances from "@/services/axios/axiosConfig";
-import { IUserCreate, IUserUpdate } from "./user.types";
+import { IUserCreate, IUserUpdate, WorkerUser } from "./user.types";
 
 export const createUser = async (dataUser: IUserCreate) => {
   const { data } = await ApiInstances("global").post(`usuario/`, dataUser);
+
+  return data;
+};
+
+export const findWorkers = async (empresaId: any) => {
+  const { data } = await ApiInstances("global").get(`usuario/workers/${empresaId}`);
+
+  return data as { data: WorkerUser[] };
+};
+
+export const findHorarios = async () => {
+  const { data } = await ApiInstances("current").get(`horario`);
 
   return data;
 };

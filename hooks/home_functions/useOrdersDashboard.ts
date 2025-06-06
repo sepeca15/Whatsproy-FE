@@ -1,4 +1,3 @@
-import { useDailyStats } from "./useDailyStats";
 import { useGetStatitics } from "./useGetStaticsticks";
 import { useLastOrders } from "./useLastOrders";
 import { usePendingOrders } from "./usePendingOrders";
@@ -13,12 +12,6 @@ export const useOrdersDashboard = (filterType: any) => {
       statitics.getStatitics(filterType),
     ]);
   };
-
-
-  const getStaticstics = (filterType: string) => {
-
-  }
-
 
   const loading = last.loading || statitics.loading;
 

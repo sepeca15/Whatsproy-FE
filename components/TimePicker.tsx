@@ -20,43 +20,48 @@ import { useIntl } from "react-intl";
 
 const generateTimeSlots = (
   date: string | moment.Moment,
-  startHour: number,
-  endHour: number,
-  interval: number
+  interval: number,
+  horarios: Array<{
+    dayOfWeek: number;
+    hora_inicio: string;
+    hora_fin: string;
+  }>
 ) => {
   const baseDate = moment.isMoment(date) ? date.clone() : moment(date);
   const now = moment();
   const isToday = baseDate.isSame(now, "day");
 
-  const times = [];
-  for (let hour = startHour; hour < endHour; hour++) {
-    for (let minute = 0; minute < 60; minute += interval) {
-      const time = baseDate.clone().set({
-        hour,
-        minute,
-        second: 0,
-        millisecond: 0,
-      });
+  const dayOfWeek = baseDate.isoWeekday();
+  const bloquesDelDia = horarios.filter((h) => h.dayOfWeek === dayOfWeek);
+  const slots: moment.Moment[] = [];
 
-      if (isToday && time.isBefore(now, "minute")) {
-        continue;
+  bloquesDelDia.forEach(({ hora_inicio, hora_fin }) => {
+    const [startHour, startMinute] = hora_inicio.split(":").map(Number);
+    const [endHour, endMinute] = hora_fin.split(":").map(Number);
+
+    let current = baseDate.clone().set({
+      hour: startHour,
+      minute: startMinute,
+      second: 0,
+      millisecond: 0,
+    });
+
+    const endTime = baseDate.clone().set({
+      hour: endHour,
+      minute: endMinute,
+      second: 0,
+      millisecond: 0,
+    });
+
+    while (current.isBefore(endTime)) {
+      if (!isToday || current.isSameOrAfter(now, "minute")) {
+        slots.push(current.clone());
       }
-
-      times.push(time);
+      current.add(interval, "minutes");
     }
-  }
-
-  return times.filter((item) => {
-    const now = moment();
-    const isToday = item.isSame(now, "day");
-    if (isToday) {
-      return item.isSameOrAfter(now, "minute");
-    }
-    return true;
-    ;
-  }).map((itm) => {
-    return itm;
   });
+
+  return slots;
 };
 
 const TimePicker = ({
@@ -64,10 +69,9 @@ const TimePicker = ({
   setDate,
   type = "date",
   interval = 30,
-  startHour = 0,
-  endHour = 23,
   isRequired = true,
   error,
+  horario,
   checkAvailable,
   setAllOcupped,
   occupiedTimes = [],
@@ -84,7 +88,7 @@ const TimePicker = ({
     return formattedDateTime;
   };
 
-  const timeSlots = generateTimeSlots(moment(date).add("3", "hours").format("YYYY-MM-DD"), startHour, endHour, interval);
+  const timeSlots = generateTimeSlots(moment(date).add("3", "hours").format("YYYY-MM-DD"), interval, horario);
 
 const isOccupied = (time: moment.Moment) =>
   occupiedTimes.some((occupiedTime: string | Date) => {

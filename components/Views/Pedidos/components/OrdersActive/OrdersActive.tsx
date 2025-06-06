@@ -21,7 +21,7 @@ const OrdersActive = () => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await handleLoadingOrdersActive();
+    await handleLoadingOrdersActive(true);
     setRefreshing(false);
   };
 
