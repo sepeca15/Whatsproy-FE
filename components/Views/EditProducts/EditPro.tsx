@@ -33,7 +33,7 @@ const EditPro: React.FC = () => {
     empresa_id: parseInt(params.empresa_id as string, 10) || 0,
     categoryIds: params.category ? (params.category as string).split(',') : [],
   };
-
+console.log("EditProProps:", editProProps.categoryIds);
   return (
     <View style={styles.container}>
       <EditProduct {...editProProps} />

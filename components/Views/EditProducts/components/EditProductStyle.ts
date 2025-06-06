@@ -76,13 +76,25 @@ export const styles = StyleSheet.create({
     color: "#333",
     fontWeight: "600",
   },
+
+  inputfile: {
+    marginBottom: 20,
+  },
+
+
+
+  inputarea: {
+
+    fontSize: 16,
+    backgroundColor: "#f9f9f9",
+  },
   input: {
-    borderWidth: 1,
+
     borderColor: "#ddd",
     borderRadius: 8,
-    padding: 12,
     height: 50,
-    marginBottom: 16,
+    padding: 12,
+
     fontSize: 16,
     backgroundColor: "#f9f9f9",
   },
