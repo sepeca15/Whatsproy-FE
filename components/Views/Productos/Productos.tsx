@@ -31,6 +31,8 @@ import AnimatedTwo from "react-native-reanimated";
 import CustomText from "@/components/CustomText";
 import { globalStyles } from "@/components/globalStyles";
 import AddButton from "..../../hooks/add_Button/Add_button";
+import { useUser } from "@/hooks/redux/useUser";
+import { ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
 
 const Productos: React.FC = () => {
   const router = useRouter();
@@ -53,6 +55,7 @@ const Productos: React.FC = () => {
   const deleteAnimationRef = useRef(null);
   const [refreshing, setRefreshing] = useState(false);
 
+  const { user } = useUser();
   const loadAllCategories = async () => {
     try {
       setLoadingCategories(true);
@@ -263,7 +266,7 @@ const Productos: React.FC = () => {
               style={globalStyles.businessName}
               accessibilityLabel="Pedidos"
             >
-              <FormattedMessage id="products" />
+              {user?.tipo_servicio === ID_TIPOSERVICIO_RESERVA ? <FormattedMessage id="servicesAndProduct" /> : <FormattedMessage id="products" />}
             </CustomText>
           </View>
         </View>

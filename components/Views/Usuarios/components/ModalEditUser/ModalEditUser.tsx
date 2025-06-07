@@ -9,6 +9,7 @@ import CustomButton from "@/components/CustomButton";
 import { useIntl } from "react-intl"; // Importa useIntl
 import useImagePicker from "@/utils/ImagePicker/useImagePicker";
 import { useToastContext } from "@/contexts/ToastContext";
+import GlobalModal from "@/components/Modal";
 
 interface IEditUser {
   nombre: string;
@@ -33,7 +34,7 @@ const ModalEditUser = ({
   const [formData, setFormData] = useState<IEditUser>(userInfo);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
-  const intl = useIntl(); 
+  const intl = useIntl();
   const { showToast } = useToastContext();
 
   const [selectedImage, setSelectedImage] = useState<string | null>();
@@ -47,9 +48,8 @@ const ModalEditUser = ({
     (key: keyof IEditUser, value: string | boolean) => {
       setFormData((prev) => ({ ...prev, [key]: value }));
     },
-    [],
+    []
   );
-  
 
   const { pickImage } = useImagePicker({
     toastErrorMessage: "Error al seleccionar la imagen",
@@ -57,7 +57,7 @@ const ModalEditUser = ({
       if (localUri) {
         setSelectedImage(localUri.toString());
       }
-      
+
       if (apiUrl) {
         setFormData((prevData) => ({
           ...prevData,
@@ -96,138 +96,137 @@ const ModalEditUser = ({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async () => {    
+  const handleSubmit = async () => {
     console.log(validate());
-    
-      if (!validate()) return;
-      setLoading(true);
-      try {                
-        await editUserSelected(userInfo.id, formData);
-      } catch (error) {
-        console.error("Error updating user:", error);
-      } finally {
-        setLoading(false);
-      }
+
+    if (!validate()) return;
+    setLoading(true);
+    try {
+      await editUserSelected(userInfo.id, formData);
+    } catch (error) {
+      console.error("Error updating user:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <Modal onClose={onToogleModal} isOpen={isOpen}>
-      <Modal.Content>
-        <Modal.CloseButton />
-        <Modal.Header>
-          {intl.formatMessage({
-            id: "modalEditUser",
-            defaultMessage: "Edit User",
-          })}
-        </Modal.Header>
-        <Modal.Body>
-          <ScrollView contentContainerStyle={styles.scrollContainer}>
-            <TouchableOpacity onPress={handleImagePick} style={styles.imageContainer}>
-              <Image
-                source={{
-                  uri:
-                    selectedImage ||
-                    "https://static.vecteezy.com/system/resources/previews/036/280/651/non_2x/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-illustration-vector.jpg",
-                }}
-                style={styles.image}
-              />
-              <Ionicons
-                name="camera"
-                size={16}
-                color="#fff"
-                style={styles.imagePicker}
-              />
-            </TouchableOpacity>
-
-            <FormControl isInvalid={!!errors.nombre}>
-              <FormControl.Label>
-                {intl.formatMessage({
-                  id: "modalName",
-                  defaultMessage: "Name",
-                })}
-              </FormControl.Label>
-              <Input
-                placeholder={intl.formatMessage({
-                  id: "modalEnterName",
-                  defaultMessage: "Enter a name",
-                })}
-                value={formData.nombre}
-                onChangeText={(value) => handleInputChange("nombre", value)}
-                InputLeftElement={
-                  <AntDesign
-                    name="user"
-                    size={16}
-                    color="gray"
-                    style={styles.marginCont}
-                  />
-                }
-              />
-              <FormControl.ErrorMessage>
-                {errors.nombre}
-              </FormControl.ErrorMessage>
-            </FormControl>
-
-            <FormControl isInvalid={!!errors.apellido}>
-              <FormControl.Label>
-                {intl.formatMessage({
-                  id: "modalLastName",
-                  defaultMessage: "Last Name",
-                })}
-              </FormControl.Label>
-              <Input
-                placeholder={intl.formatMessage({
-                  id: "modalEnterLastName",
-                  defaultMessage: "Enter a last name",
-                })}
-                value={formData.apellido}
-                onChangeText={(value) => handleInputChange("apellido", value)}
-                InputLeftElement={
-                  <AntDesign
-                    name="user"
-                    size={16}
-                    color="gray"
-                    style={styles.marginCont}
-                  />
-                }
-              />
-              <FormControl.ErrorMessage>
-                {errors.apellido}
-              </FormControl.ErrorMessage>
-            </FormControl>
-
-            <FormControl>
-              <FormControl.Label>
-                {intl.formatMessage({
-                  id: "modalActive",
-                  defaultMessage: "Active",
-                })}
-              </FormControl.Label>
-              <Select
-                borderRadius={8}
-                selectedValue={formData.activo ? "Si" : "No"}
-                onValueChange={(value) =>
-                  handleInputChange("activo", value === "Si")
-                }
-                minWidth="100%"
-              >
-                <Select.Item label="Si" value="Si" />
-                <Select.Item label="No" value="No" />
-              </Select>
-            </FormControl>
-          </ScrollView>
-        </Modal.Body>
-        <Modal.Footer>
-          <CustomButton
-            colorSpiner="white"
-            loading={loading}
-            onPress={handleSubmit}
-            style={styles.buttonCreate}
+    <GlobalModal
+      label={intl.formatMessage({
+        id: "modalEditUser",
+        defaultMessage: "Edit User",
+      })}
+      content={
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <TouchableOpacity
+            onPress={handleImagePick}
+            style={styles.imageContainer}
           >
-            {intl.formatMessage({ id: "modalSave", defaultMessage: "Save" })}
-          </CustomButton>
-        </Modal.Footer>
-      </Modal.Content>
-    </Modal>
+            <Image
+              source={{
+                uri:
+                  selectedImage ||
+                  "https://static.vecteezy.com/system/resources/previews/036/280/651/non_2x/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-illustration-vector.jpg",
+              }}
+              style={styles.image}
+            />
+            <Ionicons
+              name="camera"
+              size={16}
+              color="#fff"
+              style={styles.imagePicker}
+            />
+          </TouchableOpacity>
+
+          <FormControl isInvalid={!!errors.nombre}>
+            <FormControl.Label>
+              {intl.formatMessage({
+                id: "modalName",
+                defaultMessage: "Name",
+              })}
+            </FormControl.Label>
+            <Input
+              placeholder={intl.formatMessage({
+                id: "modalEnterName",
+                defaultMessage: "Enter a name",
+              })}
+              value={formData.nombre}
+              onChangeText={(value) => handleInputChange("nombre", value)}
+              InputLeftElement={
+                <AntDesign
+                  name="user"
+                  size={16}
+                  color="gray"
+                  style={styles.marginCont}
+                />
+              }
+            />
+            <FormControl.ErrorMessage>{errors.nombre}</FormControl.ErrorMessage>
+          </FormControl>
+
+          <FormControl isInvalid={!!errors.apellido}>
+            <FormControl.Label>
+              {intl.formatMessage({
+                id: "modalLastName",
+                defaultMessage: "Last Name",
+              })}
+            </FormControl.Label>
+            <Input
+              placeholder={intl.formatMessage({
+                id: "modalEnterLastName",
+                defaultMessage: "Enter a last name",
+              })}
+              value={formData.apellido}
+              onChangeText={(value) => handleInputChange("apellido", value)}
+              InputLeftElement={
+                <AntDesign
+                  name="user"
+                  size={16}
+                  color="gray"
+                  style={styles.marginCont}
+                />
+              }
+            />
+            <FormControl.ErrorMessage>
+              {errors.apellido}
+            </FormControl.ErrorMessage>
+          </FormControl>
+
+          <FormControl>
+            <FormControl.Label>
+              {intl.formatMessage({
+                id: "modalActive",
+                defaultMessage: "Active",
+              })}
+            </FormControl.Label>
+            <Select
+              borderRadius={8}
+              selectedValue={formData.activo ? "Si" : "No"}
+              onValueChange={(value) =>
+                handleInputChange("activo", value === "Si")
+              }
+              minWidth="100%"
+            >
+              <Select.Item label="Si" value="Si" />
+              <Select.Item label="No" value="No" />
+            </Select>
+          </FormControl>
+        </ScrollView>
+      }
+      onClose={onToogleModal}
+      isVisible={isOpen}
+      actions={[
+        <CustomButton
+          colorSpiner="white"
+          loading={loading}
+          borderRadius={20}
+          onPress={handleSubmit}
+          style={styles.buttonCreate}
+        >
+          {intl.formatMessage({ id: "modalSave", defaultMessage: "Save" })}
+        </CustomButton>,
+      ]}
+    />
   );
 };
 

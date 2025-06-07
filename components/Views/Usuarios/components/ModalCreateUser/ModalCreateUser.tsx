@@ -25,6 +25,7 @@ import { useUser } from "@/hooks/redux/useUser";
 import CustomButton from "@/components/CustomButton";
 import { useToastContext } from "@/contexts/ToastContext";
 import { useIntl } from "react-intl"; // Importa useIntl
+import GlobalModal from "@/components/Modal";
 
 type keyValues = "nombre" | "apellido" | "correo" | "contraseña";
 
@@ -160,202 +161,205 @@ const ModalCreateUser = ({
   };
 
   return (
-    <Modal onClose={onToogleModal} isOpen={isOpen}>
-      <Modal.Content>
-        <Modal.CloseButton />
-        <Modal.Header>
+    <GlobalModal
+      content={
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <Animated.View style={[styles.formContainer]}>
+              <TouchableOpacity
+                onPress={pickImage}
+                style={styles.imageContainer}
+              >
+                <Image
+                  source={{
+                    uri:
+                      selectedImage ||
+                      "https://static.vecteezy.com/system/resources/previews/036/280/651/non_2x/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-illustration-vector.jpg",
+                  }}
+                  style={styles.image}
+                />
+                <View style={styles.imagePicker}>
+                  <Ionicons name="camera" size={12} color="#fff" />
+                </View>
+              </TouchableOpacity>
+
+              <FormControl
+                isInvalid={isSubmitted && !!errors.nombre}
+                width={"100%"}
+              >
+                <FormControl.Label>
+                  {intl.formatMessage({
+                    id: "modalName",
+                    defaultMessage: "Name",
+                  })}
+                </FormControl.Label>
+                <Input
+                  InputLeftElement={
+                    <AntDesign
+                      style={styles.marginCont}
+                      size={16}
+                      name="user"
+                      color={"gray"}
+                    />
+                  }
+                  borderRadius={10}
+                  onChangeText={(value: string) =>
+                    setValueForm("nombre", value)
+                  }
+                  value={createUser.nombre}
+                  style={styles.input}
+                  type="text"
+                  placeholder={intl.formatMessage({
+                    id: "modalEnterName",
+                    defaultMessage: "Enter a name",
+                  })}
+                  _focus={styles.focused}
+                />
+                <FormControl.ErrorMessage>
+                  {errors.nombre}
+                </FormControl.ErrorMessage>
+              </FormControl>
+
+              <FormControl
+                isInvalid={isSubmitted && !!errors.apellido}
+                width={"100%"}
+              >
+                <FormControl.Label>
+                  {intl.formatMessage({
+                    id: "modalLastName",
+                    defaultMessage: "Last Name",
+                  })}
+                </FormControl.Label>
+                <Input
+                  InputLeftElement={
+                    <AntDesign
+                      style={styles.marginCont}
+                      size={16}
+                      name="user"
+                      color={"gray"}
+                    />
+                  }
+                  borderRadius={10}
+                  onChangeText={(value: string) =>
+                    setValueForm("apellido", value)
+                  }
+                  value={createUser.apellido}
+                  style={styles.input}
+                  type="text"
+                  placeholder={intl.formatMessage({
+                    id: "modalEnterLastName",
+                    defaultMessage: "Enter a last name",
+                  })}
+                  _focus={styles.focused}
+                />
+                <FormControl.ErrorMessage
+                  leftIcon={
+                    <MaterialIcons size={12} name="error" color={"red"} />
+                  }
+                >
+                  {errors.apellido}
+                </FormControl.ErrorMessage>
+              </FormControl>
+
+              <FormControl
+                isInvalid={isSubmitted && !!errors.correo}
+                width={"100%"}
+              >
+                <FormControl.Label>
+                  {intl.formatMessage({
+                    id: "modalEmail",
+                    defaultMessage: "Email",
+                  })}
+                </FormControl.Label>
+                <Input
+                  InputLeftElement={
+                    <MaterialCommunityIcons
+                      style={styles.marginCont}
+                      size={16}
+                      name="gmail"
+                      color={"gray"}
+                    />
+                  }
+                  borderRadius={10}
+                  onChangeText={(value: string) =>
+                    setValueForm("correo", value)
+                  }
+                  value={createUser.correo}
+                  style={styles.input}
+                  type="text"
+                  placeholder={intl.formatMessage({
+                    id: "modalEnterEmail",
+                    defaultMessage: "Enter your email",
+                  })}
+                  _focus={styles.focused}
+                />
+                <FormControl.ErrorMessage>
+                  {errors.correo}
+                </FormControl.ErrorMessage>
+              </FormControl>
+
+              <FormControl
+                isInvalid={isSubmitted && !!errors.contraseña}
+                width={"100%"}
+              >
+                <FormControl.Label>
+                  {intl.formatMessage({
+                    id: "modalPassword",
+                    defaultMessage: "Password",
+                  })}
+                </FormControl.Label>
+                <Input
+                  borderRadius={10}
+                  InputLeftElement={
+                    <AntDesign
+                      style={styles.marginCont}
+                      name="lock"
+                      size={12}
+                      color={"gray"}
+                    />
+                  }
+                  onChangeText={(value: string) =>
+                    setValueForm("contraseña", value)
+                  }
+                  value={createUser.contraseña}
+                  style={styles.input}
+                  type="password"
+                  placeholder={intl.formatMessage({
+                    id: "modalEnterPassword",
+                    defaultMessage: "Enter your password",
+                  })}
+                  _focus={styles.focused}
+                />
+                <FormControl.ErrorMessage>
+                  {errors.contraseña}
+                </FormControl.ErrorMessage>
+              </FormControl>
+            </Animated.View>
+          </ScrollView>
+        </GestureHandlerRootView>
+      }
+      label={intl.formatMessage({
+        id: "modalCreateUser",
+        defaultMessage: "Create User",
+      })}
+      onClose={onToogleModal}
+      isVisible={isOpen}
+      actions={[
+        <CustomButton
+          key="createUser"
+          colorSpiner="white"
+          loading={loadingApi}
+          onPress={handleSubmit}
+          borderRadius={20}
+          style={styles.buttonCreate}
+        >
           {intl.formatMessage({
-            id: "modalCreateUser",
-            defaultMessage: "Create User",
+            id: "modalCreate",
+            defaultMessage: "Create",
           })}
-        </Modal.Header>
-        <Modal.Body>
-          <GestureHandlerRootView style={{ flex: 1 }}>
-            <ScrollView contentContainerStyle={styles.scrollContainer}>
-              <Animated.View style={[styles.formContainer]}>
-                <TouchableOpacity
-                  onPress={pickImage}
-                  style={styles.imageContainer}
-                >
-                  <Image
-                    source={{
-                      uri:
-                        selectedImage ||
-                        "https://static.vecteezy.com/system/resources/previews/036/280/651/non_2x/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-illustration-vector.jpg",
-                    }}
-                    style={styles.image}
-                  />
-                  <View style={styles.imagePicker}>
-                    <Ionicons name="camera" size={12} color="#fff" />
-                  </View>
-                </TouchableOpacity>
-
-                <FormControl
-                  isInvalid={isSubmitted && !!errors.nombre}
-                  width={"100%"}
-                >
-                  <FormControl.Label>
-                    {intl.formatMessage({
-                      id: "modalName",
-                      defaultMessage: "Name",
-                    })}
-                  </FormControl.Label>
-                  <Input
-                    InputLeftElement={
-                      <AntDesign
-                        style={styles.marginCont}
-                        size={16}
-                        name="user"
-                        color={"gray"}
-                      />
-                    }
-                    onChangeText={(value: string) =>
-                      setValueForm("nombre", value)
-                    }
-                    value={createUser.nombre}
-                    style={styles.input}
-                    type="text"
-                    placeholder={intl.formatMessage({
-                      id: "modalEnterName",
-                      defaultMessage: "Enter a name",
-                    })}
-                    _focus={styles.focused}
-                  />
-                  <FormControl.ErrorMessage>
-                    {errors.nombre}
-                  </FormControl.ErrorMessage>
-                </FormControl>
-
-                <FormControl
-                  isInvalid={isSubmitted && !!errors.apellido}
-                  width={"100%"}
-                >
-                  <FormControl.Label>
-                    {intl.formatMessage({
-                      id: "modalLastName",
-                      defaultMessage: "Last Name",
-                    })}
-                  </FormControl.Label>
-                  <Input
-                    InputLeftElement={
-                      <AntDesign
-                        style={styles.marginCont}
-                        size={16}
-                        name="user"
-                        color={"gray"}
-                      />
-                    }
-                    onChangeText={(value: string) =>
-                      setValueForm("apellido", value)
-                    }
-                    value={createUser.apellido}
-                    style={styles.input}
-                    type="text"
-                    placeholder={intl.formatMessage({
-                      id: "modalEnterLastName",
-                      defaultMessage: "Enter a last name",
-                    })}
-                    _focus={styles.focused}
-                  />
-                  <FormControl.ErrorMessage
-                    leftIcon={
-                      <MaterialIcons size={12} name="error" color={"red"} />
-                    }
-                  >
-                    {errors.apellido}
-                  </FormControl.ErrorMessage>
-                </FormControl>
-
-                <FormControl
-                  isInvalid={isSubmitted && !!errors.correo}
-                  width={"100%"}
-                >
-                  <FormControl.Label>
-                    {intl.formatMessage({
-                      id: "modalEmail",
-                      defaultMessage: "Email",
-                    })}
-                  </FormControl.Label>
-                  <Input
-                    InputLeftElement={
-                      <MaterialCommunityIcons
-                        style={styles.marginCont}
-                        size={16}
-                        name="gmail"
-                        color={"gray"}
-                      />
-                    }
-                    onChangeText={(value: string) =>
-                      setValueForm("correo", value)
-                    }
-                    value={createUser.correo}
-                    style={styles.input}
-                    type="text"
-                    placeholder={intl.formatMessage({
-                      id: "modalEnterEmail",
-                      defaultMessage: "Enter your email",
-                    })}
-                    _focus={styles.focused}
-                  />
-                  <FormControl.ErrorMessage>
-                    {errors.correo}
-                  </FormControl.ErrorMessage>
-                </FormControl>
-
-                <FormControl
-                  isInvalid={isSubmitted && !!errors.contraseña}
-                  width={"100%"}
-                >
-                  <FormControl.Label>
-                    {intl.formatMessage({
-                      id: "modalPassword",
-                      defaultMessage: "Password",
-                    })}
-                  </FormControl.Label>
-                  <Input
-                    InputLeftElement={
-                      <AntDesign
-                        style={styles.marginCont}
-                        name="lock"
-                        size={12}
-                        color={"gray"}
-                      />
-                    }
-                    onChangeText={(value: string) =>
-                      setValueForm("contraseña", value)
-                    }
-                    value={createUser.contraseña}
-                    style={styles.input}
-                    type="password"
-                    placeholder={intl.formatMessage({
-                      id: "modalEnterPassword",
-                      defaultMessage: "Enter your password",
-                    })}
-                    _focus={styles.focused}
-                  />
-                  <FormControl.ErrorMessage>
-                    {errors.contraseña}
-                  </FormControl.ErrorMessage>
-                </FormControl>
-              </Animated.View>
-            </ScrollView>
-          </GestureHandlerRootView>
-        </Modal.Body>
-        <Modal.Footer>
-          <CustomButton
-            colorSpiner="white"
-            loading={loadingApi}
-            onPress={handleSubmit}
-            style={styles.buttonCreate}
-          >
-            {intl.formatMessage({
-              id: "modalCreate",
-              defaultMessage: "Create",
-            })}
-          </CustomButton>
-        </Modal.Footer>
-      </Modal.Content>
-    </Modal>
+        </CustomButton>,
+      ]}
+    />
   );
 };
 

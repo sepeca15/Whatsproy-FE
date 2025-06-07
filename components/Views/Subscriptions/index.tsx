@@ -94,9 +94,7 @@ const SubscriptionsView = () => {
       : null;
 
     const shouldShowExpiringSoon =
-      currentPayment?.isCancelled &&
-      expirationDate &&
-      expirationDate.isAfter(moment());
+      expirationDate && expirationDate.diff(moment(), "days") <= 3;
 
     const isCancelled = currentPayment?.isCancelled;
     const cancelationInfo =
@@ -143,6 +141,7 @@ const SubscriptionsView = () => {
             background="gray.100"
             borderRadius="md"
             p={3}
+            marginBottom={5}
             mt={4}
             w="100%"
             alignItems="center"

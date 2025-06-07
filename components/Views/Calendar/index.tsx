@@ -61,7 +61,7 @@ export default function CalendarView() {
   const [selectedMonth, setSelectedMonth] = useState<any>("");
   const [selectedYear, setSelectedYear] = useState<any>("");
   const [disabledDates, setDisabledDates] = useState({});
-  const [oredrToDelete, setOrderToDelete] = useState<any>(null)
+  const [oredrToDelete, setOrderToDelete] = useState<any>(null);
   const orderPerDays = ordenarPedidosPorHora(orderPerDaysAll);
 
   useEffect(() => {
@@ -100,16 +100,26 @@ export default function CalendarView() {
         selectedMonth,
         user?.id
       );
-            console.log("availableDates", selectedYear, selectedMonth, user?.id)
+      console.log("availableDates", selectedYear, selectedMonth, user?.id);
 
       let disabledDatesCurrentMonth: any = {};
 
       (availableDates as any[]).forEach((itm) => {
         if (itm?.cuposDisponibles === 0) {
           disabledDatesCurrentMonth[itm?.fecha] = {
-            disabled: true,
-            disableTouchEvent: true,
+            disabled: false,
+            disableTouchEvent: false,
             marked: false,
+            customStyles: {
+              container: {
+                backgroundColor: "rgba(255, 0, 0, 0.15)",
+                borderRadius: 100,
+              },
+              text: {
+                color: "#ff0000",
+                fontWeight: "bold",
+              },
+            },
           };
         }
       });
@@ -308,6 +318,17 @@ export default function CalendarView() {
             />
           </Text>
         </View>
+        <View style={[styles.circleAvaiableContainer]}>
+          <View
+            style={[styles.circleAvaiable, { backgroundColor: "rgba(255, 0, 0, 0.15)" }]}
+          ></View>
+          <Text style={styles.headerDescription}>
+            <FormattedMessage
+              id="noPlace"
+              defaultMessage="Sin lugares disponibles"
+            />
+          </Text>
+        </View>
         {!loadWorkers && (
           <Box my={4} pb={6} flex={1} width={"full"}>
             <WorkerSelect
@@ -341,6 +362,7 @@ export default function CalendarView() {
         <View style={styles.calendarContent}>
           <Agenda
             markedDates={disabledDates}
+            markingType="custom"
             items={orderPerDays}
             selected={selectedDate}
             refreshing={loading || loadWorkers || loadingCalendarCupos}
@@ -350,7 +372,7 @@ export default function CalendarView() {
             showOnlySelectedDayItems={true}
             showClosingKnob={true}
             onDayPress={(day: any) => {
-              console.log("day", day)
+              console.log("day", day);
               setSelectedDate(day.dateString);
               setSelectedMonth(day?.month.toString());
               setSelectedYear(day?.year.toString());
