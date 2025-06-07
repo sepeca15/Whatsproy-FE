@@ -65,8 +65,12 @@ const SchedulesView = () => {
             setLoading(false);
         }
     };
-
-    const handleAdd = async () => {
+    const validateSchedule = (
+        start: string,
+        end: string,
+        selectedDay: number | null,
+        intl: any
+    ): { [key: string]: string | null } => {
         const newErrors: { [key: string]: string | null } = {};
 
         if (!start || !start.trim()) {
@@ -81,6 +85,17 @@ const SchedulesView = () => {
             newErrors.day = intl.formatMessage({ id: "dayRequired", defaultMessage: "El día es obligatorio" });
         }
 
+        return newErrors;
+    };
+
+    const handleAdd = async () => {
+        const newErrors = validateSchedule(start, end, selectedDay, intl);
+        if (start && end && start >= end) {
+            newErrors.start = intl.formatMessage({ id: "startHourBeforeEnd", defaultMessage: "La hora de inicio debe ser antes de la hora de fin" });
+            newErrors.end = intl.formatMessage({ id: "endHourAfterStart", defaultMessage: "La hora de fin debe ser después de la hora de inicio" });
+      
+    }
+    
         setErrors(newErrors);
 
         if (Object.keys(newErrors).length > 0) return;
