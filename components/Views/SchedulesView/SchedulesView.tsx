@@ -314,9 +314,10 @@ const SchedulesView = () => {
                                     defaultMessage: "Ingresa la hora de cierre",
                                 })}
                                 value={end}
-                                onChangeText={(value: any) =>
-                                    setEnd(value)
-                                }
+                                onChangeText={(value: any) => {
+                                    setEnd(value);
+                                    if (errors.end) setErrors((prev: { [key: string]: string | null }) => ({ ...prev, end: null }));
+                                }}
                                 error={errors.end}
                             />
                         </View>
