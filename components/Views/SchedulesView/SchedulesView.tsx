@@ -67,7 +67,23 @@ const SchedulesView = () => {
     };
 
     const handleAdd = async () => {
-        if (!start || !end || selectedDay === null) return;
+        const newErrors: { [key: string]: string | null } = {};
+
+        if (!start || !start.trim()) {
+            newErrors.start = intl.formatMessage({ id: "startHourRequired", defaultMessage: "La hora de inicio es obligatoria" });
+        }
+
+        if (!end || !end.trim()) {
+            newErrors.end = intl.formatMessage({ id: "endHourRequired", defaultMessage: "La hora de fin es obligatoria" });
+        }
+
+        if (selectedDay === null) {
+            newErrors.day = intl.formatMessage({ id: "dayRequired", defaultMessage: "El día es obligatorio" });
+        }
+
+        setErrors(newErrors);
+
+        if (Object.keys(newErrors).length > 0) return;
         try {
             setLoadingCreate(true);
             const res = await api.schedules.create({
