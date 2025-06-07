@@ -66,7 +66,12 @@ const SchedulesView = () => {
         }
     };
 
-    const handleAdd = async () => {
+    const validateSchedule = (
+        start: string,
+        end: string,
+        selectedDay: number | null,
+        intl: any
+    ): { [key: string]: string | null } => {
         const newErrors: { [key: string]: string | null } = {};
 
         if (!start || !start.trim()) {
@@ -81,7 +86,14 @@ const SchedulesView = () => {
             newErrors.day = intl.formatMessage({ id: "dayRequired", defaultMessage: "El día es obligatorio" });
         }
 
+        return newErrors;
+    };
+
+    const handleAdd = async () => {
+
+        const newErrors = validateSchedule(start, end, selectedDay, intl);
         setErrors(newErrors);
+
 
         if (Object.keys(newErrors).length > 0) return;
         try {
@@ -251,27 +263,26 @@ const SchedulesView = () => {
                             <CustomText style={generalSettingsStyles.textInput}>
                                 <FormattedMessage
                                     id="startHour"
-                                    defaultMessage={"Hora de inicio"}
+                                    defaultMessage="Hora de inicio"
                                 />
                             </CustomText>
                             <InputField
                                 icon={
                                     <SimpleLineIcons
                                         style={{ marginLeft: 12 }}
-                                        color={"#b6b6b6"}
+                                        color="#b6b6b6"
                                         name="clock"
                                         size={16}
                                     />
                                 }
                                 isTime
                                 placeholder={intl.formatMessage({
-                                    id: "enterClosingTime",
-                                    defaultMessage: "Ingresa la hora de cierre",
+                                    id: "enterStartTime",
+                                    defaultMessage: "Ingresa la hora de inicio",
                                 })}
                                 value={start}
-                                onChangeText={(value: any) =>
-                                    setStart(value)
-                                }
+                                onChangeText={(value: any) => setStart(value)}
+                                error={errors.start}
                             />
                         </View>
 
@@ -279,48 +290,53 @@ const SchedulesView = () => {
                             <CustomText style={generalSettingsStyles.textInput}>
                                 <FormattedMessage
                                     id="endHour"
-                                    defaultMessage={"Hora de fin"}
+                                    defaultMessage="Hora de fin"
                                 />
                             </CustomText>
                             <InputField
                                 icon={
                                     <SimpleLineIcons
                                         style={{ marginLeft: 12 }}
-                                        color={"#b6b6b6"}
+                                        color="#b6b6b6"
                                         name="clock"
                                         size={16}
                                     />
                                 }
                                 isTime
                                 placeholder={intl.formatMessage({
-                                    id: "enterClosingTime",
+                                    id: "enterEndTime",
                                     defaultMessage: "Ingresa la hora de cierre",
                                 })}
                                 value={end}
-                                onChangeText={(value: any) =>
-                                    setEnd(value)
-                                }
+                                onChangeText={(value: any) => setEnd(value)}
+                                error={errors.end}
                             />
                         </View>
+
+                        {errors.day && (
+                            <Text style={{ color: "#DC143C", marginTop: 4, marginBottom: -12 }}>
+                                {errors.day}
+                            </Text>
+                        )}
+
+                        <CustomButton
+                            isLoading={loadingCreate}
+                            onPress={() => handleAdd()}
+                            size="sm"
+                            isDisabled={loadingCreate}
+                            marginLeft={2}
+                            backgroundColor={"#2C2C2C"}
+                            borderRadius={"6"}
+                            fontWeight={700}
+                        >
+                            <Text fontWeight={500} color={"white"}>
+                                {intl.formatMessage({ id: "save" })}
+                            </Text>
+                        </CustomButton>
                     </View>
                 }
-                actions={[
-                    <CustomButton
-                        isLoading={loadingCreate}
-                        onPress={() => handleAdd()}
-                        size="sm"
-                        isDisabled={loadingCreate}
-                        marginLeft={2}
-                        backgroundColor={"#2C2C2C"}
-                        borderRadius={"6"}
-                        fontWeight={700}
-                    >
-                        <Text fontWeight={500} color={"white"}>
-                            {intl.formatMessage({ id: "save" })}
-                        </Text>
-                    </CustomButton>
-                ]}
             />
+
         </View>
     );
 };
