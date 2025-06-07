@@ -46,7 +46,7 @@ const SchedulesView = () => {
     const [start, setStart] = useState("");
     const [end, setEnd] = useState("");
     const [errors, setErrors] = useState<{ [key: string]: string | null }>({});
-
+    const [submitted, setSubmitted] = useState(false);
     const groupedSchedules = DAYS.map((_, idx) =>
         schedules.filter((s) => s.dayOfWeek === idx + 1)
     );
@@ -89,6 +89,7 @@ const SchedulesView = () => {
     };
 
     const handleAdd = async () => {
+         setSubmitted(true); // <-- Marca como enviado
         const newErrors = validateSchedule(start, end, selectedDay, intl);
         if (start && end && start >= end) {
             newErrors.start = intl.formatMessage({ id: "startHourBeforeEnd", defaultMessage: "La hora de inicio debe ser antes de la hora de fin" });
@@ -288,7 +289,7 @@ const SchedulesView = () => {
                                     setStart(value);
                                     if (errors.start) setErrors((prev: { [key: string]: string | null }) => ({ ...prev, start: null }));
                                 }}
-                                error={errors.start}
+                                error={submitted ? errors.start : null}
                             />
                         </View>
 
@@ -318,7 +319,7 @@ const SchedulesView = () => {
                                     setEnd(value);
                                     if (errors.end) setErrors((prev: { [key: string]: string | null }) => ({ ...prev, end: null }));
                                 }}
-                                error={errors.end}
+                               error={submitted ? errors.end : null}
                             />
                         </View>
                     </View>
