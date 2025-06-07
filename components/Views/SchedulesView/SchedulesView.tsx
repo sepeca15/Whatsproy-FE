@@ -45,6 +45,7 @@ const SchedulesView = () => {
     const [addClicked, setAddClicked] = useState<any>(null)
     const [start, setStart] = useState("");
     const [end, setEnd] = useState("");
+    const [errors, setErrors] = useState<{ [key: string]: string | null }>({});
 
     const groupedSchedules = DAYS.map((_, idx) =>
         schedules.filter((s) => s.dayOfWeek === idx + 1)
