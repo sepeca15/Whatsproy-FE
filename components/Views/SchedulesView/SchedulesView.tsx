@@ -95,7 +95,7 @@ const SchedulesView = () => {
             newErrors.end = intl.formatMessage({ id: "endHourAfterStart", defaultMessage: "La hora de fin debe ser después de la hora de inicio" });
       
     }
-    
+
         setErrors(newErrors);
 
         if (Object.keys(newErrors).length > 0) return;
@@ -284,9 +284,10 @@ const SchedulesView = () => {
                                     defaultMessage: "Ingresa la hora de cierre",
                                 })}
                                 value={start}
-                                onChangeText={(value: any) =>
-                                    setStart(value)
-                                }
+                                onChangeText={(value: any) => {
+                                    setStart(value);
+                                    if (errors.start) setErrors((prev: { [key: string]: string | null }) => ({ ...prev, start: null }));
+                                }}
                                 error={errors.start}
                             />
                         </View>
