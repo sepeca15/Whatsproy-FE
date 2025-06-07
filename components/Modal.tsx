@@ -54,7 +54,7 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
             {manyItems === true ? (
               <View
                 style={{
-                  minHeight: 350,
+                  minHeight: 400,
                   margin: "auto",
                   width: "100%",
                   flexGrow: 1,
@@ -80,7 +80,7 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
                   gap: 8,
                   paddingHorizontal: 20,
                   paddingBottom: 60,
-                  minHeight: 350,
+                  minHeight: 400,
                 }}
               >
                 {content}
