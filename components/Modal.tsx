@@ -27,7 +27,7 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
       transparent
       animationType="fade"
       visible={isVisible}
-      style={{ zIndex: 2000 }}
+      style={{ zIndex: 1 }}
       onRequestClose={onClose}
     >
       <View style={styles.container}>
