@@ -100,6 +100,9 @@ const api = {
     getNextDateAvailable: order.getNextDateAvailable,
     filterByQuery: order.filterOrderWithQuery,
     getNextDateAvailableForSingleDay: order.getNextDateAvailableForSingleDay,
+    getSalesOverview: order.getSalesOverview,
+    getSalesByCategory: order.getSalesByCategory,
+    getSalesChart: order.getSalesChart,
   },
   typeServices: {
     getAll: typeServices.getAll,

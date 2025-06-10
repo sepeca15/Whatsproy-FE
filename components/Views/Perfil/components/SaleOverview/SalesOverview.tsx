@@ -11,6 +11,7 @@ interface SalesOverviewProps {
   totalSales: number;
   previousPeriodSales: number;
   averageSale: number;
+  previous: number;
   currency: string;
   period: string;
 }
@@ -21,11 +22,9 @@ const SalesOverview: React.FC<SalesOverviewProps> = ({
   averageSale = 0,
   currency = "$",
   period = " ",
+  previous,
 }) => {
-  const percentageChange =
-    previousPeriodSales !== 0
-      ? ((totalSales - previousPeriodSales) / previousPeriodSales) * 100
-      : 0;
+  const percentageChange = previousPeriodSales;
   const isPositive = percentageChange >= 0;
 
   const formatNumber = (num: number) => {
@@ -119,7 +118,7 @@ const SalesOverview: React.FC<SalesOverviewProps> = ({
               </Text>
               <Text style={styles.amount}>
                 {currency}
-                {formatNumber(previousPeriodSales)}
+                {formatNumber(previous)}
               </Text>
             </VStack>
           </HStack>
