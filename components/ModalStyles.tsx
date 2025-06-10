@@ -9,7 +9,9 @@ export const ModalStyles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    
   },
+
   containerContent: {
     width: "90%",
     backgroundColor: "white",

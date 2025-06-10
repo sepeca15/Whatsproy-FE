@@ -45,7 +45,8 @@ const SchedulesView = () => {
     const [addClicked, setAddClicked] = useState<any>(null)
     const [start, setStart] = useState("");
     const [end, setEnd] = useState("");
-
+    const [errors, setErrors] = useState<{ [key: string]: string | null }>({});
+    const [submitted, setSubmitted] = useState(false);
     const groupedSchedules = DAYS.map((_, idx) =>
         schedules.filter((s) => s.dayOfWeek === idx + 1)
     );
@@ -64,9 +65,41 @@ const SchedulesView = () => {
             setLoading(false);
         }
     };
+    const validateSchedule = (
+        start: string,
+        end: string,
+        selectedDay: number | null,
+        intl: any
+    ): { [key: string]: string | null } => {
+        const newErrors: { [key: string]: string | null } = {};
+
+        if (!start || !start.trim()) {
+            newErrors.start = intl.formatMessage({ id: "startHourRequired", defaultMessage: "La hora de inicio es obligatoria" });
+        }
+
+        if (!end || !end.trim()) {
+            newErrors.end = intl.formatMessage({ id: "endHourRequired", defaultMessage: "La hora de fin es obligatoria" });
+        }
+
+        if (selectedDay === null) {
+            newErrors.day = intl.formatMessage({ id: "dayRequired", defaultMessage: "El día es obligatorio" });
+        }
+
+        return newErrors;
+    };
 
     const handleAdd = async () => {
-        if (!start || !end || selectedDay === null) return;
+         setSubmitted(true); // <-- Marca como enviado
+        const newErrors = validateSchedule(start, end, selectedDay, intl);
+        if (start && end && start >= end) {
+            newErrors.start = intl.formatMessage({ id: "startHourBeforeEnd", defaultMessage: "La hora de inicio debe ser antes de la hora de fin" });
+            newErrors.end = intl.formatMessage({ id: "endHourAfterStart", defaultMessage: "La hora de fin debe ser después de la hora de inicio" });
+      
+    }
+
+        setErrors(newErrors);
+
+        if (Object.keys(newErrors).length > 0) return;
         try {
             setLoadingCreate(true);
             const res = await api.schedules.create({
@@ -252,9 +285,11 @@ const SchedulesView = () => {
                                     defaultMessage: "Ingresa la hora de cierre",
                                 })}
                                 value={start}
-                                onChangeText={(value: any) =>
-                                    setStart(value)
-                                }
+                                onChangeText={(value: any) => {
+                                    setStart(value);
+                                    if (errors.start) setErrors((prev: { [key: string]: string | null }) => ({ ...prev, start: null }));
+                                }}
+                                error={submitted ? errors.start : null}
                             />
                         </View>
 
@@ -280,9 +315,11 @@ const SchedulesView = () => {
                                     defaultMessage: "Ingresa la hora de cierre",
                                 })}
                                 value={end}
-                                onChangeText={(value: any) =>
-                                    setEnd(value)
-                                }
+                                onChangeText={(value: any) => {
+                                    setEnd(value);
+                                    if (errors.end) setErrors((prev: { [key: string]: string | null }) => ({ ...prev, end: null }));
+                                }}
+                               error={submitted ? errors.end : null}
                             />
                         </View>
                     </View>

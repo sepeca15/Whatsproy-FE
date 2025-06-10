@@ -30,6 +30,7 @@ export const useEditProductValidation = () => {
         status: "error",
       });
     }
+    
 
     if (!formData.nombre.trim()) {
       newErrors.nombre = "El nombre del producto es obligatorio";
