@@ -2,7 +2,6 @@ import { View, Text, StatusBar, FlatList } from "react-native";
 import { useRouter } from "expo-router";
 import Feather from "react-native-vector-icons/Feather";
 import Entypo from "react-native-vector-icons/Entypo";
-
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import IonIcons from "react-native-vector-icons/Ionicons";
@@ -15,6 +14,7 @@ import SettingCard from "@/hooks/settingsCards/SettingCard";
 import * as Animatable from "react-native-animatable";
 import { useUser } from "@/hooks/redux/useUser";
 import { ID_TIPOSERVICIO_DELIVERY, ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 const Settings = () => {
   const intl = useIntl();
@@ -112,7 +112,19 @@ const Settings = () => {
         defaultMessage: "Manage order-related data",
       }),
       icon: <IonIcons size={22} color={"white"} name="newspaper-outline" />,
-    }
+    },
+    ...(isAdmin ? [{
+      title: intl.formatMessage({
+        id: "priceAdjustment",
+        defaultMessage: "Price Adjustment",
+      }),
+      href: "/(tabs)/price-adjustment",
+      description: intl.formatMessage({
+        id: "priceAdjustmentDesc",
+        defaultMessage: "Adjust product prices globally or by category",
+      }),
+      icon: <MaterialIcons size={22} color={"white"} name="price-change" />,
+    }] : []),
     ] : []),
     {
       title: intl.formatMessage({
