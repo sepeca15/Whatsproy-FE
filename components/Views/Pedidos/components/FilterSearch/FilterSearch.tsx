@@ -60,7 +60,7 @@ const FilterSearch = () => {
     setLoadingApi(true);
     const timeout = setTimeout(() => {
       if (valueSearch.trim()) handleSearchData();
-    }, 500);
+    }, 1000);
     return () => clearTimeout(timeout);
   }, [valueSearch]);
 

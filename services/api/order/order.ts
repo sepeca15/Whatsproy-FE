@@ -117,3 +117,25 @@ export const filterOrderWithQuery = async (query: string, selectedInfoLine: stri
   return data;
 };
 
+
+
+export const getSalesOverview = async () => {
+  const { data } = await ApiInstances("current").get(
+    `/pedido/stats/salesOverview`,
+  );
+  return data;
+};
+
+export const getSalesChart = async () => {
+  const { data } = await ApiInstances("current").get(
+    `/pedido/stats/salesLastSixMonths`,
+  );
+  return data;
+};
+
+export const getSalesByCategory = async (filter: string) => {
+  const { data } = await ApiInstances("current").get(
+    `/pedido/stats/salesForCategory?filter=${filter}`,
+  );
+  return data;
+};
