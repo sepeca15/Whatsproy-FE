@@ -41,8 +41,6 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
     confirmState: false,
   });
 
-  console.log("orderData", orderData)
-
   const router = useRouter();
   const [statusModalDelete, setStateModalDelete] = useState<boolean>(false);
   const { handleDeleteOrder, confirmOrder, loadingApiAction } = useOrders();

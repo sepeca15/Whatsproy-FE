@@ -145,7 +145,8 @@ export const useOrders = () => {
 
   const confirmOrder = async (infoOrder: any) => {
     Dispatch(onLoadingApiAction());
-
+    console.log("jsjsjasjasjasjjs", infoOrder.orderId);
+    
     try {
       const data = await api.order.confirm(infoOrder.orderId);
 
@@ -162,7 +163,7 @@ export const useOrders = () => {
         description: error.response.data.message,
         status: "error",
       });
-      console.log("error", error);
+      console.log("error", error.response.data.message);
     } finally {
       Dispatch(onFinishLoadingApiAction());
     }

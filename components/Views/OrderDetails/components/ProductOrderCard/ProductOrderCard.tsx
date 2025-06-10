@@ -12,9 +12,10 @@ import { Colors } from "@/constants/Colors"
 interface IProductOrderCard {
   data: IProductoInfo
   cantidad: number
+  precio: number;
 }
 
-const ProductOrderCard = ({ data, cantidad }: IProductOrderCard) => {
+const ProductOrderCard = ({ data, cantidad, precio }: IProductOrderCard) => {
   const [expanded, setExpanded] = React.useState(false)
 
   const toggleExpand = () => {
@@ -46,7 +47,7 @@ const ProductOrderCard = ({ data, cantidad }: IProductOrderCard) => {
 
           <View style={styles.priceRow}>
             <Text style={styles.unitPrice}>
-              ${data.precio} <Text style={styles.unitLabel}>/ unidad</Text>
+              ${precio} <Text style={styles.unitLabel}>/ unidad</Text>
             </Text>
             <Text style={styles.quantity}>x{cantidad}</Text>
           </View>

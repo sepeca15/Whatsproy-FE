@@ -240,7 +240,7 @@ export default function CalendarView() {
         setAgendaKey((prev) => prev + 1);
       }
     } catch (error: any) {
-      console.log(error.response.data.message);
+      console.log('nooo',error.response.data.message);
     }
   };
 

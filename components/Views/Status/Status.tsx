@@ -12,96 +12,95 @@ import CustomText from "@/components/CustomText"
 import api from "@/services/api/admin"
 import ModalCreateOrEditStatus from "./components/ModalCreateOrEditStatus"
 import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmAction"
-import { useColorScheme } from "react-native"
 import { styles } from "./StatusStyles"
 import { globalStyles } from "@/components/globalStyles"
 
 export interface IEstado {
-    id: number
-    nombre: string
-    es_defecto: boolean
-    finalizador: boolean
-    tipoServicioId: number
-    order: number | null
-    createdAt: string
-    updatedAt: string
+  id: number
+  nombre: string
+  es_defecto: boolean
+  finalizador: boolean
+  order: number | null
+  createdAt: string
+  updatedAt: string
 }
 
 const StatusView = () => {
-    const [status, setStatus] = useState<IEstado[]>([])
-    const [loading, setLoading] = useState(true)
-    const [modalVisible, setModalVisible] = useState(false)
-    const [selectedItem, setSelectedItem] = useState<IEstado | null>(null)
-    const [modalDelete, setModalDelete] = useState<IEstado | null>(null)
-    const originalOrderRef = useRef<IEstado[]>([])
-    const intl = useIntl();
-    const colors = Colors.light
-    const isDark = false;
+  const [status, setStatus] = useState<IEstado[]>([])
+  const [loading, setLoading] = useState(true)
+  const [modalVisible, setModalVisible] = useState(false)
+  const [selectedItem, setSelectedItem] = useState<IEstado | null>(null)
+  const [modalDelete, setModalDelete] = useState<IEstado | null>(null)
+  
+  const originalOrderRef = useRef<IEstado[]>([])
+  const intl = useIntl();
+  const colors = Colors.light
+  const isDark = false;
 
-    useEffect(() => {
-        fetchStatus()
-    }, [])
+  useEffect(() => {
+    fetchStatus()
+  }, [])
 
-    const fetchStatus = async () => {
-        setLoading(true)
-        try {
-            const resp = await api.status.findAll()
-            if (resp.ok) setStatus(resp.data)
-        } catch (error: any) {
-            console.error(error.response?.data?.message)
-        } finally {
-            setLoading(false)
-        }
+  const fetchStatus = async () => {
+    setLoading(true)
+    try {
+      const resp = await api.status.findAll()
+      if (resp.ok) setStatus(resp.data)
+    } catch (error: any) {
+      console.error(error.response?.data?.message)
+    } finally {
+      setLoading(false)
     }
+  }
 
-    const updateStatus = async (updated: IEstado) => {
-        try {
-            await api.status.update(updated.id, updated)
-            fetchStatus()
-        } catch (error: any) {
-            console.error(error.response?.data?.message)
-        }
+  const updateStatus = async (updated: IEstado) => {
+    try {
+      await api.status.update(updated.id, updated)
+      fetchStatus()
+    } catch (error: any) {
+      console.error(error.response?.data?.message)
     }
+  }
 
-    const deleteStatus = async (id: number) => {
-        try {
-            const resp = await api.status.delete(id)
-            if (resp.ok) fetchStatus()
-        } catch (error: any) {
-            console.error(error.response.data.message)
-        }
+  const deleteStatus = async (id: number) => {
+    try {
+      const resp = await api.status.delete(id)
+      if (resp.ok) fetchStatus()
+    } catch (error: any) {
+      console.error(error.response.data.message)
     }
+  }
 
-    const handleDragBegin = () => {
-        originalOrderRef.current = [...status]
+  const handleDragBegin = () => {
+    originalOrderRef.current = [...status]
+  }
+
+  const handleDragEnd = async ({ data, from, to }: { data: IEstado[]; from: number; to: number }) => {
+    if (from === to) return
+
+    const movedItem = status[from]
+    const newOrder = to + 1
+
+    try {
+      await updateStatus({ ...movedItem, order: newOrder })
+    } catch (err) {
+      console.error("Error al actualizar el orden", err)
     }
+  }
 
-    const handleDragEnd = async ({ data, from, to }: { data: IEstado[]; from: number; to: number }) => {
-        if (from === to) return
+  const toggleModal = () => setModalVisible((prev) => !prev)
+  const toggleDeleteModal = () => setModalDelete(null)
 
-        const movedItem = status[from]
-        const newOrder = to + 1
+  const handleEdit = (item: IEstado) => {
+    setSelectedItem(item)
+    toggleModal()
+  }
 
-        try {
-            await updateStatus({ ...movedItem, order: newOrder })
-        } catch (err) {
-            console.error("Error al actualizar el orden", err)
-        }
-    }
+  const addOrEditNewStatus = () => {
+    fetchStatus()
+  }
 
-    const toggleModal = () => setModalVisible((prev) => !prev)
-    const toggleDeleteModal = () => setModalDelete(null)
-
-    const handleEdit = (item: IEstado) => {
-        setSelectedItem(item)
-        toggleModal()
-    }
-
-    const addOrEditNewStatus = () => {
-        fetchStatus()
-    }
-
-    const renderItem = ({ item, drag, isActive }: RenderItemParams<IEstado>) => (
+  const renderItem = ({ item, drag, isActive }: RenderItemParams<IEstado>) => (
     <Animated.View
       entering={FadeInDown.duration(300)}
       style={[

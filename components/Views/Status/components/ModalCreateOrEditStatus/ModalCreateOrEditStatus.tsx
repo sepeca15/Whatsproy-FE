@@ -73,7 +73,7 @@ export const ModalCreateOrEditStatus = ({ isOpen, onClose, addOrEditNewStatus, s
 
         try {
             setLoadingApi(true)
-            const payload = { ...status, tipoServicioId: user.tipo_servicio }
+            const payload = { ...status }
 
             const resp = selectedItem
                 ? await api.status.update(selectedItem.id, payload)
