@@ -6,7 +6,7 @@
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo run:android",
-    "android:play": "expo run:android --variant playInternalDebug",
+    "android:play": "expo run:android --variant playInternalDebug --no-install",
     "andorid2:play" : "expo run:android --variant playInternalDebug --no-install",
     "ios": "expo run:ios",
     "web": "expo start --web",
