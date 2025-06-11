@@ -44,6 +44,18 @@ const Settings = () => {
         },
       ]
       : []),
+       {
+      title: intl.formatMessage({
+        id: "helpSupport",
+        defaultMessage: "Ayuda y Soporte",
+      }),
+      href: "/(tabs)/help",
+      description: intl.formatMessage({
+        id: "helpSupportDesc",
+        defaultMessage: "Encuentra respuestas y aprende a usar la app",
+      }),
+      icon: <Entypo size={22} color={"white"} name="time-slot" />,
+    },
     {
       title: intl.formatMessage({
         id: "generalSettings",
@@ -156,18 +168,7 @@ const Settings = () => {
         />
       ),
     },
-    {
-      title: intl.formatMessage({
-        id: "helpSupport",
-        defaultMessage: "Ayuda y Soporte",
-      }),
-      href: "/(tabs)/help",
-      description: intl.formatMessage({
-        id: "helpSupportDesc",
-        defaultMessage: "Encuentra respuestas y aprende a usar la app",
-      }),
-      icon: <Entypo size={22} color={"white"} name="time-slot" />,
-    },
+   
     {
       title: intl.formatMessage({
         id: "cierreProvisorioTittleSettings",
