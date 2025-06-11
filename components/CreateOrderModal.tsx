@@ -56,7 +56,7 @@ interface IProps {
   selectedWorkerId?: any;
   currentOrders?: any[];
   availableDates?: string[];
-  horarios: any[];
+  horarios?: any[];
 }
 
 const initialValues: CreateOrderDTO = {
@@ -104,6 +104,7 @@ const CreateOrderModal = ({
   const [selectedProductsIds, setSelectedProductsIds] = React.useState<
     string[]
   >([]);
+  
   const [loadingNextDateAvailable, setLoadingNextDateAvailable] =
     React.useState(false);
   const [prodCant, setProdCant] = React.useState<prodItems[]>([]);
@@ -159,6 +160,8 @@ const CreateOrderModal = ({
     try {
       setLoadingClients(true);
       const resp = await findClientsWithQuery(query, user?.id_empresa);
+      console.log('la ressp de clients es', resp);
+      
       if (resp.data) {
         setClients(resp.data);
       }

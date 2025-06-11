@@ -13,6 +13,7 @@ import { useHomeData } from "@/hooks/redux/useHomeData";
 import moment from "moment";
 import { useIntl } from "react-intl";
 import { getTimeAgo } from "@/hooks/home_functions/useLastOrders";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const TabLayout: React.FC = () => {
   const { user } = useUser();
@@ -55,20 +56,22 @@ const TabLayout: React.FC = () => {
   }, []);
 
   return (
-    <NativeBaseProvider>
-      <Toast config={toastConfig} />
-      <PrivateView>
-        {globalConfig ? (
-          <Layout>
-            <SafeAreaView style={{ flex: 1 }}>
-              <Slot />
-            </SafeAreaView>
-          </Layout>
-        ) : (
-          <ConfigAccount />
-        )}
-      </PrivateView>
-    </NativeBaseProvider>
+    <GestureHandlerRootView>
+      <NativeBaseProvider>
+        <Toast config={toastConfig} />
+        <PrivateView>
+          {globalConfig ? (
+            <Layout>
+              <SafeAreaView style={{ flex: 1 }}>
+                <Slot />
+              </SafeAreaView>
+            </Layout>
+          ) : (
+            <ConfigAccount />
+          )}
+        </PrivateView>
+      </NativeBaseProvider>
+    </GestureHandlerRootView>
   );
 };
 

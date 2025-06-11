@@ -6,9 +6,12 @@ export const styles = StyleSheet.create({
     color: "white",
   },
   name: {
+    flex:1,
     fontWeight: "bold",
-    fontSize: 20,
+    fontSize: 24,
     color: "white",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
   },
   text: {
     color: "#D1D5DB",
@@ -61,6 +64,7 @@ export const styles = StyleSheet.create({
   column: {
     display: "flex",
     flexDirection: "column",
+    flex:1,
   },
   column2: {
     alignItems: "flex-end",
@@ -80,6 +84,7 @@ export const styles = StyleSheet.create({
     borderTopStartRadius: 12,
   },
     row3: {
+      flex:1,
     width: "100%",
     display: "flex",
     flexDirection: "row",

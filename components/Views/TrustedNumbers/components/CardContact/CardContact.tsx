@@ -8,7 +8,7 @@ interface ICardContact {
     telefono: any
     clickDeleteAction: () => void
 }
-const getInitials = (nombre: string) => {
+export const getInitials = (nombre: string) => {
     if (!isNaN(Number(nombre))) return "C";
     const words = nombre.trim().split(" ");
     if (words.length === 1) return words[0][0].toUpperCase();

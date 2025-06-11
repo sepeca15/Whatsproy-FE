@@ -34,7 +34,10 @@ export const ModalCreateOrEditStatus = ({ isOpen, onClose, addOrEditNewStatus, s
     const [error, setError] = React.useState<any>({})
     const [loadingApi, setLoadingApi] = React.useState<any>(false)
     const { user } = useUser()
-    const intl = useIntl()
+    const intl = useIntl()    
+
+    console.log('je');
+    
 
     React.useEffect(() => {
         if (isOpen && selectedItem) {

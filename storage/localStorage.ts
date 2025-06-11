@@ -19,7 +19,7 @@ export const StoreJsonData = async (key: string, value: string) => {
 
 export const getData = async (key: string) => {
   try {
-    const value = await AsyncStorage.getItem(key);
+    const value = await AsyncStorage.getItem(key);    
     return value;
   } catch (error) {
     console.log(error);

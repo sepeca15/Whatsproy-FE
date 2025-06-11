@@ -76,7 +76,7 @@ export const useUser = () => {
     }
   };
 
-    const isGreenApiConfigured = async () => {
+  const isGreenApiConfigured = async () => {
     try {
       const resp = await api.company.isGreenApiConfigured(user.id_empresa);
       console.log("resp", resp?.isDone)

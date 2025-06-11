@@ -1,5 +1,7 @@
 {
   "en": {
+    "manageClients": "Manage clients",
+    "historyClient": "History client",
     "enterAdressSearch": "Enter the information to search",
     "company.name": "Name",
     "companyUpdatedOk": "Company updated successfully",
@@ -575,6 +577,7 @@
   "es": {
     "common.yes": "SI",
     "common.no": "NO",
+    "manageClients": "Gestiona tus clientes",
     "selectWorker": "Elige un trabajador",
     "printing": "Imprimiendo...",
     "printComanda": "Imprimir Orden",
@@ -582,6 +585,7 @@
     "tableHeader.order": "Orden",
     "tableHeader.name": "Nombre",
     "tableHeader.finalizer": "Finalizador",
+    "historyClient": "History client",
     "tableHeader.actions": "Acciones",
     "emptyStatesMessage": "No hay estados creados aún.",
     "modalDelete.title": "Borrar estado",
@@ -1150,6 +1154,7 @@
   "pt": {
     "selectYesFiltersOrder": "Sim",
     "selectNoFiltersOrder": "Não",
+    "manageClients": "Gerencie seus clientes",
     "selectTimeFilters": "selecione uma data",
     "enterAdressSearch": "Digite o endereço para pesquisar",
     "createEvent": "Evento",
@@ -1242,6 +1247,7 @@
     "error": "Erro",
     "yes": "SIM",
     "no": "NÃO",
+    "historyClient": "Cliente de histórico",
     "minutes": "Minutes",
     "hours": "Hours",
     "period.weekly": "Semanal",

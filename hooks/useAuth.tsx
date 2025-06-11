@@ -1,4 +1,4 @@
-import { getData } from "@/storage/localStorage";
+import { getData, removeData } from "@/storage/localStorage";
 import { useState, useEffect } from "react";
 import { useUser } from "./redux/useUser";
 
@@ -19,7 +19,9 @@ export function useAuth() {
       } else {
         setIsAuthenticated(false);
       }
-    } catch (error) {
+    } catch (error: any) {
+      console.log('Hubo un error en la validacion', error.response.data.message);
+      
       setIsAuthenticated(false);
     } finally {
       setLoading(false);

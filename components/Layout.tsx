@@ -64,6 +64,17 @@ const Pages = (empresaType: number) => {
       ),
     },
     {
+      name: "clients",
+      path: "/(tabs)/clients",
+      icon: (select: boolean) => (
+        <IonIcon
+          name="people-outline"
+          size={24}
+          color={select ? Colors.light.primary : "#717171"}
+        />
+      ),
+    },
+    {
       name: "perfil",
       path: "/(tabs)/perfil",
       icon: (select: boolean) => (
@@ -136,7 +147,7 @@ const styles = StyleSheet.create({
   },
   LinkContainer: {
     height: 60,
-    width: "25%",
+    width: "20%",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
