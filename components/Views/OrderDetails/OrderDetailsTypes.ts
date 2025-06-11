@@ -22,6 +22,7 @@ interface IProduct {
   pedidoId: number;
   detalle: string | null;
   cantidad: number;
+  precio: number;
 }
 
 interface IChatId {

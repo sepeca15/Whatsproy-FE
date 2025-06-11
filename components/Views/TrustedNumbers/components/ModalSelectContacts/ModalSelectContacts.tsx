@@ -1,7 +1,10 @@
 import GlobalModal from "@/components/Modal";
-import { Button, FlatList, Text, View, Checkbox, Pressable } from "native-base";
+import { Button, FlatList, Text, View, Checkbox, Pressable, Icon } from "native-base";
 import * as Contacts from "expo-contacts";
 import React from "react";
+import { Ionicons } from "@expo/vector-icons";
+import { Colors } from "@/constants/Colors";
+import InputField from "@/components/InputField";
 
 interface IModalSelectContact {
     onClose: () => void;
@@ -15,39 +18,39 @@ const normalize = (num: string) => num.replace(/\D/g, '').replace(/^0+/, '');
 
 const ModalSelectContact = ({ isOpen, onClose, onImportContacts, loadingApi, trustedPhones }: IModalSelectContact) => {
     const [contacts, setContacts] = React.useState<any[]>([]);
+    const [contactsFilter, setContactsFilter] = React.useState<any[]>([]);
+
+    const [valueSearch, setValueSearch] = React.useState<string>('');
 
     const [contactsSelected, setContactsSelected] = React.useState<Set<string>>(new Set());
 
     const importContacts = async () => {
         const { status } = await Contacts.requestPermissionsAsync();
-        console.log(status);
-        
+
         try {
             if (status === "granted") {
                 const { data } = await Contacts.getContactsAsync({
                     fields: [Contacts.Fields.PhoneNumbers],
                 });
-    
+
                 if (data.length > 0) {
-                    console.log('jasjasjas');
-                    
                     setContacts(data);
                     const matchedContacts = data.filter(c =>
                         c.phoneNumbers?.some(p =>
                             trustedPhones.includes((p.number ?? "").replace(/\D/g, '').replace(/^0+/, ''))
                         )
                     );
-    
+
                     const matchedIds = new Set<string>(
                         matchedContacts.map(c => String(c.id)).filter(Boolean)
                     );
                     setContactsSelected(matchedIds); setContactsSelected(matchedIds);
                 }
             }
-            
+
         } catch (error) {
             console.log(error);
-            
+
         }
     };
 
@@ -91,19 +94,40 @@ const ModalSelectContact = ({ isOpen, onClose, onImportContacts, loadingApi, tru
         );
     };
 
+    React.useEffect(() => {
+        const updateValue = setTimeout(() => {
+            handleFilterValue(valueSearch)
+        }, 500);
+
+        return () => clearTimeout(updateValue)
+
+    }, [valueSearch])
+
+    const handleFilterValue = (value: string) => {
+        setContactsFilter(contacts.filter((prv) => prv.name.includes(value)))
+    }
+
+
     return (
         <GlobalModal
             manyItems={true}
             isVisible={isOpen}
             onClose={onClose}
             content={
-                <View p={4}>
+                <View>
+                    <InputField
+                        placeholder="Buscar por nombre..."
+                        value={valueSearch}
+                        onChangeText={setValueSearch}
+                        InputLeftElement={<Icon as={Ionicons} name="search" size={5} ml="2" color={Colors.light.secondary} />}
+                    />
                     <FlatList
-                        data={contacts}
+                        data={valueSearch? contactsFilter : contacts}
                         renderItem={renderItem}
                         keyExtractor={(item) => item.id.toString()}
                         initialNumToRender={20}
                         maxToRenderPerBatch={20}
+                        contentContainerStyle={{ paddingBottom: 40 }}
                         windowSize={5}
                     />
                 </View>

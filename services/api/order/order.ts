@@ -56,6 +56,8 @@ export const subOrderStatus = async () => {
 
 
 export const confirmOrder = async (id: number) => {
+  console.log('enviare', id );
+  
   const { data } = await ApiInstances("current").get("pedido/confirm/" + id);
 
   return data;

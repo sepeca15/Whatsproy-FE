@@ -742,6 +742,7 @@ const OrderDetails = () => {
                 key={idx}
                 data={product.productoInfo}
                 cantidad={product.cantidad}
+                precio={product.precio}
               />
             ))}
           </View>

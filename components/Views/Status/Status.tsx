@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { View, Text, TouchableOpacity } from "react-native"
+import { Text, TouchableOpacity } from "react-native"
 import { AntDesign, FontAwesome, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 import DraggableFlatList, { type RenderItemParams } from "react-native-draggable-flatlist"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
@@ -12,98 +12,99 @@ import CustomText from "@/components/CustomText"
 import api from "@/services/api/admin"
 import ModalCreateOrEditStatus from "./components/ModalCreateOrEditStatus"
 import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmAction"
-import { useColorScheme } from "react-native"
 import { styles } from "./StatusStyles"
 import { globalStyles } from "@/components/globalStyles"
+import { View } from "native-base"
 
 export interface IEstado {
-    id: number
-    nombre: string
-    es_defecto: boolean
-    finalizador: boolean
-    tipoServicioId: number
-    order: number | null
-    createdAt: string
-    updatedAt: string
+  id: number
+  nombre: string
+  es_defecto: boolean
+  finalizador: boolean
+  order: number | null
+  createdAt: string
+  updatedAt: string
 }
 
 const StatusView = () => {
-    const [status, setStatus] = useState<IEstado[]>([])
-    const [loading, setLoading] = useState(true)
-    const [modalVisible, setModalVisible] = useState(false)
-    const [selectedItem, setSelectedItem] = useState<IEstado | null>(null)
-    const [modalDelete, setModalDelete] = useState<IEstado | null>(null)
-    const originalOrderRef = useRef<IEstado[]>([])
-    const intl = useIntl();
-    const colors = Colors.light
-    const isDark = false;
+  const [status, setStatus] = useState<IEstado[]>([])
+  const [loading, setLoading] = useState(true)
+  const [modalVisible, setModalVisible] = useState(false)
+  const [selectedItem, setSelectedItem] = useState<IEstado | null>(null)
+  const [modalDelete, setModalDelete] = useState<IEstado | null>(null)
+  const isAnyModalOpen = modalDelete || modalVisible
 
-    useEffect(() => {
-        fetchStatus()
-    }, [])
+  const originalOrderRef = useRef<IEstado[]>([])
+  const intl = useIntl();
+  const colors = Colors.light
+  const isDark = false;
 
-    const fetchStatus = async () => {
-        setLoading(true)
-        try {
-            const resp = await api.status.findAll()
-            if (resp.ok) setStatus(resp.data)
-        } catch (error: any) {
-            console.error(error.response?.data?.message)
-        } finally {
-            setLoading(false)
-        }
+  useEffect(() => {
+    fetchStatus()
+  }, [])
+
+  const fetchStatus = async () => {
+    setLoading(true)
+    try {
+      const resp = await api.status.findAll()
+      if (resp.ok) {
+        setStatus(resp.data)
+      }
+    } catch (error: any) {
+      console.error(error.response?.data?.message)
+    } finally {
+      setLoading(false)
     }
+  }
 
-    const updateStatus = async (updated: IEstado) => {
-        try {
-            await api.status.update(updated.id, updated)
-            fetchStatus()
-        } catch (error: any) {
-            console.error(error.response?.data?.message)
-        }
+  const updateStatus = async (updated: IEstado) => {
+    try {
+      await api.status.update(updated.id, updated)
+      fetchStatus()
+    } catch (error: any) {
+      console.error(error.response?.data?.message)
     }
+  }
 
-    const deleteStatus = async (id: number) => {
-        try {
-            const resp = await api.status.delete(id)
-            if (resp.ok) fetchStatus()
-        } catch (error: any) {
-            console.error(error.response.data.message)
-        }
+  const deleteStatus = async (id: number) => {
+    try {
+      const resp = await api.status.delete(id)
+      if (resp.ok) fetchStatus()
+    } catch (error: any) {
+      console.error(error.response.data.message)
     }
+  }
 
-    const handleDragBegin = () => {
-        originalOrderRef.current = [...status]
+  const handleDragBegin = () => {
+    originalOrderRef.current = [...status]
+  }
+
+  const handleDragEnd = async ({ data, from, to }: { data: IEstado[]; from: number; to: number }) => {
+    if (from === to) return
+
+    const movedItem = status[from]
+    const newOrder = to + 1
+
+    try {
+      await updateStatus({ ...movedItem, order: newOrder })
+    } catch (err) {
+      console.error("Error al actualizar el orden", err)
     }
+  }
 
-    const handleDragEnd = async ({ data, from, to }: { data: IEstado[]; from: number; to: number }) => {
-        if (from === to) return
+  const toggleModal = () => setModalVisible((prev) => !prev)
+  const toggleDeleteModal = () => setModalDelete(null)
+  const handleEdit = (item: IEstado) => {
+    setSelectedItem(item)
+    toggleModal()
+  }
 
-        const movedItem = status[from]
-        const newOrder = to + 1
+  const addOrEditNewStatus = () => {
+    fetchStatus()
+  }
 
-        try {
-            await updateStatus({ ...movedItem, order: newOrder })
-        } catch (err) {
-            console.error("Error al actualizar el orden", err)
-        }
-    }
-
-    const toggleModal = () => setModalVisible((prev) => !prev)
-    const toggleDeleteModal = () => setModalDelete(null)
-
-    const handleEdit = (item: IEstado) => {
-        setSelectedItem(item)
-        toggleModal()
-    }
-
-    const addOrEditNewStatus = () => {
-        fetchStatus()
-    }
-
-    const renderItem = ({ item, drag, isActive }: RenderItemParams<IEstado>) => (
-    <Animated.View
-      entering={FadeInDown.duration(300)}
+  const renderItem = ({ item, drag, isActive }: RenderItemParams<IEstado>) => {
+    return <View
       style={[
         styles.itemContainer,
         {
@@ -157,7 +158,6 @@ const StatusView = () => {
 
         <View style={styles.actionsColumn}>
           <TouchableOpacity
-            hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
             style={[styles.actionButton, styles.deleteButton]}
             onPress={() => setModalDelete(item)}
           >
@@ -165,7 +165,6 @@ const StatusView = () => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
             style={[styles.actionButton, styles.editButton, { borderColor: isDark ? "#2A2D30" : "#E8EDF2" }]}
             onPress={() => handleEdit(item)}
           >
@@ -173,13 +172,12 @@ const StatusView = () => {
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
-    </Animated.View>
-  )
+    </View>
+  }
 
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.background }}>
-      {/* Header */}
-      <Animated.View entering={FadeIn.duration(500)} style={[globalStyles.header2, { backgroundColor: colors.primary }]}>
+      <View style={[globalStyles.header2, { backgroundColor: colors.primary }]}>
         <View style={globalStyles.headerContent}>
           <TouchableOpacity style={globalStyles.backButton} onPress={() => router.back()}>
             <AntDesign name="arrowleft" size={22} color="white" />
@@ -190,12 +188,11 @@ const StatusView = () => {
             </CustomText>
           </View>
         </View>
-      </Animated.View>
+      </View>
 
       <View style={styles.container}>
         {/* Info Banner */}
-        <Animated.View
-          entering={FadeInDown.duration(500)}
+        <View
           style={[
             styles.infoBanner,
             { backgroundColor: isDark ? "rgba(18, 140, 126, 0.15)" : "rgba(18, 140, 126, 0.08)" },
@@ -205,7 +202,7 @@ const StatusView = () => {
           <Text style={[styles.infoText, { color: colors.secondary }]}>
             {intl.formatMessage({ id: "statusDragDropInfo" })}
           </Text>
-        </Animated.View>
+        </View>
 
         {/* Table Content */}
         <View style={styles.contentContainer}>
@@ -215,8 +212,7 @@ const StatusView = () => {
             </View>
           ) : status.length > 0 ? (
             <View>
-              <Animated.View
-                entering={FadeInDown.delay(100).duration(500)}
+              <View
                 style={[styles.tableHeader, { backgroundColor: isDark ? "#2A2D30" : "#F5F7FA" }]}
               >
                 <Text style={[styles.headerCell, styles.orderColumn, { color: isDark ? "#9BA1A6" : "#687076" }]}>
@@ -231,17 +227,19 @@ const StatusView = () => {
                 <Text style={[styles.headerCell, styles.actionsColumn, { color: isDark ? "#9BA1A6" : "#687076" }]}>
                   {intl.formatMessage({ id: "tableHeader.actions" })}
                 </Text>
-              </Animated.View>
+              </View>
 
-              {/* Draggable List */}
-              <DraggableFlatList
-                contentContainerStyle={styles.listContent}
-                data={status}
-                keyExtractor={(item) => item.id.toString()}
-                onDragEnd={handleDragEnd}
-                onDragBegin={handleDragBegin}
-                renderItem={renderItem}
-              />
+              {isAnyModalOpen === false && (
+                <DraggableFlatList
+                  contentContainerStyle={styles.listContent}
+                  data={[...status]}
+                  keyExtractor={(item) => item.id.toString()}
+                  onDragEnd={handleDragEnd}
+                  onDragBegin={handleDragBegin}
+                  renderItem={renderItem}
+                />
+              )}
+
             </View>
           ) : (
             <View style={styles.emptyContainer}>
@@ -262,26 +260,33 @@ const StatusView = () => {
           <Ionicons name="add" color="white" size={26} />
         </TouchableOpacity>
 
-        <ModalCreateOrEditStatus
-          selectedItem={selectedItem}
-          addOrEditNewStatus={addOrEditNewStatus}
-          isOpen={modalVisible}
-          onClose={() => {
-            toggleModal()
-            setSelectedItem(null)
-          }}
-        />
+        {
+          (selectedItem || modalVisible) &&
+          <ModalCreateOrEditStatus
+            selectedItem={selectedItem}
+            addOrEditNewStatus={addOrEditNewStatus}
+            isOpen={modalVisible}
+            onClose={() => {
+              toggleModal()
+              setSelectedItem(null)
+            }}
+          />
 
-        <ModalConfirmAction
-          isOpen={!!modalDelete}
-          onClose={toggleDeleteModal}
-          title={intl.formatMessage({ id: "modalDelete.title" })}
-          message={intl.formatMessage({ id: "modalDelete.message" })}
-          onContinue={() => {
-            if (modalDelete) deleteStatus(modalDelete.id)
-            toggleDeleteModal()
-          }}
-        />
+        }
+
+        {
+          modalDelete &&
+          <ModalConfirmAction
+            isOpen={!!modalDelete}
+            onClose={toggleDeleteModal}
+            title={intl.formatMessage({ id: "modalDelete.title" })}
+            message={intl.formatMessage({ id: "modalDelete.message" })}
+            onContinue={() => {
+              if (modalDelete) deleteStatus(modalDelete.id)
+              toggleDeleteModal()
+            }}
+          />
+        }
       </View>
     </GestureHandlerRootView>
   )

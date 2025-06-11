@@ -41,8 +41,6 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
     confirmState: false,
   });
 
-  console.log("orderData", orderData)
-
   const router = useRouter();
   const [statusModalDelete, setStateModalDelete] = useState<boolean>(false);
   const { handleDeleteOrder, confirmOrder, loadingApiAction } = useOrders();
@@ -99,7 +97,7 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
         <View style={styles.row1}>
           <View style={styles.column}>
             <View style={styles.row3}><View style={styles.column}>
-              <CustomText style={styles.name}>
+              <CustomText numberOfLines={1} style={styles.name}>
                 <FormattedMessage id="client" defaultMessage="Client" />: {clientName}
               </CustomText>
               <CustomText style={{ color: "#abcbfb", fontSize: 12 }}>
@@ -115,7 +113,7 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
               <View style={styles.column2}>
                 <View style={styles.buttonsTop}>
                   <CustomText style={styles.nuevo}>
-                    {!orderData?.status
+                    {!orderData?.estado
                       ? intl.formatMessage({ id: "new", defaultMessage: "New" })
                       : orderData?.estado?.nombre}
                   </CustomText>
@@ -123,7 +121,8 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
                 <CustomText style={styles.semiBold}>
                   {intl.formatMessage({ id: "total", defaultMessage: "Total" })}: ${total}
                 </CustomText>
-              </View></View>
+              </View>
+            </View>
             {orderData?.reclamo && pending && (
               <View style={styles.reclamoBox}>
                 <View style={styles.reclamoRow}>

@@ -29,7 +29,7 @@ const api = {
     resetPassword: auth.resetPassword,
     sendLink: auth.sendLinkToGmail
   },
-   paymentMethods: {
+  paymentMethods: {
     getPaymentMethods: paymentMethods.getPaymentMethods,
     editPaymentMethod: paymentMethods.editPaymentMethod,
   },
@@ -109,8 +109,8 @@ const api = {
   },
   client: {
     create: client.CreateOrReturnClient,
+    findWithOrders: client.findClientsWithOrders
   },
-
   image: {
     upload: image.uploadImage,
   },
@@ -140,7 +140,7 @@ const api = {
   changeStatus: {
     cambioEstado: cambioEstado.creteStatusChange,
   },
-  cierreProvisorio : {
+  cierreProvisorio: {
     create: cierreProvisorio.createCierreProvisorio,
     getAll: cierreProvisorio.getAllCierreProvisorio,
     delete: cierreProvisorio.deleteCierreProvisorio
