@@ -1,4 +1,3 @@
-"use client"
 
 import { useState, useEffect } from "react"
 import { View, Text, TouchableOpacity, FlatList, StyleSheet, Platform, Alert, ActivityIndicator } from "react-native"
@@ -12,6 +11,7 @@ import Feather from "react-native-vector-icons/Feather"
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { useLocalization } from "../../../app/LocalizationContext" // Usa tu contexto existente
+import { globalStyles } from "@/components/globalStyles";
 
 const primaryColor = "#075e54"
 const secondaryColor = "#128c7e"
