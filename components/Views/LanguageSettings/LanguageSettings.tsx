@@ -12,6 +12,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { useLocalization } from "../../../app/LocalizationContext" // Usa tu contexto existente
 import { globalStyles } from "@/components/globalStyles";
+import AntDesign from "react-native-vector-icons/AntDesign"
 
 const primaryColor = "#075e54"
 const secondaryColor = "#128c7e"
@@ -202,9 +203,12 @@ const LanguageSettings = () => {
       {/* Header */}
       <Animated.View style={[styles.header, { backgroundColor: colors.primary }]}>
         <View style={styles.headerContent}>
-          <TouchableOpacity style={styles.backButton} onPress={() => router.back()} activeOpacity={0.7}>
-            <Feather name="arrow-left" size={24} color="white" />
-          </TouchableOpacity>
+          <TouchableOpacity
+                    style={globalStyles.backButton}
+                    onPress={() => router.back()}
+                >
+                    <AntDesign name="arrowleft" size={24} color="white" />
+                </TouchableOpacity>
           <Text style={styles.headerTitle}>
             <FormattedMessage id="languageSettings" defaultMessage="Configuración de Idioma" />
           </Text>
