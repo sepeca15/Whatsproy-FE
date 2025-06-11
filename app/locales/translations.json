@@ -584,7 +584,9 @@
     "modalDelete.messageCategory": "Are you sure you want to delete this category?",
     "printing": "Printing...",
     "printComanda": "Print Order",
-    "selectWorker": "Select worker"
+    "selectWorker": "Select worker",
+     "priceAdjustment": "Price Adjustment",
+    "priceAdjustmentDesc": "Adjust the price of your products globally or by category."
   },
   "es": {
     "common.yes": "SI",
@@ -1172,7 +1174,9 @@
     "growthRate": "Tasa de crecimiento",
     "peakSales": "Ventas máximas",
     "avgSales": "Promedio de ventas",
-    "createEvent": "Evento"
+    "createEvent": "Evento",
+    "priceAdjustment": "Ajuste de precio",
+    "priceAdjustmentDesc": "Ajusta el precio de tus productos de forma global o por categoría."
   },
   "pt": {
     "selectYesFiltersOrder": "Sim",
