@@ -648,6 +648,7 @@
     "autoDetectLanguageDesc": "Usar el idioma del dispositivo",
     "availableLanguages": "La detección automática está activa. Desactívala para seleccionar manualmente.",
     "selectLanguageManually": "Seleccionar idioma manualmente",
+    "languageSettingsDesc": "Puedes cambiar el idioma de la aplicación.",
     "schedules": "Horarios",
     "manageSchedules": "Configura tus horarios y disponibilidad",
     "selectTimeFilters": "Seleccione una fecha",
