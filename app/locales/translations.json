@@ -124,6 +124,7 @@
     "autoDetectLanguageDesc": "Use device language",
     "availableLanguages": "Automatic detection is active. Disable it to select manually.",
     "selectLanguageManually": "Select language manually",
+    "languageSettingsDesc": "You can change the language of the application.",
     "autoDetectActive": "Auto-detect active",
     "informationAditional": "Additional information",
     "create": "Create",
