@@ -1,5 +1,5 @@
-// import LanguageSettings from "@/components/Views/LanguageSettings";
+import LanguageSettings from "@/components/Views/LanguageSettings";
 
-// export default function LanguageSettingsPage() {
-//   return <LanguageSettings />
-// }
+export default function LanguageSettingsPage() {
+  return <LanguageSettings />
+}

@@ -1,4 +1,4 @@
 
-// import LanguageSettings from "./LanguageSettings";
+import LanguageSettings from "./LanguageSettings";
 
-// export default LanguageSettings;
+export default LanguageSettings;
