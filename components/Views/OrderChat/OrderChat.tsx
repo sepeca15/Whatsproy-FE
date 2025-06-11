@@ -1,4 +1,4 @@
-"use client"
+
 
 import type React from "react"
 import { useEffect, useState } from "react"
@@ -22,6 +22,7 @@ import { styles } from "./OrderChatStyles"
 import { Colors } from "@/constants/Colors"
 import { TouchableOpacity } from "react-native"
 import { FormattedMessage } from "react-intl"
+
 interface Message {
   id: number
   mensaje: string
@@ -44,7 +45,6 @@ const OrderChat: React.FC = () => {
   })
   const [loading, setLoading] = useState(true)
 
-  // Colores fijos desde Colors
   const { primary, secondary, background, text } = Colors.light
   const subtextColor = "coolGray.500"
   const dividerColor = "coolGray.300"
@@ -90,11 +90,18 @@ const OrderChat: React.FC = () => {
 
   const groupMessagesByDate = () => {
     const groups: { [date: string]: Message[] } = {}
-    messages.forEach((message) => {
+
+    // Ordenar mensajes cronológicamente (más antiguos primero)
+    const sortedMessages = [...messages].sort(
+      (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    )
+
+    sortedMessages.forEach((message) => {
       const date = new Date(message.createdAt).toLocaleDateString()
       if (!groups[date]) groups[date] = []
       groups[date].push(message)
     })
+
     return groups
   }
 
@@ -157,43 +164,45 @@ const OrderChat: React.FC = () => {
       ) : (
         <ScrollView flex={1} contentContainerStyle={{ padding: 10 }}>
           {Object.keys(messageGroups).length > 0 ? (
-            Object.entries(messageGroups).map(([date, dateMessages]) => (
-              <VStack key={date} space={3} mb={6}>
-                <HStack space={2} justifyContent="center" alignItems="center" my={2}>
-                  <Divider flex={1} bg={dividerColor} />
-                  <Text fontSize="xs" color={subtextColor} bg={background} px={2}>
-                    {formatDate(dateMessages[0].createdAt)}
-                  </Text>
-                  <Divider flex={1} bg={dividerColor} />
-                </HStack>
-
-                {dateMessages.map((msg) => (
-                  <Box
-                    key={msg.id}
-                    alignSelf={msg.isClient ? "flex-end" : "flex-start"}
-                    bg={msg.isClient ? secondary : footerBgColor}
-                    px={4}
-                    py={2}
-                    borderRadius={12}
-                    maxW="80%"
-                    shadow={1}
-                    borderTopRightRadius={msg.isClient ? 4 : 12}
-                    borderTopLeftRadius={msg.isClient ? 12 : 4}
-                  >
-                    <Text color={msg.isClient ? "white" : text}>{msg.mensaje}</Text>
-                    <Text
-                      fontSize="2xs"
-                      color={msg.isClient ? "white" : subtextColor}
-                      opacity={msg.isClient ? 0.8 : 1}
-                      alignSelf="flex-end"
-                      mt={1}
-                    >
-                      {formatTime(msg.createdAt)}
+            Object.entries(messageGroups)
+              .sort(([dateA], [dateB]) => new Date(dateA).getTime() - new Date(dateB).getTime()) // ordenar fechas
+              .map(([date, dateMessages]) => (
+                <VStack key={date} space={3} mb={6}>
+                  <HStack space={2} justifyContent="center" alignItems="center" my={2}>
+                    <Divider flex={1} bg={dividerColor} />
+                    <Text fontSize="xs" color={subtextColor} bg={background} px={2}>
+                      {formatDate(dateMessages[0].createdAt)}
                     </Text>
-                  </Box>
-                ))}
-              </VStack>
-            ))
+                    <Divider flex={1} bg={dividerColor} />
+                  </HStack>
+
+                  {dateMessages.map((msg) => (
+                    <Box
+                      key={msg.id}
+                      alignSelf={msg.isClient ? "flex-end" : "flex-start"}
+                      bg={msg.isClient ? secondary : footerBgColor}
+                      px={4}
+                      py={2}
+                      borderRadius={12}
+                      maxW="80%"
+                      shadow={1}
+                      borderTopRightRadius={msg.isClient ? 4 : 12}
+                      borderTopLeftRadius={msg.isClient ? 12 : 4}
+                    >
+                      <Text color={msg.isClient ? "white" : text}>{msg.mensaje}</Text>
+                      <Text
+                        fontSize="2xs"
+                        color={msg.isClient ? "white" : subtextColor}
+                        opacity={msg.isClient ? 0.8 : 1}
+                        alignSelf="flex-end"
+                        mt={1}
+                      >
+                        {formatTime(msg.createdAt)}
+                      </Text>
+                    </Box>
+                  ))}
+                </VStack>
+              ))
           ) : (
             <Box flex={1} justifyContent="center" alignItems="center" mt={10}>
               <Text color={subtextColor}>No hay mensajes en este chat</Text>

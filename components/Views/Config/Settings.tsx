@@ -69,18 +69,18 @@ const Settings = () => {
       icon: <Entypo size={22} color={"white"} name="wallet" />,
     },
     {
-    title: intl.formatMessage({
-      id: "schedules",
-      defaultMessage: "Schedules",
-    }),
-    href: "/(tabs)/schedules",
-    description: intl.formatMessage({
-      id: "manageSchedules",
-      defaultMessage: "Set your business hours and availability",
-    }),
-    icon: <Feather size={22} color={"white"} name="clock" />,
-  }
-  ] : []),
+      title: intl.formatMessage({
+        id: "schedules",
+        defaultMessage: "Schedules",
+      }),
+      href: "/(tabs)/schedules",
+      description: intl.formatMessage({
+        id: "manageSchedules",
+        defaultMessage: "Set your business hours and availability",
+      }),
+      icon: <Feather size={22} color={"white"} name="clock" />,
+    }
+    ] : []),
     ...(isAdmin ? [{
       title: intl.formatMessage({ id: "users", defaultMessage: "Users" }),
       href: "/(tabs)/usuarios",
@@ -158,6 +158,18 @@ const Settings = () => {
     },
     {
       title: intl.formatMessage({
+        id: "helpSupport",
+        defaultMessage: "Ayuda y Soporte",
+      }),
+      href: "/(tabs)/help",
+      description: intl.formatMessage({
+        id: "helpSupportDesc",
+        defaultMessage: "Encuentra respuestas y aprende a usar la app",
+      }),
+      icon: <Entypo size={22} color={"white"} name="time-slot" />,
+    },
+    {
+      title: intl.formatMessage({
         id: "cierreProvisorioTittleSettings",
         defaultMessage: "Cierre Provisorio",
       }),
@@ -169,74 +181,86 @@ const Settings = () => {
       icon: <Entypo size={22} color={"white"} name="time-slot" />,
     },
     {
-      title: intl.formatMessage({
-        id: "trustedNumberSettingsTitle",
-        defaultMessage: "Numeros de confianza",
-      }),
-      href: "/(tabs)/numbers_trusted",
+    title: intl.formatMessage({
+      id: "languageSettings",
+      defaultMessage: "Idioma",
+    }),
+    href: "/(tabs)/language-settings",
+    description: intl.formatMessage({
+      id: "languageSettingsDesc",
+      defaultMessage: "Cambiar idioma de la aplicación",
+    }),
+    icon: <MaterialIcons size={22} color={"white"} name="language" />,
+  },
+{
+  title: intl.formatMessage({
+    id: "trustedNumberSettingsTitle",
+    defaultMessage: "Numeros de confianza",
+  }),
+    href: "/(tabs)/numbers_trusted",
       description: intl.formatMessage({
         id: "trustedNumberSettingsDesc",
         defaultMessage: "Activa numeros con los cuales no se activará el bot",
       }),
-      icon: (
-        <IonIcons size={22} color={"white"} name="phone-portrait-outline" />
-      ),
+        icon: (
+          <IonIcons size={22} color={"white"} name="phone-portrait-outline" />
+        ),
     },
     ...(isDelivery && isAdmin ? [{
-      title: intl.formatMessage({
-        id: "paymentMethods",
-        defaultMessage: "Payment Methods",
-      }),
-      href: "/(tabs)/paymentMethods",
-      description: intl.formatMessage({
-        id: "paymentMethodsDesc",
-        defaultMessage: "Choose your payment methods, enable and edit it",
-      }),
-      icon: (
-        <IonIcons size={22} color={"white"} name="card-outline" />
-      ),
-    }] : [])
+  title: intl.formatMessage({
+    id: "paymentMethods",
+    defaultMessage: "Payment Methods",
+  }),
+  href: "/(tabs)/paymentMethods",
+  description: intl.formatMessage({
+    id: "paymentMethodsDesc",
+    defaultMessage: "Choose your payment methods, enable and edit it",
+  }),
+  icon: (
+    <IonIcons size={22} color={"white"} name="card-outline" />
+  ),
+}] : [])
   ];
 
-  return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      {/* Header */}
-      <Animated.View
-        style={[styles.header, { backgroundColor: colors.primary }]}
-      >
-        <View style={styles.headerContent}>
-          <Text style={styles.headerTitle}>
-            <FormattedMessage id="settings" />
-          </Text>
-        </View>
-      </Animated.View>
+return (
+  <View style={[styles.container, { backgroundColor: colors.background }]}>
+    {/* Header */}
+    <Animated.View
+      style={[styles.header, { backgroundColor: colors.primary }]}
+    >
+      <View style={styles.headerContent}>
+        <Text style={styles.headerTitle}>
+          <FormattedMessage id="settings" />
+        </Text>
+      </View>
+    </Animated.View>
 
-      {/* Lista de Ajustes */}
-      <FlatList
-        data={settingsPage}
-        keyExtractor={(item, index) => item.href || index.toString()}
-        renderItem={({ item, index }) => (
-          <Animatable.View
-            animation="fadeInUp"
-            duration={800}
-            delay={100 + index * 50}
-            style={styles.metricsContainer}
-          >
-            <SettingCard
-              item={item}
-              index={index}
-              isDark={false}
-              colors={colors}
-              onNavigate={(href) => router.push(href as any)}
-            />
-          </Animatable.View>
-        )}
-        contentContainerStyle={styles.scrollContent}
-        style={styles.scrollView}
-        showsVerticalScrollIndicator={false}
-      />
-    </View>
-  );
+    {/* Lista de Ajustes */}
+    <FlatList
+      data={settingsPage}
+      keyExtractor={(item, index) => item.href || index.toString()}
+      renderItem={({ item, index }) => (
+        <Animatable.View
+          animation="fadeInUp"
+          duration={800}
+          delay={100 + index * 50}
+          style={styles.metricsContainer}
+        >
+          <SettingCard
+            item={item}
+            index={index}
+            isDark={false}
+            colors={colors}
+            onNavigate={(href) => router.push(href as any)}
+          />
+        </Animatable.View>
+      )}
+      contentContainerStyle={styles.scrollContent}
+      style={styles.scrollView}
+      showsVerticalScrollIndicator={false}
+    />
+  </View>
+);
 };
 
 export default Settings;
