@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, IButtonProps } from "native-base";
 import CustomText from "./CustomText";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import * as Progress from "react-native-progress";
 
 interface CustomButtonProps extends IButtonProps {
@@ -10,6 +10,7 @@ interface CustomButtonProps extends IButtonProps {
   isDisabled?: boolean;
   loading?: boolean;
   colorSpiner?: string;
+  icon?: React.ReactNode;  // <--- Nueva prop opcional
 }
 
 const CustomButton = ({
@@ -19,6 +20,7 @@ const CustomButton = ({
   variant = "solid",
   colorSpiner = background === "#128c7e" ? "white" : "#128c7e",
   loading,
+  icon,
   ...props
 }: CustomButtonProps) => {
   const backgroundWithOpacity = `${background}90`;
@@ -40,7 +42,10 @@ const CustomButton = ({
       {loading ? (
         <Progress.Circle color={colorSpiner} indeterminate={true} size={20} />
       ) : (
-        <CustomText style={styles.buttonText}>{children}</CustomText>
+        <View style={styles.content}>
+          {icon && <View style={styles.iconContainer}>{icon}</View>}
+          <CustomText style={styles.buttonText}>{children}</CustomText>
+        </View>
       )}
     </Button>
   );
@@ -59,6 +64,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+  },
+  content: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    margin: "auto",
+  },
+  iconContainer: {
+    marginRight: 8,
   },
   buttonText: {
     borderRadius: 5,

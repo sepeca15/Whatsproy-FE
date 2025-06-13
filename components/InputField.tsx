@@ -36,7 +36,11 @@ const InputField: React.FC<InputFieldProps> = ({
   const inputRef = useRef<any>(null);
 
   return (
-    <FormControl isDisabled={isDisabled} isInvalid={!!error} isRequired={isRequired}>
+    <FormControl
+      isDisabled={isDisabled}
+      isInvalid={!!error}
+      isRequired={isRequired}
+    >
       {label && <FormControl.Label>{label}</FormControl.Label>}
       {isTime ? (
         <MaskInput
@@ -60,7 +64,9 @@ const InputField: React.FC<InputFieldProps> = ({
           keyboardType={keyboardType}
           autoCompleteType={""}
           borderRadius={8}
-          placeholder={typeof placeholder === "string" ? placeholder : undefined}
+          placeholder={
+            typeof placeholder === "string" ? placeholder : undefined
+          }
           onChangeText={onChangeText}
           _stack={{ style: {} }}
           {...(props as any)}
@@ -74,10 +80,14 @@ const InputField: React.FC<InputFieldProps> = ({
           InputLeftElement={icon}
           keyboardType={keyboardType}
           type={type}
-          placeholder={typeof placeholder === "string" ? placeholder : undefined}
+          placeholder={
+            typeof placeholder === "string" ? placeholder : undefined
+          }
           onChangeText={onChangeText}
           value={props.value}
           {...props}
+          paddingTop={2.5}
+          paddingBottom={2.5}
         />
       )}
       {error && <FormControl.ErrorMessage>{error}</FormControl.ErrorMessage>}

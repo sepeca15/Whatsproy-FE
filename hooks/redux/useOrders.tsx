@@ -62,7 +62,7 @@ export const useOrders = () => {
         }
 
         if (!isRefresh) {
-          Dispatch(setOffsetFinished(offsetFinished + limit));
+          Dispatch(setOffsetFinished(offsetFinished + 1));
         }
       }
     } catch (error: any) {
@@ -102,7 +102,7 @@ export const useOrders = () => {
           );
         }
         if (!isRefresh) {
-          Dispatch(setOffsetPending(offsetPending + limit));
+          Dispatch(setOffsetPending(offsetPending + 1));
         }
       }
     } catch (error: any) {
@@ -120,8 +120,6 @@ export const useOrders = () => {
         limit
       );
 
-      console.log(data);
-
       if (data.ok === true && data.data.length > 0) {
         if (isRefresh) {
           Dispatch(
@@ -133,7 +131,7 @@ export const useOrders = () => {
           );
         }
         if (!isRefresh) {
-          Dispatch(setOffsetActive(offsetActive + limit));
+          Dispatch(setOffsetActive(offsetActive + 1));
         }
       }
     } catch (error: any) {
@@ -171,13 +169,14 @@ export const useOrders = () => {
 
   const handleDeleteOrder = async (
     id: number,
-    key: "pending" | "finished",
+    key: "pending" | "finished" | 'active',
     reason: string
   ) => {
     Dispatch(onLoadingApiAction());
     try {
       const data = await api.order.remove(id, reason);
 
+      console.log("resp is", data)
       if (data.ok === true) {
         Dispatch(onDeleteOrder({ orderId: id, key: key }));
         showToast({

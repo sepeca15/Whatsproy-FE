@@ -1,5 +1,6 @@
 import ApiInstances from "@/services/axios/axiosConfig";
 import ProductoTypes from "./types";
+import { UpdatePricesDto } from "./product.types";
 
 export const findAllProducts = async () => {
   const { data, status } = await ApiInstances("current").get(`producto`);
@@ -26,6 +27,11 @@ export const find = async (id: number) => {
 export const update = async (id: number, product: ProductoTypes) => {
   const data = await ApiInstances("current").put(`producto/${id}`, product);
   return data;
+};
+
+export const updatePrices = async (info: UpdatePricesDto) => {
+  const data = await ApiInstances("current").post(`producto/actualizar-precios`, info);
+  return data?.data;
 };
 export const deletProd = async (id: number) => {
   const data = await ApiInstances("current").delete(`producto/${id}`);

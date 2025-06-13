@@ -6,6 +6,8 @@ export interface ICategoryData {
     description: string;
     name: string;
     id: number;
+    productosCount?: number;
+    producto?: any[];
     image: string;
 }
 

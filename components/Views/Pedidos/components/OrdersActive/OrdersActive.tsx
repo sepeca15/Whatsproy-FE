@@ -39,6 +39,7 @@ const OrdersActive = () => {
               key={item.orderId}
               orderData={item}
               pending={false}
+              active={true}
             />
           )}
           keyExtractor={(item) => item.orderId.toString()}
