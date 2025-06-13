@@ -78,10 +78,19 @@ const orderSlice = createSlice({
           (order: any) => order.orderId !== orderId
         );
         state.ordersPending = newState;
+        state.totalItemsPending = newState?.length ?? 0;
+      } else if (key === "active") {
+        const newState = state.ordersActive.filter(
+          (order: any) => order.orderId !== orderId
+        );
+        state.ordersActive = newState;
+        state.totalItemsActive = newState?.length ?? 0;
       } else {
         const newState = state.ordersFinished.filter(
           (order: any) => order.orderId !== orderId
         );
+        state.totalItemsFinished = newState?.length ?? 0;
+
         state.ordersFinished = newState;
       }
     },

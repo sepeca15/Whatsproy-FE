@@ -7,3 +7,10 @@ export interface Producto {
   plazoDuracionEstimadoMinutos: number;
   disponible: boolean;
 }
+
+export type UpdatePricesDto = {
+  tipoActualizacion: 'porcentaje' | 'monto' | any;
+  valor: number
+  categoriaId?: number;
+  soloDisponibles?: boolean;
+}

@@ -1,43 +1,47 @@
-"use client"
+"use client";
 
-import CustomButton from "@/components/CustomButton"
-import CustomText from "@/components/CustomText"
-import InputField from "@/components/InputField"
-import { useUser } from "@/hooks/redux/useUser"
-import { ScrollView, Switch, View, VStack, Select, CheckIcon } from "native-base"
-import * as React from "react"
-import { TouchableOpacity, Alert } from "react-native"
-import { AntDesign, MaterialIcons } from "@expo/vector-icons"
-import { useRouter } from "expo-router"
-import { FormattedMessage, useIntl } from "react-intl"
-import Animated from "react-native-reanimated"
-import { Colors } from "@/constants/Colors"
-import { globalStyles } from "@/components/globalStyles"
-import { StyleSheet } from "react-native"
-
-// Datos de ejemplo para categorías
-const EXAMPLE_CATEGORIES = [
-  { id: 1, name: "Bebidas", productCount: 15 },
-  { id: 2, name: "Comidas", productCount: 25 },
-  { id: 3, name: "Postres", productCount: 8 },
-  { id: 4, name: "Entradas", productCount: 12 },
-  { id: 5, name: "Platos Principales", productCount: 18 },
-]
+import CustomButton from "@/components/CustomButton";
+import CustomText from "@/components/CustomText";
+import InputField from "@/components/InputField";
+import { useUser } from "@/hooks/redux/useUser";
+import {
+  ScrollView,
+  Switch,
+  View,
+  VStack,
+  Select,
+  CheckIcon,
+  useToast,
+} from "native-base";
+import * as React from "react";
+import { TouchableOpacity, Alert } from "react-native";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { FormattedMessage, useIntl } from "react-intl";
+import { Colors } from "@/constants/Colors";
+import { globalStyles } from "@/components/globalStyles";
+import { StyleSheet } from "react-native";
+import api from "@/services/api/admin";
+import { useToastContext } from "@/contexts/ToastContext";
+import { ICategoryData } from "../Categories/components/CardCategory/CardCategory";
 
 interface IPriceUpdateForm {
-  updateType: "all" | "category"
-  selectedCategory: string
-  increaseType: "percentage" | "fixed"
-  increaseValue: string
-  applyToActiveOnly: boolean
+  updateType: "all" | "category";
+  selectedCategory: string;
+  increaseType: "percentage" | "fixed";
+  increaseValue: string;
+  applyToActiveOnly: boolean;
 }
 
 const PriceManagementSettings = () => {
-  const { user } = useUser()
-  const intl = useIntl()
-  const router = useRouter()
-  const [loadingApi, setLoadingApi] = React.useState<boolean>(false)
-  const [hasChanges, setHasChanges] = React.useState<boolean>(false)
+  const { user } = useUser();
+  const intl = useIntl();
+  const router = useRouter();
+  const [loadingApi, setLoadingApi] = React.useState<boolean>(false);
+  const [hasChanges, setHasChanges] = React.useState<boolean>(false);
+  const [categories, setCategories] = React.useState<ICategoryData[]>([]);
+
+  const { showToast } = useToastContext();
 
   const [form, setForm] = React.useState<IPriceUpdateForm>({
     updateType: "all",
@@ -45,62 +49,125 @@ const PriceManagementSettings = () => {
     increaseType: "percentage",
     increaseValue: "",
     applyToActiveOnly: true,
-  })
+  });
+
+  const loadAllCategories = async () => {
+    setLoadingApi(true);
+    try {
+      const resp = await api.category.getAll();
+
+      if (resp.ok) {
+        setCategories(resp.data);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoadingApi(false);
+    }
+  };
+
+  React.useEffect(() => {
+    loadAllCategories();
+  }, []);
 
   const handleInputChange = (key: keyof IPriceUpdateForm, value: any) => {
     setForm((prevState) => ({
       ...prevState,
       [key]: value,
-    }))
-    setHasChanges(true)
-  }
+    }));
+    setHasChanges(true);
+  };
 
   const handlePriceUpdate = async () => {
     if (!form.increaseValue || Number.parseFloat(form.increaseValue) <= 0) {
-      Alert.alert("Error", "Por favor ingresa un valor válido para el aumento")
-      return
+      showToast({
+        title: intl.formatMessage({
+          id: "toast.error.title",
+          defaultMessage: "Error",
+        }),
+        description: intl.formatMessage({
+          id: "toast.error.invalidValue",
+          defaultMessage: "Por favor ingresa un valor válido para el aumento",
+        }),
+        status: "error",
+      });
+      return;
     }
 
     if (form.updateType === "category" && !form.selectedCategory) {
-      Alert.alert("Error", "Por favor selecciona una categoría")
-      return
+      showToast({
+        title: intl.formatMessage({
+          id: "toast.error.title",
+          defaultMessage: "Error",
+        }),
+        description: intl.formatMessage({
+          id: "toast.error.selectCategory",
+          defaultMessage: "Por favor selecciona una categoría",
+        }),
+        status: "error",
+      });
+      return;
     }
 
-    setLoadingApi(true)
+    setLoadingApi(true);
     try {
-      // Aquí iría la llamada al endpoint
       const updateData = {
-        updateType: form.updateType,
-        categoryId: form.updateType === "category" ? form.selectedCategory : null,
-        increaseType: form.increaseType,
-        increaseValue: Number.parseFloat(form.increaseValue),
-        applyToActiveOnly: form.applyToActiveOnly,
+        tipoActualizacion:
+          form.increaseType === "fixed" ? "porcentaje" : "monto",
+        valor: Number.parseFloat(form.increaseValue),
+        categoriaId:
+          form.updateType === "category"
+            ? (form.selectedCategory as any)
+            : null,
+        soloDisponibles: form.applyToActiveOnly,
+      };
+      console.log("updateData", updateData)
+
+      const resp = await api.products.updatePrices(updateData);
+
+      if (resp?.ok) {
+        showToast({
+          title: intl.formatMessage({
+            id: "toast.success.title",
+            defaultMessage: "Éxito",
+          }),
+          description: intl.formatMessage({
+            id: "toast.success.update",
+            defaultMessage: "Precios actualizados correctamente.",
+          }),
+          status: "success",
+        });
+      } else {
+        showToast({
+          title: intl.formatMessage({
+            id: "toast.error.title",
+            defaultMessage: "Error",
+          }),
+          description: intl.formatMessage({
+            id: "toast.error.updateFailed",
+            defaultMessage: "Hubo un problema al actualizar los precios",
+          }),
+          status: "error",
+        });
       }
-
-      console.log("Datos a enviar al endpoint:", updateData)
-
-      // Simulación de llamada API
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-
-      Alert.alert(
-        "Éxito",
-        `Precios actualizados correctamente. ${
-          form.updateType === "all"
-            ? "Todos los productos"
-            : `Categoría: ${EXAMPLE_CATEGORIES.find((cat) => cat.id.toString() === form.selectedCategory)?.name}`
-        } han sido actualizados con un ${
-          form.increaseType === "percentage" ? "aumento del" : "incremento de"
-        } ${form.increaseValue}${form.increaseType === "percentage" ? "%" : "$"}`,
-      )
-
-      setHasChanges(false)
+      setHasChanges(false);
     } catch (error) {
-      console.log(error)
-      Alert.alert("Error", "No se pudieron actualizar los precios")
+      console.log(error);
+      showToast({
+        title: intl.formatMessage({
+          id: "toast.error.title",
+          defaultMessage: "Error",
+        }),
+        description: intl.formatMessage({
+          id: "toast.error.apiFailure",
+          defaultMessage: "No se pudieron actualizar los precios",
+        }),
+        status: "error",
+      });
     } finally {
-      setLoadingApi(false)
+      setLoadingApi(false);
     }
-  }
+  };
 
   const resetForm = () => {
     setForm({
@@ -109,69 +176,124 @@ const PriceManagementSettings = () => {
       increaseType: "percentage",
       increaseValue: "",
       applyToActiveOnly: true,
-    })
-    setHasChanges(false)
-  }
+    });
+    setHasChanges(false);
+  };
 
-  const selectedCategoryData = EXAMPLE_CATEGORIES.find((cat) => cat.id.toString() === form.selectedCategory)
+  const selectedCategoryData = categories.find(
+    (cat) => cat.id.toString() === form.selectedCategory
+  );
 
   return (
     <ScrollView>
       <View style={styles.container}>
-        <Animated.View style={globalStyles.header2}>
-          <TouchableOpacity style={globalStyles.backButton} onPress={() => router.back()}>
+        <View style={globalStyles.header2}>
+          <TouchableOpacity
+            style={globalStyles.backButton}
+            onPress={() => router.back()}
+          >
             <AntDesign name="arrowleft" size={22} color="white" />
           </TouchableOpacity>
           <View style={globalStyles.headerContent}>
             <View style={globalStyles.headerLeft}>
-              <CustomText style={globalStyles.businessName} accessibilityLabel="Gestión de Precios">
-                <FormattedMessage id="priceManagementTitle" defaultMessage="Gestión de Precios" />
+              <CustomText style={globalStyles.businessName}>
+                <FormattedMessage
+                  id="priceManagementTitle"
+                  defaultMessage="Gestión de Precios"
+                />
               </CustomText>
             </View>
           </View>
-        </Animated.View>
+        </View>
 
         <View style={styles.containerGlobal}>
           <View style={styles.form}>
             {/* Tipo de actualización */}
             <View style={styles.section}>
               <CustomText style={styles.sectionTitle}>
-                <FormattedMessage id="updateScope" defaultMessage="Alcance de la actualización" />
+                <FormattedMessage
+                  id="updateScope"
+                  defaultMessage="Alcance de la actualización"
+                />
               </CustomText>
 
               <View style={styles.radioContainer}>
                 <TouchableOpacity
-                  style={[styles.radioOption, form.updateType === "all" && styles.radioOptionSelected]}
+                  style={[
+                    styles.radioOption,
+                    form.updateType === "all" && styles.radioOptionSelected,
+                  ]}
                   onPress={() => handleInputChange("updateType", "all")}
                 >
-                  <View style={[styles.radioCircle, form.updateType === "all" && styles.radioCircleSelected]}>
-                    {form.updateType === "all" && <View style={styles.radioInner} />}
+                  <View
+                    style={[
+                      styles.radioCircle,
+                      form.updateType === "all" && styles.radioCircleSelected,
+                    ]}
+                  >
+                    {form.updateType === "all" && (
+                      <View style={styles.radioInner} />
+                    )}
                   </View>
                   <View style={styles.radioContent}>
                     <CustomText style={styles.radioTitle}>
-                      <FormattedMessage id="allProducts" defaultMessage="Todos los productos" />
+                      <FormattedMessage
+                        id="allProducts"
+                        defaultMessage="Todos los productos"
+                      />
                     </CustomText>
                     <CustomText style={styles.radioSubtitle}>
-                      Actualizar precios de todos los productos del negocio
+                      <FormattedMessage
+                        id="updateAllProductsSubtitle"
+                        defaultMessage="Actualizar precios de todos los productos del negocio"
+                      />
                     </CustomText>
                   </View>
-                  <MaterialIcons name="inventory" size={24} color={Colors.light.primary} />
+                  <MaterialIcons
+                    name="inventory"
+                    size={24}
+                    color={Colors.light.primary}
+                  />
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={[styles.radioOption, form.updateType === "category" && styles.radioOptionSelected]}
+                  style={[
+                    styles.radioOption,
+                    form.updateType === "category" &&
+                      styles.radioOptionSelected,
+                  ]}
                   onPress={() => handleInputChange("updateType", "category")}
                 >
-                  <View style={[styles.radioCircle, form.updateType === "category" && styles.radioCircleSelected]}>
-                    {form.updateType === "category" && <View style={styles.radioInner} />}
+                  <View
+                    style={[
+                      styles.radioCircle,
+                      form.updateType === "category" &&
+                        styles.radioCircleSelected,
+                    ]}
+                  >
+                    {form.updateType === "category" && (
+                      <View style={styles.radioInner} />
+                    )}
                   </View>
                   <View style={styles.radioContent}>
                     <CustomText style={styles.radioTitle}>
-                      <FormattedMessage id="byCategory" defaultMessage="Por categoría" />
+                      <FormattedMessage
+                        id="byCategory"
+                        defaultMessage="Por categoría"
+                      />
                     </CustomText>
-                    <CustomText style={styles.radioSubtitle}>Actualizar precios de una categoría específica</CustomText>
+                    <CustomText style={styles.radioSubtitle}>
+                      <FormattedMessage
+                        id="updateByCategorySubtitle"
+                        defaultMessage="Actualizar precios de una categoría específica"
+                      />
+                    </CustomText>
                   </View>
-                  <MaterialIcons name="category" size={24} color={Colors.light.primary} />
+                  <MaterialIcons
+                    name="category"
+                    size={24}
+                    color={Colors.light.primary}
+                  />
                 </TouchableOpacity>
               </View>
             </View>
@@ -180,25 +302,36 @@ const PriceManagementSettings = () => {
             {form.updateType === "category" && (
               <View style={styles.section}>
                 <CustomText style={styles.textInput}>
-                  <FormattedMessage id="selectCategory" defaultMessage="Seleccionar categoría" />
+                  <FormattedMessage
+                    id="selectCategory"
+                    defaultMessage="Seleccionar categoría"
+                  />
                 </CustomText>
                 <Select
                   selectedValue={form.selectedCategory}
                   minWidth="200"
-                  accessibilityLabel="Selecciona una categoría"
-                  placeholder="Elige una categoría"
+                  accessibilityLabel={intl.formatMessage({
+                    id: "selectCategory",
+                  })}
+                  placeholder={intl.formatMessage({ id: "selectCategory" })}
                   _selectedItem={{
                     bg: Colors.light.primary,
+                    borderRadius: 20,
+                    _text: {
+                      color: "white",
+                    },
                     endIcon: <CheckIcon size="5" />,
                   }}
                   mt={1}
-                  onValueChange={(itemValue) => handleInputChange("selectedCategory", itemValue)}
+                  onValueChange={(itemValue) =>
+                    handleInputChange("selectedCategory", itemValue)
+                  }
                   style={styles.select}
                 >
-                  {EXAMPLE_CATEGORIES.map((category) => (
+                  {categories.map((category) => (
                     <Select.Item
                       key={category.id}
-                      label={`${category.name} (${category.productCount} productos)`}
+                      label={`${category.name} (${category?.productosCount ?? 0} productos)`}
                       value={category.id.toString()}
                     />
                   ))}
@@ -206,10 +339,20 @@ const PriceManagementSettings = () => {
 
                 {selectedCategoryData && (
                   <View style={styles.categoryInfo}>
-                    <MaterialIcons name="info" size={16} color={Colors.light.secondary} />
+                    <MaterialIcons
+                      name="info"
+                      size={16}
+                      color={Colors.light.secondary}
+                    />
                     <CustomText style={styles.categoryInfoText}>
-                      Se actualizarán {selectedCategoryData.productCount} productos de la categoría "
-                      {selectedCategoryData.name}"
+                      <FormattedMessage
+                        id="priceUpdateWarn"
+                        defaultMessage={`Se actualizarán {count} productos de la categoría "{name}"`}
+                        values={{
+                          count: selectedCategoryData?.productosCount ?? 0,
+                          name: selectedCategoryData.name,
+                        }}
+                      />
                     </CustomText>
                   </View>
                 )}
@@ -219,48 +362,74 @@ const PriceManagementSettings = () => {
             {/* Tipo de aumento */}
             <View style={styles.section}>
               <CustomText style={styles.sectionTitle}>
-                <FormattedMessage id="increaseType" defaultMessage="Tipo de aumento" />
+                <FormattedMessage
+                  id="increaseType"
+                  defaultMessage="Tipo de aumento"
+                />
               </CustomText>
 
               <View style={styles.increaseTypeContainer}>
                 <TouchableOpacity
                   style={[
                     styles.increaseTypeButton,
-                    form.increaseType === "percentage" && styles.increaseTypeButtonSelected,
+                    form.increaseType === "percentage" &&
+                      styles.increaseTypeButtonSelected,
                   ]}
-                  onPress={() => handleInputChange("increaseType", "percentage")}
+                  onPress={() =>
+                    handleInputChange("increaseType", "percentage")
+                  }
                 >
                   <MaterialIcons
                     name="percent"
                     size={20}
-                    color={form.increaseType === "percentage" ? "white" : Colors.light.primary}
+                    color={
+                      form.increaseType === "percentage"
+                        ? "white"
+                        : Colors.light.primary
+                    }
                   />
                   <CustomText
                     style={[
                       styles.increaseTypeText,
-                      form.increaseType === "percentage" && styles.increaseTypeTextSelected,
+                      form.increaseType === "percentage" &&
+                        styles.increaseTypeTextSelected,
                     ]}
                   >
-                    Porcentaje
+                    <FormattedMessage
+                      id="percentage"
+                      defaultMessage="Porcentaje"
+                    />
                   </CustomText>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                   style={[
                     styles.increaseTypeButton,
-                    form.increaseType === "fixed" && styles.increaseTypeButtonSelected,
+                    form.increaseType === "fixed" &&
+                      styles.increaseTypeButtonSelected,
                   ]}
                   onPress={() => handleInputChange("increaseType", "fixed")}
                 >
                   <MaterialIcons
                     name="attach-money"
                     size={20}
-                    color={form.increaseType === "fixed" ? "white" : Colors.light.primary}
+                    color={
+                      form.increaseType === "fixed"
+                        ? "white"
+                        : Colors.light.primary
+                    }
                   />
                   <CustomText
-                    style={[styles.increaseTypeText, form.increaseType === "fixed" && styles.increaseTypeTextSelected]}
+                    style={[
+                      styles.increaseTypeText,
+                      form.increaseType === "fixed" &&
+                        styles.increaseTypeTextSelected,
+                    ]}
                   >
-                    Monto fijo
+                    <FormattedMessage
+                      id="fixedAmount"
+                      defaultMessage="Monto fijo"
+                    />
                   </CustomText>
                 </TouchableOpacity>
               </View>
@@ -278,12 +447,18 @@ const PriceManagementSettings = () => {
                 keyboardType="numeric"
                 placeholder={`Ingresa el ${form.increaseType === "percentage" ? "porcentaje" : "monto"} de aumento`}
                 value={form.increaseValue}
-                onChangeText={(value) => handleInputChange("increaseValue", value)}
+                onChangeText={(value) =>
+                  handleInputChange("increaseValue", value)
+                }
                 icon={
                   <MaterialIcons
                     style={{ marginLeft: 12 }}
                     color="#b6b6b6"
-                    name={form.increaseType === "percentage" ? "percent" : "attach-money"}
+                    name={
+                      form.increaseType === "percentage"
+                        ? "percent"
+                        : "attach-money"
+                    }
                     size={20}
                   />
                 }
@@ -292,10 +467,25 @@ const PriceManagementSettings = () => {
               {form.increaseValue && (
                 <View style={styles.previewContainer}>
                   <CustomText style={styles.previewText}>
-                    Ejemplo: Un producto de $100 quedaría en $
-                    {form.increaseType === "percentage"
-                      ? (100 + (100 * Number.parseFloat(form.increaseValue || "0")) / 100).toFixed(2)
-                      : (100 + Number.parseFloat(form.increaseValue || "0")).toFixed(2)}
+                    <FormattedMessage
+                      id="increaseExample"
+                      values={{
+                        price:
+                          form.increaseType === "percentage"
+                            ? (
+                                100 +
+                                (95 *
+                                  Number.parseFloat(
+                                    form.increaseValue || "0"
+                                  )) /
+                                  100
+                              ).toFixed(2)
+                            : (
+                                95 +
+                                Number.parseFloat(form.increaseValue || "0")
+                              ).toFixed(2),
+                      }}
+                    />
                   </CustomText>
                 </View>
               )}
@@ -306,50 +496,81 @@ const PriceManagementSettings = () => {
               <View style={styles.switchContainer}>
                 <View style={styles.switchContent}>
                   <CustomText style={styles.textInput}>
-                    <FormattedMessage id="applyToActiveOnly" defaultMessage="Solo productos activos" />
+                    <FormattedMessage
+                      id="applyToActiveOnly"
+                      defaultMessage="Solo productos activos"
+                    />
                   </CustomText>
                   <CustomText style={styles.switchSubtitle}>
-                    Aplicar aumento únicamente a productos disponibles
+                    <FormattedMessage
+                      id="activeOnlySubtitle"
+                      defaultMessage="Aplicar aumento únicamente a productos disponibles"
+                    />
                   </CustomText>
                 </View>
                 <Switch
                   isChecked={form.applyToActiveOnly}
-                  onToggle={() => handleInputChange("applyToActiveOnly", !form.applyToActiveOnly)}
+                  onToggle={() =>
+                    handleInputChange(
+                      "applyToActiveOnly",
+                      !form.applyToActiveOnly
+                    )
+                  }
                   size="lg"
                   colorScheme="primary"
                 />
               </View>
             </View>
 
-            {/* Botones de acción */}
             <View style={styles.buttonContainer}>
               <CustomButton
                 colorSpiner="white"
-                disabled={!hasChanges || !form.increaseValue}
-                onPress={handlePriceUpdate}
+                disabled={!hasChanges && !form.increaseValue}
+                onPress={() => handlePriceUpdate()}
                 loading={loadingApi}
                 style={[
                   styles.button,
                   styles.primaryButton,
                   {
-                    backgroundColor: hasChanges && form.increaseValue ? Colors.light.primary : "#b6b6b6",
+                    backgroundColor:
+                      hasChanges && form.increaseValue
+                        ? Colors.light.primary
+                        : "#b6b6b6",
                   },
                 ]}
-              >
-                <VStack style={styles.rowButton}>
+                icon={
                   <MaterialIcons name="trending-up" size={20} color="white" />
-                  <CustomText style={styles.buttonText}>
-                    <FormattedMessage id="updatePrices" defaultMessage="Actualizar Precios" />
-                  </CustomText>
-                </VStack>
+                }
+              >
+                <CustomText style={styles.buttonText}>
+                  <FormattedMessage
+                    id="updatePrices"
+                    defaultMessage="Actualizar Precios"
+                  />
+                </CustomText>
               </CustomButton>
 
               {hasChanges && (
-                <CustomButton onPress={resetForm} style={[styles.button, styles.secondaryButton]}>
+                <CustomButton
+                  onPress={resetForm}
+                  style={[styles.button, styles.secondaryButton]}
+                >
                   <VStack style={styles.rowButton}>
-                    <MaterialIcons name="refresh" size={20} color={Colors.light.primary} />
-                    <CustomText style={[styles.buttonText, { color: Colors.light.primary }]}>
-                      <FormattedMessage id="reset" defaultMessage="Restablecer" />
+                    <MaterialIcons
+                      name="refresh"
+                      size={20}
+                      color={Colors.light.primary}
+                    />
+                    <CustomText
+                      style={[
+                        styles.buttonText,
+                        { color: Colors.light.primary },
+                      ]}
+                    >
+                      <FormattedMessage
+                        id="reset"
+                        defaultMessage="Restablecer"
+                      />
                     </CustomText>
                   </VStack>
                 </CustomButton>
@@ -359,8 +580,8 @@ const PriceManagementSettings = () => {
         </View>
       </View>
     </ScrollView>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -556,6 +777,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "white",
   },
-})
+});
 
-export default PriceManagementSettings
+export default PriceManagementSettings;

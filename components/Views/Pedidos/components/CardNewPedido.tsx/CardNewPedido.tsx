@@ -33,9 +33,10 @@ interface IOrderData {
 interface ICardNewPedido {
   pending: boolean;
   orderData: IOrderData;
+  active?: boolean;
 }
 
-const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
+const CardNewPedido = ({ pending, orderData, active }: ICardNewPedido) => {
   const [loading, setLoading] = useState({
     deleteState: false,
     confirmState: false,
@@ -44,7 +45,7 @@ const CardNewPedido = ({ pending, orderData }: ICardNewPedido) => {
   const router = useRouter();
   const [statusModalDelete, setStateModalDelete] = useState<boolean>(false);
   const { handleDeleteOrder, confirmOrder, loadingApiAction } = useOrders();
-  const keyDeleteType = pending ? "pending" : "finished";
+  const keyDeleteType = active ? 'active': pending ? "pending" : "finished";
   const { clientName, numberSender, orderId, total } = orderData;
 
   const direccion = orderData?.direccion ?? "No direction";

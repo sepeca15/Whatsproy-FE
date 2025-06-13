@@ -35,6 +35,7 @@ const api = {
   },
   products: {
     getAll: products.findAllProducts,
+    updatePrices: products.updatePrices,
     find: products.find,
     update: products.update,
     isEmpresaAvailable: products.isEmpresaAvailable,
