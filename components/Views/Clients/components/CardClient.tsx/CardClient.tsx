@@ -28,7 +28,7 @@ const CardClient = ({ item, setClienteSeleccionado }: ICardClient) => {
     <Box
       borderWidth={1}
       borderColor={Colors.light.secondary}
-      borderRadius="lg"
+      borderRadius={20}
       p={4}
       my={2}
     >
@@ -67,7 +67,7 @@ const CardClient = ({ item, setClienteSeleccionado }: ICardClient) => {
             </View>
           </View>
         </VStack>
-        <Badge colorScheme="teal">
+        <Badge borderRadius={10} borderColor={"green.700"} colorScheme="green">
           <View
             style={{ gap: 4, borderRadius: 20 }}
             display={"flex"}
@@ -75,8 +75,8 @@ const CardClient = ({ item, setClienteSeleccionado }: ICardClient) => {
             alignItems={"center"}
             borderRadius={5}
           >
-            <Text color={"teal.700"}>{item?.pedido?.length}</Text>
-            <Text color={"teal.700"}>
+            <Text fontWeight={600} >{item?.pedido?.length}</Text>
+            <Text fontWeight={600}>
               <FormattedMessage id="cardClient.sales" defaultMessage="ventas" />
             </Text>
           </View>
@@ -110,12 +110,13 @@ const CardClient = ({ item, setClienteSeleccionado }: ICardClient) => {
 
       <Button
         mt={3}
-        background={Colors.light.secondary}
+        background={Colors.light.primary}
         onPress={() => setClienteSeleccionado()}
         color={"white"}
-        leftIcon={<Icon as={Ionicons} name="eye-outline" size={4} />}
+        borderRadius={20}
+        leftIcon={<Icon as={Ionicons} name="eye-outline" size={5}  fontWeight={600}/>}
       >
-        <CustomText style={{ color: "white" }}>
+        <CustomText style={{ color: "white", fontWeight: 600 }}>
           <FormattedMessage
             id="cardClient.viewDetails"
             defaultMessage="Ver Detalles"

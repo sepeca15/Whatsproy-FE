@@ -80,30 +80,28 @@ const AddProduct: React.FC = () => {
 
   // Nueva hook simple de validación
 
+  const handleSubmit = async () => {
+    if (!validateForm(formData, selectedImage, setErrors)) return;
 
-
-const handleSubmit = async () => {
-  if (!validateForm(formData, selectedImage, setErrors)) return;
-
-  setLoading(true);
-  try {
-    await api.products.create({
-      ...formData,
-      precio: parseFloat(formData.precio.toString()),
-      plazoDuracionEstimadoMinutos: parseFloat(
-        formData.plazoDuracionEstimadoMinutos.toString()
-      ),
-    });
-    router.push("/(tabs)/productos");
-  } catch (error: any) {
-    console.error(
-      "Error al crear el producto:",
-      error?.response?.data?.message || error
-    );
-  } finally {
-    setLoading(false);
-  }
-};
+    setLoading(true);
+    try {
+      await api.products.create({
+        ...formData,
+        precio: parseFloat(formData.precio.toString()),
+        plazoDuracionEstimadoMinutos: parseFloat(
+          formData.plazoDuracionEstimadoMinutos.toString()
+        ),
+      });
+      router.push("/(tabs)/productos");
+    } catch (error: any) {
+      console.error(
+        "Error al crear el producto:",
+        error?.response?.data?.message || error
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <KeyboardAwareScrollView
@@ -130,7 +128,10 @@ const handleSubmit = async () => {
 
         <TouchableOpacity style={styles.imageUpload} onPress={handleImagePick}>
           {selectedImage ? (
-            <Image source={{ uri: selectedImage }} style={styles.uploadedImage} />
+            <Image
+              source={{ uri: selectedImage }}
+              style={styles.uploadedImage}
+            />
           ) : (
             <View style={styles.uploadPlaceholder}>
               <AntDesign name="camera" size={40} color="gray" />
@@ -175,7 +176,10 @@ const handleSubmit = async () => {
                   value={formData.precio ? formData.precio.toString() : ""}
                   onChangeText={(text) => {
                     const value = parseFloat(text);
-                    setFormData({ ...formData, precio: isNaN(value) ? 0 : value });
+                    setFormData({
+                      ...formData,
+                      precio: isNaN(value) ? 0 : value,
+                    });
                     if (!isNaN(value) && value > 0) {
                       setErrors((prev) => ({ ...prev, precio: null }));
                     }
@@ -191,21 +195,20 @@ const handleSubmit = async () => {
                 <FormattedMessage id="currency" />
               </Text>
               <SelectField
-
                 selectedValue={formData.currency_id}
                 onValueChange={(value) => {
                   setFormData({ ...formData, currency_id: value });
                   setErrors((prev) => ({ ...prev, currency_id: null }));
                 }}
                 placeholder="Seleccione una moneda"
-                options={currencies.map((c: { codigo: string; simbolo: string; id: number }) => ({
-                  label: `${c.codigo} (${c.simbolo})`,
-                  value: c.id,
-                }))}
+                options={currencies.map(
+                  (c: { codigo: string; simbolo: string; id: number }) => ({
+                    label: `${c.codigo} (${c.simbolo})`,
+                    value: c.id,
+                  })
+                )}
                 error={errors.currency_id ?? undefined}
               />
-
-
             </View>
           </View>
 
@@ -228,7 +231,10 @@ const handleSubmit = async () => {
                   plazoDuracionEstimadoMinutos: isNaN(value) ? 0 : value,
                 });
                 if (!isNaN(value) && value > 0) {
-                  setErrors((prev) => ({ ...prev, plazoDuracionEstimadoMinutos: null }));
+                  setErrors((prev) => ({
+                    ...prev,
+                    plazoDuracionEstimadoMinutos: null,
+                  }));
                 }
               }}
               error={errors.plazoDuracionEstimadoMinutos}
@@ -243,16 +249,18 @@ const handleSubmit = async () => {
             <View>
               <MultiSelectInput
                 sizeText={16}
+                label={intl.formatMessage({ id: "selectCategory" })}
                 height={50}
                 isMultiple
-                placeholder={intl.formatMessage({ id: "selectCategory", defaultMessage: "Seleccionar categoría" })}
+                placeholder={intl.formatMessage({
+                  id: "selectCategory",
+                  defaultMessage: "Seleccionar categoría",
+                })}
                 options={allCategories.map((cat) => ({
                   label: cat.name,
                   value: cat.id.toString(),
                   placeholder: cat.name,
                 }))}
-
-
                 setItemsSelected={(selectedIds: number[]) => {
                   setFormData((prev) => ({
                     ...prev,
@@ -266,15 +274,11 @@ const handleSubmit = async () => {
                     }));
                   }
                 }}
-
-
-
-                onSearch={() => { }}
+                onSearch={() => {}}
                 error={errors.categoryIds}
               />
             </View>
           </View>
-
 
           <Text style={styles.label}>
             <FormattedMessage id="description" />
