@@ -121,8 +121,6 @@ export const useOrders = () => {
         isRefresh ? 0 : offsetActive,
         limit
       );
-      console.log("offsetActive", offsetActive)
-
       if (data.ok === true && data.data.length > 0) {
         if (isRefresh) {
           Dispatch(
