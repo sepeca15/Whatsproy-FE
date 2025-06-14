@@ -1,3 +1,4 @@
+import { IEstado } from "@/components/Views/Status/Status";
 import { useToastContext } from "@/contexts/ToastContext";
 import api from "@/services/api/admin";
 import {
@@ -18,6 +19,7 @@ import {
   onLoadOrdersPendingFirst,
   odLoadOrdersActiveFirst,
   onLoadOrdersFinishedFirst,
+  changeStatusOrder,
 } from "@/services/redux/Slices/ordersSlice/orderSlice";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -119,6 +121,7 @@ export const useOrders = () => {
         isRefresh ? 0 : offsetActive,
         limit
       );
+      console.log("offsetActive", offsetActive)
 
       if (data.ok === true && data.data.length > 0) {
         if (isRefresh) {
@@ -141,15 +144,22 @@ export const useOrders = () => {
     }
   };
 
+  const handleChangeStatusOrder = (orderId: any, newEstado: IEstado) => {
+    Dispatch(changeStatusOrder({ orderId: orderId, newEstado: newEstado }));
+  };
+
   const confirmOrder = async (infoOrder: any) => {
     Dispatch(onLoadingApiAction());
-    console.log("jsjsjasjasjasjjs", infoOrder.orderId);
-    
+
     try {
       const data = await api.order.confirm(infoOrder.orderId);
 
+      const newInfoOrder = ordersPending?.find(
+        (itm: any) => `${itm?.orderId}` === `${infoOrder?.orderId}`
+      );
+
       if (data.ok === true) {
-        Dispatch(onConfirmOrder(infoOrder));
+        Dispatch(onConfirmOrder(newInfoOrder));
         showToast({
           title: "Orden confirmada exitosamente",
           status: "success",
@@ -169,14 +179,13 @@ export const useOrders = () => {
 
   const handleDeleteOrder = async (
     id: number,
-    key: "pending" | "finished" | 'active',
+    key: "pending" | "finished" | "active",
     reason: string
   ) => {
     Dispatch(onLoadingApiAction());
     try {
       const data = await api.order.remove(id, reason);
 
-      console.log("resp is", data)
       if (data.ok === true) {
         Dispatch(onDeleteOrder({ orderId: id, key: key }));
         showToast({
@@ -224,5 +233,6 @@ export const useOrders = () => {
     handleLoadingOrdersActive,
     handleFinishOrderActive,
     addOffsetToOrdersPending,
+    handleChangeStatusOrder,
   };
 };

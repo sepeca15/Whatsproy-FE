@@ -78,6 +78,8 @@ const PriceManagementSettings = () => {
     setHasChanges(true);
   };
 
+  console.log("increaseType", form.increaseType)
+
   const handlePriceUpdate = async () => {
     if (!form.increaseValue || Number.parseFloat(form.increaseValue) <= 0) {
       showToast({
@@ -109,11 +111,13 @@ const PriceManagementSettings = () => {
       return;
     }
 
+    console.log("form.increaseType", form.increaseType)
+
     setLoadingApi(true);
     try {
       const updateData = {
         tipoActualizacion:
-          form.increaseType === "fixed" ? "porcentaje" : "monto",
+          form.increaseType === "fixed" ? "monto" : "porcentaje",
         valor: Number.parseFloat(form.increaseValue),
         categoriaId:
           form.updateType === "category"

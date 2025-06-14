@@ -1,6 +1,6 @@
-import { StyleSheet, Platform, StatusBar } from "react-native"
-import { RFValue } from "react-native-responsive-fontsize"
-import { Colors } from "@/constants/Colors"
+import { StyleSheet, Platform, StatusBar } from "react-native";
+import { RFValue } from "react-native-responsive-fontsize";
+import { Colors } from "@/constants/Colors";
 
 export const styles = StyleSheet.create({
   safeArea: {
@@ -244,7 +244,6 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 16,
     minHeight: 75,
-
   },
   estimateTimeValue: {
     fontSize: RFValue(24),
@@ -260,9 +259,6 @@ export const styles = StyleSheet.create({
     fontWeight: "400",
     color: Colors.light.icon,
     paddingTop: 20,
-
-
-
   },
 
   // Products
@@ -393,7 +389,7 @@ export const styles = StyleSheet.create({
     color: "white",
   },
   paymentLabel: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 16,
     marginBottom: 4,
   },
@@ -403,40 +399,40 @@ export const styles = StyleSheet.create({
   },
   paymentDescription: {
     fontSize: 14,
-    color: '#555',
+    color: "#555",
     marginBottom: 8,
   },
   paymentSpecs: {
     fontSize: 14,
-    color: '#333',
+    color: "#333",
     marginBottom: 8,
   },
   transferProofContainer: {
     marginTop: 8,
   },
   transferProofLabel: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 14,
     marginBottom: 4,
   },
   transferProofImage: {
-    width: '100%',
+    width: "100%",
     height: 200,
     borderRadius: 20,
   },
   modalBackground: {
     flex: 1,
     display: "flex",
-    backgroundColor: 'rgba(0,0,0,0.95)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0,0,0,0.95)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   fullscreenImage: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
   closeButton: {
-    position: 'absolute',
+    position: "absolute",
     top: 120,
     zIndex: 2,
   },
@@ -454,7 +450,6 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 8,
     elevation: 4,
-
   },
   printButtonText: {
     marginLeft: 8,
@@ -465,8 +460,47 @@ export const styles = StyleSheet.create({
   printButtonTouchable: {
     flex: 1,
     alignItems: "center",
+  },
+  unconfirmedText: {
+    marginTop: 8,
+    fontSize: 16,
+    color: "#333",
+  },
 
+  confirmActions: {
+    flexDirection: "row",
+    gap: 20,
+    justifyContent: "space-between",
+    marginTop: 16,
+  },
 
-  }
+  actionButton1: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 8,
+    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: Colors.light.primary,
+    backgroundColor: Colors.light.primary,
+  },
 
-})
+  actionButton2: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 8,
+    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: Colors.light.primary,
+    color: Colors.light.primary,
+    backgroundColor: "white",
+  },
+
+  actionButtonText: {
+    fontWeight: "bold",
+    
+  },
+});

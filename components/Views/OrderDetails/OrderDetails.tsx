@@ -1,15 +1,5 @@
 import * as React from "react";
-import {
-  SafeAreaView,
-  StatusBar,
-  TouchableOpacity,
-  Animated,
-  Button,
-  Platform,
-  Alert,
-  Linking,
-  Modal,
-} from "react-native";
+import { SafeAreaView, TouchableOpacity, Animated, Modal } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import * as Progress from "react-native-progress";
 import api from "@/services/api/admin";
@@ -57,15 +47,14 @@ const initialState: IDetailsOrder = {
 };
 
 const OrderDetails = () => {
-  // State for PDF generation
   const [pdfPath, setPdfPath] = useState<string | null>(null);
-  const { printHTML, downloadPDF, loading } = useThermalPrint();
+  const { printHTML, loading } = useThermalPrint();
 
-  const { handleDeleteOrder } = useOrders();
+  const { handleDeleteOrder, confirmOrder, handleChangeStatusOrder, loadingApiAction } =
+    useOrders();
   const router = useRouter();
   const { user } = useUser();
   const empresaName = user?.empresaName ?? "Mi Empresa";
-  // const empresaLogo = user?.empresaLogo ?? "https://example.com/logo.png"; // Default logo if not provided
   const [detailOfOrder, setDetailOfOrder] =
     React.useState<IDetailsOrder>(initialState);
   const [reason, setReason] = useState("");
@@ -89,6 +78,7 @@ const OrderDetails = () => {
   const [isImagePreviewVisible, setImagePreviewVisible] = useState(false);
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
   const [ordrDeleteModalConfirm, setOrdrDeleteModalConfirm] = useState(false);
+  const isReserva = user?.tipo_servicio === ID_TIPOSERVICIO_RESERVA;
 
   const toggleModalStatus = () => setStateModalStatus((prev) => !prev);
 
@@ -136,6 +126,26 @@ const OrderDetails = () => {
     }
   }, [detailOfOrder.loading]);
 
+  const handleConfirmOrder = async () => {
+    await confirmOrder({
+      ...detailOfOrder.data,
+      orderId: detailOfOrder?.data?.id,
+    });
+    if (detailOfOrder?.data) {
+      setDetailOfOrder({
+        ...(detailOfOrder as any),
+        data: {
+          ...detailOfOrder?.data,
+          confirm: true,
+        },
+      });
+    }
+  };
+
+  const handleCancelOrder = () => {
+    setOrdrDeleteModalConfirm(true);
+  };
+
   const DeleteOrder = async () => {
     try {
       setLoadingDelete(true);
@@ -148,7 +158,7 @@ const OrderDetails = () => {
               resolvedKeyDeleteType,
               reason
             );
-            if (user?.tipo_servicio === ID_TIPOSERVICIO_RESERVA) {
+            if (isReserva) {
               router.push("/(tabs)/calendar");
             } else {
               router.push("/(tabs)/pedidos");
@@ -202,6 +212,7 @@ const OrderDetails = () => {
             cambiosEstado: [...detailOfOrder.data.cambiosEstado, resp.data],
           },
         });
+        handleChangeStatusOrder(detailOfOrder?.data?.id, newStatus);
       }
     } catch (error: any) {
       console.log(error.response?.data?.message || error.message);
@@ -244,7 +255,7 @@ const OrderDetails = () => {
     };
   }, [user.id, user.apiUrl, orderId]);
 
-  if (detailOfOrder.loading) {
+  if (detailOfOrder.loading || loadingApiAction) {
     return (
       <View style={styles.loadingContainer}>
         <Progress.Circle
@@ -413,9 +424,7 @@ const OrderDetails = () => {
   //   }
   // };
 
-  const handleDownload = () => {
-    downloadPDF(comandaHTML);
-  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       {/* Header */}
@@ -489,6 +498,67 @@ const OrderDetails = () => {
                   }}
                 />
               </Text>
+            </View>
+          </Animated.View>
+        )}
+
+        {detailOfOrder?.data?.confirm === false && (
+          <Animated.View
+            style={[
+              styles.sectionCard,
+              { opacity: fadeAnim, transform: [{ translateY: slideAnim }] },
+            ]}
+          >
+            <View style={styles.sectionHeader}>
+              <MaterialIcons
+                name="warning-amber"
+                size={20}
+                color={Colors.light.warning}
+              />
+              <Text style={styles.sectionTitle}>
+                <FormattedMessage
+                  id="orderNotConfirmed"
+                  defaultMessage="Orden no confirmada"
+                />
+              </Text>
+            </View>
+
+            <Text style={styles.unconfirmedText}>
+              <FormattedMessage
+                id="orderUnconfirmedDescription"
+                defaultMessage="Esta orden aún no ha sido confirmada. ¿Deseás confirmarla o cancelarla?"
+              />
+            </Text>
+
+            <View style={styles.confirmActions}>
+              <TouchableOpacity
+                style={[styles.actionButton1]}
+                onPress={handleConfirmOrder}
+              >
+                <Text style={{ ...styles.actionButtonText, color: "white" }}>
+                  <FormattedMessage
+                    id="confirmOrder"
+                    defaultMessage="Confirmar"
+                  />
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.actionButton2]}
+                onPress={handleCancelOrder}
+              >
+                <Text
+                  style={{
+                    ...styles.actionButtonText,
+                    color: Colors.light.primary,
+                  }}
+                >
+                  <FormattedMessage
+                    id="cancelOrder"
+                    defaultMessage="Cancelar"
+                  />
+                </Text>
+              </TouchableOpacity>
             </View>
           </Animated.View>
         )}
@@ -602,19 +672,21 @@ const OrderDetails = () => {
                   defaultMessage="Estado actual"
                 />
               </Text>
-              <TouchableOpacity
-                style={styles.statusBadge}
-                onPress={toggleModalStatus}
-              >
-                <Text style={styles.statusText}>
-                  {detailOfOrder.data?.estadoActual.nombre}
-                </Text>
-                <MaterialIcons
-                  name="keyboard-arrow-down"
-                  size={16}
-                  color="white"
-                />
-              </TouchableOpacity>
+              {detailOfOrder?.data?.confirm && (
+                <TouchableOpacity
+                  style={styles.statusBadge}
+                  onPress={toggleModalStatus}
+                >
+                  <Text style={styles.statusText}>
+                    {detailOfOrder.data?.estadoActual.nombre}
+                  </Text>
+                  <MaterialIcons
+                    name="keyboard-arrow-down"
+                    size={16}
+                    color="white"
+                  />
+                </TouchableOpacity>
+              )}
             </View>
             {detailOfOrder.data?.cambiosEstado.length ? (
               <StatusTimeline
@@ -822,21 +894,23 @@ const OrderDetails = () => {
           )}
         </Animated.View>
 
-        <View style={styles.printButtom}>
-          <TouchableOpacity
-            onPress={() => printHTML(comandaHTML)}
-            disabled={loading}
-            style={styles.printButtonTouchable}
-          >
-            <Text style={styles.printButtonText}>
-              {loading ? (
-                <FormattedMessage id="printing" />
-              ) : (
-                <FormattedMessage id="printComanda" />
-              )}
-            </Text>
-          </TouchableOpacity>
-        </View>
+        {!isReserva && (
+          <View style={styles.printButtom}>
+            <TouchableOpacity
+              onPress={() => printHTML(comandaHTML)}
+              disabled={loading}
+              style={styles.printButtonTouchable}
+            >
+              <Text style={styles.printButtonText}>
+                {loading ? (
+                  <FormattedMessage id="printing" />
+                ) : (
+                  <FormattedMessage id="printComanda" />
+                )}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
 
         {/* Chat Button */}
         <TouchableOpacity

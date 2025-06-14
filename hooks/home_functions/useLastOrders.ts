@@ -66,7 +66,6 @@ export const useLastOrders = () => {
       const formatted = orders.map((order: Order & { fecha: string }) => {
         let address = intl.formatMessage({ id: "orders.noAddress" });
         let status = intl.formatMessage({ id: "orders.noStatus" });
-
         try {
           const info = JSON.parse(order.infoLinesJson);
           address = info?.Direccion?.trim() || address;

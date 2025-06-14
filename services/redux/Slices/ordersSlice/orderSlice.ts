@@ -67,8 +67,36 @@ const orderSlice = createSlice({
         (order: any) => order.orderId !== newOrderConfirmed.orderId
       );
       const newStateOrdersActive = [...state.ordersActive, newOrderConfirmed];
+      if (state.ordersActive?.length !== 0) {
+        state.ordersActive = newStateOrdersActive;
+      }
       state.ordersPending = newStateOrdersPending;
-      state.ordersActive = newStateOrdersActive;
+    },
+    changeStatusOrder: (state, { payload }) => {
+      const orderId = payload?.orderId;
+      const newEstado = payload?.newEstado;
+      state.ordersPending = [...(state.ordersPending ?? [])].map(
+        (order: any) => {
+          return {
+            ...order,
+            estado: order?.orderId === orderId ? newEstado : order?.estado,
+          };
+        }
+      );
+      state.ordersActive = [...(state.ordersActive ?? [])].map((order: any) => {
+        return {
+          ...order,
+          estado: order?.orderId === orderId ? newEstado : order?.estado,
+        };
+      });
+      state.ordersFinished = [...(state.ordersFinished ?? [])].map(
+        (order: any) => {
+          return {
+            ...order,
+            estado: order?.orderId === orderId ? newEstado : order?.estado,
+          };
+        }
+      );
     },
     onDeleteOrder: (state, { payload }) => {
       const { key, orderId } = payload;
@@ -145,6 +173,7 @@ export const {
   odLoadOrdersActiveFirst,
   onLoadOrdersFinishedFirst,
   setOffsetActive,
+  changeStatusOrder,
   setOffsetFinished,
 } = orderSlice.actions;
 
