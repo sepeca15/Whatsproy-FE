@@ -21,6 +21,7 @@ import {
   onLoadOrdersFinishedFirst,
   changeStatusOrder,
 } from "@/services/redux/Slices/ordersSlice/orderSlice";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export const useOrders = () => {
@@ -40,6 +41,10 @@ export const useOrders = () => {
     totalItemsActive,
   } = useSelector((state: any) => state.orders);
   const { showToast } = useToastContext();
+
+  // console.log("totalItemsFinished", totalItemsFinished)
+  // console.log(offsetFinished)
+  // console.log("xd2", ordersFinished?.length)
 
   const handleLoadOrdersFinished = async (isRefresh?: boolean) => {
     Dispatch(onLoadingApi());

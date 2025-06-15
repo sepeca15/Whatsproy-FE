@@ -152,7 +152,10 @@ const CategorySales: React.FC<CategorySalesProps> = ({
           </Center>
         ) : (
           <VStack space={4}>
-            {categories.map((category) => (
+            {categories.map((category) => {
+              const safeProgressValue =  Math.round(category.percentage);
+
+              return (
               <VStack key={category.id} space={1}>
                 <HStack justifyContent="space-between" alignItems="center">
                   <HStack space={2} alignItems="center">
@@ -173,7 +176,7 @@ const CategorySales: React.FC<CategorySalesProps> = ({
                 </HStack>
                 <HStack space={2} alignItems="center">
                   <SafeProgress
-                    value={category.percentage}
+                    value={safeProgressValue}
                     _filledTrack={{ bg: category.color }}
                     size="xs"
                     flex={1}
@@ -190,7 +193,7 @@ const CategorySales: React.FC<CategorySalesProps> = ({
                   </Text>
                 </HStack>
               </VStack>
-            ))}
+            )})}
           </VStack>
         )}
 
@@ -201,7 +204,7 @@ const CategorySales: React.FC<CategorySalesProps> = ({
             <FormattedMessage id="sales.total" defaultMessage="Total" />
           </Text>
           <Text style={{ fontSize: 16, fontWeight: "bold" }}>
-            <FormattedMessage id="total" /> <FormattedMessage id="sales" />
+            <FormattedMessage id="totalProductosVendidos" />
             {": "}
             {formatNumber(totalSales)}
           </Text>

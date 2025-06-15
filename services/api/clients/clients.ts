@@ -28,3 +28,14 @@ export const findClientsWithOrders = async (info:
   );
   return data;
 };
+
+export const findOneClientsWithOrders = async (info:
+  {
+    clientId: any,
+  }
+) => {
+  const { data } = await ApiInstances("current").get(
+    `cliente/oneWithOrders?clientId=${info.clientId}`,
+  );
+  return data;
+};

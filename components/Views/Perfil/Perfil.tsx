@@ -53,6 +53,7 @@ const Perfil: React.FC = () => {
       porcentaje: number;
     }[]
   >([]);
+
   const [salesChart, setSalesChartResp] = useState({
     monthlySales: [],
     labels: [],
@@ -280,10 +281,10 @@ const Perfil: React.FC = () => {
                 style={{ minHeight: 200 }}
               >
                 <SalesOverview
-                  previous={salesOverview.previous}
-                  totalSales={salesOverview?.total}
-                  previousPeriodSales={salesOverview.variation}
-                  averageSale={salesOverview.average}
+                  previous={Number(salesOverview.previous ?? 0).toFixed(0) as any}
+                  totalSales={Number(salesOverview?.total ?? 0).toFixed(0) as any}
+                  previousPeriodSales={Number(salesOverview.variation ?? 0).toFixed(0) as any}
+                  averageSale={Number(salesOverview.average ?? 0).toFixed(0) as any}
                   currency="$"
                   period={"mensual"}
                 />
@@ -303,17 +304,17 @@ const Perfil: React.FC = () => {
                   filterType={periodSalesByCategory}
                   setFilterType={setPeriodSalesByCategory}
                   currency="$"
-                  totalSales={salesByCategory.reduce(
+                  totalSales={Math.round(salesByCategory.reduce(
                     (acc, category) => acc + category.totalVentas,
                     0
-                  )}
+                  ))}
                   categories={
                     salesByCategory.map((category, index) => {
                       return {
                         id: `${category.categoryId}`,
                         name: category.categoryName,
-                        sales: category.totalVentas,
-                        percentage: category.porcentaje,
+                        sales: Number(Math.round(category.totalVentas).toFixed(2)),
+                        percentage: Number(Math.round(category.porcentaje).toFixed(2)),
                         color: Colors.light.primary,
                         icon: "cart-outline",
                       };

@@ -110,7 +110,8 @@ const api = {
   },
   client: {
     create: client.CreateOrReturnClient,
-    findWithOrders: client.findClientsWithOrders
+    findWithOrders: client.findClientsWithOrders,
+    findOneClientsWithOrders: client.findOneClientsWithOrders,
   },
   image: {
     upload: image.uploadImage,

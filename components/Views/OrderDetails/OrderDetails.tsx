@@ -50,8 +50,12 @@ const OrderDetails = () => {
   const [pdfPath, setPdfPath] = useState<string | null>(null);
   const { printHTML, loading } = useThermalPrint();
 
-  const { handleDeleteOrder, confirmOrder, handleChangeStatusOrder, loadingApiAction } =
-    useOrders();
+  const {
+    handleDeleteOrder,
+    confirmOrder,
+    handleChangeStatusOrder,
+    loadingApiAction,
+  } = useOrders();
   const router = useRouter();
   const { user } = useUser();
   const empresaName = user?.empresaName ?? "Mi Empresa";
@@ -60,6 +64,7 @@ const OrderDetails = () => {
   const [reason, setReason] = useState("");
 
   const { orderId, keyDeleteType } = useLocalSearchParams();
+
   const resolvedKeyDeleteType = keyDeleteType as "pending" | "finished";
   const [stateModalStatus, setStateModalStatus] =
     React.useState<boolean>(false);
@@ -74,6 +79,7 @@ const OrderDetails = () => {
   const [allStatus, setAllStatus] = React.useState<IEstado[]>([]);
   const [sendingChangeStatus, setSendingChangeStatus] =
     React.useState<boolean>(false);
+  const [loadingCLientInfo, setLoadingClientInfo] = useState(false);
 
   const [isImagePreviewVisible, setImagePreviewVisible] = useState(false);
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
@@ -89,7 +95,6 @@ const OrderDetails = () => {
         setDetailOfOrder({ loading: false, data: orderDetailsData.data });
       }
     } catch (error: any) {
-      console.log("error", error.response.data.message);
       setDetailOfOrder({ loading: false, data: null });
     }
   };
@@ -144,6 +149,28 @@ const OrderDetails = () => {
 
   const handleCancelOrder = () => {
     setOrdrDeleteModalConfirm(true);
+  };
+
+  const handleNavigateToUserDetails = async () => {
+    try {
+      setLoadingClientInfo(true);
+      const clientInfo = await api.client.findOneClientsWithOrders({
+        clientId: detailOfOrder?.data?.client?.id,
+      });
+      console.log("clientInfo", clientInfo);
+      if (clientInfo) {
+        router.push({
+          pathname: "/(tabs)/clientDetails",
+          params: {
+            clientDataString: JSON.stringify(clientInfo?.data),
+          },
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingClientInfo(true);
+    }
   };
 
   const DeleteOrder = async () => {
@@ -424,7 +451,6 @@ const OrderDetails = () => {
   //   }
   // };
 
-
   return (
     <SafeAreaView style={styles.safeArea}>
       {/* Header */}
@@ -672,7 +698,7 @@ const OrderDetails = () => {
                   defaultMessage="Estado actual"
                 />
               </Text>
-              {detailOfOrder?.data?.confirm && (
+              {detailOfOrder?.data?.confirm ? (
                 <TouchableOpacity
                   style={styles.statusBadge}
                   onPress={toggleModalStatus}
@@ -686,7 +712,7 @@ const OrderDetails = () => {
                     color="white"
                   />
                 </TouchableOpacity>
-              )}
+              ) : <Text>{<FormattedMessage id="unconfirmed" defaultMessage={"Sin confirmar"} />}</Text>}
             </View>
             {detailOfOrder.data?.cambiosEstado.length ? (
               <StatusTimeline
@@ -731,21 +757,41 @@ const OrderDetails = () => {
               <FormattedMessage id="client" defaultMessage="Cliente" />
             </Text>
           </View>
-          <View style={styles.clientInfoContainer}>
-            <View style={styles.clientAvatar}>
-              <Text style={styles.clientAvatarText}>
-                {detailOfOrder.data?.client.name.charAt(0).toUpperCase()}
-              </Text>
-            </View>
-            <View style={styles.clientDetails}>
-              <Text style={styles.clientName}>
-                {detailOfOrder.data?.client.name}
-              </Text>
-              <Text style={styles.clientPhone}>
-                {detailOfOrder.data?.client.phone}
-              </Text>
-            </View>
-          </View>
+          {
+            <TouchableOpacity onPress={handleNavigateToUserDetails}>
+              <View style={styles.clientInfoContainer}>
+                {loadingCLientInfo ? (
+                  <View margin={"auto"} flex={1} alignItems={"center"} justifyContent={"center"}>
+                    <Progress.Circle
+                    color={Colors.light.primary}
+                    indeterminate
+                    size={30}
+                    borderWidth={3}
+                    strokeCap="round"
+                  />
+                  </View>
+                ) : (
+                  <>
+                    <View style={styles.clientAvatar}>
+                      <Text style={styles.clientAvatarText}>
+                        {detailOfOrder.data?.client.name
+                          .charAt(0)
+                          .toUpperCase()}
+                      </Text>
+                    </View>
+                    <View style={styles.clientDetails}>
+                      <Text style={styles.clientName}>
+                        {detailOfOrder.data?.client.name}
+                      </Text>
+                      <Text style={styles.clientPhone}>
+                        {detailOfOrder.data?.client.phone}
+                      </Text>
+                    </View>
+                  </>
+                )}
+              </View>
+            </TouchableOpacity>
+          }
         </Animated.View>
 
         {/* Estimated Time Card */}

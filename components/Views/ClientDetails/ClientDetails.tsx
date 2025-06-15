@@ -15,6 +15,8 @@ const ClientDetails = ({}) => {
   const { clientDataString }: { clientDataString: string } =
     useLocalSearchParams();
   const clientData = JSON.parse(clientDataString);
+    console.log("me llega", clientData)
+
   const initials = getInitials(clientData.nombre);
   const router = useRouter();
 
