@@ -101,9 +101,9 @@ const CardClient = ({ item, setClienteSeleccionado }: ICardClient) => {
           />
           :{" "}
           <Text fontWeight={600} color="teal.800">
-            {moment
-              .tz(item.pedido[item.pedido.length - 1].createdAt, user.timeZone)
-              .fromNow()}
+            {item.pedido[item.pedido.length - 1] ? moment
+              .tz(item.pedido[item.pedido.length - 1]?.createdAt, user.timeZone)
+              .fromNow() : "-"}
           </Text>
         </Text>
       </VStack>

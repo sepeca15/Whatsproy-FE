@@ -29,7 +29,6 @@ const TabLayout: React.FC = () => {
       let address = intl.formatMessage({ id: "orders.noAddress" });
       let status = intl.formatMessage({ id: "orders.noStatus" });
 
-      console.log("me llega 1", data)
       try {
         const info = JSON.parse(data.infoLinesJson);
         address = info?.Direccion?.trim() || address;

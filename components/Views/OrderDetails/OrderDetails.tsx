@@ -157,7 +157,6 @@ const OrderDetails = () => {
       const clientInfo = await api.client.findOneClientsWithOrders({
         clientId: detailOfOrder?.data?.client?.id,
       });
-      console.log("clientInfo", clientInfo);
       if (clientInfo) {
         router.push({
           pathname: "/(tabs)/clientDetails",
@@ -220,7 +219,7 @@ const OrderDetails = () => {
 
   const changeStatusOrder = async (newStatus: IEstado) => {
     setSendingChangeStatus(true);
-    const currentOrder = detailOfOrder.data?.estadoActual.order;
+    const currentOrder = detailOfOrder.data?.estadoActual?.order;
     try {
       if (!detailOfOrder.data?.id || !newStatus.id) return;
       if (newStatus.order === null || newStatus.order <= (currentOrder ?? 0))
@@ -977,7 +976,7 @@ const OrderDetails = () => {
         changeStatus={detailOfOrder.data?.cambiosEstado}
         createOrderDate={detailOfOrder.data?.date ?? "No date"}
         changeStatusOrder={changeStatusOrder}
-        lastStatusOrder={detailOfOrder.data?.estadoActual.order ?? 0}
+        lastStatusOrder={detailOfOrder.data?.estadoActual?.order ?? 0}
         elements={allStatus}
         isVisible={stateModalStatus}
         onClose={toggleModalStatus}
