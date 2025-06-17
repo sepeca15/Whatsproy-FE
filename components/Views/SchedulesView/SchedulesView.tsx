@@ -1,348 +1,380 @@
-// components/SchedulesView.tsx
-import CustomText from "@/components/CustomText";
-import { globalStyles } from "@/components/globalStyles";
-import { useToastContext } from "@/contexts/ToastContext";
-import api from "@/services/api/admin";
-import { AntDesign, Feather, SimpleLineIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import { View, Text } from "native-base";
-import { useEffect, useState } from "react";
-import { FormattedMessage, useIntl } from "react-intl";
-import { ScrollView, TouchableOpacity } from "react-native";
-import Animated from "react-native-reanimated";
-import GlobalModal from "@/components/Modal";
-import CustomButton from "@/components/CustomButton";
-import { Colors } from "@/constants/Colors";
-import { styles as generalSettingsStyles } from "../GeneralSettings/GeneralSettingsStyles";
-import InputField from "@/components/InputField";
+"use client"
 
-const DAYS = [
-    "monday",
-    "tuesday",
-    "wednesday",
-    "thursday",
-    "friday",
-    "saturday",
-    "sunday",
-];
+import { useEffect, useState } from "react"
+import { ScrollView, TouchableOpacity } from "react-native"
+import { View, Text } from "native-base"
+import { AntDesign, Feather, SimpleLineIcons } from "@expo/vector-icons"
+import { useRouter } from "expo-router"
+import { FormattedMessage, useIntl } from "react-intl"
+import Animated from "react-native-reanimated"
+
+import CustomText from "@/components/CustomText"
+import CustomButton from "@/components/CustomButton"
+import GlobalModal from "@/components/Modal"
+import InputField from "@/components/InputField"
+import { globalStyles } from "@/components/globalStyles"
+import { useToastContext } from "@/contexts/ToastContext"
+import { Colors } from "@/constants/Colors"
+import api from "@/services/api/admin"
+import { styles } from "./SchedulesViewStyles"
+
+const DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
 
 export type Schedule = {
-    id: number;
-    dayOfWeek: number;
-    hora_inicio: string;
-    hora_fin: string;
-};
+  id: number
+  dayOfWeek: number
+  hora_inicio: string
+  hora_fin: string
+}
 
 const SchedulesView = () => {
-    const router = useRouter();
-    const intl = useIntl();
-    const { showToast } = useToastContext();
-    const [schedules, setSchedules] = useState<Schedule[]>([]);
-    const [loading, setLoading] = useState(false);
-    const [loadingCreate, setLoadingCreate] = useState(false);
-    const [selectedDay, setSelectedDay] = useState<number | null>(null);
-    const [modalVisible, setModalVisible] = useState(false);
-    const [addClicked, setAddClicked] = useState<any>(null)
-    const [start, setStart] = useState("");
-    const [end, setEnd] = useState("");
-    const [errors, setErrors] = useState<{ [key: string]: string | null }>({});
-    const [submitted, setSubmitted] = useState(false);
-    const groupedSchedules = DAYS.map((_, idx) =>
-        schedules.filter((s) => s.dayOfWeek === idx + 1)
-    );
+  const router = useRouter()
+  const intl = useIntl()
+  const { showToast } = useToastContext()
 
-    const loadSchedules = async () => {
-        try {
-            setLoading(true);
-            const response = await api.schedules.getAll();
-            if (response) setSchedules(response);
-        } catch (err: any) {
-            showToast({
-                status: "error",
-                title: err?.response?.data?.message ?? intl.formatMessage({ id: "errorLoadingSchedules" })
-            });
-        } finally {
-            setLoading(false);
-        }
-    };
-    const validateSchedule = (
-        start: string,
-        end: string,
-        selectedDay: number | null,
-        intl: any
-    ): { [key: string]: string | null } => {
-        const newErrors: { [key: string]: string | null } = {};
+  // State management
+  const [schedules, setSchedules] = useState<Schedule[]>([])
+  const [loading, setLoading] = useState(false)
+  const [loadingCreate, setLoadingCreate] = useState(false)
+  const [modalVisible, setModalVisible] = useState(false)
+  const [selectedDay, setSelectedDay] = useState<number | null>(null)
+  const [selectedDayName, setSelectedDayName] = useState("")
+  const [startTime, setStartTime] = useState("")
+  const [endTime, setEndTime] = useState("")
+  const [errors, setErrors] = useState<{ [key: string]: string | null }>({})
+  const [submitted, setSubmitted] = useState(false)
+  const [infoModalVisible, setInfoModalVisible] = useState(false)
 
-        if (!start || !start.trim()) {
-            newErrors.start = intl.formatMessage({ id: "startHourRequired", defaultMessage: "La hora de inicio es obligatoria" });
-        }
+  const groupedSchedules = DAYS.map((_, idx) => schedules.filter((s) => s.dayOfWeek === idx + 1))
 
-        if (!end || !end.trim()) {
-            newErrors.end = intl.formatMessage({ id: "endHourRequired", defaultMessage: "La hora de fin es obligatoria" });
-        }
+  // API Functions
+  const loadSchedules = async () => {
+    try {
+      setLoading(true)
+      const response = await api.schedules.getAll()
+      if (response) setSchedules(response)
+    } catch (err: any) {
+      showToast({
+        status: "error",
+        title: err?.response?.data?.message ?? intl.formatMessage({ id: "errorLoadingSchedules" }),
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
 
-        if (selectedDay === null) {
-            newErrors.day = intl.formatMessage({ id: "dayRequired", defaultMessage: "El día es obligatorio" });
-        }
+  const validateSchedule = (start: string, end: string, selectedDay: number | null) => {
+    const newErrors: { [key: string]: string | null } = {}
 
-        return newErrors;
-    };
-
-    const handleAdd = async () => {
-         setSubmitted(true); // <-- Marca como enviado
-        const newErrors = validateSchedule(start, end, selectedDay, intl);
-        if (start && end && start >= end) {
-            newErrors.start = intl.formatMessage({ id: "startHourBeforeEnd", defaultMessage: "La hora de inicio debe ser antes de la hora de fin" });
-            newErrors.end = intl.formatMessage({ id: "endHourAfterStart", defaultMessage: "La hora de fin debe ser después de la hora de inicio" });
-      
+    if (!start?.trim()) {
+      newErrors.start = intl.formatMessage({
+        id: "startHourRequired",
+        defaultMessage: "La hora de inicio es obligatoria",
+      })
     }
 
-        setErrors(newErrors);
+    if (!end?.trim()) {
+      newErrors.end = intl.formatMessage({
+        id: "endHourRequired",
+        defaultMessage: "La hora de fin es obligatoria",
+      })
+    }
 
-        if (Object.keys(newErrors).length > 0) return;
-        try {
-            setLoadingCreate(true);
-            const res = await api.schedules.create({
-                dayOfWeek: selectedDay,
-                hora_inicio: start,
-                hora_fin: end
-            });
-            if (res?.id) {
-                showToast({
-                    status: "success",
-                    title: intl.formatMessage({ id: "scheduleCreated" })
-                });
-                await loadSchedules();
-                setModalVisible(false);
-                setStart("");
-                setEnd("");
-            }
-        } catch (e: any) {
-            showToast({
-                status: "error",
-                title: e?.response?.data?.message ?? intl.formatMessage({ id: "errorCreatingSchedule" })
-            });
-        } finally {
-            setLoadingCreate(false);
-        }
-    };
+    if (selectedDay === null) {
+      newErrors.day = intl.formatMessage({
+        id: "dayRequired",
+        defaultMessage: "El día es obligatorio",
+      })
+    }
 
-    const handleRemove = async (id: number) => {
-        try {
-            const ok = await api.schedules.remove(id);
-            if (ok) {
-                showToast({
-                    status: "success",
-                    title: intl.formatMessage({ id: "scheduleDeleted" })
-                });
-                await loadSchedules();
-            }
-        } catch (err: any) {
-            showToast({
-                status: "error",
-                title: err?.response?.data?.message ?? intl.formatMessage({ id: "errorDeletingSchedule" })
-            });
-        }
-    };
+    if (start && end && start >= end) {
+      newErrors.start = intl.formatMessage({
+        id: "startHourBeforeEnd",
+        defaultMessage: "La hora de inicio debe ser antes de la hora de fin",
+      })
+      newErrors.end = intl.formatMessage({
+        id: "endHourAfterStart",
+        defaultMessage: "La hora de fin debe ser después de la hora de inicio",
+      })
+    }
 
-    useEffect(() => {
-        loadSchedules();
-    }, []);
+    return newErrors
+  }
 
-    return (
-        <View style={globalStyles.containerPage}>
-            <Animated.View style={globalStyles.header2}>
-                <TouchableOpacity
-                    style={globalStyles.backButton}
-                    onPress={() => router.back()}
-                >
-                    <AntDesign name="arrowleft" size={24} color="white" />
-                </TouchableOpacity>
-                <View style={globalStyles.headerContent}>
-                    <View style={globalStyles.headerLeft}>
-                        <CustomText style={globalStyles.businessName}>
-                            <FormattedMessage id="schedules" />
-                        </CustomText>
-                    </View>
-                </View>
-            </Animated.View>
+  const handleAddSchedule = async () => {
+    setSubmitted(true)
+    const newErrors = validateSchedule(startTime, endTime, selectedDay)
+    setErrors(newErrors)
 
-            <View style={{ paddingHorizontal: 16, paddingTop: 0, paddingBottom: 8 }}>
-                <Text fontSize="xl" bold color="#111">
-                    <FormattedMessage id="schedulesTitle" defaultMessage="Horarios de atención" />
-                </Text>
-                <Text fontSize="sm" color="gray.600" marginTop={2}>
-                    <FormattedMessage
-                        id="schedulesDescription"
-                        defaultMessage="Aquí puedes configurar los horarios en los que el asistente estará disponible para recibir reservas o consultas."
-                    />
-                </Text>
-            </View>
-            <ScrollView style={{ padding: 16 }}>
-                {
-                    loading ? (
-                        Array.from({ length: 7 }).map((_, idx) => (
-                            <View key={idx} style={{
-                                backgroundColor: "#f0f0f0",
-                                height: 100,
-                                borderRadius: 12,
-                                marginBottom: 4,
-                                padding: 16,
-                                justifyContent: 'center'
-                            }}>
-                                <View style={{ backgroundColor: "#ddd", height: 20, width: "40%", borderRadius: 4, marginBottom: 12 }} />
-                                <View style={{ backgroundColor: "#ddd", height: 16, width: "80%", borderRadius: 4 }} />
-                            </View>
-                        ))
-                    ) : (
-                        DAYS.map((day, idx) => {
+    if (Object.keys(newErrors).length > 0) return
 
-                            return (
-                                <View
-                                    key={idx}
-                                    style={{
-                                        marginBottom: 20,
-                                        padding: 16,
-                                        backgroundColor: '#fff',
-                                        borderRadius: 16,
-                                        shadowColor: '#000',
-                                        shadowOpacity: 0.05,
-                                        shadowRadius: 8,
-                                        elevation: 2
-                                    }}
-                                >
-                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                                            <Feather name="calendar" size={18} color="#333" />
-                                            <Text fontSize="md" bold color="#333">
-                                                <FormattedMessage id={`day.${day}`} />
-                                            </Text>
-                                        </View>
-                                        <TouchableOpacity onPress={() => { setSelectedDay((idx + 1)); setModalVisible(true); setAddClicked(intl.formatMessage({ id: `day.${day}` })) }}>
-                                            <Feather name="plus-circle" size={22} color={Colors.light.primary} />
-                                        </TouchableOpacity>
-                                    </View>
+    try {
+      setLoadingCreate(true)
+      const response = await api.schedules.create({
+        dayOfWeek: selectedDay,
+        hora_inicio: startTime,
+        hora_fin: endTime,
+      })
 
-                                    {groupedSchedules[idx]?.length === 0 ? (
-                                        <Text color="gray.500">
-                                            <FormattedMessage id="noSchedulesForDay" />
-                                        </Text>
-                                    ) : (
-                                        groupedSchedules[idx].map(s => (
-                                            <View
-                                                key={s.id}
-                                                style={{
-                                                    flexDirection: 'row',
-                                                    justifyContent: 'space-between',
-                                                    alignItems: 'center',
-                                                    paddingVertical: 6,
-                                                    paddingHorizontal: 8,
-                                                    backgroundColor: '#F9FAFB',
-                                                    borderRadius: 8,
-                                                    marginBottom: 6
-                                                }}
-                                            >
-                                                <CustomText style={{ fontSize: 14 }}>
-                                                    {s.hora_inicio.slice(0, 5)} - {s.hora_fin.slice(0, 5)}
-                                                </CustomText>
-                                                <TouchableOpacity onPress={() => handleRemove(s.id)}>
-                                                    <Feather name="trash-2" size={18} color="#DC143C" />
-                                                </TouchableOpacity>
-                                            </View>
-                                        ))
-                                    )}
-                                </View>
-                            )
-                        }))}
-                <View marginBottom={5}></View>
-            </ScrollView>
+      if (response?.id) {
+        showToast({
+          status: "success",
+          title: intl.formatMessage({ id: "scheduleCreated" }),
+        })
+        await loadSchedules()
+        closeModal()
+      }
+    } catch (error: any) {
+      showToast({
+        status: "error",
+        title: error?.response?.data?.message ?? intl.formatMessage({ id: "errorCreatingSchedule" }),
+      })
+    } finally {
+      setLoadingCreate(false)
+    }
+  }
 
-            <GlobalModal
-                isVisible={modalVisible}
-                onClose={() => setModalVisible(false)}
-                label={`${addClicked ? `${addClicked} - ` : ``}${intl.formatMessage({ id: `addSchedule` })}`}
-                content={
-                    <View style={generalSettingsStyles.container1}>
-                        <View style={generalSettingsStyles.inputContainer}>
-                            <CustomText style={generalSettingsStyles.textInput}>
-                                <FormattedMessage
-                                    id="startHour"
-                                    defaultMessage={"Hora de inicio"}
-                                />
-                            </CustomText>
-                            <InputField
-                                icon={
-                                    <SimpleLineIcons
-                                        style={{ marginLeft: 12 }}
-                                        color={"#b6b6b6"}
-                                        name="clock"
-                                        size={16}
-                                    />
-                                }
-                                isTime
-                                placeholder={intl.formatMessage({
-                                    id: "enterClosingTime",
-                                    defaultMessage: "Ingresa la hora de cierre",
-                                })}
-                                value={start}
-                                onChangeText={(value: any) => {
-                                    setStart(value);
-                                    if (errors.start) setErrors((prev: { [key: string]: string | null }) => ({ ...prev, start: null }));
-                                }}
-                                error={submitted ? errors.start : null}
-                            />
-                        </View>
+  const handleRemoveSchedule = async (id: number) => {
+    try {
+      const success = await api.schedules.remove(id)
+      if (success) {
+        showToast({
+          status: "success",
+          title: intl.formatMessage({ id: "scheduleDeleted" }),
+        })
+        await loadSchedules()
+      }
+    } catch (error: any) {
+      showToast({
+        status: "error",
+        title: error?.response?.data?.message ?? intl.formatMessage({ id: "errorDeletingSchedule" }),
+      })
+    }
+  }
 
-                        <View style={generalSettingsStyles.inputContainer}>
-                            <CustomText style={generalSettingsStyles.textInput}>
-                                <FormattedMessage
-                                    id="endHour"
-                                    defaultMessage={"Hora de fin"}
-                                />
-                            </CustomText>
-                            <InputField
-                                icon={
-                                    <SimpleLineIcons
-                                        style={{ marginLeft: 12 }}
-                                        color={"#b6b6b6"}
-                                        name="clock"
-                                        size={16}
-                                    />
-                                }
-                                isTime
-                                placeholder={intl.formatMessage({
-                                    id: "enterClosingTime",
-                                    defaultMessage: "Ingresa la hora de cierre",
-                                })}
-                                value={end}
-                                onChangeText={(value: any) => {
-                                    setEnd(value);
-                                    if (errors.end) setErrors((prev: { [key: string]: string | null }) => ({ ...prev, end: null }));
-                                }}
-                               error={submitted ? errors.end : null}
-                            />
-                        </View>
-                    </View>
-                }
-                actions={[
-                    <CustomButton
-                        isLoading={loadingCreate}
-                        onPress={() => handleAdd()}
-                        size="sm"
-                        isDisabled={loadingCreate}
-                        marginLeft={2}
-                        backgroundColor={"#2C2C2C"}
-                        borderRadius={"6"}
-                        fontWeight={700}
-                    >
-                        <Text fontWeight={500} color={"white"}>
-                            {intl.formatMessage({ id: "save" })}
-                        </Text>
-                    </CustomButton>
-                ]}
-            />
+  // Modal functions
+  const openModal = (dayIndex: number) => {
+    const dayName = intl.formatMessage({ id: `day.${DAYS[dayIndex]}` })
+    setSelectedDay(dayIndex + 1)
+    setSelectedDayName(dayName)
+    setModalVisible(true)
+    resetForm()
+  }
+
+  const closeModal = () => {
+    setModalVisible(false)
+    resetForm()
+  }
+
+  const resetForm = () => {
+    setStartTime("")
+    setEndTime("")
+    setErrors({})
+    setSubmitted(false)
+  }
+
+  const clearFieldError = (field: string) => {
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: null }))
+    }
+  }
+
+  useEffect(() => {
+    loadSchedules()
+  }, [])
+
+  return (
+    <View style={globalStyles.containerPage}>
+      {/* Header */}
+      <Animated.View style={globalStyles.header2}>
+        <TouchableOpacity style={globalStyles.backButton} onPress={() => router.back()}>
+          <AntDesign name="arrowleft" size={24} color="white" />
+        </TouchableOpacity>
+        <View style={globalStyles.headerContent}>
+          <View style={globalStyles.headerLeft}>
+            <CustomText style={globalStyles.businessName}>
+              <FormattedMessage id="schedules" />
+            </CustomText>
+          </View>
+          {/* Info button in header */}
+          <TouchableOpacity style={styles.headerInfoButton} onPress={() => setInfoModalVisible(true)}>
+            <Feather name="info" size={20} color="white" />
+          </TouchableOpacity>
         </View>
-    );
-};
+      </Animated.View>
 
-export default SchedulesView;
+      {/* Schedule List */}
+      <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+        {loading
+          ? // Loading Skeleton
+            Array.from({ length: 7 }).map((_, idx) => (
+              <View key={idx} style={styles.skeletonCard}>
+                <View style={styles.skeletonHeader} />
+                <View style={styles.skeletonContent} />
+              </View>
+            ))
+          : // Schedule Cards
+            DAYS.map((day, idx) => (
+              <View key={idx} style={styles.dayCard}>
+                <View style={styles.dayHeader}>
+                  <View style={styles.dayTitleContainer}>
+                    <Feather name="calendar" size={20} color={Colors.light.primary} />
+                    <Text style={styles.dayTitle}>
+                      <FormattedMessage id={`day.${day}`} />
+                    </Text>
+                  </View>
+                  <TouchableOpacity style={styles.addButton} onPress={() => openModal(idx)}>
+                    <Feather name="plus" size={20} color={Colors.light.primary} />
+                  </TouchableOpacity>
+                </View>
+
+                <View style={styles.schedulesContainer}>
+                  {groupedSchedules[idx]?.length === 0 ? (
+                    <Text style={styles.noSchedulesText}>
+                      <FormattedMessage id="noSchedulesForDay" defaultMessage="Sin horarios configurados" />
+                    </Text>
+                  ) : (
+                    groupedSchedules[idx].map((schedule) => (
+                      <View key={schedule.id} style={styles.scheduleItem}>
+                        <View style={styles.timeContainer}>
+                          <Feather name="clock" size={16} color="#666" />
+                          <CustomText style={styles.timeText}>
+                            {schedule.hora_inicio.slice(0, 5)} - {schedule.hora_fin.slice(0, 5)}
+                          </CustomText>
+                        </View>
+                        <TouchableOpacity style={styles.deleteButton} onPress={() => handleRemoveSchedule(schedule.id)}>
+                          <Feather name="trash-2" size={16} color="#ef4444" />
+                        </TouchableOpacity>
+                      </View>
+                    ))
+                  )}
+                </View>
+              </View>
+            ))}
+        <View style={{ height: 20 }} />
+      </ScrollView>
+
+      {/* Info Modal */}
+      <GlobalModal
+        isVisible={infoModalVisible}
+        onClose={() => setInfoModalVisible(false)}
+        label={intl.formatMessage({ id: "information", defaultMessage: "Información" })}
+        content={
+          <View style={styles.infoModalContent}>
+            <View style={styles.infoItem}>
+              <Feather name="clock" size={20} color={Colors.light.primary} />
+              <Text style={styles.infoText}>
+                <FormattedMessage
+                  id="scheduleInfo1"
+                  defaultMessage="Configura los horarios en los que tu asistente estará disponible para recibir reservas."
+                />
+              </Text>
+            </View>
+
+            <View style={styles.infoItem}>
+              <Feather name="calendar" size={20} color={Colors.light.primary} />
+              <Text style={styles.infoText}>
+                <FormattedMessage
+                  id="scheduleInfo2"
+                  defaultMessage="Puedes agregar múltiples horarios por día para mayor flexibilidad."
+                />
+              </Text>
+            </View>
+
+            <View style={styles.infoItem}>
+              <Feather name="bell" size={20} color={Colors.light.primary} />
+              <Text style={styles.infoText}>
+                <FormattedMessage
+                  id="scheduleInfo3"
+                  defaultMessage="Los clientes solo podrán hacer consultas durante estos horarios configurados."
+                />
+              </Text>
+            </View>
+          </View>
+        }
+        actions={[
+          <CustomButton
+            key="understood"
+            onPress={() => setInfoModalVisible(false)}
+            size="sm"
+            backgroundColor={Colors.light.primary}
+            borderRadius="6"
+          >
+            <Text fontWeight={500} color="white">
+              {intl.formatMessage({ id: "understood", defaultMessage: "Entendido" })}
+            </Text>
+          </CustomButton>,
+        ]}
+      />
+
+      {/* Add Schedule Modal */}
+      <GlobalModal
+        isVisible={modalVisible}
+        onClose={closeModal}
+        label={`${selectedDayName} - ${intl.formatMessage({ id: "addSchedule" })}`}
+        content={
+          <View style={styles.modalContent}>
+            <View style={styles.inputGroup}>
+              <CustomText style={styles.inputLabel}>
+                <FormattedMessage id="startHour" defaultMessage="Hora de inicio" />
+              </CustomText>
+              <InputField
+                icon={<SimpleLineIcons style={styles.inputIcon} color="#b6b6b6" name="clock" size={16} />}
+                isTime
+                placeholder={intl.formatMessage({
+                  id: "enterStartTime",
+                  defaultMessage: "Ingresa la hora de inicio",
+                })}
+                value={startTime}
+                onChangeText={(value: string) => {
+                  setStartTime(value)
+                  clearFieldError("start")
+                }}
+                error={submitted ? errors.start : null}
+              />
+            </View>
+
+            <View style={styles.inputGroup}>
+              <CustomText style={styles.inputLabel}>
+                <FormattedMessage id="endHour" defaultMessage="Hora de fin" />
+              </CustomText>
+              <InputField
+                icon={<SimpleLineIcons style={styles.inputIcon} color="#b6b6b6" name="clock" size={16} />}
+                isTime
+                placeholder={intl.formatMessage({
+                  id: "enterEndTime",
+                  defaultMessage: "Ingresa la hora de fin",
+                })}
+                value={endTime}
+                onChangeText={(value: string) => {
+                  setEndTime(value)
+                  clearFieldError("end")
+                }}
+                error={submitted ? errors.end : null}
+              />
+            </View>
+          </View>
+        }
+        actions={[
+          <CustomButton
+            key="save"
+            isLoading={loadingCreate}
+            onPress={handleAddSchedule}
+            size="sm"
+            isDisabled={loadingCreate}
+            marginLeft={2}
+            backgroundColor="#2C2C2C"
+            borderRadius="6"
+            fontWeight={700}
+          >
+            <Text fontWeight={500} color="white">
+              {intl.formatMessage({ id: "save" })}
+            </Text>
+          </CustomButton>,
+        ]}
+      />
+    </View>
+  )
+}
+
+export default SchedulesView

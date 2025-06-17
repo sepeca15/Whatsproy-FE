@@ -84,6 +84,7 @@ export const globalStyles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    maxWidth: "90%",
   },
   headerContent_datoPedido: {
     marginHorizontal: 10,
