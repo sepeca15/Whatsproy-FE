@@ -1,22 +1,22 @@
 // Exporta todas las imágenes desde un archivo central
 export const GuideImages = {
     dashboard: {
-        main: require("../logo.jpe"),
-        metrics: require("../logo.jpe"),
-        orders: require("../logo.jpe"),
+        main: require("../logo.jpeg"),
+        metrics: require("../logo.jpeg"),
+        orders: require("../logo.jpeg"),
     },
     schedule: {
-        weekly: require("../logo.jpe"),
-        breaks: require("../logo.jpe"),
-        holidays: require("../logo.jpe"),
+        weekly: require("../logo.jpeg"),
+        breaks: require("../logo.jpeg"),
+        holidays: require("../logo.jpeg"),
     },
     users: {
-        list: require("../logo.jpe"),
-        create: require("../logo.jpe"),
-        permissions: require("../logo.jpe"),
+        list: require("../logo.jpeg"),
+        create: require("../logo.jpeg"),
+        permissions: require("../logo.jpeg"),
     },
     payments: {
-        methods: require("../logo.jpe"),
-        config: require("../logo.jpe"),
+        methods: require("../logo.jpeg"),
+        config: require("../logo.jpeg"),
     },
 };
