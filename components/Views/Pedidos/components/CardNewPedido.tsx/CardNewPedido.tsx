@@ -120,7 +120,7 @@ const CardNewPedido = ({ pending, orderData, active }: ICardNewPedido) => {
                   </CustomText>
                 </View>
                 <CustomText style={styles.semiBold}>
-                  {intl.formatMessage({ id: "total", defaultMessage: "Total" })}: ${total}
+                  {intl.formatMessage({ id: "total", defaultMessage: "Total" })}: ${Number(total).toFixed(2)}
                 </CustomText>
               </View>
             </View>

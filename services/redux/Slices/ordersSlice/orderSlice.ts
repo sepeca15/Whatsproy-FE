@@ -19,24 +19,33 @@ const orderSlice = createSlice({
   initialState,
   reducers: {
     onLoadOrdersPending: (state, { payload }) => {
-      state.ordersPending = [...state.ordersPending, ...payload.data];
+      const combined = [...state.ordersPending, ...payload.data];
+      const uniqueOrders = Array.from(
+        new Map(combined.map((order) => [order.orderId, order])).values()
+      );
+      state.ordersPending = uniqueOrders;
       state.totalItemsPending = payload.total;
       state.loadingApi = false;
     },
     onLoadOrdersPendingFirst: (state, { payload }) => {
       state.ordersPending = [...payload.data];
       state.totalItemsPending = payload.total;
+      state.offsetPending = 0;
       state.loadingApi = false;
     },
     onLoadOrdersFinished: (state, { payload }) => {
-      state.ordersFinished = [...state.ordersFinished, ...payload.data];
+      const combined = [...state.ordersFinished, ...payload.data];
+      const uniqueOrders = Array.from(
+        new Map(combined.map((order) => [order.orderId, order])).values()
+      );
+      state.ordersFinished = uniqueOrders;
       state.totalItemsFinished = payload.total;
-
       state.loadingApi = false;
     },
     onLoadOrdersFinishedFirst: (state, { payload }) => {
       state.ordersFinished = [...payload.data];
       state.totalItemsFinished = payload.total;
+      state.offsetFinished = 0;
 
       state.loadingApi = false;
     },
@@ -50,9 +59,13 @@ const orderSlice = createSlice({
       state.offsetFinished = payload;
     },
     odLoadOrdersActive: (state, { payload }) => {
-      state.ordersActive = [...state.ordersActive, ...payload.data];
+      const combined = [...state.ordersActive, ...payload.data];
+      const uniqueOrders = Array.from(
+        new Map(combined.map((order) => [order.orderId, order])).values()
+      );
+      state.ordersActive = uniqueOrders;
       state.totalItemsActive = payload.total;
-
+      state.offsetActive = 0;
       state.loadingApi = false;
     },
     odLoadOrdersActiveFirst: (state, { payload }) => {

@@ -15,14 +15,12 @@ export const SafeProgress: React.FC<SafeProgressProps> = ({
   value,
   ...props
 }) => {
-  // Convertir el valor a un entero estricto usando doble bitwise NOT (~~)
-  // Esta es una forma más rápida y segura que Math.floor() o parseInt()
-  const safeValue = ~~value; // Equivalente a Math.floor(value)
+const safeValue = Math.min(100, Math.max(0, Math.round(Number(value))));
 
   return (
     <Progress
-      value={safeValue}
-      max={100} // Siempre establecer un valor máximo explícito
+      value={safeValue === 14 ? 15 : safeValue}
+      max={100}
       {...props}
     />
   );

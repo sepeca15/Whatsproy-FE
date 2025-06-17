@@ -2,7 +2,7 @@ import ApiInstances from "@/services/axios/axiosConfig";
 import { CreateOrderDTO } from "./order.type";
 
 export const getDetailsOfOrder = async (id: any) => {
-  const { data } = await ApiInstances("current").get("pedido/details/" + id);
+  const { data } = await ApiInstances("current").get("pedido/details/" + Number(id));
   return data;
 };
 
@@ -35,17 +35,17 @@ export const getAvailableDatesByMonth = async (anio: string, mes: string, worker
 
 
 export const getAllFinished = async (offset: number, limit: number) => {
-  const { data } = await ApiInstances("current").get(`pedido/finished?offset=${offset}&limit=${limit}`);
+  const { data } = await ApiInstances("current").get(`pedido/finished?offset=${offset * limit}&limit=${limit}`);
   return data;
 };
 
 export const getAllPending = async (offset: number, limit: number) => {
-  const { data } = await ApiInstances("current").get(`pedido/pending?offset=${offset}&limit=${limit}`);
+  const { data } = await ApiInstances("current").get(`pedido/pending?offset=${offset * limit}&limit=${limit}`);
   return data;
 };
 
 export const getAllActive = async (offset: number, limit: number) => {
-  const { data } = await ApiInstances("current").get(`pedido/active?offset=${offset}&limit=${limit}`);
+  const { data } = await ApiInstances("current").get(`pedido/active?offset=${offset * limit}&limit=${limit}`);
   return data;
 };
 
@@ -56,8 +56,6 @@ export const subOrderStatus = async () => {
 
 
 export const confirmOrder = async (id: number) => {
-  console.log('enviare', id );
-  
   const { data } = await ApiInstances("current").get("pedido/confirm/" + id);
 
   return data;
@@ -77,7 +75,6 @@ export const getNextDateAvailable = async () => {
 };
 
 export const getNextDateAvailableForSingleDay = async (fecha: string, selectedWorkerId?: string) => {
-  console.log("xd", fecha)
   const { data } = await ApiInstances("current").get(
     `pedido/calendar/dates-avaiable?fecha=${fecha}&withPast=false&userId${selectedWorkerId}`,
   );
