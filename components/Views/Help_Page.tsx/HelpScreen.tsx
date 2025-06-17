@@ -797,9 +797,17 @@ const HelpScreen = () => {
                 >
                   <TouchableOpacity onPress={() => openGuideModal(guide)} activeOpacity={0.8}>
                     <View style={styles.screenshotPlaceholder}>
+                      <Animated.Image
+                      source={guide.images[0]?.src}
+                      style={[
+                        StyleSheet.absoluteFill,
+                        { borderRadius: 0, opacity: 0.45, width: "100%", height: "100%" },
+                      ]}
+                      resizeMode="cover"
+                      />
                       <Feather name="play-circle" size={30} color={colors.primary} />
                       <Text style={[styles.placeholderText, { color: colors.primary }]}>
-                        <FormattedMessage id="tapToViewGuide" defaultMessage="Toca para ver la guía" />
+                      <FormattedMessage id="tapToViewGuide" defaultMessage="Toca para ver la guía" />
                       </Text>
                     </View>
                     <View style={styles.screenshotInfo}>
