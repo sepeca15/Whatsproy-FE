@@ -22,20 +22,6 @@ const QuickActions: React.FC = () => {
       route: "/(tabs)/usuarios",
     },
     {
-      id: "notifications",
-      icon: "notifications-outline",
-      label: "profile.notifications",
-      defaultMessage: "Notificaciones",
-      route: "/(tabs)/home",
-    },
-    {
-      id: "security",
-      icon: "shield-outline",
-      label: "profile.security",
-      defaultMessage: "Seguridad",
-      route: "/(tabs)/config",
-    },
-    {
       id: "logout",
       icon: "log-out-outline",
       label: "profile.logout",

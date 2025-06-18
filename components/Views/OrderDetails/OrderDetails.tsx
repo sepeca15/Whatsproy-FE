@@ -151,6 +151,8 @@ const OrderDetails = () => {
     setOrdrDeleteModalConfirm(true);
   };
 
+  console.log("xd4", detailOfOrder?.data?.transferUrl)
+
   const handleNavigateToUserDetails = async () => {
     try {
       setLoadingClientInfo(true);
@@ -625,7 +627,7 @@ const OrderDetails = () => {
                 {detailOfOrder.data.paymentMethod.description}
               </Text>
 
-              {detailOfOrder.data.transferUrl && (
+              {detailOfOrder?.data?.transferUrl && (
                 <View style={styles.transferProofContainer}>
                   <Text style={styles.transferProofLabel}>
                     <FormattedMessage

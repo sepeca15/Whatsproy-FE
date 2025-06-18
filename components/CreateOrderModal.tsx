@@ -8,6 +8,7 @@ import {
   Center,
   HStack,
   Alert,
+  Avatar,
 } from "native-base";
 import InputField from "@/components/InputField";
 import { useUser } from "@/hooks/redux/useUser";
@@ -31,17 +32,11 @@ import {
   ID_TIPOSERVICIO_RESERVA,
   TipoServicioType,
 } from "@/services/api/tiposervicio/tiposervicio.type";
-import {
-  InfoLineDTO,
-} from "@/services/api/dateOrder/dataOrder.type";
+import { InfoLineDTO } from "@/services/api/dateOrder/dataOrder.type";
 import { DEFAULT_ESTADO_CREADO } from "@/services/api/estado/estado.type";
 import GlobalModal from "./Modal";
 import { useToastContext } from "@/contexts/ToastContext";
-import {
-  filterOnlyHours,
-  getHourNumber,
-  removeAmPm,
-} from "@/utils/date";
+import { filterOnlyHours, getHourNumber, removeAmPm } from "@/utils/date";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import TimePicker from "./TimePicker";
 import { useIntl } from "react-intl";
@@ -90,7 +85,7 @@ const CreateOrderModal = ({
 }: IProps) => {
   const { showToast } = useToastContext();
   const { user } = useUser();
-  const { handleAddNewOrder } = useHomeData()
+  const { handleAddNewOrder } = useHomeData();
   const intl = useIntl();
   const [form, setForm] = React.useState({
     ...initialValues,
@@ -104,7 +99,7 @@ const CreateOrderModal = ({
   const [selectedProductsIds, setSelectedProductsIds] = React.useState<
     string[]
   >([]);
-  
+
   const [loadingNextDateAvailable, setLoadingNextDateAvailable] =
     React.useState(false);
   const [prodCant, setProdCant] = React.useState<prodItems[]>([]);
@@ -130,25 +125,28 @@ const CreateOrderModal = ({
       const data = await api.dataOrder.getAll();
 
       setInfoLines(
-        data?.filter((infoline: InfoLineDTO) => {
-          if (infoline.id_tipo_servicio === user.tipo_servicio) {
-            return true;
-          } else {
-            return false;
-          }
-        })
+        data
+          ?.filter((infoline: InfoLineDTO) => {
+            if (infoline.id_tipo_servicio === user.tipo_servicio) {
+              return true;
+            } else {
+              return false;
+            }
+          })
           .map((infoline: InfoLineDTO) => {
-            if (infoline.nombre === "Fecha y Hora" && tipoServicio === TipoServicio.RESERVA) {
+            if (
+              infoline.nombre === "Fecha y Hora" &&
+              tipoServicio === TipoServicio.RESERVA
+            ) {
               return {
                 ...infoline,
                 show: false,
-              }
+              };
             }
             return {
               ...infoline,
               show: true,
-            }
-
+            };
           })
       );
     } catch (error) {
@@ -160,10 +158,8 @@ const CreateOrderModal = ({
     try {
       setLoadingClients(true);
       const resp = await findClientsWithQuery(query, user?.id_empresa);
-      console.log('la ressp de clients es', resp);
-      
-      if (resp.data) {
-        setClients(resp.data);
+      if (resp) {
+        setClients(resp);
       }
     } catch (error) {
       console.error("error loading clients");
@@ -192,13 +188,16 @@ const CreateOrderModal = ({
     if (tipoServicio === TipoServicio.RESERVA && !defaultDate) {
       errors["date"] = "Debes agregar al menos un producto";
     }
-    infoLines.filter((itm) => itm?.show).forEach((infoline) => {
-      if (infoline) {
-        if (infoline?.requerido && !form.infoLinesJson[infoline.nombre]) {
-          errors[infoline.nombre] = `El campo ${infoline.nombre} es requerido`;
+    infoLines
+      .filter((itm) => itm?.show)
+      .forEach((infoline) => {
+        if (infoline) {
+          if (infoline?.requerido && !form.infoLinesJson[infoline.nombre]) {
+            errors[infoline.nombre] =
+              `El campo ${infoline.nombre} es requerido`;
+          }
         }
-      }
-    });
+      });
 
     setErrors(errors);
     return Object.keys(errors)?.length === 0;
@@ -247,14 +246,16 @@ const CreateOrderModal = ({
         numberSender: form?.numberSender,
         infoLinesJson: JSON.stringify(form.infoLinesJson),
         estadoId: DEFAULT_ESTADO_CREADO.id,
-        fecha: form.fecha ? moment(form?.fecha).format("YYYY-MM-DD HH:mm") : moment(),
+        fecha: form.fecha
+          ? moment(form?.fecha).format("YYYY-MM-DD HH:mm")
+          : moment(),
       };
 
       if (tipoServicio === TipoServicio.RESERVA) {
         dataToSend.userId = selectedWorkerId;
         let infoLines = JSON.parse(dataToSend.infoLinesJson);
         const fechaMoment = moment.tz(infoLines["Fecha y Hora"], user.timeZone);
-        infoLines["Fecha y Hora"] = fechaMoment.format("YYYY-MM-DD HH:mm")
+        infoLines["Fecha y Hora"] = fechaMoment.format("YYYY-MM-DD HH:mm");
         dataToSend.infoLinesJson = JSON.stringify(infoLines);
       }
 
@@ -278,18 +279,24 @@ const CreateOrderModal = ({
 
       showToast({
         title: "Error creando evento",
-        description: error?.message?.data?.message ?? error?.message ?? "Error desconocido creando cuenta",
+        description:
+          error?.message?.data?.message ??
+          error?.message ??
+          "Error desconocido creando cuenta",
         status: "error",
       });
     } finally {
-      setLoadingCreate(false)
+      setLoadingCreate(false);
     }
   };
 
   const handleLoadNextAvaialbleDateForSignleDay = async () => {
     try {
       setLoadingNextDateAvailable(true);
-      const availableDates = await api.order.getNextDateAvailableForSingleDay(moment(defaultDate)?.format("YYYY-MM-DD"), selectedWorkerId);
+      const availableDates = await api.order.getNextDateAvailableForSingleDay(
+        moment(defaultDate)?.format("YYYY-MM-DD"),
+        selectedWorkerId
+      );
       if (availableDates && availableDates?.length > 0) {
         handleChangeValue("fecha", moment(availableDates[0]));
       } else {
@@ -307,7 +314,6 @@ const CreateOrderModal = ({
       setLoadingNextDateAvailable(false);
     }
   };
-
 
   const addClient = async (newClient: { nombre: string; telefono: string }) => {
     try {
@@ -413,23 +419,38 @@ const CreateOrderModal = ({
       ]}
       content={
         <>
-          {!allOcupped && <Center mb={4}>
-            <HStack space={2} alignItems="center">
-              <Ionicons name="calendar-outline" size={20} color={Colors.light.primary} />
-              <Text fontSize="md" fontWeight="medium" color="gray.800">
-                {intl.formatMessage({ id: "reservation.addTo" })}{" "}
-                <Text color={Colors.light.primary}>
-                  {moment(defaultDate).format("dddd, DD MMMM YYYY")}
+          {!allOcupped && (
+            <Center mb={4}>
+              <HStack space={2} alignItems="center">
+                <Ionicons
+                  name="calendar-outline"
+                  size={20}
+                  color={Colors.light.primary}
+                />
+                <Text fontSize="md" fontWeight="medium" color="gray.800">
+                  {intl.formatMessage({ id: "reservation.addTo" })}{" "}
+                  <Text color={Colors.light.primary}>
+                    {moment(defaultDate).format("dddd, DD MMMM YYYY")}
+                  </Text>
                 </Text>
-              </Text>
-            </HStack>
-          </Center>}
+              </HStack>
+            </Center>
+          )}
           {allOcupped && (
-            <Alert status="warning" variant="left-accent" borderRadius="md" mb={4}>
+            <Alert
+              status="warning"
+              variant="left-accent"
+              borderRadius="md"
+              mb={4}
+            >
               <HStack space={2} alignItems="center">
                 <Alert.Icon />
                 <Text fontSize="sm" color="gray.800">
-                  {intl.formatMessage({ id: "allTimesOccupied", defaultMessage: "No hay horarios disponibles para esta fecha." })}
+                  {intl.formatMessage({
+                    id: "allTimesOccupied",
+                    defaultMessage:
+                      "No hay horarios disponibles para esta fecha.",
+                  })}
                 </Text>
               </HStack>
             </Alert>
@@ -447,17 +468,16 @@ const CreateOrderModal = ({
                 occupiedTimes={
                   currentOrders
                     ? filterOnlyHours(
-                      currentOrders?.map((order) =>
-                        removeAmPm(order?.date ?? "")
+                        currentOrders?.map((order) =>
+                          removeAmPm(order?.date ?? "")
+                        )
                       )
-                    )
                     : []
                 }
                 checkAvailable={(hour: string) => availableDates.includes(hour)}
                 date={form?.fecha}
                 setDate={(val: any) => {
-                  handleChangeValue("fecha", val)
-
+                  handleChangeValue("fecha", val);
                 }}
               />
               <View
@@ -471,7 +491,9 @@ const CreateOrderModal = ({
                   name="sparkles-outline"
                   size={20}
                 />
-                <TouchableOpacity onPress={() => handleLoadNextAvaialbleDateForSignleDay()}>
+                <TouchableOpacity
+                  onPress={() => handleLoadNextAvaialbleDateForSignleDay()}
+                >
                   <Text
                     style={{
                       textDecorationLine: "underline",
@@ -518,11 +540,10 @@ const CreateOrderModal = ({
                       flex={1}
                       minWidth={0}
                     >
-                      <View
-                        width={36}
-                        height={36}
-                        borderRadius={6}
-                        backgroundColor="gray.400"
+                      <Avatar
+                        width={10}
+                        height={10}
+                        source={{ uri: prod?.imagen || undefined }}
                       />
                       <View
                         flexDirection="column"
@@ -537,8 +558,8 @@ const CreateOrderModal = ({
                           numberOfLines={1}
                           ellipsizeMode="tail"
                         >
+                          {cantidad && `(${cantidad && " x" + cantidad}) `}
                           {prod?.nombre ?? ""}
-                          {cantidad && " x" + cantidad}
                         </Text>
                         <Text
                           fontSize={12}

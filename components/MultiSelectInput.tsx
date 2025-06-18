@@ -214,9 +214,9 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
             return (
               <Badge
                 key={`badge-${index}`}
-                colorScheme="teal"
                 color={"white"}
                 variant="solid"
+                backgroundColor={Colors.light.secondary}
                 rounded="full"
                 px={3}
                 py={1}
@@ -251,10 +251,20 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
             borderRadius={"6"}
             fontWeight={700}
             accessibilityLabel={`Aceptar ${label}`}
+            disabled={loadingApi || loading}
           >
-            <Text fontWeight={500} color={"white"}>
-              {formatMessage({ id: "accept" })}
-            </Text>
+            {loadingApi || loading ? (
+              <Spinner
+                accessibilityElementsHidden={true}
+                style={{ marginTop: 0, marginBottom: 0 }}
+                color="white"
+                size={20}
+              />
+            ) : (
+              <Text fontWeight={500} color={"white"}>
+                {formatMessage({ id: "accept" })}
+              </Text>
+            )}
           </Button>,
         ]}
         content={
@@ -313,8 +323,9 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
                   size={24}
                   color={Colors.light.primary}
                 />
-                <Text ml={2}>{formatMessage({ id: "add" })} {" "}
-                  {label}</Text>
+                <Text ml={2}>
+                  {formatMessage({ id: "add" })} {label}
+                </Text>
               </Pressable>
             )}
             {isModalOpenAdd && withAdd && (
@@ -351,8 +362,9 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
                     borderRadius={6}
                     accessibilityLabel={`Crear ${label}`}
                     fontWeight={700}
+                    disabled={loadingApi || loading}
                   >
-                    {loadingApi ? (
+                    {loadingApi || loading ? (
                       <Spinner
                         accessibilityElementsHidden={true}
                         style={{ marginTop: 10, marginBottom: 10 }}
@@ -361,8 +373,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
                       />
                     ) : (
                       <Text fontWeight={500} color="white">
-                        {formatMessage({ id: "create" })} {" "}
-                        {label}
+                        {formatMessage({ id: "create" })} {label}
                       </Text>
                     )}
                   </Button>,

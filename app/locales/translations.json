@@ -119,7 +119,7 @@
     "error": "Error",
     "yes": "YES",
     "no": "NO",
-    "languageChanged": "Language changed ",
+    "languageChanged": "Lenguage changed ",
     "languageChangedDesc": "The language has been changed successfully.",
     "languageChangeError": "Error changing language, please try again.",
     "autoDetectEnabled": "The language will be automatically detected based on your device settings.",

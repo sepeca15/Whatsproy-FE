@@ -1,40 +1,49 @@
-
-import { useState, useEffect } from "react"
-import { View, Text, TouchableOpacity, FlatList, StyleSheet, Platform, Alert, ActivityIndicator } from "react-native"
-import { useRouter } from "expo-router"
-import { FormattedMessage, useIntl } from "react-intl"
-import { useColorScheme } from "react-native"
-import { Colors } from "@/constants/Colors"
-import Animated from "react-native-reanimated"
-import * as Animatable from "react-native-animatable"
-import Feather from "react-native-vector-icons/Feather"
-import MaterialIcons from "react-native-vector-icons/MaterialIcons"
-import AsyncStorage from "@react-native-async-storage/async-storage"
-import { useLocalization } from "../../../app/LocalizationContext" // Usa tu contexto existente
+import { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  StyleSheet,
+  Platform,
+  Alert,
+  ActivityIndicator,
+} from "react-native";
+import { useRouter } from "expo-router";
+import { FormattedMessage, useIntl } from "react-intl";
+import { useColorScheme } from "react-native";
+import { Colors } from "@/constants/Colors";
+import Animated from "react-native-reanimated";
+import * as Animatable from "react-native-animatable";
+import Feather from "react-native-vector-icons/Feather";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useLocalization } from "../../../app/LocalizationContext"; // Usa tu contexto existente
 import { globalStyles } from "@/components/globalStyles";
-import AntDesign from "react-native-vector-icons/AntDesign"
+import AntDesign from "react-native-vector-icons/AntDesign";
+import { useToastContext } from "@/contexts/ToastContext";
 
-const primaryColor = "#075e54"
-const secondaryColor = "#128c7e"
+const primaryColor = "#075e54";
+const secondaryColor = "#128c7e";
 
 interface Language {
-  code: "en" | "es" | "pt"
-  name: string
-  nativeName: string
-  flag: string
-  region: string
+  code: "en" | "es" | "pt";
+  name: string;
+  nativeName: string;
+  flag: string;
+  region: string;
 }
 
 const LanguageSettings = () => {
-  const intl = useIntl()
-  const router = useRouter()
-  const colorScheme = useColorScheme()
-  const isDark = colorScheme === "dark"
-  const colors = isDark ? Colors.dark : Colors.light
+  const intl = useIntl();
+  const router = useRouter();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
+  const colors = isDark ? Colors.dark : Colors.light;
 
-  const { locale, setLocale } = useLocalization()
-  const [isLoading, setIsLoading] = useState(false)
-  const [autoDetectEnabled, setAutoDetectEnabled] = useState(true)
+  const { locale, setLocale } = useLocalization();
+  const [isLoading, setIsLoading] = useState(false);
+  const [autoDetectEnabled, setAutoDetectEnabled] = useState(true);
 
   // Lista de idiomas disponibles (basada en tu sistema actual)
   const availableLanguages: Language[] = [
@@ -59,110 +68,116 @@ const LanguageSettings = () => {
       flag: "🇵🇹",
       region: "Português",
     },
-  ]
+  ];
+  const { showToast } = useToastContext();
 
   useEffect(() => {
-    loadLanguageSettings()
-  }, [])
+    loadLanguageSettings();
+  }, []);
 
   const loadLanguageSettings = async () => {
     try {
-      const autoDetect = await AsyncStorage.getItem("auto_detect_language")
-      setAutoDetectEnabled(autoDetect !== "false")
+      const autoDetect = await AsyncStorage.getItem("auto_detect_language");
+      setAutoDetectEnabled(autoDetect !== "false");
     } catch (error) {
-      console.error("Error loading language settings:", error)
+      console.error("Error loading language settings:", error);
     }
-  }
+  };
 
   const handleLanguageChange = async (languageCode: "en" | "es" | "pt") => {
-    setIsLoading(true)
+    setIsLoading(true);
 
     try {
       // Usar el setLocale de tu contexto existente
-      await setLocale(languageCode)
+      await setLocale(languageCode);
 
       // Marcar que se seleccionó manualmente
-      await AsyncStorage.setItem("manual_language_override", languageCode)
-      await AsyncStorage.setItem("auto_detect_language", "false")
+      await AsyncStorage.setItem("manual_language_override", languageCode);
+      await AsyncStorage.setItem("auto_detect_language", "false");
 
-      setAutoDetectEnabled(false)
+      setAutoDetectEnabled(false);
 
-      // Mostrar confirmación
-      Alert.alert(
-        intl.formatMessage({
+      showToast({
+        status: "success",
+        title: intl.formatMessage({
           id: "languageChanged",
           defaultMessage: "Idioma cambiado",
         }),
-        intl.formatMessage({
+        description: intl.formatMessage({
           id: "languageChangedDesc",
           defaultMessage: "El idioma se ha cambiado correctamente.",
         }),
-        [
-          {
-            text: intl.formatMessage({
-              id: "ok",
-              defaultMessage: "OK",
-            }),
-            onPress: () => {
-              router.back()
-            },
-          },
-        ],
-      )
+      });
     } catch (error) {
-      console.error("Error saving language:", error)
-      Alert.alert(
-        intl.formatMessage({
-          id: "error",
-          defaultMessage: "Error",
-        }),
-        intl.formatMessage({
+      console.error("Error saving language:", error);
+      showToast({
+        status: "error",
+        title: intl.formatMessage({
           id: "languageChangeError",
-          defaultMessage: "No se pudo cambiar el idioma. Inténtalo de nuevo.",
+          defaultMessage: "Idioma cambiado",
         }),
-      )
+      });
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleAutoDetectToggle = async () => {
     try {
-      const newAutoDetectState = !autoDetectEnabled
-      await AsyncStorage.setItem("auto_detect_language", newAutoDetectState.toString())
-      setAutoDetectEnabled(newAutoDetectState)
+      const newAutoDetectState = !autoDetectEnabled;
+      await AsyncStorage.setItem(
+        "auto_detect_language",
+        newAutoDetectState.toString()
+      );
+      setAutoDetectEnabled(newAutoDetectState);
 
       if (newAutoDetectState) {
         // Si se activa la detección automática, limpiar la selección manual
-        await AsyncStorage.removeItem("manual_language_override")
+        await AsyncStorage.removeItem("manual_language_override");
 
         // Detectar idioma del sistema y aplicarlo usando tu lógica existente
-        const sysLocale = Intl.DateTimeFormat().resolvedOptions().locale.split("-")[0]
-        const detectedLocale = ["en", "es", "pt"].includes(sysLocale) ? (sysLocale as "en" | "es" | "pt") : "en"
+        const sysLocale = Intl.DateTimeFormat()
+          .resolvedOptions()
+          .locale.split("-")[0];
+        const detectedLocale = ["en", "es", "pt"].includes(sysLocale)
+          ? (sysLocale as "en" | "es" | "pt")
+          : "en";
 
-        await setLocale(detectedLocale)
+        await setLocale(detectedLocale);
 
-        Alert.alert(
-          intl.formatMessage({
+        showToast({
+          status: "success",
+          title: intl.formatMessage({
             id: "autoDetectEnabled",
             defaultMessage: "Detección automática activada",
           }),
-          intl.formatMessage({
+          description: intl.formatMessage({
             id: "autoDetectEnabledDesc",
-            defaultMessage: "El idioma se detectará automáticamente según la configuración de tu dispositivo.",
+            defaultMessage:
+              "El idioma se detectará automáticamente según la configuración de tu dispositivo.",
           }),
-        )
+        });
       }
     } catch (error) {
-      console.error("Error toggling auto detect:", error)
+      console.error("Error toggling auto detect:", error);
     }
-  }
+  };
 
-  const renderLanguageItem = ({ item, index }: { item: Language; index: number }) => {
-    const isSelected = locale === item.code
+  const renderLanguageItem = ({
+    item,
+    index,
+  }: {
+    item: Language;
+    index: number;
+  }) => {
+    const isSelected = locale === item.code;
 
     return (
-      <Animatable.View animation="fadeInUp" duration={600} delay={100 + index * 50}>
+      <Animatable.View
+        animation="fadeInUp"
+        duration={600}
+        delay={100 + index * 50}
+      >
         <TouchableOpacity
           style={[
             styles.languageItem,
@@ -176,41 +191,60 @@ const LanguageSettings = () => {
           activeOpacity={0.7}
           disabled={isLoading || autoDetectEnabled}
         >
-          <View style={[styles.languageContent, { opacity: autoDetectEnabled ? 0.6 : 1 }]}>
+          <View
+            style={[
+              styles.languageContent,
+              { opacity: autoDetectEnabled ? 0.6 : 1 },
+            ]}
+          >
             <Text style={styles.flagEmoji}>{item.flag}</Text>
             <View style={styles.languageInfo}>
-              <Text style={[styles.languageName, { color: colors.text }]}>{item.nativeName}</Text>
+              <Text style={[styles.languageName, { color: colors.text }]}>
+                {item.nativeName}
+              </Text>
               <Text style={[styles.languageRegion, { color: colors.icon }]}>
                 {item.name} • {item.region}
               </Text>
             </View>
             <View style={styles.languageActions}>
               {isSelected && (
-                <View style={[styles.selectedIndicator, { backgroundColor: colors.primary }]}>
+                <View
+                  style={[
+                    styles.selectedIndicator,
+                    { backgroundColor: colors.primary },
+                  ]}
+                >
                   <Feather name="check" size={16} color="white" />
                 </View>
               )}
-              {isLoading && locale === item.code && <ActivityIndicator size="small" color={colors.primary} />}
+              {isLoading && locale === item.code && (
+                <ActivityIndicator size="small" color={colors.primary} />
+              )}
             </View>
           </View>
         </TouchableOpacity>
       </Animatable.View>
-    )
-  }
+    );
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
-      <Animated.View style={[styles.header, { backgroundColor: colors.primary }]}>
+      <Animated.View
+        style={[styles.header, { backgroundColor: colors.primary }]}
+      >
         <View style={styles.headerContent}>
           <TouchableOpacity
-                    style={globalStyles.backButton}
-                    onPress={() => router.back()}
-                >
-                    <AntDesign name="arrowleft" size={24} color="white" />
-                </TouchableOpacity>
+            style={globalStyles.backButton}
+            onPress={() => router.back()}
+          >
+            <AntDesign name="arrowleft" size={24} color="white" />
+          </TouchableOpacity>
           <Text style={styles.headerTitle}>
-            <FormattedMessage id="languageSettings" defaultMessage="Configuración de Idioma" />
+            <FormattedMessage
+              id="languageSettings"
+              defaultMessage="Configuración de Idioma"
+            />
           </Text>
         </View>
       </Animated.View>
@@ -227,16 +261,37 @@ const LanguageSettings = () => {
             <Animatable.View
               animation="fadeInDown"
               duration={800}
-              style={[styles.currentLanguageContainer, { backgroundColor: isDark ? "#1e1e1e" : "#fff" }]}
+              style={[
+                styles.currentLanguageContainer,
+                { backgroundColor: isDark ? "#1e1e1e" : "#fff" },
+              ]}
             >
               <View style={styles.currentLanguageContent}>
-                <MaterialIcons name="language" size={24} color={colors.primary} />
+                <MaterialIcons
+                  name="language"
+                  size={24}
+                  color={colors.primary}
+                />
                 <View style={styles.currentLanguageInfo}>
-                  <Text style={[styles.currentLanguageTitle, { color: colors.text }]}>
-                    <FormattedMessage id="currentLanguage" defaultMessage="Idioma Actual" />
+                  <Text
+                    style={[
+                      styles.currentLanguageTitle,
+                      { color: colors.text },
+                    ]}
+                  >
+                    <FormattedMessage
+                      id="currentLanguage"
+                      defaultMessage="Idioma Actual"
+                    />
                   </Text>
-                  <Text style={[styles.currentLanguageValue, { color: colors.primary }]}>
-                    {availableLanguages.find((lang) => lang.code === locale)?.nativeName || locale.toUpperCase()}
+                  <Text
+                    style={[
+                      styles.currentLanguageValue,
+                      { color: colors.primary },
+                    ]}
+                  >
+                    {availableLanguages.find((lang) => lang.code === locale)
+                      ?.nativeName || locale.toUpperCase()}
                   </Text>
                 </View>
               </View>
@@ -247,17 +302,37 @@ const LanguageSettings = () => {
               animation="fadeInDown"
               duration={800}
               delay={100}
-              style={[styles.autoDetectContainer, { backgroundColor: isDark ? "#1e1e1e" : "#fff" }]}
+              style={[
+                styles.autoDetectContainer,
+                { backgroundColor: isDark ? "#1e1e1e" : "#fff" },
+              ]}
             >
               <View style={styles.autoDetectContent}>
                 <View style={styles.autoDetectInfo}>
-                  <Feather name="smartphone" size={24} color={colors.secondary} />
+                  <Feather
+                    name="smartphone"
+                    size={24}
+                    color={colors.secondary}
+                  />
                   <View style={styles.autoDetectText}>
-                    <Text style={[styles.autoDetectTitle, { color: colors.text }]}>
-                      <FormattedMessage id="autoDetectLanguage" defaultMessage="Detección Automática" />
+                    <Text
+                      style={[styles.autoDetectTitle, { color: colors.text }]}
+                    >
+                      <FormattedMessage
+                        id="autoDetectLanguage"
+                        defaultMessage="Detección Automática"
+                      />
                     </Text>
-                    <Text style={[styles.autoDetectDescription, { color: colors.icon }]}>
-                      <FormattedMessage id="autoDetectLanguageDesc" defaultMessage="Usar idioma del dispositivo" />
+                    <Text
+                      style={[
+                        styles.autoDetectDescription,
+                        { color: colors.icon },
+                      ]}
+                    >
+                      <FormattedMessage
+                        id="autoDetectLanguageDesc"
+                        defaultMessage="Usar idioma del dispositivo"
+                      />
                     </Text>
                   </View>
                 </View>
@@ -265,7 +340,9 @@ const LanguageSettings = () => {
                   style={[
                     styles.toggleButton,
                     {
-                      backgroundColor: autoDetectEnabled ? colors.primary : colors.icon + "30",
+                      backgroundColor: autoDetectEnabled
+                        ? colors.primary
+                        : colors.icon + "30",
                     },
                   ]}
                   onPress={handleAutoDetectToggle}
@@ -287,7 +364,10 @@ const LanguageSettings = () => {
             {/* Section Title */}
             <Animatable.View animation="fadeInUp" duration={800} delay={200}>
               <Text style={[styles.sectionTitle, { color: colors.text }]}>
-                <FormattedMessage id="availableLanguages" defaultMessage="Idiomas Disponibles" />
+                <FormattedMessage
+                  id="availableLanguages"
+                  defaultMessage="Idiomas Disponibles"
+                />
               </Text>
               <Text style={[styles.sectionSubtitle, { color: colors.icon }]}>
                 {autoDetectEnabled ? (
@@ -296,7 +376,10 @@ const LanguageSettings = () => {
                     defaultMessage="La detección automática está activa. Desactívala para seleccionar manualmente."
                   />
                 ) : (
-                  <FormattedMessage id="selectLanguageManually" defaultMessage="Selecciona tu idioma preferido" />
+                  <FormattedMessage
+                    id="selectLanguageManually"
+                    defaultMessage="Selecciona tu idioma preferido"
+                  />
                 )}
               </Text>
             </Animatable.View>
@@ -304,8 +387,8 @@ const LanguageSettings = () => {
         )}
       />
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -466,6 +549,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-})
+});
 
-export default LanguageSettings
+export default LanguageSettings;

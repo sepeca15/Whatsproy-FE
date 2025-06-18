@@ -6,6 +6,7 @@ export interface Producto {
   descripcion: string;
   plazoDuracionEstimadoMinutos: number;
   disponible: boolean;
+  imagen: string;
 }
 
 export type UpdatePricesDto = {
