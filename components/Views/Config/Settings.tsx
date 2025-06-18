@@ -1,50 +1,52 @@
-import { View, Text, StatusBar, FlatList } from "react-native";
-import { useRouter } from "expo-router";
-import Feather from "react-native-vector-icons/Feather";
-import Entypo from "react-native-vector-icons/Entypo";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import IonIcons from "react-native-vector-icons/Ionicons";
-import { FormattedMessage, useIntl } from "react-intl";
-import { useColorScheme } from "react-native";
-import { Colors } from "@/constants/Colors";
-import Animated from "react-native-reanimated";
-import styles from "./SettingsStyles";
-import SettingCard from "@/hooks/settingsCards/SettingCard";
-import * as Animatable from "react-native-animatable";
-import { useUser } from "@/hooks/redux/useUser";
-import { ID_TIPOSERVICIO_DELIVERY, ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+"use client"
+
+import { View, Text, FlatList } from "react-native"
+import { useRouter } from "expo-router"
+import Feather from "react-native-vector-icons/Feather"
+import Entypo from "react-native-vector-icons/Entypo"
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5"
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
+import IonIcons from "react-native-vector-icons/Ionicons"
+import { FormattedMessage, useIntl } from "react-intl"
+import { useColorScheme } from "react-native"
+import { Colors } from "@/constants/Colors"
+import Animated from "react-native-reanimated"
+import styles from "./SettingsStyles"
+import SettingCard from "@/hooks/settingsCards/SettingCard"
+import * as Animatable from "react-native-animatable"
+import { useUser } from "@/hooks/redux/useUser"
+import { ID_TIPOSERVICIO_DELIVERY } from "@/services/api/tiposervicio/tiposervicio.type"
+import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 
 const Settings = () => {
-  const intl = useIntl();
-  const router = useRouter();
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === "dark";
-  const colors = isDark ? Colors.dark : Colors.light;
+  const intl = useIntl()
+  const router = useRouter()
+  const colorScheme = useColorScheme()
+  const isDark = colorScheme === "dark"
+  const colors = isDark ? Colors.dark : Colors.light
 
-  const { user } = useUser();
-  const isAdmin = user?.isAdmin;
-  const isDelivery = user?.tipo_servicio === ID_TIPOSERVICIO_DELIVERY;
+  const { user } = useUser()
+  const isAdmin = user?.isAdmin
+  const isDelivery = user?.tipo_servicio === ID_TIPOSERVICIO_DELIVERY
 
   const settingsPage = [
     ...(user?.isSuperAdmin
       ? [
-        {
-          title: intl.formatMessage({
-            id: "companies",
-            defaultMessage: "Companies",
-          }),
-          href: "/(tabs)/companies",
-          description: intl.formatMessage({
-            id: "companiesDesc",
-            defaultMessage: "Manage companies and deploy its",
-          }),
-          icon: <Feather size={22} color={"white"} name="list" />,
-        },
-      ]
+          {
+            title: intl.formatMessage({
+              id: "companies",
+              defaultMessage: "Companies",
+            }),
+            href: "/(tabs)/companies",
+            description: intl.formatMessage({
+              id: "companiesDesc",
+              defaultMessage: "Manage companies and deploy its",
+            }),
+            icon: <Feather size={22} color={"white"} name="list" />,
+          },
+        ]
       : []),
-       {
+    {
       title: intl.formatMessage({
         id: "helpSupport",
         defaultMessage: "Ayuda y Soporte",
@@ -68,76 +70,84 @@ const Settings = () => {
       }),
       icon: <Feather size={22} color={"white"} name="settings" />,
     },
-    ...(isAdmin ? [{
-      title: intl.formatMessage({
-        id: "subscription ",
-        defaultMessage: "Subscription",
-      }),
-      href: "/(tabs)/subscriptions",
-      description: intl.formatMessage({
-        id: "manageSubscription",
-        defaultMessage: "Manage your working hours and preferences",
-      }),
-      icon: <Entypo size={22} color={"white"} name="wallet" />,
-    },
-    {
-      title: intl.formatMessage({
-        id: "schedules",
-        defaultMessage: "Schedules",
-      }),
-      href: "/(tabs)/schedules",
-      description: intl.formatMessage({
-        id: "manageSchedules",
-        defaultMessage: "Set your business hours and availability",
-      }),
-      icon: <Feather size={22} color={"white"} name="clock" />,
-    }
-    ] : []),
-    ...(isAdmin ? [{
-      title: intl.formatMessage({ id: "users", defaultMessage: "Users" }),
-      href: "/(tabs)/usuarios",
-      description: intl.formatMessage({
-        id: "createUsers",
-        defaultMessage: "Create and manage users",
-      }),
-      icon: <FontAwesome5 name="users" size={22} color={"white"} />,
-    },
-    {
-      title: intl.formatMessage({ id: "status", defaultMessage: "Status" }),
-      href: "/(tabs)/status",
-      description: intl.formatMessage({
-        id: "statusDescription",
-        defaultMessage: "View and manage statuses",
-      }),
-      icon: (
-        <MaterialCommunityIcons name="list-status" size={22} color={"white"} />
-      ),
-    },
-    {
-      title: intl.formatMessage({
-        id: "orderData",
-        defaultMessage: "Order Data",
-      }),
-      href: "/(tabs)/datosPedido",
-      description: intl.formatMessage({
-        id: "orderDataDescription",
-        defaultMessage: "Manage order-related data",
-      }),
-      icon: <IonIcons size={22} color={"white"} name="newspaper-outline" />,
-    },
-    ...(isAdmin ? [{
-      title: intl.formatMessage({
-        id: "priceAdjustment",
-        defaultMessage: "Price Adjustment",
-      }),
-      href: "/(tabs)/price-adjustment",
-      description: intl.formatMessage({
-        id: "priceAdjustmentDesc",
-        defaultMessage: "Adjust product prices globally or by category",
-      }),
-      icon: <MaterialIcons size={22} color={"white"} name="price-change" />,
-    }] : []),
-    ] : []),
+    ...(isAdmin
+      ? [
+          {
+            title: intl.formatMessage({
+              id: "subscription ",
+              defaultMessage: "Subscription",
+            }),
+            href: "/(tabs)/subscriptions",
+            description: intl.formatMessage({
+              id: "manageSubscription",
+              defaultMessage: "Manage your working hours and preferences",
+            }),
+            icon: <Entypo size={22} color={"white"} name="wallet" />,
+          },
+          {
+            title: intl.formatMessage({
+              id: "schedules",
+              defaultMessage: "Schedules",
+            }),
+            href: "/(tabs)/schedules",
+            description: intl.formatMessage({
+              id: "manageSchedules",
+              defaultMessage: "Set your business hours and availability",
+            }),
+            icon: <Feather size={22} color={"white"} name="clock" />,
+          },
+        ]
+      : []),
+    ...(isAdmin
+      ? [
+          {
+            title: intl.formatMessage({ id: "users", defaultMessage: "Users" }),
+            href: "/(tabs)/usuarios",
+            description: intl.formatMessage({
+              id: "createUsers",
+              defaultMessage: "Create and manage users",
+            }),
+            icon: <FontAwesome5 name="users" size={22} color={"white"} />,
+          },
+          {
+            title: intl.formatMessage({ id: "status", defaultMessage: "Status" }),
+            href: "/(tabs)/status",
+            description: intl.formatMessage({
+              id: "statusDescription",
+              defaultMessage: "View and manage statuses",
+            }),
+            icon: <MaterialCommunityIcons name="list-status" size={22} color={"white"} />,
+          },
+          {
+            title: intl.formatMessage({
+              id: "orderData",
+              defaultMessage: "Order Data",
+            }),
+            href: "/(tabs)/datosPedido",
+            description: intl.formatMessage({
+              id: "orderDataDescription",
+              defaultMessage: "Manage order-related data",
+            }),
+            icon: <IonIcons size={22} color={"white"} name="newspaper-outline" />,
+          },
+          ...(isAdmin
+            ? [
+                {
+                  title: intl.formatMessage({
+                    id: "priceAdjustment",
+                    defaultMessage: "Price Adjustment",
+                  }),
+                  href: "/(tabs)/price-adjustment",
+                  description: intl.formatMessage({
+                    id: "priceAdjustmentDesc",
+                    defaultMessage: "Adjust product prices globally or by category",
+                  }),
+                  icon: <MaterialIcons size={22} color={"white"} name="price-change" />,
+                },
+              ]
+            : []),
+        ]
+      : []),
     {
       title: intl.formatMessage({
         id: "privacySecurity",
@@ -160,15 +170,20 @@ const Settings = () => {
         id: "categoriesDesc",
         defaultMessage: "Organize and manage categories",
       }),
-      icon: (
-        <MaterialCommunityIcons
-          size={22}
-          color={"white"}
-          name="format-list-bulleted-type"
-        />
-      ),
+      icon: <MaterialCommunityIcons size={22} color={"white"} name="format-list-bulleted-type" />,
     },
-   
+    {
+      title: intl.formatMessage({
+        id: "dynamicMenu",
+        defaultMessage: "Constructor de Menú",
+      }),
+      href: "/(tabs)/menu-builder",
+      description: intl.formatMessage({
+        id: "dynamicMenuDesc",
+        defaultMessage: "Crea y personaliza tu menú con vista previa en tiempo real",
+      }),
+      icon: <MaterialCommunityIcons size={22} color={"white"} name="menu" />,
+    },
     {
       title: intl.formatMessage({
         id: "cierreProvisorioTittleSettings",
@@ -203,32 +218,30 @@ const Settings = () => {
         id: "trustedNumberSettingsDesc",
         defaultMessage: "Activa numeros con los cuales no se activará el bot",
       }),
-      icon: (
-        <IonIcons size={22} color={"white"} name="phone-portrait-outline" />
-      ),
+      icon: <IonIcons size={22} color={"white"} name="phone-portrait-outline" />,
     },
-    ...(isDelivery && isAdmin ? [{
-      title: intl.formatMessage({
-        id: "paymentMethods",
-        defaultMessage: "Payment Methods",
-      }),
-      href: "/(tabs)/paymentMethods",
-      description: intl.formatMessage({
-        id: "paymentMethodsDesc",
-        defaultMessage: "Choose your payment methods, enable and edit it",
-      }),
-      icon: (
-        <IonIcons size={22} color={"white"} name="card-outline" />
-      ),
-    }] : [])
-  ];
+    ...(isDelivery && isAdmin
+      ? [
+          {
+            title: intl.formatMessage({
+              id: "paymentMethods",
+              defaultMessage: "Payment Methods",
+            }),
+            href: "/(tabs)/paymentMethods",
+            description: intl.formatMessage({
+              id: "paymentMethodsDesc",
+              defaultMessage: "Choose your payment methods, enable and edit it",
+            }),
+            icon: <IonIcons size={22} color={"white"} name="card-outline" />,
+          },
+        ]
+      : []),
+  ]
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
-      <Animated.View
-        style={[styles.header, { backgroundColor: colors.primary }]}
-      >
+      <Animated.View style={[styles.header, { backgroundColor: colors.primary }]}>
         <View style={styles.headerContent}>
           <Text style={styles.headerTitle}>
             <FormattedMessage id="settings" />
@@ -241,12 +254,7 @@ const Settings = () => {
         data={settingsPage}
         keyExtractor={(item, index) => item.href || index.toString()}
         renderItem={({ item, index }) => (
-          <Animatable.View
-            animation="fadeInUp"
-            duration={800}
-            delay={100 + index * 50}
-            style={styles.metricsContainer}
-          >
+          <Animatable.View animation="fadeInUp" duration={800} delay={100 + index * 50} style={styles.metricsContainer}>
             <SettingCard
               item={item}
               index={index}
@@ -261,7 +269,7 @@ const Settings = () => {
         showsVerticalScrollIndicator={false}
       />
     </View>
-  );
-};
+  )
+}
 
-export default Settings;
+export default Settings
