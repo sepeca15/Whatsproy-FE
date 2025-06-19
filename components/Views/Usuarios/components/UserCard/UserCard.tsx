@@ -4,7 +4,7 @@ import type React from "react"
 import { useRef } from "react"
 import { View, Text, TouchableOpacity, Animated, Alert } from "react-native"
 import { Ionicons, MaterialIcons, Feather } from "@expo/vector-icons"
-import { Image } from "expo-image"
+import { Image } from 'expo-image';
 import type { IUser } from "../../UsuariosType"
 import { Colors } from "@/constants/Coloresuser"
 import { styles } from "./UserCardStyles"
