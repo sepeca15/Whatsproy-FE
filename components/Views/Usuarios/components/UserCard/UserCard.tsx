@@ -64,10 +64,10 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, currentUser
         styles.container,
         {
           transform: [{ scale: scaleAnim }],
-          shadowOffset: {
-            width: 0,
-            height: shadowAnim,
-          },
+          // shadowOffset: {
+          //   width: 0,
+          //   height: shadowAnim,
+          // },
         },
       ]}
     >
