@@ -12,6 +12,16 @@ import type { IUser, IUserInfo } from "./UsuariosType"
 import { Colors } from "@/constants/Coloresuser"
 import { styles } from "./UsuariosStyles"
 
+
+console.log('=== DEBUGGING IMPORTS ===')
+console.log('UserCard:', UserCard)
+console.log('CreateUserModal:', CreateUserModal)
+console.log('EditUserModal:', EditUserModal)
+console.log('UserCard type:', typeof UserCard)
+console.log('CreateUserModal type:', typeof CreateUserModal)
+console.log('EditUserModal type:', typeof EditUserModal)
+console.log('========================')
+
 const mockUsers: IUser[] = [
   {
     id: 1,
