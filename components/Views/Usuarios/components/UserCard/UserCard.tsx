@@ -1,126 +1,185 @@
-import React, { useRef } from "react"
-import { View, Text, Animated, TouchableOpacity } from "react-native"
-import styles from "./UserCardStyles"
-import FatherIcon from "react-native-vector-icons/Feather"
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
-import { IUser } from "../../UsuariosType";
-import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmAction"
-import { useUser } from "@/hooks/redux/useUser"
-import { useIntl } from "react-intl"
-import { Image } from "native-base"
-import { LinearGradient } from "expo-linear-gradient"
-import { Colors } from "@/constants/Colors"
+"use client"
 
-interface IUserCard {
-  infoUser: IUser
-  deleteUser: (id: number) => void
-  selectEditUser: (user: any) => void
+import type React from "react"
+import { useRef } from "react"
+import { View, Text, TouchableOpacity, Animated, Alert } from "react-native"
+import { LinearGradient } from "expo-linear-gradient"
+import { Ionicons, MaterialIcons, Feather } from "@expo/vector-icons"
+import { Image } from "expo-image"
+import type { IUser } from "../../UsuariosType"
+import { Colors } from "@/constants/Coloresuser"
+import { styles } from "./UserCardStyles"
+
+interface UserCardProps {
+  user: IUser
+  onEdit: (user: IUser) => void
+  onDelete: (userId: number) => void
+  currentUserId: number
   allowManage: boolean
 }
 
-const UserCard = ({ infoUser, deleteUser, selectEditUser, allowManage }: IUserCard) => {
-  const [stateModal, setStateModal] = React.useState<boolean>(false)
-  const { user } = useUser()
-  const intl = useIntl()
-
+const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, currentUserId, allowManage }) => {
   const scaleAnim = useRef(new Animated.Value(1)).current
   const shadowAnim = useRef(new Animated.Value(2)).current
+  const isCurrentUser = user.id === currentUserId
 
-  const toggleModal = () => {
-    setStateModal((prevState) => !prevState)
+  const animatePress = () => {
+    Animated.sequence([
+      Animated.timing(scaleAnim, {
+        toValue: 0.95,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scaleAnim, {
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start()
   }
 
-  const isActive = infoUser.activo
-  const statusColor = isActive ? "#4CAF50" : "#FF5722"
-  const isCurrentUser = user.id === infoUser.id
+  const handleDelete = () => {
+    Alert.alert("Eliminar Usuario", `¿Estás seguro de que deseas eliminar a ${user.nombre}?`, [
+      { text: "Cancelar", style: "cancel" },
+      {
+        text: "Eliminar",
+        style: "destructive",
+        onPress: () => onDelete(user.id),
+      },
+    ])
+  }
+
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((word) => word.charAt(0))
+      .join("")
+      .toUpperCase()
+      .slice(0, 2)
+  }
 
   return (
-    <View style={styles.containerOuter}>
-      <Animated.View
-        style={[
-          styles.container,
-          {
-            transform: [{ scale: scaleAnim }],
-            shadowOffset: {
-              width: 0,
-              height: shadowAnim,
-            },
-            shadowOpacity: 0.2,
-            shadowRadius: 4,
+    <Animated.View
+      style={[
+        styles.container,
+        {
+          transform: [{ scale: scaleAnim }],
+          shadowOffset: {
+            width: 0,
+            height: shadowAnim,
           },
-        ]}
-      >
+        },
+      ]}
+    >
+      <TouchableOpacity activeOpacity={0.9} onPress={animatePress} style={styles.cardContent}>
+        {/* Current User Badge */}
         {isCurrentUser && (
           <View style={styles.currentUserBadge}>
-            <Text style={styles.currentUserText}>{intl.formatMessage({ id: "me", defaultMessage: "Me" })}</Text>
+            <Text style={styles.currentUserText}>Tú</Text>
           </View>
         )}
 
-        <View style={styles.data}>
-          <View style={styles.row}>
-            <View style={styles.avatarContainer}>
-              {infoUser.image ? (
-                <Image alt="User avatar" source={{ uri: infoUser.image }} style={styles.avatarImage} />
-              ) : (
-                <LinearGradient colors={[Colors.light.primary, Colors.light.secondary]} style={styles.avatarGradient}>
-                  <Text style={styles.avatarText}>{infoUser.nombre.charAt(0).toUpperCase()}</Text>
-                </LinearGradient>
-              )}
-            </View>
+        {/* Header with Avatar and Info */}
+        <View style={styles.header}>
+          <View style={styles.avatarContainer}>
+            {user.image ? (
+              <Image source={{ uri: user.image }} style={styles.avatar} contentFit="cover" />
+            ) : (
+              <LinearGradient
+                colors={Colors.gradients.avatar}
+                style={styles.avatarGradient}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+              >
+                <Text style={styles.avatarText}>{getInitials(user.nombre)}</Text>
+              </LinearGradient>
+            )}
 
-            <View style={styles.userInfo}>
-              <Text style={styles.textName}>
-                {isCurrentUser ? intl.formatMessage({ id: "me", defaultMessage: "Me" }) : infoUser.nombre}
+            {/* Status Indicator */}
+            <View
+              style={[
+                styles.statusIndicator,
+                {
+                  backgroundColor: user.activo ? Colors.light.success : Colors.light.error,
+                },
+              ]}
+            />
+          </View>
+
+          <View style={styles.userInfo}>
+            <Text style={styles.userName} numberOfLines={1}>
+              {user.nombre}
+            </Text>
+            <View style={styles.emailContainer}>
+              <MaterialIcons name="email" size={14} color={Colors.light.textSecondary} />
+              <Text style={styles.userEmail} numberOfLines={1}>
+                {user.correo}
               </Text>
-              <Text style={styles.textCorreo}>{infoUser.correo}</Text>
-
-              <View style={[styles.statusBadge, { backgroundColor: `${statusColor}20` }]}>
-                <View style={[styles.statusDot, { backgroundColor: statusColor }]} />
-                <Text style={[styles.statusText, { color: statusColor }]}>
-                  {isActive
-                    ? intl.formatMessage({ id: "active", defaultMessage: "Active" })
-                    : intl.formatMessage({ id: "inactive", defaultMessage: "Inactive" })}
-                </Text>
-              </View>
             </View>
           </View>
         </View>
 
-        {allowManage && (
-          <View style={styles.buttons}>
-            <TouchableOpacity onPress={() => selectEditUser(infoUser)} style={styles.buttonEdit} activeOpacity={0.7}>
-              <FatherIcon name="edit-2" size={14} color={"#000035"} />
-              <Text style={styles.textEdit}>{intl.formatMessage({ id: "edit", defaultMessage: "Edit" })}</Text>
+        {/* Status and Role Badges */}
+        <View style={styles.badgesContainer}>
+          <View
+            style={[
+              styles.statusBadge,
+              {
+                backgroundColor: user.activo ? `${Colors.light.success}20` : `${Colors.light.error}20`,
+              },
+            ]}
+          >
+            <View
+              style={[
+                styles.statusDot,
+                {
+                  backgroundColor: user.activo ? Colors.light.success : Colors.light.error,
+                },
+              ]}
+            />
+            <Text
+              style={[
+                styles.statusText,
+                {
+                  color: user.activo ? Colors.light.success : Colors.light.error,
+                },
+              ]}
+            >
+              {user.activo ? "Activo" : "Inactivo"}
+            </Text>
+          </View>
+
+          {user.isAdmin && (
+            <View style={styles.adminBadge}>
+              <Ionicons name="shield-checkmark" size={12} color={Colors.light.warning} />
+              <Text style={styles.adminText}>Admin</Text>
+            </View>
+          )}
+        </View>
+
+        {/* Action Buttons */}
+        {allowManage && !isCurrentUser && (
+          <View style={styles.actionsContainer}>
+            <TouchableOpacity style={styles.editButton} onPress={() => onEdit(user)} activeOpacity={0.7}>
+              <Feather name="edit-2" size={16} color={Colors.light.primary} />
+              <Text style={styles.editButtonText}>Editar</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              disabled={isCurrentUser}
-              onPress={toggleModal}
-              style={isCurrentUser ? styles.disabledDelete : styles.buttonDelete}
-              activeOpacity={0.7}
-            >
-              <MaterialCommunityIcons name="delete-empty" size={16} color={"white"} />
-              <Text style={styles.textDelete}>{intl.formatMessage({ id: "delete", defaultMessage: "Delete" })}</Text>
+            <TouchableOpacity style={styles.deleteButton} onPress={handleDelete} activeOpacity={0.7}>
+              <MaterialIcons name="delete-outline" size={16} color="white" />
+              <Text style={styles.deleteButtonText}>Eliminar</Text>
             </TouchableOpacity>
           </View>
-        )
-        }
-      </Animated.View>
+        )}
 
-      <ModalConfirmAction
-        isOpen={stateModal}
-        onContinue={() => deleteUser(infoUser.id)}
-        onClose={toggleModal}
-        message={intl.formatMessage({
-          id: "confirmDeleteUser",
-          defaultMessage: "Do you want to delete the selected user?",
-        })}
-        title={intl.formatMessage({
-          id: "deleteUser",
-          defaultMessage: "Delete User",
-        })}
-      />
-    </View>
+        {isCurrentUser && (
+          <View style={styles.currentUserIndicator}>
+            <Ionicons name="person" size={16} color={Colors.light.primary} />
+            <Text style={styles.currentUserIndicatorText}>Tu perfil</Text>
+          </View>
+        )}
+      </TouchableOpacity>
+    </Animated.View>
   )
 }
 

@@ -1,104 +1,139 @@
-import { Colors } from "@/constants/Colors";
-import { StyleSheet } from "react-native";
+import { StyleSheet } from "react-native"
+import { Colors } from "@/constants/Coloresuser"
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.light.background,
   },
-  scrollContainer: {
-    flexGrow: 1,
+  header: {
+    paddingTop: 60,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+  },
+  headerContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  closeButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
     justifyContent: "center",
   },
-  formContainer: {
-    width: "100%",
-    alignItems: "center",
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "white",
   },
-  imageContainer: {
-    position: "relative",
-    marginBottom: 20,
+  placeholder: {
+    width: 40,
   },
-  image: {
-    width: 80,
-    height: 80,
-    borderRadius: 60,
-    borderWidth: 1,
-    borderColor: Colors.light.primary,
+  content: {
+    flex: 1,
   },
-  imagePicker: {
-    position: "absolute",
-    right: 0,
-    bottom: 0,
-    backgroundColor: Colors.light.primary,
-    borderRadius: 20,
-    padding: 6,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+  form: {
+    padding: 20,
   },
-  title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    marginVertical: 20,
+  inputGroup: {
+    marginBottom: 24,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "600",
     color: Colors.light.text,
-    textAlign: "center",
+    marginBottom: 8,
   },
-  icon: {
-    marginRight: 10,
-    color: Colors.light.primary,
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: Colors.light.surface,
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderWidth: 1,
+    borderColor: Colors.light.border,
+  },
+  inputError: {
+    borderColor: Colors.light.error,
   },
   input: {
-    width: "100%",
-    height: 40,
-    color: "#333333",
-    fontSize: 12,
-    paddingHorizontal: 10,
-    borderRadius: 4,
+    flex: 1,
+    fontSize: 16,
+    color: Colors.light.text,
+    marginLeft: 12,
   },
-
-  placeholderText: {},
-  button: {
-    width: "100%",
-    height: 50,
-    borderRadius: 25,
-    justifyContent: "center",
+  errorText: {
+    fontSize: 14,
+    color: Colors.light.error,
+    marginTop: 4,
+  },
+  switchGroup: {
+    marginBottom: 20,
+  },
+  switchContainer: {
+    flexDirection: "row",
     alignItems: "center",
-    marginTop: 20,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    backgroundColor: Colors.light.surface,
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: Colors.light.border,
   },
-  buttonDisabled: {
-    opacity: 0.6,
+  switchIcon: {
+    marginRight: 12,
   },
-  buttonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
+  switchContent: {
+    flex: 1,
   },
-  buttonCreate: {
-    backgroundColor: "black",
-    borderRadius: 4,
-    width: 100,
+  switchLabel: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: Colors.light.text,
+    marginBottom: 2,
   },
-  marginCont: {
-    marginLeft: 6,
+  switchDescription: {
+    fontSize: 14,
+    color: Colors.light.textSecondary,
   },
-  focused: {
-    borderColor: "black",
-    backgroundColor: "#f2f2f2",
+  footer: {
+    flexDirection: "row",
+    padding: 20,
+    gap: 12,
+    borderTopWidth: 1,
+    borderTopColor: Colors.light.border,
+    backgroundColor: Colors.light.surface,
   },
-});
-
-export default styles;
+  cancelButton: {
+    flex: 1,
+    paddingVertical: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: Colors.light.border,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  cancelButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: Colors.light.textSecondary,
+  },
+  createButton: {
+    flex: 1,
+    borderRadius: 12,
+    overflow: "hidden",
+  },
+  createButtonGradient: {
+    paddingVertical: 16,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  createButtonText: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "white",
+  },
+})
