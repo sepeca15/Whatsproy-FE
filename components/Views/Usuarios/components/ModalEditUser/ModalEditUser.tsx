@@ -1,233 +1,202 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { TouchableOpacity, ScrollView, Image } from "react-native";
-import { FormControl, Input, Modal, Select } from "native-base";
-import { Ionicons, AntDesign, MaterialIcons } from "@expo/vector-icons";
-import * as ImagePicker from "expo-image-picker";
-import styles from "./ModalEditUserStyles";
-import api from "@/services/api/admin";
-import CustomButton from "@/components/CustomButton";
-import { useIntl } from "react-intl"; // Importa useIntl
-import useImagePicker from "@/utils/ImagePicker/useImagePicker";
-import { useToastContext } from "@/contexts/ToastContext";
-import GlobalModal from "@/components/Modal";
+"use client"
 
-interface IEditUser {
-  nombre: string;
-  apellido: string;
-  photo: string;
-  activo: boolean;
+import type React from "react"
+import { useState, useEffect } from "react"
+import {
+  Modal,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Switch,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from "react-native"
+import { LinearGradient } from "expo-linear-gradient"
+import { Ionicons, MaterialIcons } from "@expo/vector-icons"
+import type { IUser } from "../../UsuariosType"
+import { Colors } from "@/constants/Coloresuser"
+import { styles } from "./ModalEditUserStyles"
+interface EditUserModalProps {
+  visible: boolean
+  onClose: () => void
+  user: IUser
+  onUpdateUser: (user: IUser) => void
 }
 
-interface IModalCreateUser {
-  onToogleModal: () => void;
-  isOpen: boolean;
-  userInfo: any;
-  editUserSelected: (userId: number, userData: any) => void;
-}
+const EditUserModal: React.FC<EditUserModalProps> = ({ visible, onClose, user, onUpdateUser }) => {
+  const [formData, setFormData] = useState({
+    nombre: "",
+    correo: "",
+    activo: true,
+    isAdmin: false,
+  })
+  const [errors, setErrors] = useState<Record<string, string>>({})
 
-const ModalEditUser = ({
-  onToogleModal,
-  isOpen,
-  userInfo,
-  editUserSelected,
-}: IModalCreateUser) => {
-  const [formData, setFormData] = useState<IEditUser>(userInfo);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [loading, setLoading] = useState(false);
-  const intl = useIntl();
-  const { showToast } = useToastContext();
-
-  const [selectedImage, setSelectedImage] = useState<string | null>();
   useEffect(() => {
-    if (userInfo) {
-      setFormData(userInfo);
+    if (user) {
+      setFormData({
+        nombre: user.nombre,
+        correo: user.correo,
+        activo: user.activo,
+        isAdmin: user.isAdmin || false,
+      })
     }
-  }, [userInfo]);
+  }, [user])
 
-  const handleInputChange = useCallback(
-    (key: keyof IEditUser, value: string | boolean) => {
-      setFormData((prev) => ({ ...prev, [key]: value }));
-    },
-    []
-  );
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {}
 
-  const { pickImage } = useImagePicker({
-    toastErrorMessage: "Error al seleccionar la imagen",
-    onImagePicked: async ({ localUri, apiUrl }) => {
-      if (localUri) {
-        setSelectedImage(localUri.toString());
-      }
-
-      if (apiUrl) {
-        setFormData((prevData) => ({
-          ...prevData,
-          image: apiUrl,
-        }));
-      }
-    },
-  });
-
-  const handleImagePick = async () => {
-    try {
-      await pickImage(setFormData);
-    } catch (error) {
-      console.error("Error selecting image:", error);
-      showToast({
-        title: intl.formatMessage({ id: "errorSelectingImage" }),
-        status: "error",
-      });
-    } finally {
+    if (!formData.nombre.trim()) {
+      newErrors.nombre = "El nombre es requerido"
     }
-  };
 
-  const validate = (): boolean => {
-    const newErrors: { [key: string]: string } = {};
-    if (!formData.nombre)
-      newErrors.nombre = intl.formatMessage({
-        id: "modalValidName",
-        defaultMessage: "Please enter a valid name",
-      });
-    if (!formData.apellido)
-      newErrors.apellido = intl.formatMessage({
-        id: "modalValidLastName",
-        defaultMessage: "Please enter a valid last name",
-      });
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async () => {
-    console.log(validate());
-
-    if (!validate()) return;
-    setLoading(true);
-    try {
-      await editUserSelected(userInfo.id, formData);
-    } catch (error) {
-      console.error("Error updating user:", error);
-    } finally {
-      setLoading(false);
+    if (!formData.correo.trim()) {
+      newErrors.correo = "El email es requerido"
+    } else if (!/\S+@\S+\.\S+/.test(formData.correo)) {
+      newErrors.correo = "El email no es válido"
     }
-  };
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleSubmit = () => {
+    if (validateForm()) {
+      onUpdateUser({
+        ...user,
+        ...formData,
+      })
+      setErrors({})
+    }
+  }
+
+  const handleInputChange = (field: string, value: string | boolean) => {
+    setFormData((prev) => ({ ...prev, [field]: value }))
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: "" }))
+    }
+  }
 
   return (
-    <GlobalModal
-      label={intl.formatMessage({
-        id: "modalEditUser",
-        defaultMessage: "Edit User",
-      })}
-      content={
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <TouchableOpacity
-            onPress={handleImagePick}
-            style={styles.imageContainer}
-          >
-            <Image
-              source={{
-                uri:
-                  selectedImage ||
-                  "https://static.vecteezy.com/system/resources/previews/036/280/651/non_2x/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-illustration-vector.jpg",
-              }}
-              style={styles.image}
-            />
-            <Ionicons
-              name="camera"
-              size={16}
-              color="#fff"
-              style={styles.imagePicker}
-            />
+    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
+      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+        {/* Header */}
+        <LinearGradient colors={Colors.gradients.primary} style={styles.header}>
+          <View style={styles.headerContent}>
+            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+              <Ionicons name="close" size={24} color="white" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Editar Usuario</Text>
+            <View style={styles.placeholder} />
+          </View>
+        </LinearGradient>
+
+        {/* User Info Banner */}
+        <View style={styles.userInfoBanner}>
+          <Text style={styles.userInfoText}>Editando usuario: {user.nombre}</Text>
+          <Text style={styles.userInfoSubtext}>Los cambios se aplicarán inmediatamente</Text>
+        </View>
+
+        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+          {/* Form */}
+          <View style={styles.form}>
+            {/* Name Input */}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Nombre completo</Text>
+              <View style={[styles.inputContainer, errors.nombre && styles.inputError]}>
+                <Ionicons name="person-outline" size={20} color={Colors.light.textSecondary} />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Ingresa el nombre completo"
+                  value={formData.nombre}
+                  onChangeText={(text) => handleInputChange("nombre", text)}
+                  placeholderTextColor={Colors.light.textSecondary}
+                />
+              </View>
+              {errors.nombre && <Text style={styles.errorText}>{errors.nombre}</Text>}
+            </View>
+
+            {/* Email Input */}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Email</Text>
+              <View style={[styles.inputContainer, errors.correo && styles.inputError]}>
+                <MaterialIcons name="email" size={20} color={Colors.light.textSecondary} />
+                <TextInput
+                  style={styles.input}
+                  placeholder="usuario@empresa.com"
+                  value={formData.correo}
+                  onChangeText={(text) => handleInputChange("correo", text)}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  placeholderTextColor={Colors.light.textSecondary}
+                />
+              </View>
+              {errors.correo && <Text style={styles.errorText}>{errors.correo}</Text>}
+            </View>
+
+            {/* Status Switch */}
+            <View style={styles.switchGroup}>
+              <View style={styles.switchContainer}>
+                <View style={styles.switchIcon}>
+                  <Ionicons name="checkmark-circle" size={24} color={Colors.light.success} />
+                </View>
+                <View style={styles.switchContent}>
+                  <Text style={styles.switchLabel}>Usuario activo</Text>
+                  <Text style={styles.switchDescription}>El usuario puede acceder al sistema</Text>
+                </View>
+                <Switch
+                  value={formData.activo}
+                  onValueChange={(value) => handleInputChange("activo", value)}
+                  trackColor={{
+                    false: Colors.light.border,
+                    true: Colors.light.success,
+                  }}
+                  thumbColor="white"
+                />
+              </View>
+            </View>
+
+            {/* Admin Switch */}
+            <View style={styles.switchGroup}>
+              <View style={styles.switchContainer}>
+                <View style={styles.switchIcon}>
+                  <Ionicons name="shield-checkmark" size={24} color={Colors.light.warning} />
+                </View>
+                <View style={styles.switchContent}>
+                  <Text style={styles.switchLabel}>Permisos de administrador</Text>
+                  <Text style={styles.switchDescription}>Puede gestionar otros usuarios</Text>
+                </View>
+                <Switch
+                  value={formData.isAdmin}
+                  onValueChange={(value) => handleInputChange("isAdmin", value)}
+                  trackColor={{
+                    false: Colors.light.border,
+                    true: Colors.light.warning,
+                  }}
+                  thumbColor="white"
+                />
+              </View>
+            </View>
+          </View>
+        </ScrollView>
+
+        {/* Footer */}
+        <View style={styles.footer}>
+          <TouchableOpacity style={styles.cancelButton} onPress={onClose} activeOpacity={0.7}>
+            <Text style={styles.cancelButtonText}>Cancelar</Text>
           </TouchableOpacity>
 
-          <FormControl isInvalid={!!errors.nombre}>
-            <FormControl.Label>
-              {intl.formatMessage({
-                id: "modalName",
-                defaultMessage: "Name",
-              })}
-            </FormControl.Label>
-            <Input
-              placeholder={intl.formatMessage({
-                id: "modalEnterName",
-                defaultMessage: "Enter a name",
-              })}
-              value={formData.nombre}
-              onChangeText={(value) => handleInputChange("nombre", value)}
-              InputLeftElement={
-                <AntDesign
-                  name="user"
-                  size={16}
-                  color="gray"
-                  style={styles.marginCont}
-                />
-              }
-            />
-            <FormControl.ErrorMessage>{errors.nombre}</FormControl.ErrorMessage>
-          </FormControl>
+          <TouchableOpacity style={styles.updateButton} onPress={handleSubmit} activeOpacity={0.8}>
+            <LinearGradient colors={Colors.gradients.primary} style={styles.updateButtonGradient}>
+              <Text style={styles.updateButtonText}>Guardar Cambios</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+    </Modal>
+  )
+}
 
-          <FormControl isInvalid={!!errors.apellido}>
-            <FormControl.Label>
-              {intl.formatMessage({
-                id: "modalLastName",
-                defaultMessage: "Last Name",
-              })}
-            </FormControl.Label>
-            <Input
-              placeholder={intl.formatMessage({
-                id: "modalEnterLastName",
-                defaultMessage: "Enter a last name",
-              })}
-              value={formData.apellido}
-              onChangeText={(value) => handleInputChange("apellido", value)}
-              InputLeftElement={
-                <AntDesign
-                  name="user"
-                  size={16}
-                  color="gray"
-                  style={styles.marginCont}
-                />
-              }
-            />
-            <FormControl.ErrorMessage>
-              {errors.apellido}
-            </FormControl.ErrorMessage>
-          </FormControl>
-
-          <FormControl>
-            <FormControl.Label>
-              {intl.formatMessage({
-                id: "modalActive",
-                defaultMessage: "Active",
-              })}
-            </FormControl.Label>
-            <Select
-              borderRadius={8}
-              selectedValue={formData.activo ? "Si" : "No"}
-              onValueChange={(value) =>
-                handleInputChange("activo", value === "Si")
-              }
-              minWidth="100%"
-            >
-              <Select.Item label="Si" value="Si" />
-              <Select.Item label="No" value="No" />
-            </Select>
-          </FormControl>
-        </ScrollView>
-      }
-      onClose={onToogleModal}
-      isVisible={isOpen}
-      actions={[
-        <CustomButton
-          colorSpiner="white"
-          loading={loading}
-          borderRadius={20}
-          onPress={handleSubmit}
-          style={styles.buttonCreate}
-        >
-          {intl.formatMessage({ id: "modalSave", defaultMessage: "Save" })}
-        </CustomButton>,
-      ]}
-    />
-  );
-};
-
-export default ModalEditUser;
+export default EditUserModal

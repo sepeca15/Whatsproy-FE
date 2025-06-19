@@ -1,366 +1,189 @@
-import React, { useState, useEffect } from "react";
+"use client"
+
+import type React from "react"
+import { useState } from "react"
 import {
-  Pressable,
+  Modal,
   View,
   Text,
-  TouchableOpacity,
-  ScrollView,
-  Animated,
-  Image,
-} from "react-native";
-import styles from "./ModalCreateUserStyles";
-import { Ionicons } from "@expo/vector-icons";
-import {
-  GestureHandlerRootView,
   TextInput,
-} from "react-native-gesture-handler";
-import * as ImagePicker from "expo-image-picker";
-import { Button, FormControl, Input, Modal } from "native-base";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { IUser } from "../../UsuariosType";
-import api from "@/services/api/admin";
-import { useUser } from "@/hooks/redux/useUser";
-import CustomButton from "@/components/CustomButton";
-import { useToastContext } from "@/contexts/ToastContext";
-import { useIntl } from "react-intl"; // Importa useIntl
-import GlobalModal from "@/components/Modal";
+  TouchableOpacity,
+  Switch,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from "react-native"
+import { LinearGradient } from "expo-linear-gradient"
+import { Ionicons, MaterialIcons } from "@expo/vector-icons"
+import type { IUser } from "../../UsuariosType"
+import { Colors } from "@/constants/Coloresuser"
+import { styles } from "./ModalCreateUserStyles"
 
-type keyValues = "nombre" | "apellido" | "correo" | "contraseña";
-
-interface CreateUser {
-  nombre: string;
-  apellido: string;
-  correo: string;
-  contraseña: string;
+interface CreateUserModalProps {
+  visible: boolean
+  onClose: () => void
+  onCreateUser: (user: Omit<IUser, "id">) => void
 }
 
-interface IModalCreateUser {
-  onToogleModal: () => void;
-  isOpen: boolean;
-  addNewUser: (user: IUser) => void;
-}
+const CreateUserModal: React.FC<CreateUserModalProps> = ({ visible, onClose, onCreateUser }) => {
+  const [formData, setFormData] = useState({
+    nombre: "",
+    correo: "",
+    activo: true,
+    isAdmin: false,
+  })
+  const [errors, setErrors] = useState<Record<string, string>>({})
 
-const initialValues = {
-  nombre: "",
-  apellido: "",
-  correo: "",
-  contraseña: "",
-};
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {}
 
-const ModalCreateUser = ({
-  onToogleModal,
-  isOpen,
-  addNewUser,
-}: IModalCreateUser) => {
-  const { user } = useUser();
-  const intl = useIntl(); // Usa useIntl para obtener la instancia de intl
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [createUser, setCreateUser] = useState<CreateUser>(initialValues);
-  const [errors, setErrors] = useState<any>({});
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [loadingApi, setLoadingApi] = useState(false);
-  const { showToast } = useToastContext();
-
-  const setValueForm = (key: keyValues, value: string) => {
-    setCreateUser((prevState) => ({
-      ...prevState,
-      [key]: value,
-    }));
-  };
-
-  const pickImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setSelectedImage(result.assets[0].uri);
+    if (!formData.nombre.trim()) {
+      newErrors.nombre = "El nombre es requerido"
     }
-  };
 
-  const validate = () => {
-    const newErrors: any = {};
-    if (!createUser.nombre)
-      newErrors.nombre = intl.formatMessage({
-        id: "modalValidName",
-        defaultMessage: "Please enter a valid name",
-      });
-    if (!createUser.apellido)
-      newErrors.apellido = intl.formatMessage({
-        id: "modalValidLastName",
-        defaultMessage: "Please enter a valid last name",
-      });
-    if (!createUser.correo || !/\S+@\S+\.\S+/.test(createUser.correo))
-      newErrors.correo = intl.formatMessage({
-        id: "modalValidEmail",
-        defaultMessage: "Please enter a valid email address",
-      });
-    if (!createUser.contraseña)
-      newErrors.contraseña = intl.formatMessage({
-        id: "modalValidPassword",
-        defaultMessage: "Please enter a valid password",
-      });
-    return newErrors;
-  };
-
-  const createUserApi = async () => {
-    setLoadingApi(true);
-    const { apellido, contraseña, correo, nombre } = createUser;
-    try {
-      const resp = await api.user.create({
-        nombre,
-        correo,
-        password: contraseña,
-        apellido,
-        id_empresa: user.id_empresa,
-      });
-      if (resp.ok) {
-        showToast({
-          description: intl.formatMessage({
-            id: "modalUserCreated",
-            defaultMessage: "User created successfully",
-          }),
-          title: intl.formatMessage({
-            id: "modalSuccess",
-            defaultMessage: "Success",
-          }),
-          status: "success",
-        });
-        addNewUser(resp.data);
-        onToogleModal();
-        setCreateUser(initialValues);
-      }
-    } catch (error: any) {
-      showToast({
-        title: intl.formatMessage({
-          id: "modalError",
-          defaultMessage: "Error",
-        }),
-        description: error.response.data.message,
-        status: "error",
-      });
-      console.log("error", error.response.data.message);
-    } finally {
-      setLoadingApi(false);
+    if (!formData.correo.trim()) {
+      newErrors.correo = "El email es requerido"
+    } else if (!/\S+@\S+\.\S+/.test(formData.correo)) {
+      newErrors.correo = "El email no es válido"
     }
-  };
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleSubmit = () => {
-    const validationErrors = validate();
-    setErrors(validationErrors);
-    setIsSubmitted(true);
-
-    if (Object.keys(validationErrors).length === 0) {
-      createUserApi();
+    if (validateForm()) {
+      onCreateUser(formData)
+      setFormData({
+        nombre: "",
+        correo: "",
+        activo: true,
+        isAdmin: false,
+      })
+      setErrors({})
+      onClose()
     }
-  };
+  }
+
+  const handleInputChange = (field: string, value: string | boolean) => {
+    setFormData((prev) => ({ ...prev, [field]: value }))
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: "" }))
+    }
+  }
 
   return (
-    <GlobalModal
-      content={
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <ScrollView contentContainerStyle={styles.scrollContainer}>
-            <Animated.View style={[styles.formContainer]}>
-              <TouchableOpacity
-                onPress={pickImage}
-                style={styles.imageContainer}
-              >
-                <Image
-                  source={{
-                    uri:
-                      selectedImage ||
-                      "https://static.vecteezy.com/system/resources/previews/036/280/651/non_2x/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-illustration-vector.jpg",
-                  }}
-                  style={styles.image}
+    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
+      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+        {/* Header */}
+        <LinearGradient colors={Colors.gradients.primary} style={styles.header}>
+          <View style={styles.headerContent}>
+            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+              <Ionicons name="close" size={24} color="white" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Nuevo Usuario</Text>
+            <View style={styles.placeholder} />
+          </View>
+        </LinearGradient>
+
+        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+          {/* Form */}
+          <View style={styles.form}>
+            {/* Name Input */}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Nombre completo</Text>
+              <View style={[styles.inputContainer, errors.nombre && styles.inputError]}>
+                <Ionicons name="person-outline" size={20} color={Colors.light.textSecondary} />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Ingresa el nombre completo"
+                  value={formData.nombre}
+                  onChangeText={(text) => handleInputChange("nombre", text)}
+                  placeholderTextColor={Colors.light.textSecondary}
                 />
-                <View style={styles.imagePicker}>
-                  <Ionicons name="camera" size={12} color="#fff" />
+              </View>
+              {errors.nombre && <Text style={styles.errorText}>{errors.nombre}</Text>}
+            </View>
+
+            {/* Email Input */}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Email</Text>
+              <View style={[styles.inputContainer, errors.correo && styles.inputError]}>
+                <MaterialIcons name="email" size={20} color={Colors.light.textSecondary} />
+                <TextInput
+                  style={styles.input}
+                  placeholder="usuario@empresa.com"
+                  value={formData.correo}
+                  onChangeText={(text) => handleInputChange("correo", text)}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  placeholderTextColor={Colors.light.textSecondary}
+                />
+              </View>
+              {errors.correo && <Text style={styles.errorText}>{errors.correo}</Text>}
+            </View>
+
+            {/* Status Switch */}
+            <View style={styles.switchGroup}>
+              <View style={styles.switchContainer}>
+                <View style={styles.switchIcon}>
+                  <Ionicons name="checkmark-circle" size={24} color={Colors.light.success} />
                 </View>
-              </TouchableOpacity>
-
-              <FormControl
-                isInvalid={isSubmitted && !!errors.nombre}
-                width={"100%"}
-              >
-                <FormControl.Label>
-                  {intl.formatMessage({
-                    id: "modalName",
-                    defaultMessage: "Name",
-                  })}
-                </FormControl.Label>
-                <Input
-                  InputLeftElement={
-                    <AntDesign
-                      style={styles.marginCont}
-                      size={16}
-                      name="user"
-                      color={"gray"}
-                    />
-                  }
-                  borderRadius={10}
-                  onChangeText={(value: string) =>
-                    setValueForm("nombre", value)
-                  }
-                  value={createUser.nombre}
-                  style={styles.input}
-                  type="text"
-                  placeholder={intl.formatMessage({
-                    id: "modalEnterName",
-                    defaultMessage: "Enter a name",
-                  })}
-                  _focus={styles.focused}
+                <View style={styles.switchContent}>
+                  <Text style={styles.switchLabel}>Usuario activo</Text>
+                  <Text style={styles.switchDescription}>El usuario puede acceder al sistema</Text>
+                </View>
+                <Switch
+                  value={formData.activo}
+                  onValueChange={(value) => handleInputChange("activo", value)}
+                  trackColor={{
+                    false: Colors.light.border,
+                    true: Colors.light.success,
+                  }}
+                  thumbColor="white"
                 />
-                <FormControl.ErrorMessage>
-                  {errors.nombre}
-                </FormControl.ErrorMessage>
-              </FormControl>
+              </View>
+            </View>
 
-              <FormControl
-                isInvalid={isSubmitted && !!errors.apellido}
-                width={"100%"}
-              >
-                <FormControl.Label>
-                  {intl.formatMessage({
-                    id: "modalLastName",
-                    defaultMessage: "Last Name",
-                  })}
-                </FormControl.Label>
-                <Input
-                  InputLeftElement={
-                    <AntDesign
-                      style={styles.marginCont}
-                      size={16}
-                      name="user"
-                      color={"gray"}
-                    />
-                  }
-                  borderRadius={10}
-                  onChangeText={(value: string) =>
-                    setValueForm("apellido", value)
-                  }
-                  value={createUser.apellido}
-                  style={styles.input}
-                  type="text"
-                  placeholder={intl.formatMessage({
-                    id: "modalEnterLastName",
-                    defaultMessage: "Enter a last name",
-                  })}
-                  _focus={styles.focused}
+            {/* Admin Switch */}
+            <View style={styles.switchGroup}>
+              <View style={styles.switchContainer}>
+                <View style={styles.switchIcon}>
+                  <Ionicons name="shield-checkmark" size={24} color={Colors.light.warning} />
+                </View>
+                <View style={styles.switchContent}>
+                  <Text style={styles.switchLabel}>Permisos de administrador</Text>
+                  <Text style={styles.switchDescription}>Puede gestionar otros usuarios</Text>
+                </View>
+                <Switch
+                  value={formData.isAdmin}
+                  onValueChange={(value) => handleInputChange("isAdmin", value)}
+                  trackColor={{
+                    false: Colors.light.border,
+                    true: Colors.light.warning,
+                  }}
+                  thumbColor="white"
                 />
-                <FormControl.ErrorMessage
-                  leftIcon={
-                    <MaterialIcons size={12} name="error" color={"red"} />
-                  }
-                >
-                  {errors.apellido}
-                </FormControl.ErrorMessage>
-              </FormControl>
+              </View>
+            </View>
+          </View>
+        </ScrollView>
 
-              <FormControl
-                isInvalid={isSubmitted && !!errors.correo}
-                width={"100%"}
-              >
-                <FormControl.Label>
-                  {intl.formatMessage({
-                    id: "modalEmail",
-                    defaultMessage: "Email",
-                  })}
-                </FormControl.Label>
-                <Input
-                  InputLeftElement={
-                    <MaterialCommunityIcons
-                      style={styles.marginCont}
-                      size={16}
-                      name="gmail"
-                      color={"gray"}
-                    />
-                  }
-                  borderRadius={10}
-                  onChangeText={(value: string) =>
-                    setValueForm("correo", value)
-                  }
-                  value={createUser.correo}
-                  style={styles.input}
-                  type="text"
-                  placeholder={intl.formatMessage({
-                    id: "modalEnterEmail",
-                    defaultMessage: "Enter your email",
-                  })}
-                  _focus={styles.focused}
-                />
-                <FormControl.ErrorMessage>
-                  {errors.correo}
-                </FormControl.ErrorMessage>
-              </FormControl>
+        {/* Footer */}
+        <View style={styles.footer}>
+          <TouchableOpacity style={styles.cancelButton} onPress={onClose} activeOpacity={0.7}>
+            <Text style={styles.cancelButtonText}>Cancelar</Text>
+          </TouchableOpacity>
 
-              <FormControl
-                isInvalid={isSubmitted && !!errors.contraseña}
-                width={"100%"}
-              >
-                <FormControl.Label>
-                  {intl.formatMessage({
-                    id: "modalPassword",
-                    defaultMessage: "Password",
-                  })}
-                </FormControl.Label>
-                <Input
-                  borderRadius={10}
-                  InputLeftElement={
-                    <AntDesign
-                      style={styles.marginCont}
-                      name="lock"
-                      size={12}
-                      color={"gray"}
-                    />
-                  }
-                  onChangeText={(value: string) =>
-                    setValueForm("contraseña", value)
-                  }
-                  value={createUser.contraseña}
-                  style={styles.input}
-                  type="password"
-                  placeholder={intl.formatMessage({
-                    id: "modalEnterPassword",
-                    defaultMessage: "Enter your password",
-                  })}
-                  _focus={styles.focused}
-                />
-                <FormControl.ErrorMessage>
-                  {errors.contraseña}
-                </FormControl.ErrorMessage>
-              </FormControl>
-            </Animated.View>
-          </ScrollView>
-        </GestureHandlerRootView>
-      }
-      label={intl.formatMessage({
-        id: "modalCreateUser",
-        defaultMessage: "Create User",
-      })}
-      onClose={onToogleModal}
-      isVisible={isOpen}
-      actions={[
-        <CustomButton
-          key="createUser"
-          colorSpiner="white"
-          loading={loadingApi}
-          onPress={handleSubmit}
-          borderRadius={20}
-          style={styles.buttonCreate}
-        >
-          {intl.formatMessage({
-            id: "modalCreate",
-            defaultMessage: "Create",
-          })}
-        </CustomButton>,
-      ]}
-    />
-  );
-};
+          <TouchableOpacity style={styles.createButton} onPress={handleSubmit} activeOpacity={0.8}>
+            <LinearGradient colors={Colors.gradients.primary} style={styles.createButtonGradient}>
+              <Text style={styles.createButtonText}>Crear Usuario</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+    </Modal>
+  )
+}
 
-export default ModalCreateUser;
+export default CreateUserModal
