@@ -11,6 +11,7 @@ export const Colors = {
     textSecondary: "#64748B",
     border: "#E2E8F0",
     accent: "#06B6D4",
+    danger: "#DC2626",
   },
   gradients: {
     primary: ["#3B82F6", "#8B5CF6"],

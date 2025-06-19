@@ -1,9 +1,8 @@
-
+"use client"
 
 import type React from "react"
 import { useRef } from "react"
 import { View, Text, TouchableOpacity, Animated, Alert } from "react-native"
-import { LinearGradient } from "expo-linear-gradient"
 import { Ionicons, MaterialIcons, Feather } from "@expo/vector-icons"
 import { Image } from "expo-image"
 import type { IUser } from "../../UsuariosType"
@@ -20,7 +19,6 @@ interface UserCardProps {
 
 const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, currentUserId, allowManage }) => {
   const scaleAnim = useRef(new Animated.Value(1)).current
-  const shadowAnim = useRef(new Animated.Value(2)).current
   const isCurrentUser = user.id === currentUserId
 
   const animatePress = () => {
@@ -64,10 +62,6 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, currentUser
         styles.container,
         {
           transform: [{ scale: scaleAnim }],
-          // shadowOffset: {
-          //   width: 0,
-          //   height: shadowAnim,
-          // },
         },
       ]}
     >
@@ -85,14 +79,9 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, currentUser
             {user.image ? (
               <Image source={{ uri: user.image }} style={styles.avatar} contentFit="cover" />
             ) : (
-              <LinearGradient
-                colors={Colors.gradients.avatar as [string, string, ...string[]]}
-                style={styles.avatarGradient}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-              >
+              <View style={styles.avatarBackground}>
                 <Text style={styles.avatarText}>{getInitials(user.nombre)}</Text>
-              </LinearGradient>
+              </View>
             )}
 
             {/* Status Indicator */}
@@ -100,7 +89,7 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, currentUser
               style={[
                 styles.statusIndicator,
                 {
-                  backgroundColor: user.activo ? Colors.light.success : Colors.light.error,
+                  backgroundColor: user.activo ? Colors.light.success : Colors.light.danger,
                 },
               ]}
             />
@@ -125,7 +114,7 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, currentUser
             style={[
               styles.statusBadge,
               {
-                backgroundColor: user.activo ? `${Colors.light.success}20` : `${Colors.light.error}20`,
+                backgroundColor: user.activo ? `${Colors.light.success}20` : `${Colors.light.danger}20`,
               },
             ]}
           >
@@ -133,7 +122,7 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, currentUser
               style={[
                 styles.statusDot,
                 {
-                  backgroundColor: user.activo ? Colors.light.success : Colors.light.error,
+                  backgroundColor: user.activo ? Colors.light.success : Colors.light.danger,
                 },
               ]}
             />
@@ -141,7 +130,7 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, currentUser
               style={[
                 styles.statusText,
                 {
-                  color: user.activo ? Colors.light.success : Colors.light.error,
+                  color: user.activo ? Colors.light.success : Colors.light.danger,
                 },
               ]}
             >

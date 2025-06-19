@@ -1,3 +1,4 @@
+"use client"
 
 import type React from "react"
 import { useState } from "react"
@@ -12,7 +13,6 @@ import {
   Platform,
   ScrollView,
 } from "react-native"
-import { LinearGradient } from "expo-linear-gradient"
 import { Ionicons, MaterialIcons } from "@expo/vector-icons"
 import type { IUser } from "../../UsuariosType"
 import { Colors } from "@/constants/Coloresuser"
@@ -75,7 +75,7 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ visible, onClose, onC
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
         {/* Header */}
-        <LinearGradient colors={Colors.gradients.primary as [string, string, ...string[]]} style={styles.header}>
+        <View style={styles.header}>
           <View style={styles.headerContent}>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
               <Ionicons name="close" size={24} color="white" />
@@ -83,7 +83,7 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ visible, onClose, onC
             <Text style={styles.headerTitle}>Nuevo Usuario</Text>
             <View style={styles.placeholder} />
           </View>
-        </LinearGradient>
+        </View>
 
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           {/* Form */}
@@ -175,9 +175,9 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ visible, onClose, onC
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.createButton} onPress={handleSubmit} activeOpacity={0.8}>
-            <LinearGradient colors={Colors.gradients.primary as [string, string, ...string[]]} style={styles.createButtonGradient}>
+            <View style={styles.createButtonContent}>
               <Text style={styles.createButtonText}>Crear Usuario</Text>
-            </LinearGradient>
+            </View>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>

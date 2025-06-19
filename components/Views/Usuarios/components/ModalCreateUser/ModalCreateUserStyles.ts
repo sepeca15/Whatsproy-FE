@@ -10,6 +10,7 @@ export const styles = StyleSheet.create({
     paddingTop: 60,
     paddingBottom: 20,
     paddingHorizontal: 20,
+    backgroundColor: Colors.light.primary,
   },
   headerContent: {
     flexDirection: "row",
@@ -58,7 +59,7 @@ export const styles = StyleSheet.create({
     borderColor: Colors.light.border,
   },
   inputError: {
-    borderColor: Colors.light.error,
+    borderColor: Colors.light.danger,
   },
   input: {
     flex: 1,
@@ -68,7 +69,7 @@ export const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 14,
-    color: Colors.light.error,
+    color: Colors.light.danger,
     marginTop: 4,
   },
   switchGroup: {
@@ -125,8 +126,9 @@ export const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 12,
     overflow: "hidden",
+    backgroundColor: Colors.light.primary,
   },
-  createButtonGradient: {
+  createButtonContent: {
     paddingVertical: 16,
     alignItems: "center",
     justifyContent: "center",

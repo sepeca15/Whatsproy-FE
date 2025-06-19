@@ -54,12 +54,13 @@ export const styles = StyleSheet.create({
     height: 60,
     borderRadius: 30,
   },
-  avatarGradient: {
+  avatarBackground: {
     width: 60,
     height: 60,
     borderRadius: 30,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: Colors.light.secondary,
   },
   avatarText: {
     fontSize: 20,
@@ -162,7 +163,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 12,
-    backgroundColor: Colors.light.error,
+    backgroundColor: Colors.light.danger,
   },
   deleteButtonText: {
     color: "white",

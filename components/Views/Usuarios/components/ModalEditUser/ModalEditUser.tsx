@@ -1,3 +1,4 @@
+"use client"
 
 import type React from "react"
 import { useState, useEffect } from "react"
@@ -12,11 +13,11 @@ import {
   Platform,
   ScrollView,
 } from "react-native"
-import { LinearGradient } from "expo-linear-gradient"
 import { Ionicons, MaterialIcons } from "@expo/vector-icons"
 import type { IUser } from "../../UsuariosType"
 import { Colors } from "@/constants/Coloresuser"
 import { styles } from "./ModalEditUserStyles"
+
 interface EditUserModalProps {
   visible: boolean
   onClose: () => void
@@ -82,7 +83,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ visible, onClose, user, o
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
         {/* Header */}
-        <LinearGradient colors={Colors.gradients.primary as [string, string, ...string[]]} style={styles.header}>
+        <View style={styles.header}>
           <View style={styles.headerContent}>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
               <Ionicons name="close" size={24} color="white" />
@@ -90,7 +91,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ visible, onClose, user, o
             <Text style={styles.headerTitle}>Editar Usuario</Text>
             <View style={styles.placeholder} />
           </View>
-        </LinearGradient>
+        </View>
 
         {/* User Info Banner */}
         <View style={styles.userInfoBanner}>
@@ -188,9 +189,9 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ visible, onClose, user, o
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.updateButton} onPress={handleSubmit} activeOpacity={0.8}>
-            <LinearGradient colors={Colors.gradients.primary as [string, string, ...string[]]} style={styles.updateButtonGradient}>
+            <View style={styles.updateButtonContent}>
               <Text style={styles.updateButtonText}>Guardar Cambios</Text>
-            </LinearGradient>
+            </View>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
