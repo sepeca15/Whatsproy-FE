@@ -4,21 +4,19 @@ import { Colors } from "@/constants/Coloresuser"
 const { width } = Dimensions.get("window")
 
 export const styles = StyleSheet.create({
-   container: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 16,
+  container: {
     marginHorizontal: 16,
     marginVertical: 8,
-    // ✅ Sombra estática optimizada
+    borderRadius: 20,
+    backgroundColor: Colors.light.surface,
     shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 2,
+    // },
     shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowRadius: 8,
+    elevation: 4,
   },
   cardContent: {
     padding: 20,

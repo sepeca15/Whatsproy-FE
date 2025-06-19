@@ -86,10 +86,10 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.light.border,
     shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 1,
+    // },
     shadowOpacity: 0.05,
     shadowRadius: 2,
     elevation: 1,
@@ -119,10 +119,10 @@ export const styles = StyleSheet.create({
     borderTopColor: Colors.light.border,
     backgroundColor: Colors.light.surface,
     shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: -2,
-    },
+    // shadowOffset: {
+    //   width: 0,
+    //   height: -2,
+    // },
     shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 2,
@@ -147,10 +147,10 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
     overflow: "hidden",
     shadowColor: Colors.light.primary,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 2,
+    // },
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 3,
