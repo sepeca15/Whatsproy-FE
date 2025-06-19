@@ -196,13 +196,13 @@ const filteredUsers = useMemo(() =>
         ],
       }}
     >
-      <UserCard
+      {/* <UserCard
         user={item}
         onEdit={handleEditUser}
         onDelete={handleDeleteUser}
         currentUserId={1} // Simular usuario actual
         allowManage={true}
-      />
+      /> */}
     </Animated.View>
   )
 
