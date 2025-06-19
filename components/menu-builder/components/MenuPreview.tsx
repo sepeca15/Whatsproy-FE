@@ -29,14 +29,14 @@ export const MenuPreview: React.FC<MenuPreviewProps> = ({ groupedProducts, setti
       },
       restaurantName: {
         fontSize: 28,
-        fontWeight: "bold" as const,
+        fontWeight: "bold" as "bold",
         color: settings.primaryColor,
         textAlign: "center" as const,
         marginBottom: 8,
       },
       categoryTitle: {
         fontSize: 22,
-        fontWeight: "600" as const,
+        fontWeight: "600" as "600",
         color: settings.primaryColor,
         marginBottom: 16,
         marginTop: 24,
@@ -49,7 +49,7 @@ export const MenuPreview: React.FC<MenuPreviewProps> = ({ groupedProducts, setti
       },
       productName: {
         fontSize: 18,
-        fontWeight: "600" as const,
+        fontWeight: "600" as "600",
         color: colors.text,
         marginBottom: 4,
       },
@@ -61,7 +61,7 @@ export const MenuPreview: React.FC<MenuPreviewProps> = ({ groupedProducts, setti
       },
       productPrice: {
         fontSize: 16,
-        fontWeight: "bold" as const,
+        fontWeight: "bold" as "bold",
         color: settings.primaryColor,
       },
     }
@@ -102,12 +102,12 @@ export const MenuPreview: React.FC<MenuPreviewProps> = ({ groupedProducts, setti
           },
           restaurantName: {
             ...baseStyles.restaurantName,
-            fontWeight: "300",
+            fontWeight: "300" as "300",
             fontSize: 24,
           },
           categoryTitle: {
             ...baseStyles.categoryTitle,
-            fontWeight: "300",
+            fontWeight: "300" as "300",
             fontSize: 18,
             borderBottomWidth: 1,
             borderBottomColor: "#E5E7EB",

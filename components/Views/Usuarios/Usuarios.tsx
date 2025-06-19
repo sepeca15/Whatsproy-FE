@@ -166,7 +166,7 @@ const UsersScreen: React.FC = () => {
       {!searchQuery && (
         <TouchableOpacity style={styles.emptyActionButton} onPress={() => setShowCreateModal(true)} activeOpacity={0.8}>
           <LinearGradient
-            colors={Colors.gradients.primary}
+            colors={Colors.gradients.primary as [string, string, ...string[]]}
             style={styles.emptyActionGradient}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
@@ -207,7 +207,7 @@ const UsersScreen: React.FC = () => {
     return (
       <View style={styles.loadingContainer}>
         <StatusBar barStyle="light-content" backgroundColor={Colors.light.primary} />
-        <LinearGradient colors={Colors.gradients.primary} style={styles.loadingGradient}>
+        <LinearGradient colors={Colors.gradients.primary as [string, string, ...string[]]} style={styles.loadingGradient}>
           <View style={styles.loadingContent}>
             <View style={styles.loadingSpinner} />
             <Text style={styles.loadingText}>Cargando usuarios...</Text>
@@ -223,7 +223,7 @@ const UsersScreen: React.FC = () => {
 
       {/* Header */}
       <LinearGradient
-        colors={Colors.gradients.primary}
+        colors={Colors.gradients.primary as [string, string, ...string[]]}
         style={styles.header}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
@@ -312,7 +312,7 @@ const UsersScreen: React.FC = () => {
       >
         <TouchableOpacity style={styles.fab} onPress={() => setShowCreateModal(true)} activeOpacity={0.8}>
           <LinearGradient
-            colors={Colors.gradients.primary}
+            colors={Colors.gradients.primary as [string, string, ...string[]]}
             style={styles.fabGradient}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}

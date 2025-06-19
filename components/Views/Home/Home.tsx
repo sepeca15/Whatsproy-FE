@@ -179,6 +179,7 @@ const Home: React.FC = () => {
               value={numberPedidos}
               onPress={() => { }}
             />
+            
             <MetricCard
               icon="account-group"
               title={intl.formatMessage({

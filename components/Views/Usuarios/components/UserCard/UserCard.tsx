@@ -86,7 +86,7 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, currentUser
               <Image source={{ uri: user.image }} style={styles.avatar} contentFit="cover" />
             ) : (
               <LinearGradient
-                colors={Colors.gradients.avatar}
+                colors={Colors.gradients.avatar as [string, string, ...string[]]}
                 style={styles.avatarGradient}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}

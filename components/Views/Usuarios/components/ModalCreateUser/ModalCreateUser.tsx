@@ -76,7 +76,7 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ visible, onClose, onC
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
         {/* Header */}
-        <LinearGradient colors={Colors.gradients.primary} style={styles.header}>
+        <LinearGradient colors={Colors.gradients.primary as [string, string, ...string[]]} style={styles.header}>
           <View style={styles.headerContent}>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
               <Ionicons name="close" size={24} color="white" />
@@ -176,7 +176,7 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ visible, onClose, onC
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.createButton} onPress={handleSubmit} activeOpacity={0.8}>
-            <LinearGradient colors={Colors.gradients.primary} style={styles.createButtonGradient}>
+            <LinearGradient colors={Colors.gradients.primary as [string, string, ...string[]]} style={styles.createButtonGradient}>
               <Text style={styles.createButtonText}>Crear Usuario</Text>
             </LinearGradient>
           </TouchableOpacity>

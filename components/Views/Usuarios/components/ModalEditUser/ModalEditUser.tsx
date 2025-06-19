@@ -83,7 +83,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ visible, onClose, user, o
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
         {/* Header */}
-        <LinearGradient colors={Colors.gradients.primary} style={styles.header}>
+        <LinearGradient colors={Colors.gradients.primary as [string, string, ...string[]]} style={styles.header}>
           <View style={styles.headerContent}>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
               <Ionicons name="close" size={24} color="white" />
@@ -189,7 +189,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ visible, onClose, user, o
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.updateButton} onPress={handleSubmit} activeOpacity={0.8}>
-            <LinearGradient colors={Colors.gradients.primary} style={styles.updateButtonGradient}>
+            <LinearGradient colors={Colors.gradients.primary as [string, string, ...string[]]} style={styles.updateButtonGradient}>
               <Text style={styles.updateButtonText}>Guardar Cambios</Text>
             </LinearGradient>
           </TouchableOpacity>
