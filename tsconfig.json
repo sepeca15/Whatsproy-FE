@@ -8,7 +8,8 @@
       ]
     },
     "baseUrl": ".",
-    "forceConsistentCasingInFileNames": true 
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true
   },
   "include": [
     "**/*.ts",
