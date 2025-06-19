@@ -1,10 +1,10 @@
-
+"use client"
 
 import type React from "react"
 import { useRef } from "react"
 import { View, Text, TouchableOpacity, Animated, Alert } from "react-native"
 import { Ionicons, MaterialIcons, Feather } from "@expo/vector-icons"
-import { Image } from 'expo-image';
+import { Image } from "react-native"
 import type { IUser } from "../../UsuariosType"
 import { Colors } from "@/constants/Coloresuser"
 import { styles } from "./UserCardStyles"
@@ -77,7 +77,7 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, currentUser
         <View style={styles.header}>
           <View style={styles.avatarContainer}>
             {user.image ? (
-              <Image source={{ uri: user.image }} style={styles.avatar} contentFit="cover" />
+              <Image source={{ uri: user.image }} style={styles.avatar} resizeMode="cover" />
             ) : (
               <View style={styles.avatarBackground}>
                 <Text style={styles.avatarText}>{getInitials(user.nombre)}</Text>
