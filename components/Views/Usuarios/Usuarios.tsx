@@ -70,26 +70,26 @@ const UsersScreen: React.FC = () => {
     loadUsers()
   }, [])
 
-const loadUsers = async () => {
-  try {
-    setUserData(prev => ({ ...prev, loading: true })) // Agregar esto
-    
-    setTimeout(() => {
-      setUserData({
-        data: mockUsers,
+  const loadUsers = async () => {
+    try {
+      setUserData(prev => ({ ...prev, loading: true })) // Agregar esto
+
+      setTimeout(() => {
+        setUserData({
+          data: mockUsers,
+          loading: false,
+        })
+        // ... resto del código
+      }, 1000)
+    } catch (error) {
+      console.error("Error loading users:", error)
+      setUserData(prev => ({
+        ...prev,
         loading: false,
-      })
-      // ... resto del código
-    }, 1000)
-  } catch (error) {
-    console.error("Error loading users:", error)
-    setUserData(prev => ({
-      ...prev,
-      loading: false,
-      error: error instanceof Error ? error.message : String(error),
-    })) // Agregar error al state
+        error: error instanceof Error ? error.message : String(error),
+      })) // Agregar error al state
+    }
   }
-}
 
   const onRefresh = async () => {
     setRefreshing(true)
@@ -110,13 +110,13 @@ const loadUsers = async () => {
     }
   }
 
-const filteredUsers = useMemo(() => 
-  userData.data.filter(
-    (user) =>
-      user.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.correo.toLowerCase().includes(searchQuery.toLowerCase()),
-  ), [userData.data, searchQuery]
-)
+  const filteredUsers = useMemo(() =>
+    userData.data.filter(
+      (user) =>
+        user.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.correo.toLowerCase().includes(searchQuery.toLowerCase()),
+    ), [userData.data, searchQuery]
+  )
 
   const handleEditUser = (user: IUser) => {
     setSelectedUser(user)
@@ -131,11 +131,11 @@ const filteredUsers = useMemo(() =>
   }
 
   const handleCreateUser = (newUser: Omit<IUser, "id">) => {
-   const user: IUser = {
-    ...newUser,
-    id: userData.data.length > 0 ? Math.max(...userData.data.map((u) => u.id)) + 1 : 1,
-  }
-    
+    const user: IUser = {
+      ...newUser,
+      id: userData.data.length > 0 ? Math.max(...userData.data.map((u) => u.id)) + 1 : 1,
+    }
+
     setUserData((prev) => ({
       ...prev,
       data: [...prev.data, user],
@@ -182,29 +182,44 @@ const filteredUsers = useMemo(() =>
     </View>
   )
 
-  const renderUserCard = ({ item, index }: { item: IUser; index: number }) => (
-    <Animated.View
-      style={{
-        opacity: fadeAnim,
-        transform: [
-          {
-            translateY: fadeAnim.interpolate({
-              inputRange: [0, 1],
-              outputRange: [50, 0],
-            }),
-          },
-        ],
-      }}
-    >
-      {/* <UserCard
-        user={item}
-        onEdit={handleEditUser}
-        onDelete={handleDeleteUser}
-        currentUserId={1} // Simular usuario actual
-        allowManage={true}
-      /> */}
-    </Animated.View>
-  )
+  const renderUserCard = ({ item, index }: { item: IUser; index: number }) => {
+    // 🔍 DEBUGGING: Agrega validación antes del render
+    console.log('Rendering UserCard for item:', item)
+    console.log('UserCard component:', UserCard)
+
+    if (!UserCard) {
+      console.error('❌ UserCard is undefined!')
+      return (
+        <View style={{ padding: 20, backgroundColor: 'red' }}>
+          <Text style={{ color: 'white' }}>ERROR: UserCard component not found</Text>
+        </View>
+      )
+    }
+
+    return (
+      <Animated.View
+        style={{
+          opacity: fadeAnim,
+          transform: [
+            {
+              translateY: fadeAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [50, 0],
+              }),
+            },
+          ],
+        }}
+      >
+        <UserCard
+          user={item}
+          onEdit={handleEditUser}
+          onDelete={handleDeleteUser}
+          currentUserId={1}
+          allowManage={true}
+        />
+      </Animated.View>
+    )
+  }
 
   if (userData.loading) {
     return (
