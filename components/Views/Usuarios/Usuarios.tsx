@@ -1,3 +1,4 @@
+"use client"
 
 import type React from "react"
 import { useState, useEffect, useRef, useMemo } from "react"
@@ -11,16 +12,6 @@ import EditUserModal from "./components/ModalEditUser/ModalEditUser"
 import type { IUser, IUserInfo } from "./UsuariosType"
 import { Colors } from "@/constants/Coloresuser"
 import { styles } from "./UsuariosStyles"
-
-
-console.log('=== DEBUGGING IMPORTS ===')
-console.log('UserCard:', UserCard)
-console.log('CreateUserModal:', CreateUserModal)
-console.log('EditUserModal:', EditUserModal)
-console.log('UserCard type:', typeof UserCard)
-console.log('CreateUserModal type:', typeof CreateUserModal)
-console.log('EditUserModal type:', typeof EditUserModal)
-console.log('========================')
 
 const mockUsers: IUser[] = [
   {
@@ -70,24 +61,47 @@ const UsersScreen: React.FC = () => {
     loadUsers()
   }, [])
 
+  // Animar elementos cuando los datos se cargan
+  useEffect(() => {
+    if (!userData.loading && userData.data.length > 0) {
+      // Animar las cards
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 600,
+        useNativeDriver: true,
+      }).start()
+
+      // Animar el FAB
+      Animated.spring(fabAnim, {
+        toValue: 1,
+        tension: 100,
+        friction: 8,
+        useNativeDriver: true,
+      }).start()
+    }
+  }, [userData.loading, userData.data.length, fadeAnim, fabAnim])
+
   const loadUsers = async () => {
     try {
-      setUserData(prev => ({ ...prev, loading: true })) // Agregar esto
+      setUserData((prev) => ({ ...prev, loading: true }))
+
+      // Reset animations
+      fadeAnim.setValue(0)
+      fabAnim.setValue(0)
 
       setTimeout(() => {
         setUserData({
           data: mockUsers,
           loading: false,
         })
-        // ... resto del código
       }, 1000)
     } catch (error) {
       console.error("Error loading users:", error)
-      setUserData(prev => ({
+      setUserData((prev) => ({
         ...prev,
         loading: false,
         error: error instanceof Error ? error.message : String(error),
-      })) // Agregar error al state
+      }))
     }
   }
 
@@ -110,12 +124,14 @@ const UsersScreen: React.FC = () => {
     }
   }
 
-  const filteredUsers = useMemo(() =>
-    userData.data.filter(
-      (user) =>
-        user.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        user.correo.toLowerCase().includes(searchQuery.toLowerCase()),
-    ), [userData.data, searchQuery]
+  const filteredUsers = useMemo(
+    () =>
+      userData.data.filter(
+        (user) =>
+          user.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          user.correo.toLowerCase().includes(searchQuery.toLowerCase()),
+      ),
+    [userData.data, searchQuery],
   )
 
   const handleEditUser = (user: IUser) => {
@@ -183,19 +199,6 @@ const UsersScreen: React.FC = () => {
   )
 
   const renderUserCard = ({ item, index }: { item: IUser; index: number }) => {
-    // 🔍 DEBUGGING: Agrega validación antes del render
-    console.log('Rendering UserCard for item:', item)
-    console.log('UserCard component:', UserCard)
-
-    if (!UserCard) {
-      console.error('❌ UserCard is undefined!')
-      return (
-        <View style={{ padding: 20, backgroundColor: 'red' }}>
-          <Text style={{ color: 'white' }}>ERROR: UserCard component not found</Text>
-        </View>
-      )
-    }
-
     return (
       <Animated.View
         style={{
@@ -225,9 +228,26 @@ const UsersScreen: React.FC = () => {
     return (
       <View style={styles.loadingContainer}>
         <StatusBar barStyle="light-content" backgroundColor={Colors.light.primary} />
-        <LinearGradient colors={Colors.gradients.primary as [string, string, ...string[]]} style={styles.loadingGradient}>
+        <LinearGradient
+          colors={Colors.gradients.primary as [string, string, ...string[]]}
+          style={styles.loadingGradient}
+        >
           <View style={styles.loadingContent}>
-            <View style={styles.loadingSpinner} />
+            <Animated.View
+              style={[
+                styles.loadingSpinner,
+                {
+                  transform: [
+                    {
+                      rotate: fadeAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: ["0deg", "360deg"],
+                      }),
+                    },
+                  ],
+                },
+              ]}
+            />
             <Text style={styles.loadingText}>Cargando usuarios...</Text>
           </View>
         </LinearGradient>
