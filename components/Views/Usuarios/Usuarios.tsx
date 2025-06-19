@@ -5,7 +5,7 @@ import { View, Text, TouchableOpacity, Animated, FlatList, TextInput, StatusBar,
 import { LinearGradient } from "expo-linear-gradient"
 import { Ionicons } from "@expo/vector-icons"
 import { SafeAreaView } from "react-native-safe-area-context"
-import UserCard from "./components/UserCard/UserCard"
+import UserCard from "@/components/Views/Usuarios/components/UserCard/UserCard"
 import CreateUserModal from "./components/ModalCreateUser/ModalCreateUser"
 import EditUserModal from "./components/ModalEditUser/ModalEditUser"
 import type { IUser, IUserInfo } from "./UsuariosType"
