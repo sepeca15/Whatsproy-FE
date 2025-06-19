@@ -1,6 +1,6 @@
 
 import type React from "react"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useMemo } from "react"
 import { View, Text, TouchableOpacity, Animated, FlatList, TextInput, StatusBar, RefreshControl } from "react-native"
 import { LinearGradient } from "expo-linear-gradient"
 import { Ionicons } from "@expo/vector-icons"
@@ -60,35 +60,26 @@ const UsersScreen: React.FC = () => {
     loadUsers()
   }, [])
 
-  const loadUsers = async () => {
-    try {
-      // Simular carga de datos
-      setTimeout(() => {
-        setUserData({
-          data: mockUsers,
-          loading: false,
-        })
-
-        // Animaciones de entrada
-        Animated.stagger(100, [
-          Animated.timing(fadeAnim, {
-            toValue: 1,
-            duration: 500,
-            useNativeDriver: true,
-          }),
-          Animated.spring(fabAnim, {
-            toValue: 1,
-            tension: 100,
-            friction: 8,
-            useNativeDriver: true,
-          }),
-        ]).start()
-      }, 1000)
-    } catch (error) {
-      console.error("Error loading users:", error)
-      setUserData((prev) => ({ ...prev, loading: false }))
-    }
+const loadUsers = async () => {
+  try {
+    setUserData(prev => ({ ...prev, loading: true })) // Agregar esto
+    
+    setTimeout(() => {
+      setUserData({
+        data: mockUsers,
+        loading: false,
+      })
+      // ... resto del código
+    }, 1000)
+  } catch (error) {
+    console.error("Error loading users:", error)
+    setUserData(prev => ({
+      ...prev,
+      loading: false,
+      error: error instanceof Error ? error.message : String(error),
+    })) // Agregar error al state
   }
+}
 
   const onRefresh = async () => {
     setRefreshing(true)
@@ -109,11 +100,13 @@ const UsersScreen: React.FC = () => {
     }
   }
 
-  const filteredUsers = userData.data.filter(
+const filteredUsers = useMemo(() => 
+  userData.data.filter(
     (user) =>
       user.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.correo.toLowerCase().includes(searchQuery.toLowerCase()),
-  )
+  ), [userData.data, searchQuery]
+)
 
   const handleEditUser = (user: IUser) => {
     setSelectedUser(user)
@@ -128,10 +121,11 @@ const UsersScreen: React.FC = () => {
   }
 
   const handleCreateUser = (newUser: Omit<IUser, "id">) => {
-    const user: IUser = {
-      ...newUser,
-      id: Math.max(...userData.data.map((u) => u.id)) + 1,
-    }
+   const user: IUser = {
+    ...newUser,
+    id: userData.data.length > 0 ? Math.max(...userData.data.map((u) => u.id)) + 1 : 1,
+  }
+    
     setUserData((prev) => ({
       ...prev,
       data: [...prev.data, user],
