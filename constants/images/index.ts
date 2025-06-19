@@ -1,7 +1,7 @@
 // Exporta todas las imágenes desde un archivo central
 export const GuideImages = {
     dashboard: {
-        main: require("../logo.jpeg"),
+        main: require("./Panel_principal.jpeg"),
         metrics: require("../logo.jpeg"),
         orders: require("../logo.jpeg"),
     },
