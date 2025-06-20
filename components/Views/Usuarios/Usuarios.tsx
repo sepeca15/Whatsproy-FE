@@ -75,7 +75,7 @@ const UsersScreen: React.FC = () => {
     try {
       console.log("=== OBTENIENDO USUARIO ACTUAL ===")
       const currentUser = await api.auth.me()
-      console.log("Datos del usuario actual desde API:", currentUser)
+      // console.log("Datos del usuario actual desde API:", currentUser)
       console.log("Imagen del usuario actual:", currentUser?.image)
 
       if (currentUser?.id) {
