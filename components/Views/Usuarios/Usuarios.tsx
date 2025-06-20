@@ -44,7 +44,7 @@ const UsersScreen: React.FC = () => {
   const { user } = useUser()
 
   useEffect(() => {
-    loadUsers()
+    uploadUsers()
     getCurrentUser()
   }, [])
 
@@ -84,7 +84,7 @@ const UsersScreen: React.FC = () => {
     }
   }
 
-  const loadUsers = async () => {
+  const uploadUsers = async () => {
     try {
       setUserData((prev) => ({ ...prev, loading: true }))
 
@@ -95,51 +95,20 @@ const UsersScreen: React.FC = () => {
       const response = await api.user.findAll(user.id_empresa)
       console.log("Usuarios cargados:", response)
 
-      if (!response) {
-        throw new Error("No se recibió respuesta de la API")
-      }
+      // Simplificado: asumimos que la API devuelve { data: [...] }
+      const users = response?.data || []
 
-      let mappedUsers: IUser[] = []
-
-      // Verificar si la respuesta es un array o un objeto único
-      if (Array.isArray(response)) {
-        // Si es un array, mapear cada usuario
-        mappedUsers = response
-          .filter((userItem: any) => userItem && userItem.id) // Filtrar elementos válidos
-          .map((userItem: any) => ({
-            id: userItem.id,
-            nombre:
-              userItem.nombre && userItem.apellido
-                ? `${userItem.nombre} ${userItem.apellido}`.trim()
-                : userItem.name ||
-                  userItem.nombre ||
-                  `${userItem.firstName || ""} ${userItem.lastName || ""}`.trim() ||
-                  "Sin nombre",
-            correo: userItem.correo || userItem.email || "Sin email",
-            activo:
-              userItem.activo !== undefined ? userItem.activo : userItem.active !== undefined ? userItem.active : true,
-            isAdmin: userItem.isAdmin || userItem.role === "admin" || false,
-            image: userItem.image || userItem.avatar || null,
-          }))
-      } else if (response && typeof response === "object" && response.id) {
-        // Si es un objeto único, crear un array con ese usuario
-        const singleUser: IUser = {
-          id: response.id,
-          nombre:
-            response.nombre && response.apellido
-              ? `${response.nombre} ${response.apellido}`.trim()
-              : response.name ||
-                response.nombre ||
-                `${response.firstName || ""} ${response.lastName || ""}`.trim() ||
-                "Sin nombre",
-          correo: response.correo || response.email || "Sin email",
-          activo:
-            response.activo !== undefined ? response.activo : response.active !== undefined ? response.active : true,
-          isAdmin: response.isAdmin || response.role === "admin" || false,
-          image: response.image || response.avatar || null,
-        }
-        mappedUsers = [singleUser]
-      }
+      // Mapear usuarios con validación básica
+      const mappedUsers: IUser[] = users
+        .filter((userItem: any) => userItem && userItem.id) // Solo usuarios válidos
+        .map((userItem: any) => ({
+          id: userItem.id,
+          nombre: userItem.nombre || userItem.name || "Sin nombre",
+          correo: userItem.correo || userItem.email || "Sin email",
+          activo: userItem.activo !== undefined ? userItem.activo : true,
+          isAdmin: userItem.isAdmin || false,
+          image: userItem.image || null,
+        }))
 
       console.log("Usuarios mapeados:", mappedUsers)
 
@@ -177,7 +146,7 @@ const UsersScreen: React.FC = () => {
 
   const onRefresh = async () => {
     setRefreshing(true)
-    await loadUsers()
+    await uploadUsers()
     setRefreshing(false)
   }
 
