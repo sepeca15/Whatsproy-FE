@@ -92,6 +92,8 @@ const UsersScreen: React.FC = () => {
       fabAnim.setValue(0)
 
     const response = await api.user.findAll(user.id_empresa)
+    console.log("Usuarios cargados:", response)
+
       if (!response || response.error) {
         throw new Error(response?.error || "Error al cargar los usuarios")
       }
