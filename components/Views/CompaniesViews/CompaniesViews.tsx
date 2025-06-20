@@ -132,10 +132,7 @@ const CompaniesView = () => {
         </View>
       </View>
     );
-    const paymentExpireDate = moment(item?.payment?.subscription_date).add(
-      EMPRESA_PAYMENT_FREE_TIME_AFTER_CANCEL,
-      "days"
-    );
+    const paymentExpireDate = moment(item?.payment?.subscription_date)
 
     const now = moment();
     const daysToExpire = paymentExpireDate.diff(now, "days");

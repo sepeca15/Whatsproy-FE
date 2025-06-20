@@ -155,6 +155,7 @@ const Step4 = () => {
             loading={loadingChecking}
             marginRight={0}
             marginTop={5}
+            borderRadius={8}
             onPress={FinishConfigGreenApi}
           >
             <FormattedMessage id="verify" />

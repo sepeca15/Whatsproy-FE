@@ -34,7 +34,6 @@ const SubscriptionInfo = ({
   const percentage = Math.min(Math.round((currentPedidosMonthActual / maxPedidos) * 100), 100)
   const remaining = maxPedidos - currentPedidosMonthActual
 
-  // Determinar el color de la barra de progreso basado en el porcentaje
   const getProgressColor = () => {
     if (percentage < 70) return Colors.light.secondary
     if (percentage < 90) return "orange.500"
@@ -42,7 +41,7 @@ const SubscriptionInfo = ({
   }
 
   const formattedExpiryDate = expiryDate
-    ? moment(expiryDate).add(EMPRESA_PAYMENT_FREE_TIME_AFTER_CANCEL, "days").format("LL")
+    ? moment(expiryDate).format("LL")
     : "-"
 
   const toggleExpand = () => {

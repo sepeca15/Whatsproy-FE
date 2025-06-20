@@ -1,11 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { Text, View, Spinner, Box, VStack, HStack, Icon } from "native-base";
+"use client";
+
+import { useEffect, useState } from "react";
+import {
+  Text,
+  View,
+  Spinner,
+  Box,
+  VStack,
+  HStack,
+  Icon,
+  Badge,
+  Divider,
+} from "native-base";
 import CustomText from "@/components/CustomText";
 import { FormattedMessage, useIntl } from "react-intl";
 import LottieView from "lottie-react-native";
 import CustomButton from "@/components/CustomButton";
 import Step2 from "../ConfigAccount/components/Steps/Step2";
-import GlobalModal from "@/components/Modal";
 import { useUser } from "@/hooks/redux/useUser";
 import {
   getSubscriptions,
@@ -18,11 +29,46 @@ import {
   EMPRESA_PAYMENT_FREE_TIME_AFTER_CANCEL,
   subscriptionBenefits,
 } from "@/constants/variables";
-import { AntDesign, MaterialIcons } from "@expo/vector-icons";
-import { Linking, Platform, TouchableOpacity } from "react-native";
+import { AntDesign, MaterialIcons, Feather } from "@expo/vector-icons";
+import { Linking, Platform, TouchableOpacity, StyleSheet } from "react-native";
 import { globalStyles } from "@/components/globalStyles";
 import { ScrollView, RefreshControl } from "react-native";
 import { useRouter } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
+import { useColorScheme } from "react-native";
+import GenericModal from "../ConfigAccount/components/GenericModal/GenericModal";
+
+// Colores definidos por el usuario
+const primaryColor = "#075e54";
+const secondaryColor = "#128c7e";
+
+export const Colors = {
+  light: {
+    text: "#11181C",
+    background: "#fff",
+    primary: primaryColor,
+    secondary: secondaryColor,
+    warning: "#F39C12",
+    border: "#e1e1e1",
+    success: "#2ECC71",
+    textSecondary: "#000",
+    danger: "#E74C3C",
+    icon: "#687076",
+    tabIconDefault: "#687076",
+    tabIconSelected: primaryColor,
+  },
+  dark: {
+    text: "#ECEDEE",
+    background: "#151718",
+    primary: primaryColor,
+    border: "#e1e1e1",
+    textSecondary: "#FFF",
+    secondary: secondaryColor,
+    icon: "#9BA1A6",
+    tabIconDefault: "#9BA1A6",
+    tabIconSelected: primaryColor,
+  },
+};
 
 const SubscriptionsView = () => {
   const intl = useIntl();
@@ -31,7 +77,11 @@ const SubscriptionsView = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [productInfo, setProductInfo] = useState<any>(null);
   const currentPayment = user?.payment ? { ...user.payment } : null;
+
   const router = useRouter();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
+  const colors = isDark ? Colors.dark : Colors.light;
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -87,10 +137,7 @@ const SubscriptionsView = () => {
 
   const renderActiveSubscription = () => {
     const expirationDate = currentPayment?.subscription_date
-      ? moment(currentPayment.subscription_date).add(
-          EMPRESA_PAYMENT_FREE_TIME_AFTER_CANCEL,
-          "days"
-        )
+      ? moment(currentPayment.subscription_date)
       : null;
 
     const shouldShowExpiringSoon =
@@ -107,167 +154,177 @@ const SubscriptionsView = () => {
             { date: expirationDate.format("LL") }
           )
         : null;
-    const benefits = subscriptionBenefits[currentPayment?.subscription_sku];
+    const benefits = user?.payment?.plan?.adventages;
     const benefitsArray = (benefits ? benefits.split(",") : []) as string[];
 
     return (
-      <Box
-        p={5}
-        borderRadius="lg"
-        shadow={2}
-        background="white"
-        alignItems="center"
-        w="90%"
-      >
-        {shouldShowExpiringSoon && (
-          <Box
-            background="yellow.100"
-            borderRadius="md"
-            p={2}
-            mb={3}
-            w="100%"
-            alignItems="center"
-          >
-            <Text color="yellow.800" fontWeight="semibold">
-              <FormattedMessage
-                id="subscriptionExpiring"
-                defaultMessage="Tu suscripción expirará pronto"
-              />
-            </Text>
-          </Box>
-        )}
-        {isCancelled && (
-          <Box
-            background="gray.100"
-            borderRadius="md"
-            p={3}
-            marginBottom={5}
-            mt={4}
-            w="100%"
-            alignItems="center"
-          >
-            <Text color="gray.700" fontSize="sm">
-              {cancelationInfo}
-            </Text>
-          </Box>
-        )}
-        {!currentPayment?.isCancelled && (
-          <Text fontSize="lg" fontWeight="bold" mb={1}>
-            <FormattedMessage
-              id="activeSubscription"
-              defaultMessage="Suscripción activa"
-            />
-          </Text>
-        )}
-
-        <Text
-          fontSize="md"
-          color="primary.600"
-          textAlign={"center"}
-          fontWeight="medium"
-          mb={2}
+      <Box style={styles.subscriptionCard}>
+        <LinearGradient
+          colors={[colors.primary, colors.secondary]}
+          style={styles.gradientHeader}
         >
-          {productInfo?.title ?? currentPayment.subscription_sku}
-        </Text>
+          <HStack justifyContent="space-between" alignItems="center">
+            <VStack>
+              <Text style={styles.subscriptionTitle}>
+                <FormattedMessage id="activeSubscription" />
+              </Text>
+              <Text style={styles.subscriptionSubtitle}>
+                {productInfo?.title ?? currentPayment.subscription_sku}
+              </Text>
+            </VStack>
+            <Box style={styles.statusBadge}>
+              <Badge
+                colorScheme={isCancelled ? "warning" : "success"}
+                variant="solid"
+                rounded="full"
+              >
+                <Text style={styles.badgeText}>
+                  {isCancelled ? "CANCELADA" : "ACTIVA"}
+                </Text>
+              </Badge>
+            </Box>
+          </HStack>
+        </LinearGradient>
 
-        <Text fontSize="sm" color="gray.500" mb={1}>
-          {!currentPayment?.isCancelled && (
-            <>
-              <FormattedMessage id="validUntil" defaultMessage="Válida hasta" />
-              :{" "}
-              {currentPayment.subscription_date
-                ? moment(currentPayment.subscription_date)
-                    .add(EMPRESA_PAYMENT_FREE_TIME_AFTER_CANCEL, "days")
-                    .format("LL")
-                : "-"}
-            </>
-          )}
-        </Text>
-
-        {benefitsArray.length > 0 && (
-          <VStack space={2} mt={4} w="100%">
-            <Text fontWeight="semibold" fontSize="md" color="gray.700">
-              <FormattedMessage id="benefits" defaultMessage="Beneficios" />
-            </Text>
-            {benefitsArray.map((benefit, idx) => (
-              <HStack key={idx} space={2} alignItems="center">
+        <Box style={styles.cardContent}>
+          {shouldShowExpiringSoon && (
+            <Box style={styles.warningBox}>
+              <HStack space={2} alignItems="center">
                 <Icon
-                  as={MaterialIcons}
-                  name="check-circle"
-                  color="green.700"
+                  as={Feather}
+                  name="alert-triangle"
+                  color="orange.500"
                   size={4}
                 />
-                <Text fontSize="sm" color="gray.700">
-                  {benefit.trim()}
+                <Text style={styles.warningText}>
+                  <FormattedMessage id="subscriptionExpiring" />
                 </Text>
               </HStack>
-            ))}
-          </VStack>
-        )}
+            </Box>
+          )}
 
-        {!currentPayment?.isCancelled && (
-          <CustomButton
-            mt={6}
-            isDisabled={isLoading}
-            onPress={handleCancelSubscription}
-            colorSpiner="white"
-          >
-            {isLoading ? (
-              <Spinner color="white" />
-            ) : (
-              <Text>
-                <FormattedMessage id="cancelSubscription" />
+          {isCancelled && (
+            <Box style={styles.cancelledBox}>
+              <Text style={styles.cancelledText}>{cancelationInfo}</Text>
+            </Box>
+          )}
+
+          <VStack space={4}>
+            <HStack justifyContent="space-between" alignItems="center">
+              <Text style={styles.detailLabel}>
+                <FormattedMessage id="validUntil" />
               </Text>
+              <Text style={styles.detailValue}>
+                {currentPayment.subscription_date
+                  ? moment(currentPayment.subscription_date)
+                      .format("LL")
+                  : "-"}
+              </Text>
+            </HStack>
+
+            <Divider />
+
+            {benefitsArray.length > 0 && (
+              <VStack space={3}>
+                <Text style={styles.benefitsTitle}>
+                  <FormattedMessage id="benefits" />
+                </Text>
+                {benefitsArray.map((benefit, idx) => (
+                  <HStack key={idx} space={3} alignItems="center">
+                    <Box style={styles.checkIcon}>
+                      <Icon
+                        as={MaterialIcons}
+                        name="check"
+                        color="white"
+                        size={3}
+                      />
+                    </Box>
+                    <Text style={styles.benefitText}>{benefit.trim()}</Text>
+                  </HStack>
+                ))}
+              </VStack>
             )}
-          </CustomButton>
-        )}
-        {currentPayment?.isCancelled && (
-          <CustomButton
-            colorSpiner="white"
-            marginTop={5}
-            onPress={() => setShouldSubscribe(true)}
-          >
-            <CustomText>
-              <FormattedMessage id="renewSuscription" />
-            </CustomText>
-          </CustomButton>
-        )}
+          </VStack>
+
+          <VStack space={3} mt={6}>
+            {!currentPayment?.isCancelled ? (
+              <CustomButton
+                style={[styles.button, styles.cancelButton]}
+                isDisabled={isLoading}
+                onPress={handleCancelSubscription}
+              >
+                {isLoading ? (
+                  <Spinner color="white" />
+                ) : (
+                  <Text style={styles.buttonText}>
+                    <FormattedMessage id="cancelSubscription" />
+                  </Text>
+                )}
+              </CustomButton>
+            ) : (
+              <CustomButton
+                style={[styles.button, styles.renewButton]}
+                onPress={() => setShouldSubscribe(true)}
+              >
+                <Text style={styles.buttonText}>
+                  <FormattedMessage id="renewSuscription" />
+                </Text>
+              </CustomButton>
+            )}
+          </VStack>
+        </Box>
       </Box>
     );
   };
 
   const renderEmptySubscription = () => (
-    <>
-      <Text color="gray.800" fontWeight="semibold" fontSize={24}>
-        <FormattedMessage id="noSubscriptions" />
-      </Text>
-      <Text
-        color="gray.500"
-        paddingX={15}
-        textAlign="center"
-        fontWeight="semibold"
-        fontSize={14}
+    <Box style={styles.emptyContainer}>
+      <LinearGradient
+        colors={["rgba(7, 94, 84, 0.1)", "rgba(18, 140, 126, 0.1)"]}
+        style={styles.emptyGradient}
       >
-        <FormattedMessage id="noSubscriptionsDesc" />
-      </Text>
-      <LottieView
-        source={require("../../../constants/Animation-nodata.json")}
-        loop={false}
-        autoPlay
-        style={{ width: 300, height: 250 }}
-      />
-      <CustomButton
-        colorSpiner="white"
-        onPress={() => setShouldSubscribe(true)}
-      >
-        <FormattedMessage id="subscribe" />
-      </CustomButton>
-    </>
+        <VStack space={6} alignItems="center">
+          <Box style={styles.iconContainer}>
+            <Icon as={Feather} name="star" size={12} color={colors.primary} />
+          </Box>
+
+          <VStack space={3} alignItems="center">
+            <Text style={styles.emptyTitle}>
+              <FormattedMessage id="noSubscriptions" />
+            </Text>
+            <Text style={styles.emptyDescription}>
+              <FormattedMessage id="noSubscriptionsDesc" />
+            </Text>
+          </VStack>
+
+          <LottieView
+            source={require("../../../constants/Animation-nodata.json")}
+            loop={false}
+            autoPlay
+            style={styles.lottieAnimation}
+          />
+
+          <CustomButton
+            style={[styles.button, styles.subscribeButton]}
+            onPress={() => setShouldSubscribe(true)}
+          >
+            <HStack space={2} alignItems="center">
+              <Icon as={Feather} name="zap" color="white" size={4} />
+              <Text style={styles.buttonText}>
+                <FormattedMessage id="subscribe" />
+              </Text>
+            </HStack>
+          </CustomButton>
+        </VStack>
+      </LinearGradient>
+    </Box>
   );
 
   return (
-    <View style={{ flex: 1 }}>
-      <Animated.View style={globalStyles.header2}>
+    <View style={styles.container}>
+      <Animated.View
+        style={[globalStyles.header2, { backgroundColor: colors.primary }]}
+      >
         <TouchableOpacity
           style={globalStyles.backButton}
           onPress={() => router.back()}
@@ -280,47 +337,47 @@ const SubscriptionsView = () => {
               style={globalStyles.businessName}
               accessibilityLabel="Subscription"
             >
-              <FormattedMessage
-                id="subscription"
-                defaultMessage="Subscripcion"
-              />
+              <FormattedMessage id="subscription" />
             </CustomText>
           </View>
         </View>
       </Animated.View>
 
       {shouldSubscribe && (
-        <GlobalModal
-          content={
-            <Step2
-              onNext={() => null}
-              onSuccess={() => setShouldSubscribe(false)}
-            />
-          }
-          label={intl.formatMessage({
+        <GenericModal
+          visible={shouldSubscribe}
+          onClose={() => setShouldSubscribe(false)}
+          title={intl.formatMessage({
             id: "subscribe",
             defaultMessage: "Suscribirse",
           })}
-          onClose={() => setShouldSubscribe(false)}
-          isVisible
-        />
+        >
+          <View style={styles.containerModal}>
+            <View style={styles.ContainerHeader}>
+              <Step2
+                onNext={() => null}
+                onSuccess={() => {
+                  onRefresh();
+                  setShouldSubscribe(false);
+                }}
+              />
+            </View>
+          </View>
+        </GenericModal>
       )}
 
       <ScrollView
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={colors.primary}
+            colors={[colors.primary]}
+          />
         }
-        contentContainerStyle={{
-          flexGrow: 1,
-          alignItems: "center",
-          justifyContent: "center",
-          paddingVertical: 16,
-          gap: 12,
-          flex: 1,
-        }}
+        contentContainerStyle={styles.scrollContent}
       >
-        {" "}
-        <View style={{ alignItems: "center", gap: 8, width: "100%" }}>
+        <View style={styles.contentContainer}>
           {currentPayment?.isActive
             ? renderActiveSubscription()
             : renderEmptySubscription()}
@@ -329,5 +386,185 @@ const SubscriptionsView = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#f8f9fa",
+  },
+  ContainerHeader: {
+    position: "relative",
+    width: "100%",
+    alignSelf: "flex-start",
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingVertical: 20,
+    paddingHorizontal: 16,
+  },
+  containerModal: {
+    width: "100%",
+    backgroundColor: "white",
+    margin: "auto",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderRadius: 10,
+    paddingVertical: 20,
+    paddingHorizontal: 15,
+  },
+  contentContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  subscriptionCard: {
+    width: "100%",
+    maxWidth: 400,
+    backgroundColor: "white",
+    borderRadius: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 8,
+    overflow: "hidden",
+  },
+  gradientHeader: {
+    padding: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  subscriptionTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "white",
+  },
+  subscriptionSubtitle: {
+    fontSize: 14,
+    color: "rgba(255, 255, 255, 0.9)",
+    marginTop: 4,
+  },
+  statusBadge: {
+    alignItems: "center",
+  },
+  badgeText: {
+    fontSize: 10,
+    fontWeight: "bold",
+    color: "white",
+  },
+  cardContent: {
+    padding: 20,
+  },
+  warningBox: {
+    backgroundColor: "#FFF3CD",
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  warningText: {
+    color: "#856404",
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  cancelledBox: {
+    backgroundColor: "#F8F9FA",
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  cancelledText: {
+    color: "#6C757D",
+    fontSize: 14,
+    textAlign: "center",
+  },
+  detailLabel: {
+    fontSize: 14,
+    color: "#6C757D",
+    fontWeight: "500",
+  },
+  detailValue: {
+    fontSize: 14,
+    color: "#212529",
+    fontWeight: "600",
+  },
+  benefitsTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#212529",
+  },
+  checkIcon: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: primaryColor,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  benefitText: {
+    fontSize: 14,
+    color: "#495057",
+    flex: 1,
+  },
+  button: {
+    borderRadius: 12,
+    paddingVertical: 14,
+  },
+  cancelButton: {
+    backgroundColor: "#DC3545",
+  },
+  renewButton: {
+    backgroundColor: primaryColor,
+  },
+  subscribeButton: {
+    backgroundColor: primaryColor,
+    paddingHorizontal: 32,
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  emptyContainer: {
+    width: "100%",
+    maxWidth: 400,
+  },
+  emptyGradient: {
+    borderRadius: 20,
+    padding: 32,
+    alignItems: "center",
+  },
+  iconContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: "white",
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  emptyTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#212529",
+    textAlign: "center",
+  },
+  emptyDescription: {
+    fontSize: 16,
+    color: "#6C757D",
+    textAlign: "center",
+    lineHeight: 24,
+    paddingHorizontal: 16,
+  },
+  lottieAnimation: {
+    width: 200,
+    height: 160,
+  },
+});
 
 export default SubscriptionsView;

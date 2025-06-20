@@ -1,44 +1,85 @@
-import React, { useRef, useEffect } from "react";
-import { ScrollView as RNScrollView, View } from "react-native";
-import { styles } from "../../ConfigAccountStyles";
-import MethodOfPayCard from "../MethodOfpaycard";
-import { Box, ScrollView, Text } from "native-base";
+"use client";
+
+import type React from "react";
+import { useRef, useEffect, useState } from "react";
+import {
+  View,
+  Animated,
+  Dimensions,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+import { Text } from "native-base";
 import { useToastContext } from "@/contexts/ToastContext";
 import { useUser } from "@/hooks/redux/useUser";
 import * as RNIap from "react-native-iap";
 import api from "@/services/api/admin";
 import LottieView from "lottie-react-native";
 import { FormattedMessage } from "react-intl";
+import { LinearGradient } from "expo-linear-gradient";
+import { useColorScheme } from "react-native";
+import { Colors } from "@/constants/Colors";
+import Feather from "react-native-vector-icons/Feather";
+import MethodOfPayCard from "../MethodOfpaycard";
 
-const Step2 = ({ onSuccess, onNext }: { onSuccess?: any; onNext: any }) => {
+const { width } = Dimensions.get("window");
+
+interface SubscriptionPlansCarouselProps {
+  onSuccess?: () => void;
+  onNext?: () => void;
+  onPlanSelect?: (plan: any) => void;
+  showWarning?: boolean;
+}
+
+const Step2: React.FC<SubscriptionPlansCarouselProps> = ({
+  onSuccess,
+  onNext,
+  onPlanSelect,
+  showWarning = true,
+}) => {
   const { user, handlePayOk } = useUser();
-  const [loading, setLoading] = React.useState<boolean>(false);
-  const [plans, setPlans] = React.useState<RNIap.Subscription[] | null>(null);
-  const scrollViewRef = useRef<RNScrollView>(null);
-  const [selectedPlan, setSelectedPlan] = React.useState<RNIap.Product | null>(
-    null
-  );
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
+  const colors = isDark ? Colors.dark : Colors.light;
 
-  const { showToast } = useToastContext();
-  const [products, setProducts] = React.useState<RNIap.Subscription[]>([]);
-  const handledTokensRef = useRef<Set<string>>(new Set());
+  const [loading, setLoading] = useState<boolean>(false);
+  const [plans, setPlans] = useState<RNIap.Subscription[] | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<RNIap.Product | null>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [defaultPayments, setDefaultPayments] = useState([]);
 
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const scrollViewRef = useRef<ScrollView>(null);
   const purchaseListenerRef = useRef<any>(null);
   const errorListenerRef = useRef<any>(null);
-  const [defaultPayments, setDefaultPayments] = React.useState([]);
+  const handledTokensRef = useRef<Set<string>>(new Set());
 
+  const { showToast } = useToastContext();
   const currentPayment = user?.payment;
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 800,
+      useNativeDriver: true,
+    }).start();
+  }, []);
 
   const handleLoadDefaultPayments = async () => {
     try {
       setLoading(true);
       const resp = await api.payments.getPlans();
       if (resp) {
-        console.log("resp", resp);
         setDefaultPayments(resp);
       }
     } catch (error) {
       console.error(error);
+      showToast({
+        title: "Error al cargar planes",
+        descripcion: "No se pudieron cargar los planes de suscripción",
+        status: "error",
+      });
     } finally {
       setLoading(false);
     }
@@ -49,22 +90,29 @@ const Step2 = ({ onSuccess, onNext }: { onSuccess?: any; onNext: any }) => {
   }, []);
 
   const init = async () => {
-    await RNIap.initConnection();
-    const subs = await RNIap.getSubscriptions({
-      skus: defaultPayments?.map((payment: any) => payment?.product_sku),
-    });
-    setProducts(subs);
-    setPlans(
-      subs.map((sub) => {
-        return {
-          ...sub,
-          planInfo:
-            defaultPayments?.find(
-              (itm: any) => itm?.product_sku === sub?.productId
-            ) ?? null,
-        };
-      })
-    );
+    try {
+      await RNIap.initConnection();
+      const subs = await RNIap.getSubscriptions({
+        skus: defaultPayments?.map((payment: any) => payment?.product_sku),
+      });
+
+      const plansWithInfo = subs.map((sub) => ({
+        ...sub,
+        planInfo:
+          defaultPayments?.find(
+            (itm: any) => itm?.product_sku === sub?.productId
+          ) ?? null,
+      }));
+
+      setPlans(plansWithInfo);
+    } catch (error) {
+      console.error("Error initializing IAP:", error);
+      showToast({
+        title: "Error de inicialización",
+        descripcion: "No se pudo inicializar el sistema de pagos",
+        status: "error",
+      });
+    }
   };
 
   useEffect(() => {
@@ -82,6 +130,7 @@ const Step2 = ({ onSuccess, onNext }: { onSuccess?: any; onNext: any }) => {
     };
   }, [defaultPayments?.length]);
 
+  // Manejar compra
   const handlePurchase = async (purchase: RNIap.Purchase) => {
     const { purchaseToken, productId } = purchase;
 
@@ -90,6 +139,7 @@ const Step2 = ({ onSuccess, onNext }: { onSuccess?: any; onNext: any }) => {
 
     if (purchase?.isAcknowledgedAndroid && purchase?.purchaseStateAndroid !== 1)
       return;
+
     try {
       setLoading(true);
 
@@ -108,6 +158,7 @@ const Step2 = ({ onSuccess, onNext }: { onSuccess?: any; onNext: any }) => {
         });
         return;
       }
+
       let success = false;
       for (let i = 0; i < 10; i++) {
         const res = await api.payments.verifyPaymentIsOk({
@@ -134,7 +185,9 @@ const Step2 = ({ onSuccess, onNext }: { onSuccess?: any; onNext: any }) => {
         } else {
           handlePayOk();
         }
-        onNext();
+        if (onNext) {
+          onNext();
+        }
       } else {
         showToast({
           title: "No se pudo verificar la suscripción",
@@ -159,7 +212,7 @@ const Step2 = ({ onSuccess, onNext }: { onSuccess?: any; onNext: any }) => {
     console.warn("purchase error", error);
     showToast({
       title: "Error en la compra",
-      description: error?.message || "Ocurrió un error inesperado",
+      descripcion: error?.message || "Ocurrió un error inesperado",
       status: "error",
     });
   };
@@ -182,10 +235,9 @@ const Step2 = ({ onSuccess, onNext }: { onSuccess?: any; onNext: any }) => {
         developerPayload: user?.id_empresa,
       } as any);
     } catch (error) {
-      console.error("Error al subscribirse:", error);
       showToast({
         title: "Error al subscribirse",
-        description: "Error inesperado al subscribirse",
+        descripcion: "Error inesperado al subscribirse",
         status: "error",
       });
     } finally {
@@ -195,6 +247,7 @@ const Step2 = ({ onSuccess, onNext }: { onSuccess?: any; onNext: any }) => {
 
   const selectPlan = (plan: any) => {
     setSelectedPlan(plan);
+    onPlanSelect?.(plan);
 
     const offer = plan.subscriptionOfferDetails?.[0];
 
@@ -209,85 +262,319 @@ const Step2 = ({ onSuccess, onNext }: { onSuccess?: any; onNext: any }) => {
     handleSubscribe(plan?.productId, offer.offerToken, plan?.productId);
   };
 
+  const goToSlide = (index: number) => {
+    setCurrentIndex(index);
+    scrollViewRef.current?.scrollTo({
+      x: index * width - 70,
+      animated: true,
+    });
+  };
+
+  const goToPrevious = () => {
+    if (currentIndex > 0) {
+      goToSlide(currentIndex - 1);
+    }
+  };
+
+  const goToNext = () => {
+    if (plans && currentIndex < plans.length - 1) {
+      goToSlide(currentIndex + 1);
+    }
+  };
+
+  if (loading || (!loading && !plans)) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text color="white" fontWeight="bold" fontSize={18} textAlign="center">
+          <FormattedMessage
+            id="loadingPlans"
+            defaultMessage="Cargando planes..."
+          />
+        </Text>
+        <LottieView
+          source={require("@/constants/AnimationPaymentProcess.json")}
+          loop={true}
+          autoPlay={true}
+          style={styles.lottieAnimation}
+        />
+      </View>
+    );
+  }
+
   return (
-    <ScrollView
-      showsHorizontalScrollIndicator={false}
-      style={styles.containerStep2}
-      ref={scrollViewRef}
-    >
-      <View style={styles.test}>
-        {currentPayment && !currentPayment?.isActive && (
-          <Box
-            background="yellow.100"
-            borderRadius="md"
-            p={2}
-            mb={3}
-            alignItems="center"
+    <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
+      {showWarning && currentPayment && !currentPayment?.isActive && (
+        <LinearGradient
+          colors={["#FFF3CD", "#FCF4A3"]}
+          style={styles.warningContainer}
+        >
+          <Text color="yellow.800" fontWeight="semibold" textAlign="center">
+            ⚠️{" "}
+            <FormattedMessage
+              id="subscriptionExpired"
+              defaultMessage="Tu suscripción actual expiró"
+            />
+          </Text>
+        </LinearGradient>
+      )}
+
+      {loading ? (
+        <View style={styles.processingContainer}>
+          <LinearGradient
+            colors={["#667eea", "#764ba2"]}
+            style={styles.processingGradient}
           >
-            <Text color="yellow.800" fontWeight="semibold">
+            <Text
+              color="white"
+              fontWeight="bold"
+              fontSize={18}
+              textAlign="center"
+            >
               <FormattedMessage
-                id="subscriptionExpired"
-                defaultMessage="Tu suscripción actual expiraro"
+                id="processingPayment"
+                defaultMessage="Procesando pago..."
               />
-            </Text>
-          </Box>
-        )}
-        {loading ? (
-          <View
-            style={{
-              flex: 1,
-              width: "100%",
-              height: "auto",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text color="gray.800" fontWeight="semibold" fontSize={16}>
-              {" "}
-              <FormattedMessage id="procesingPayment" />
             </Text>
             <Text
-              color="gray.500"
+              color="rgba(255,255,255,0.8)"
               paddingX={15}
-              textAlign={"center"}
-              fontWeight="semibold"
-              fontSize={12}
+              textAlign="center"
+              fontWeight="medium"
+              fontSize={14}
+              marginTop={2}
             >
-              {" "}
-              <FormattedMessage id="procesingPaymentDesc" />
+              <FormattedMessage
+                id="processingPaymentDesc"
+                defaultMessage="Por favor espera mientras procesamos tu suscripción"
+              />
             </Text>
             <LottieView
-              source={require("../../../../../constants/AnimationPaymentProcess.json")}
+              source={require("@/constants/AnimationPaymentProcess.json")}
               loop={true}
               autoPlay={true}
-              style={{
-                width: 200,
-                height: 160,
-              }}
+              style={styles.lottieAnimation}
             />
+          </LinearGradient>
+        </View>
+      ) : (
+        <>
+          {/* Carousel de planes - CORREGIDO */}
+          <View style={styles.carouselContainer}>
+            <ScrollView
+              ref={scrollViewRef}
+              horizontal
+              pagingEnabled
+              showsHorizontalScrollIndicator={false}
+              decelerationRate="fast"
+              snapToInterval={width}
+              snapToAlignment="start"
+              contentContainerStyle={styles.scrollContent}
+              bounces={false}
+              scrollEnabled={false}
+            >
+              {plans?.map((plan: any, index) => (
+                <MethodOfPayCard
+                  selectPlan={selectPlan}
+                  Plan={plan}
+                  planInfo={plan?.planInfo}
+                />
+              ))}
+            </ScrollView>
+
+            {plans && plans.length > 1 && (
+              <>
+                <TouchableOpacity
+                  style={[styles.navButton, styles.navButtonLeft]}
+                  onPress={goToPrevious}
+                  disabled={currentIndex === 0}
+                >
+                  <Feather
+                    name="chevron-left"
+                    size={24}
+                    color={currentIndex === 0 ? "#ccc" : colors.primary}
+                  />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[styles.navButton, styles.navButtonRight]}
+                  onPress={goToNext}
+                  disabled={currentIndex === plans.length - 1}
+                >
+                  <Feather
+                    name="chevron-right"
+                    size={24}
+                    color={
+                      currentIndex === plans.length - 1
+                        ? "#ccc"
+                        : colors.primary
+                    }
+                  />
+                </TouchableOpacity>
+              </>
+            )}
           </View>
-        ) : (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{
-              paddingHorizontal: 16,
-              gap: 12,
-            }}
-          >
-            {plans?.map((plan: any, index) => (
-              <MethodOfPayCard
-                selectPlan={selectPlan}
-                key={plan.productId + index}
-                Plan={plan}
-                planInfo={plan?.planInfo}
-              />
-            ))}
-          </ScrollView>
-        )}
-      </View>
-    </ScrollView>
+
+          {/* Indicadores de página */}
+          {plans && plans.length > 1 && (
+            <View style={styles.pageIndicators}>
+              {plans.map((_, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={[
+                    styles.pageIndicator,
+                    {
+                      backgroundColor:
+                        index === currentIndex ? colors.primary : "#ccc",
+                    },
+                  ]}
+                  onPress={() => goToSlide(index)}
+                />
+              ))}
+            </View>
+          )}
+
+          {plans && plans[currentIndex] && (
+            <View
+              style={[
+                styles.planInfo,
+                { backgroundColor: isDark ? "#2a2a2a" : "#f8f9fa" },
+              ]}
+            >
+              <Text style={[styles.planInfoTitle, { color: colors.text }]}>
+                {(plans as any)[currentIndex].planInfo?.nombre ||
+                  plans[currentIndex]?.title}
+              </Text>
+              <Text
+                style={[
+                  styles.planInfoDescription,
+                  { color: colors.textSecondary },
+                ]}
+              >
+                <FormattedMessage
+                  id="planSelected"
+                  defaultMessage="Plan {index} de {total}"
+                  values={{
+                    index: currentIndex + 1,
+                    total: plans.length,
+                  }}
+                />
+              </Text>
+            </View>
+          )}
+        </>
+      )}
+    </Animated.View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: 300,
+  },
+  loadingGradient: {
+    width: "100%",
+    padding: 32,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 20,
+    minHeight: 250,
+  },
+  processingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: 300,
+  },
+  processingGradient: {
+    width: "100%",
+    padding: 32,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 20,
+    minHeight: 250,
+  },
+  lottieAnimation: {
+    width: 180,
+    height: 140,
+    marginTop: 16,
+  },
+  warningContainer: {
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  carouselContainer: {
+    position: "relative",
+    height: "auto",
+    marginBottom: 20,
+  },
+  scrollContent: {},
+  slideContainer: {
+    width: width,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 20,
+  },
+  navButton: {
+    position: "absolute",
+    top: "50%",
+    transform: [{ translateY: -20 }],
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    zIndex: 10,
+  },
+  navButtonLeft: {
+    left: 10,
+  },
+  navButtonRight: {
+    right: 10,
+  },
+  pageIndicators: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  pageIndicator: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginHorizontal: 4,
+  },
+  planInfo: {
+    padding: 16,
+    borderRadius: 12,
+    marginTop: 10,
+    alignItems: "center",
+  },
+  planInfoTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: 4,
+  },
+  planInfoDescription: {
+    fontSize: 14,
+  },
+});
 
 export default Step2;
