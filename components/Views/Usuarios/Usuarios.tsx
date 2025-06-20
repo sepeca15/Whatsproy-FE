@@ -24,6 +24,7 @@ import { Colors } from "@/constants/Coloresuser"
 import { styles } from "./UsuariosStyles"
 import api from "@/services/api/admin"
 import { useUser } from "@/hooks/redux/useUser"
+import { router } from "expo-router"
 
 const UsersScreen: React.FC = () => {
   const [userData, setUserData] = useState<IUserInfo>({
@@ -505,7 +506,7 @@ const UsersScreen: React.FC = () => {
       {/* Header */}
       <View style={[styles.header, { backgroundColor: Colors.light.primary }]}>
         <View style={styles.headerContent}>
-          <TouchableOpacity style={styles.backButton} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.backButton} activeOpacity={0.7} onPress={() => router.back()}>
             <Ionicons name="arrow-back" size={24} color="white" />
           </TouchableOpacity>
 
