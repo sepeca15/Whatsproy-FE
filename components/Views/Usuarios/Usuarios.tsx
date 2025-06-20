@@ -201,18 +201,25 @@ const UsersScreen: React.FC = () => {
     }
   }
 
-  const filteredUsers = useMemo(
-    () =>
-      userData.data.filter(
-        (user) =>
-          user &&
-          user.nombre &&
-          user.correo &&
-          (user.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            user.correo.toLowerCase().includes(searchQuery.toLowerCase())),
-      ),
-    [userData.data, searchQuery],
-  )
+const filteredUsers = useMemo(() => {
+  // Filtra según la búsqueda
+  const filtered = userData.data.filter(
+    (user) =>
+      user &&
+      user.nombre &&
+      user.correo &&
+      (user.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.correo.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
+  // Si tienes el id del usuario actual, lo pones primero
+  if (currentUserId) {
+    const currentUser = filtered.find(u => u.id === currentUserId);
+    const others = filtered.filter(u => u.id !== currentUserId);
+    return currentUser ? [currentUser, ...others] : filtered;
+  }
+  return filtered;
+}, [userData.data, searchQuery, currentUserId]);
 
   const handleEditUser = (user: IUser) => {
     setSelectedUser(user)
