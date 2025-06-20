@@ -224,7 +224,7 @@ const filteredUsers = useMemo(() => {
   const handleEditUser = (user: IUser) => {
     setSelectedUser(user)
     setShowEditModal(true)
-  }
+      }
 
   const handleEditProfile = () => {
     if (currentUserData) {
