@@ -19,7 +19,7 @@ import { Image } from "react-native"
 import type { IUser } from "../../UsuariosType"
 import { Colors } from "@/constants/Coloresuser"
 import { styles } from "./ModalEditUserStyles"
-import useImagePicker from "@/hooks/useImagePicker/useImagePicker"
+import useImagePicker from "@/utils/ImagePicker/useImagePicker"
 
 interface EditUserModalProps {
   visible: boolean
