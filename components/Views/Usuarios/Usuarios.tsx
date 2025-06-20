@@ -25,6 +25,7 @@ import { styles } from "./UsuariosStyles"
 import api from "@/services/api/admin"
 import { useUser } from "@/hooks/redux/useUser"
 import { router } from "expo-router"
+import { ActivityIndicator } from "react-native";
 
 const UsersScreen: React.FC = () => {
   const [userData, setUserData] = useState<IUserInfo>({
