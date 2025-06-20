@@ -116,7 +116,7 @@ const UsersScreen: React.FC = () => {
 
       console.log("=== CARGANDO USUARIOS ===")
       const response = await api.user.findAll(user.id_empresa)
-      console.log("Respuesta completa de usuarios:", response)
+      // console.log("Respuesta completa de usuarios:", response)
 
       // Simplificado: asumimos que la API devuelve { data: [...] }
       const users = response?.data || []
