@@ -2,8 +2,8 @@
 export const GuideImages = {
     dashboard: {
         main: require("./Panel_principal.jpeg"),
-        metrics: require("../logo.jpeg"),
-        orders: require("./Pedidos3.jpeg"),
+        metrics: require("./Pedidos3.jpeg"),
+        orders: require("../logo.jpeg"),
     },
     schedule: {
         weekly: require("../logo.jpeg"),
