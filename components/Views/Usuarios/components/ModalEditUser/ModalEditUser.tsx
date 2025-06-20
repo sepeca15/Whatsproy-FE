@@ -15,9 +15,11 @@ import {
   ActivityIndicator,
 } from "react-native"
 import { Ionicons, MaterialIcons } from "@expo/vector-icons"
+import { Image } from "react-native"
 import type { IUser } from "../../UsuariosType"
 import { Colors } from "@/constants/Coloresuser"
 import { styles } from "./ModalEditUserStyles"
+import useImagePicker from "@/utils/ImagePicker/useImagePicker"
 
 interface EditUserModalProps {
   visible: boolean
@@ -32,9 +34,19 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ visible, onClose, user, o
     correo: "",
     activo: true,
     isAdmin: false,
+    photo: "",
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isLoading, setIsLoading] = useState(false)
+
+  const { pickImage, imageUri, setImageUri } = useImagePicker({
+    toastErrorMessage: "Error al seleccionar la imagen",
+    onImagePicked: (data) => {
+      if (data.apiUrl) {
+        setFormData((prev) => ({ ...prev, photo: data.apiUrl || "" }))
+      }
+    },
+  })
 
   useEffect(() => {
     if (user) {
@@ -43,9 +55,11 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ visible, onClose, user, o
         correo: user.correo,
         activo: user.activo,
         isAdmin: user.isAdmin || false,
+        photo: user.image || "",
       })
+      setImageUri(user.image || null)
     }
-  }, [user])
+  }, [user, setImageUri])
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
@@ -71,6 +85,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ visible, onClose, user, o
         await onUpdateUser({
           ...user,
           ...formData,
+          image: formData.photo || user.image,
         })
         setErrors({})
       } catch (error) {
@@ -94,6 +109,17 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ visible, onClose, user, o
     }
   }
 
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((word) => word.charAt(0))
+      .join("")
+      .toUpperCase()
+      .slice(0, 2)
+  }
+
+  const currentImageUri = imageUri || formData.photo || user.image
+
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={handleClose}>
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
@@ -108,15 +134,58 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ visible, onClose, user, o
           </View>
         </View>
 
-        {/* User Info Banner */}
-        <View style={styles.userInfoBanner}>
-          <Text style={styles.userInfoText}>Editando usuario: {user.nombre}</Text>
-          <Text style={styles.userInfoSubtext}>Los cambios se aplicarán inmediatamente</Text>
-        </View>
-
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           {/* Form */}
           <View style={styles.form}>
+            {/* Profile Photo Section */}
+            <View style={styles.photoSection}>
+              <Text style={styles.label}>Foto de perfil</Text>
+              <View style={styles.photoContainer}>
+                <View style={styles.photoWrapper}>
+                  {currentImageUri ? (
+                    <Image source={{ uri: currentImageUri }} style={styles.profilePhoto} resizeMode="cover" />
+                  ) : (
+                    <View style={styles.defaultAvatar}>
+                      <Text style={styles.avatarText}>{getInitials(formData.nombre || user.nombre)}</Text>
+                    </View>
+                  )}
+                  <TouchableOpacity
+                    style={styles.photoButton}
+                    onPress={() => pickImage(setFormData)}
+                    activeOpacity={0.7}
+                    disabled={isLoading}
+                  >
+                    <Ionicons name="camera" size={20} color="white" />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.photoActions}>
+                  <TouchableOpacity
+                    style={styles.changePhotoButton}
+                    onPress={() => pickImage(setFormData)}
+                    activeOpacity={0.7}
+                    disabled={isLoading}
+                  >
+                    <Ionicons name="image-outline" size={16} color={Colors.light.primary} />
+                    <Text style={styles.changePhotoText}>Cambiar foto</Text>
+                  </TouchableOpacity>
+                  {currentImageUri && (
+                    <TouchableOpacity
+                      style={styles.removePhotoButton}
+                      onPress={() => {
+                        setImageUri(null)
+                        setFormData((prev) => ({ ...prev, photo: "" }))
+                      }}
+                      activeOpacity={0.7}
+                      disabled={isLoading}
+                    >
+                      <Ionicons name="trash-outline" size={16} color={Colors.light.danger} />
+                      <Text style={styles.removePhotoText}>Eliminar</Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+              </View>
+            </View>
+
             {/* Name Input */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Nombre completo</Text>
