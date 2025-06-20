@@ -1,6 +1,7 @@
+"use client"
 
 import type React from "react"
-import { useRef } from "react"
+import { useRef, useEffect } from "react"
 import { View, Text, TouchableOpacity, Animated, Alert } from "react-native"
 import { Ionicons, MaterialIcons, Feather } from "@expo/vector-icons"
 import { Image } from "react-native"
@@ -19,6 +20,12 @@ interface UserCardProps {
 const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, currentUserId, allowManage }) => {
   const scaleAnim = useRef(new Animated.Value(1)).current
   const isCurrentUser = user.id === currentUserId
+
+  // Efecto para forzar re-render cuando cambie la imagen
+  useEffect(() => {
+    // Este efecto se ejecutará cada vez que user.image cambie
+    console.log(`UserCard ${user.id} - imagen actualizada:`, user.image)
+  }, [user.image, user.id])
 
   const animatePress = () => {
     Animated.sequence([
@@ -55,6 +62,9 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, currentUser
       .slice(0, 2)
   }
 
+  // Crear una key única que incluya la imagen para forzar re-render
+  const imageKey = `${user.id}-${user.image || "no-image"}-${Date.now()}`
+
   return (
     <Animated.View
       style={[
@@ -63,6 +73,7 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, currentUser
           transform: [{ scale: scaleAnim }],
         },
       ]}
+      key={imageKey} // Key única para forzar re-render
     >
       <TouchableOpacity activeOpacity={0.9} onPress={animatePress} style={styles.cardContent}>
         {/* Current User Badge */}
@@ -76,7 +87,12 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, currentUser
         <View style={styles.header}>
           <View style={styles.avatarContainer}>
             {user.image ? (
-              <Image source={{ uri: user.image }} style={styles.avatar} resizeMode="cover" />
+              <Image
+                source={{ uri: user.image }}
+                style={styles.avatar}
+                resizeMode="cover"
+                key={user.image} // Key única para la imagen
+              />
             ) : (
               <View style={styles.avatarBackground}>
                 <Text style={styles.avatarText}>{getInitials(user.nombre)}</Text>

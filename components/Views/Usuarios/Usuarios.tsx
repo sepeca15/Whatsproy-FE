@@ -309,11 +309,16 @@ const UsersScreen: React.FC = () => {
       const response = await api.user.update(updatedUser.id, updateData)
 
       if (response) {
-        // Actualizar la lista local
+        // Actualizar la lista local inmediatamente
         setUserData((prev) => ({
           ...prev,
           data: prev.data.map((user) => (user.id === updatedUser.id ? updatedUser : user)),
         }))
+
+        // Si es el usuario actual, también actualizar currentUserData
+        if (updatedUser.id === currentUserId) {
+          setCurrentUserData(updatedUser)
+        }
 
         setShowEditModal(false)
         setSelectedUser(null)
@@ -340,20 +345,36 @@ const UsersScreen: React.FC = () => {
         photo: updatedProfile.image, // Incluir la foto
       }
 
+      console.log("Actualizando perfil con datos:", updateData)
+
       const response = await api.user.update(updatedProfile.id, updateData)
 
       if (response) {
-        // Actualizar los datos del usuario actual
+        console.log("Respuesta de actualización:", response)
+
+        // Actualizar los datos del usuario actual PRIMERO
         setCurrentUserData(updatedProfile)
 
-        // También actualizar en la lista si está presente
+        // Actualizar en la lista de usuarios inmediatamente
         setUserData((prev) => ({
           ...prev,
           data: prev.data.map((user) => (user.id === updatedProfile.id ? updatedProfile : user)),
         }))
 
+        // Forzar re-render del FlatList
+        setUserData((prev) => ({
+          ...prev,
+          data: [...prev.data], // Crear nueva referencia del array
+        }))
+
         setShowProfileModal(false)
         Alert.alert("Éxito", "Perfil actualizado correctamente")
+
+        console.log("Estado actualizado - currentUserData:", updatedProfile)
+        console.log(
+          "Estado actualizado - userData:",
+          userData.data.find((u) => u.id === updatedProfile.id),
+        )
       }
     } catch (error) {
       console.error("Error updating profile:", error)
@@ -418,12 +439,13 @@ const UsersScreen: React.FC = () => {
     )
   }
 
-  // Función segura para keyExtractor
+  // Función segura para keyExtractor - usar timestamp para forzar re-render
   const keyExtractor = (item: IUser, index: number) => {
     if (item && item.id) {
-      return item.id.toString()
+      // Incluir la imagen en la key para forzar re-render cuando cambie
+      return `${item.id}-${item.image || "no-image"}-${Date.now()}`
     }
-    return `user-${index}`
+    return `user-${index}-${Date.now()}`
   }
 
   if (userData.loading) {
@@ -534,6 +556,7 @@ const UsersScreen: React.FC = () => {
             initialNumToRender={10}
             maxToRenderPerBatch={10}
             windowSize={10}
+            extraData={userData.data} // Forzar re-render cuando cambie userData
           />
         )}
       </View>
@@ -586,7 +609,7 @@ const UsersScreen: React.FC = () => {
           visible={showProfileModal}
           onClose={() => setShowProfileModal(false)}
           user={currentUserData}
-          onUpdateUser={handleUpdateProfile} // Cambiar de onUpdateProfile a onUpdateUser
+          onUpdateUser={handleUpdateProfile}
         />
       )}
     </SafeAreaView>
