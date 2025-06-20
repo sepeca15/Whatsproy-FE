@@ -104,27 +104,35 @@ const UsersScreen: React.FC = () => {
       // Verificar si la respuesta es un array o un objeto único
       if (Array.isArray(response)) {
         // Si es un array, mapear cada usuario
-        mappedUsers = response.map((userItem: any) => ({
-          id: userItem.id,
-          nombre:
-            userItem.nombre && userItem.apellido
-              ? `${userItem.nombre} ${userItem.apellido}`.trim()
-              : userItem.name || userItem.nombre || `${userItem.firstName || ""} ${userItem.lastName || ""}`.trim(),
-          correo: userItem.correo || userItem.email || "",
-          activo:
-            userItem.activo !== undefined ? userItem.activo : userItem.active !== undefined ? userItem.active : true,
-          isAdmin: userItem.isAdmin || userItem.role === "admin" || false,
-          image: userItem.image || userItem.avatar || null,
-        }))
-      } else if (response && typeof response === "object") {
+        mappedUsers = response
+          .filter((userItem: any) => userItem && userItem.id) // Filtrar elementos válidos
+          .map((userItem: any) => ({
+            id: userItem.id,
+            nombre:
+              userItem.nombre && userItem.apellido
+                ? `${userItem.nombre} ${userItem.apellido}`.trim()
+                : userItem.name ||
+                  userItem.nombre ||
+                  `${userItem.firstName || ""} ${userItem.lastName || ""}`.trim() ||
+                  "Sin nombre",
+            correo: userItem.correo || userItem.email || "Sin email",
+            activo:
+              userItem.activo !== undefined ? userItem.activo : userItem.active !== undefined ? userItem.active : true,
+            isAdmin: userItem.isAdmin || userItem.role === "admin" || false,
+            image: userItem.image || userItem.avatar || null,
+          }))
+      } else if (response && typeof response === "object" && response.id) {
         // Si es un objeto único, crear un array con ese usuario
         const singleUser: IUser = {
           id: response.id,
           nombre:
             response.nombre && response.apellido
               ? `${response.nombre} ${response.apellido}`.trim()
-              : response.name || response.nombre || `${response.firstName || ""} ${response.lastName || ""}`.trim(),
-          correo: response.correo || response.email || "",
+              : response.name ||
+                response.nombre ||
+                `${response.firstName || ""} ${response.lastName || ""}`.trim() ||
+                "Sin nombre",
+          correo: response.correo || response.email || "Sin email",
           activo:
             response.activo !== undefined ? response.activo : response.active !== undefined ? response.active : true,
           isAdmin: response.isAdmin || response.role === "admin" || false,
@@ -132,6 +140,8 @@ const UsersScreen: React.FC = () => {
         }
         mappedUsers = [singleUser]
       }
+
+      console.log("Usuarios mapeados:", mappedUsers)
 
       setUserData({
         data: mappedUsers,
@@ -188,8 +198,11 @@ const UsersScreen: React.FC = () => {
     () =>
       userData.data.filter(
         (user) =>
-          user.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          user.correo.toLowerCase().includes(searchQuery.toLowerCase()),
+          user &&
+          user.nombre &&
+          user.correo &&
+          (user.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            user.correo.toLowerCase().includes(searchQuery.toLowerCase())),
       ),
     [userData.data, searchQuery],
   )
@@ -297,7 +310,7 @@ const UsersScreen: React.FC = () => {
         isAdmin: updatedUser.isAdmin,
       }
 
-      const response = await api.user.update( user.id, updateData)
+      const response = await api.user.update(user.id, updateData)
 
       if (response) {
         // Actualizar la lista local
@@ -343,6 +356,11 @@ const UsersScreen: React.FC = () => {
   )
 
   const renderUserCard = ({ item, index }: { item: IUser; index: number }) => {
+    // Validación adicional para asegurar que el item existe
+    if (!item || !item.id) {
+      return null
+    }
+
     return (
       <Animated.View
         style={{
@@ -366,6 +384,14 @@ const UsersScreen: React.FC = () => {
         />
       </Animated.View>
     )
+  }
+
+  // Función segura para keyExtractor
+  const keyExtractor = (item: IUser, index: number) => {
+    if (item && item.id) {
+      return item.id.toString()
+    }
+    return `user-${index}`
   }
 
   if (userData.loading) {
@@ -456,7 +482,7 @@ const UsersScreen: React.FC = () => {
           <FlatList
             data={filteredUsers}
             renderItem={renderUserCard}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={keyExtractor}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.listContent}
             refreshControl={
@@ -467,6 +493,10 @@ const UsersScreen: React.FC = () => {
                 tintColor={Colors.light.primary}
               />
             }
+            removeClippedSubviews={false}
+            initialNumToRender={10}
+            maxToRenderPerBatch={10}
+            windowSize={10}
           />
         )}
       </View>
