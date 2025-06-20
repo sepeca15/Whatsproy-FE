@@ -370,6 +370,10 @@ const UsersScreen: React.FC = () => {
       console.log("Respuesta del servidor:", response)
 
       if (response) {
+        // ACTUALIZACIÓN OPTIMISTA: Actualizar inmediatamente en la UI
+        // independientemente de lo que devuelva el servidor
+        console.log("=== APLICANDO ACTUALIZACIÓN OPTIMISTA ===")
+
         // Actualizar los datos del usuario actual PRIMERO
         setCurrentUserData(updatedProfile)
 
@@ -381,25 +385,17 @@ const UsersScreen: React.FC = () => {
 
         setShowProfileModal(false)
 
-        // Verificar que los datos se actualizaron correctamente
-        console.log("=== VERIFICACIÓN POST-ACTUALIZACIÓN ===")
-
-        // Esperar un momento y luego verificar con la API
+        // Verificar después de un tiempo si la actualización se persistió
         setTimeout(async () => {
           try {
-            const verifyUser = await api.user.find(updatedProfile.id)
-            console.log("Usuario verificado desde API:", verifyUser)
-            console.log("Imagen en API después de actualizar:", verifyUser?.image)
-
-            if (verifyUser?.image !== updatedProfile.image) {
-              console.warn("⚠️ ADVERTENCIA: La imagen en la API no coincide con la local")
-              console.log("Local:", updatedProfile.image)
-              console.log("API:", verifyUser?.image)
-            }
+            console.log("=== VERIFICACIÓN POST-ACTUALIZACIÓN ===")
+            // Recargar los datos para verificar
+            await uploadUsers()
+            await getCurrentUser()
           } catch (error) {
-            console.error("Error verificando usuario:", error)
+            console.error("Error en verificación:", error)
           }
-        }, 2000)
+        }, 3000) // Verificar después de 3 segundos
 
         Alert.alert("Éxito", "Perfil actualizado correctamente")
       }
@@ -466,13 +462,12 @@ const UsersScreen: React.FC = () => {
     )
   }
 
-  // Función segura para keyExtractor - usar timestamp para forzar re-render
+  // Función segura para keyExtractor
   const keyExtractor = (item: IUser, index: number) => {
     if (item && item.id) {
-      // Incluir la imagen en la key para forzar re-render cuando cambie
-      return `${item.id}-${item.image || "no-image"}-${Date.now()}`
+      return `${item.id}-${item.image || "no-image"}`
     }
-    return `user-${index}-${Date.now()}`
+    return `user-${index}`
   }
 
   if (userData.loading) {
