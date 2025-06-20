@@ -73,8 +73,10 @@ const UsersScreen: React.FC = () => {
 
   const getCurrentUser = async () => {
     try {
+      console.log("=== OBTENIENDO USUARIO ACTUAL ===")
       const currentUser = await api.auth.me()
-      console.log("Current user data:", currentUser)
+      console.log("Datos del usuario actual desde API:", currentUser)
+      console.log("Imagen del usuario actual:", currentUser?.image)
 
       if (currentUser?.id) {
         setCurrentUserId(currentUser.id)
@@ -92,6 +94,7 @@ const UsersScreen: React.FC = () => {
           image: currentUser.image || null,
         }
 
+        console.log("Usuario actual mapeado:", mappedCurrentUser)
         setCurrentUserData(mappedCurrentUser)
 
         if (currentUser.id_empresa) {
@@ -111,25 +114,39 @@ const UsersScreen: React.FC = () => {
       fadeAnim.setValue(0)
       fabAnim.setValue(0)
 
+      console.log("=== CARGANDO USUARIOS ===")
       const response = await api.user.findAll(user.id_empresa)
-      console.log("Usuarios cargados:", response)
+      console.log("Respuesta completa de usuarios:", response)
 
       // Simplificado: asumimos que la API devuelve { data: [...] }
       const users = response?.data || []
+      console.log("Usuarios raw desde API:", users)
 
       // Mapear usuarios con validación básica
       const mappedUsers: IUser[] = users
         .filter((userItem: any) => userItem && userItem.id) // Solo usuarios válidos
-        .map((userItem: any) => ({
-          id: userItem.id,
-          nombre: userItem.nombre || userItem.name || "Sin nombre",
-          correo: userItem.correo || userItem.email || "Sin email",
-          activo: userItem.activo !== undefined ? userItem.activo : true,
-          isAdmin: userItem.isAdmin || false,
-          image: userItem.image || null,
-        }))
+        .map((userItem: any) => {
+          const mapped = {
+            id: userItem.id,
+            nombre: userItem.nombre || userItem.name || "Sin nombre",
+            correo: userItem.correo || userItem.email || "Sin email",
+            activo: userItem.activo !== undefined ? userItem.activo : true,
+            isAdmin: userItem.isAdmin || false,
+            image: userItem.image || null,
+          }
 
-      console.log("Usuarios mapeados:", mappedUsers)
+          // Log específico para el usuario actual
+          if (userItem.id === currentUserId) {
+            console.log(`=== USUARIO ACTUAL EN LISTA (ID: ${userItem.id}) ===`)
+            console.log("Datos raw:", userItem)
+            console.log("Datos mapeados:", mapped)
+            console.log("Imagen:", mapped.image)
+          }
+
+          return mapped
+        })
+
+      console.log("Usuarios mapeados finales:", mappedUsers)
 
       setUserData({
         data: mappedUsers,
@@ -345,13 +362,14 @@ const UsersScreen: React.FC = () => {
         photo: updatedProfile.image, // Incluir la foto
       }
 
-      console.log("Actualizando perfil con datos:", updateData)
+      console.log("=== ACTUALIZANDO PERFIL ===")
+      console.log("Datos a enviar:", updateData)
+      console.log("URL de imagen:", updatedProfile.image)
 
       const response = await api.user.update(updatedProfile.id, updateData)
+      console.log("Respuesta del servidor:", response)
 
       if (response) {
-        console.log("Respuesta de actualización:", response)
-
         // Actualizar los datos del usuario actual PRIMERO
         setCurrentUserData(updatedProfile)
 
@@ -361,20 +379,29 @@ const UsersScreen: React.FC = () => {
           data: prev.data.map((user) => (user.id === updatedProfile.id ? updatedProfile : user)),
         }))
 
-        // Forzar re-render del FlatList
-        setUserData((prev) => ({
-          ...prev,
-          data: [...prev.data], // Crear nueva referencia del array
-        }))
-
         setShowProfileModal(false)
-        Alert.alert("Éxito", "Perfil actualizado correctamente")
 
-        console.log("Estado actualizado - currentUserData:", updatedProfile)
-        console.log(
-          "Estado actualizado - userData:",
-          userData.data.find((u) => u.id === updatedProfile.id),
-        )
+        // Verificar que los datos se actualizaron correctamente
+        console.log("=== VERIFICACIÓN POST-ACTUALIZACIÓN ===")
+
+        // Esperar un momento y luego verificar con la API
+        setTimeout(async () => {
+          try {
+            const verifyUser = await api.user.find(updatedProfile.id)
+            console.log("Usuario verificado desde API:", verifyUser)
+            console.log("Imagen en API después de actualizar:", verifyUser?.image)
+
+            if (verifyUser?.image !== updatedProfile.image) {
+              console.warn("⚠️ ADVERTENCIA: La imagen en la API no coincide con la local")
+              console.log("Local:", updatedProfile.image)
+              console.log("API:", verifyUser?.image)
+            }
+          } catch (error) {
+            console.error("Error verificando usuario:", error)
+          }
+        }, 2000)
+
+        Alert.alert("Éxito", "Perfil actualizado correctamente")
       }
     } catch (error) {
       console.error("Error updating profile:", error)
