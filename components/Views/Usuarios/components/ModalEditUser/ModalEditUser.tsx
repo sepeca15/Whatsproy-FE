@@ -40,6 +40,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, u
     toastErrorMessage: "Error al seleccionar la imagen",
     onImagePicked: (data) => {
       if (data.apiUrl) {
+        console.log("Imagen subida:", data.apiUrl)
         setFormData((prev) => ({ ...prev, photo: data.apiUrl || "" }))
       }
     },
