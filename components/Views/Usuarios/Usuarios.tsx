@@ -120,7 +120,7 @@ const UsersScreen: React.FC = () => {
 
       // Simplificado: asumimos que la API devuelve { data: [...] }
       const users = response?.data || []
-      console.log("Usuarios raw desde API:", users)
+      // console.log("Usuarios raw desde API:", users)
 
       // Mapear usuarios con validación básica
       const mappedUsers: IUser[] = users
