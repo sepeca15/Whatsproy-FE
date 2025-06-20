@@ -83,6 +83,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, u
           ...formData,
           image: formData.photo || user.image,
         })
+        console.log("Perfil actualizado:", formData.photo)
         setErrors({})
       } catch (error) {
         console.error("Error updating profile:", error)
