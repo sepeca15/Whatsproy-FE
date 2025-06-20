@@ -2,8 +2,17 @@
 
 import type React from "react"
 import { useState, useEffect, useRef, useMemo } from "react"
-import { View, Text, TouchableOpacity, Animated, FlatList, TextInput, StatusBar, RefreshControl } from "react-native"
-import { LinearGradient } from "expo-linear-gradient"
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Animated,
+  FlatList,
+  TextInput,
+  StatusBar,
+  RefreshControl,
+  Alert,
+} from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 import { SafeAreaView } from "react-native-safe-area-context"
 import UserCard from "@/components/Views/Usuarios/components/UserCard/UserCard"
@@ -12,34 +21,8 @@ import EditUserModal from "./components/ModalEditUser/ModalEditUser"
 import type { IUser, IUserInfo } from "./UsuariosType"
 import { Colors } from "@/constants/Coloresuser"
 import { styles } from "./UsuariosStyles"
-
-const mockUsers: IUser[] = [
-  {
-    id: 1,
-    nombre: "Ana García",
-    correo: "ana.garcia@empresa.com",
-    activo: true,
-    isAdmin: true,
-  },
-  {
-    id: 2,
-    nombre: "Carlos Rodríguez",
-    correo: "carlos.rodriguez@empresa.com",
-    activo: true,
-  },
-  {
-    id: 3,
-    nombre: "María López",
-    correo: "maria.lopez@empresa.com",
-    activo: false,
-  },
-  {
-    id: 4,
-    nombre: "Juan Martínez",
-    correo: "juan.martinez@empresa.com",
-    activo: true,
-  },
-]
+import api from "@/services/api/admin"
+import { useUser } from "@/hooks/redux/useUser";
 
 const UsersScreen: React.FC = () => {
   const [userData, setUserData] = useState<IUserInfo>({
@@ -52,13 +35,17 @@ const UsersScreen: React.FC = () => {
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
   const [refreshing, setRefreshing] = useState(false)
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null)
+  const [companyId, setCompanyId] = useState<number | null>(null)
 
   const fadeAnim = useRef(new Animated.Value(0)).current
   const searchAnim = useRef(new Animated.Value(0)).current
   const fabAnim = useRef(new Animated.Value(0)).current
+  const { user } = useUser();
 
   useEffect(() => {
     loadUsers()
+    getCurrentUser()
   }, [])
 
   // Animar elementos cuando los datos se cargan
@@ -81,6 +68,21 @@ const UsersScreen: React.FC = () => {
     }
   }, [userData.loading, userData.data.length, fadeAnim, fabAnim])
 
+  const getCurrentUser = async () => {
+    try {
+      const currentUser = await api.auth.me()
+      if (currentUser?.id) {
+        setCurrentUserId(currentUser.id)
+        // Asumiendo que el usuario actual tiene información de la empresa
+        if (currentUser.id_empresa) {
+          setCompanyId(currentUser.id_empresa)
+        }
+      }
+    } catch (error) {
+      console.error("Error getting current user:", error)
+    }
+  }
+
   const loadUsers = async () => {
     try {
       setUserData((prev) => ({ ...prev, loading: true }))
@@ -89,12 +91,36 @@ const UsersScreen: React.FC = () => {
       fadeAnim.setValue(0)
       fabAnim.setValue(0)
 
-      setTimeout(() => {
+    const response = await api.user.findAll(user.id_empresa)
+      if (!response || response.error) {
+        throw new Error(response?.error || "Error al cargar los usuarios")
+      }
+
+
+      if (response && Array.isArray(response)) {
+        // Mapear los datos de la API al formato esperado
+        const mappedUsers: IUser[] = response.map((user: any) => ({
+          id: user.id,
+          nombre:
+            user.nombre && user.apellido
+              ? `${user.nombre} ${user.apellido}`.trim()
+              : user.name || user.nombre || `${user.firstName || ""} ${user.lastName || ""}`.trim(),
+          correo: user.correo || user.email || "",
+          activo: user.activo !== undefined ? user.activo : user.active !== undefined ? user.active : true,
+          isAdmin: user.isAdmin || user.role === "admin" || false,
+          image: user.image || user.avatar || null,
+        }))
+
         setUserData({
-          data: mockUsers,
+          data: mappedUsers,
           loading: false,
         })
-      }, 1000)
+      } else {
+        setUserData({
+          data: [],
+          loading: false,
+        })
+      }
     } catch (error) {
       console.error("Error loading users:", error)
       setUserData((prev) => ({
@@ -102,6 +128,8 @@ const UsersScreen: React.FC = () => {
         loading: false,
         error: error instanceof Error ? error.message : String(error),
       }))
+
+      Alert.alert("Error", "No se pudieron cargar los usuarios. Por favor, intenta de nuevo.", [{ text: "OK" }])
     }
   }
 
@@ -139,44 +167,129 @@ const UsersScreen: React.FC = () => {
     setShowEditModal(true)
   }
 
-  const handleDeleteUser = (userId: number) => {
-    setUserData((prev) => ({
-      ...prev,
-      data: prev.data.filter((user) => user.id !== userId),
-    }))
-  }
+  const handleDeleteUser = async (userId: number) => {
+    try {
+      Alert.alert("Confirmar eliminación", "¿Estás seguro de que deseas eliminar este usuario?", [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Eliminar",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await api.user.delete(userId)
 
-  const handleCreateUser = (newUser: Omit<IUser, "id">) => {
-    const user: IUser = {
-      ...newUser,
-      id: userData.data.length > 0 ? Math.max(...userData.data.map((u) => u.id)) + 1 : 1,
+              // Actualizar la lista local
+              setUserData((prev) => ({
+                ...prev,
+                data: prev.data.filter((user) => user.id !== userId),
+              }))
+
+              Alert.alert("Éxito", "Usuario eliminado correctamente")
+            } catch (error) {
+              console.error("Error deleting user:", error)
+              Alert.alert("Error", "No se pudo eliminar el usuario")
+            }
+          },
+        },
+      ])
+    } catch (error) {
+      console.error("Error in handleDeleteUser:", error)
     }
-
-    setUserData((prev) => ({
-      ...prev,
-      data: [...prev.data, user],
-    }))
-    setShowCreateModal(false)
   }
 
-  const handleUpdateUser = (updatedUser: IUser) => {
-    setUserData((prev) => ({
-      ...prev,
-      data: prev.data.map((user) => (user.id === updatedUser.id ? updatedUser : user)),
-    }))
-    setShowEditModal(false)
-    setSelectedUser(null)
+  const handleCreateUser = async (newUserData: Omit<IUser, "id">) => {
+    try {
+      if (!companyId) {
+        Alert.alert("Error", "No se pudo obtener la información de la empresa")
+        return
+      }
+
+      // Separar nombre y apellido del nombre completo
+      const nameParts = newUserData.nombre.trim().split(" ")
+      const nombre = nameParts[0] || ""
+      const apellido = nameParts.slice(1).join(" ") || ""
+
+      // Mapear los datos al formato esperado por la API
+      const userData = {
+        nombre: nombre,
+        apellido: apellido,
+        correo: newUserData.correo,
+        password: "123456", // Contraseña temporal - deberías manejar esto de manera más segura
+        id_empresa: companyId,
+      }
+
+      const createdUser = await api.user.create(userData)
+
+      if (createdUser) {
+        // Mapear la respuesta de vuelta al formato local
+        const newUser: IUser = {
+          id: createdUser.id,
+          nombre:
+            createdUser.nombre && createdUser.apellido
+              ? `${createdUser.nombre} ${createdUser.apellido}`.trim()
+              : createdUser.name || "",
+          correo: createdUser.correo || createdUser.email || "",
+          activo: createdUser.activo !== undefined ? createdUser.activo : true,
+          isAdmin: newUserData.isAdmin, // Usar el valor del formulario
+          image: createdUser.image || null,
+        }
+
+        setUserData((prev) => ({
+          ...prev,
+          data: [...prev.data, newUser],
+        }))
+
+        setShowCreateModal(false)
+        Alert.alert("Éxito", "Usuario creado correctamente")
+      }
+    } catch (error) {
+      console.error("Error creating user:", error)
+      Alert.alert("Error", "No se pudo crear el usuario")
+    }
+  }
+
+  const handleUpdateUser = async (updatedUser: IUser) => {
+    try {
+      // Separar nombre y apellido del nombre completo
+      const nameParts = updatedUser.nombre.trim().split(" ")
+      const nombre = nameParts[0] || ""
+      const apellido = nameParts.slice(1).join(" ") || ""
+
+      // Mapear los datos al formato esperado por la API
+      const userData = {
+        id: updatedUser.id,
+        nombre: nombre,
+        apellido: apellido,
+        correo: updatedUser.correo,
+        activo: updatedUser.activo,
+        isAdmin: updatedUser.isAdmin,
+      }
+
+      const response = await api.user.update(user.id, userData)
+
+      if (response) {
+        // Actualizar la lista local
+        setUserData((prev) => ({
+          ...prev,
+          data: prev.data.map((user) => (user.id === updatedUser.id ? updatedUser : user)),
+        }))
+
+        setShowEditModal(false)
+        setSelectedUser(null)
+        Alert.alert("Éxito", "Usuario actualizado correctamente")
+      }
+    } catch (error) {
+      console.error("Error updating user:", error)
+      Alert.alert("Error", "No se pudo actualizar el usuario")
+    }
   }
 
   const renderEmptyState = () => (
     <View style={styles.emptyState}>
       <View style={styles.emptyIconContainer}>
-        <LinearGradient
-          colors={[`${Colors.light.primary}20`, `${Colors.light.secondary}20`]}
-          style={styles.emptyIconGradient}
-        >
+        <View style={styles.emptyIconBackground}>
           <Ionicons name="people-outline" size={60} color={Colors.light.primary} />
-        </LinearGradient>
+        </View>
       </View>
       <Text style={styles.emptyTitle}>{searchQuery ? "No se encontraron usuarios" : "No hay usuarios"}</Text>
       <Text style={styles.emptySubtitle}>
@@ -184,15 +297,10 @@ const UsersScreen: React.FC = () => {
       </Text>
       {!searchQuery && (
         <TouchableOpacity style={styles.emptyActionButton} onPress={() => setShowCreateModal(true)} activeOpacity={0.8}>
-          <LinearGradient
-            colors={[Colors.light.primary, Colors.light.secondary]}
-            style={styles.emptyActionGradient}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          >
+          <View style={styles.emptyActionContent}>
             <Ionicons name="add" size={20} color="white" />
             <Text style={styles.emptyActionText}>Crear Usuario</Text>
-          </LinearGradient>
+          </View>
         </TouchableOpacity>
       )}
     </View>
@@ -217,7 +325,7 @@ const UsersScreen: React.FC = () => {
           user={item}
           onEdit={handleEditUser}
           onDelete={handleDeleteUser}
-          currentUserId={1}
+          currentUserId={currentUserId || 0}
           allowManage={true}
         />
       </Animated.View>
@@ -228,10 +336,7 @@ const UsersScreen: React.FC = () => {
     return (
       <View style={styles.loadingContainer}>
         <StatusBar barStyle="light-content" backgroundColor={Colors.light.primary} />
-        <LinearGradient
-          colors={[Colors.light.primary, Colors.light.secondary]}
-          style={styles.loadingGradient}
-        >
+        <View style={styles.loadingBackground}>
           <View style={styles.loadingContent}>
             <Animated.View
               style={[
@@ -250,7 +355,7 @@ const UsersScreen: React.FC = () => {
             />
             <Text style={styles.loadingText}>Cargando usuarios...</Text>
           </View>
-        </LinearGradient>
+        </View>
       </View>
     )
   }
@@ -260,12 +365,7 @@ const UsersScreen: React.FC = () => {
       <StatusBar barStyle="light-content" backgroundColor={Colors.light.primary} />
 
       {/* Header */}
-      <LinearGradient
-        colors={[Colors.light.primary, Colors.light.secondary]}
-        style={styles.header}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-      >
+      <View style={styles.header}>
         <View style={styles.headerContent}>
           <TouchableOpacity style={styles.backButton} activeOpacity={0.7}>
             <Ionicons name="arrow-back" size={24} color="white" />
@@ -310,7 +410,7 @@ const UsersScreen: React.FC = () => {
             )}
           </View>
         </Animated.View>
-      </LinearGradient>
+      </View>
 
       {/* Content */}
       <View style={styles.content}>
@@ -349,14 +449,9 @@ const UsersScreen: React.FC = () => {
         ]}
       >
         <TouchableOpacity style={styles.fab} onPress={() => setShowCreateModal(true)} activeOpacity={0.8}>
-          <LinearGradient
-            colors={[Colors.light.primary, Colors.light.secondary]}
-            style={styles.fabGradient}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          >
+          <View style={styles.fabContent}>
             <Ionicons name="add" size={28} color="white" />
-          </LinearGradient>
+          </View>
         </TouchableOpacity>
       </Animated.View>
 

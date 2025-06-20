@@ -12,6 +12,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  ActivityIndicator,
 } from "react-native"
 import { Ionicons, MaterialIcons } from "@expo/vector-icons"
 import type { IUser } from "../../UsuariosType"
@@ -22,7 +23,7 @@ interface EditUserModalProps {
   visible: boolean
   onClose: () => void
   user: IUser
-  onUpdateUser: (user: IUser) => void
+  onUpdateUser: (user: IUser) => Promise<void>
 }
 
 const EditUserModal: React.FC<EditUserModalProps> = ({ visible, onClose, user, onUpdateUser }) => {
@@ -33,6 +34,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ visible, onClose, user, o
     isAdmin: false,
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     if (user) {
@@ -62,13 +64,20 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ visible, onClose, user, o
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (validateForm()) {
-      onUpdateUser({
-        ...user,
-        ...formData,
-      })
-      setErrors({})
+      setIsLoading(true)
+      try {
+        await onUpdateUser({
+          ...user,
+          ...formData,
+        })
+        setErrors({})
+      } catch (error) {
+        console.error("Error updating user:", error)
+      } finally {
+        setIsLoading(false)
+      }
     }
   }
 
@@ -79,13 +88,19 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ visible, onClose, user, o
     }
   }
 
+  const handleClose = () => {
+    if (!isLoading) {
+      onClose()
+    }
+  }
+
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
+    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={handleClose}>
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerContent}>
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+            <TouchableOpacity onPress={handleClose} style={styles.closeButton} disabled={isLoading}>
               <Ionicons name="close" size={24} color="white" />
             </TouchableOpacity>
             <Text style={styles.headerTitle}>Editar Usuario</Text>
@@ -113,6 +128,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ visible, onClose, user, o
                   value={formData.nombre}
                   onChangeText={(text) => handleInputChange("nombre", text)}
                   placeholderTextColor={Colors.light.textSecondary}
+                  editable={!isLoading}
                 />
               </View>
               {errors.nombre && <Text style={styles.errorText}>{errors.nombre}</Text>}
@@ -131,6 +147,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ visible, onClose, user, o
                   keyboardType="email-address"
                   autoCapitalize="none"
                   placeholderTextColor={Colors.light.textSecondary}
+                  editable={!isLoading}
                 />
               </View>
               {errors.correo && <Text style={styles.errorText}>{errors.correo}</Text>}
@@ -154,6 +171,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ visible, onClose, user, o
                     true: Colors.light.success,
                   }}
                   thumbColor="white"
+                  disabled={isLoading}
                 />
               </View>
             </View>
@@ -176,6 +194,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ visible, onClose, user, o
                     true: Colors.light.warning,
                   }}
                   thumbColor="white"
+                  disabled={isLoading}
                 />
               </View>
             </View>
@@ -184,13 +203,27 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ visible, onClose, user, o
 
         {/* Footer */}
         <View style={styles.footer}>
-          <TouchableOpacity style={styles.cancelButton} onPress={onClose} activeOpacity={0.7}>
+          <TouchableOpacity
+            style={[styles.cancelButton, isLoading && { opacity: 0.5 }]}
+            onPress={handleClose}
+            activeOpacity={0.7}
+            disabled={isLoading}
+          >
             <Text style={styles.cancelButtonText}>Cancelar</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.updateButton} onPress={handleSubmit} activeOpacity={0.8}>
+          <TouchableOpacity
+            style={[styles.updateButton, isLoading && { opacity: 0.7 }]}
+            onPress={handleSubmit}
+            activeOpacity={0.8}
+            disabled={isLoading}
+          >
             <View style={styles.updateButtonContent}>
-              <Text style={styles.updateButtonText}>Guardar Cambios</Text>
+              {isLoading ? (
+                <ActivityIndicator size="small" color="white" />
+              ) : (
+                <Text style={styles.updateButtonText}>Guardar Cambios</Text>
+              )}
             </View>
           </TouchableOpacity>
         </View>

@@ -114,6 +114,46 @@ export const styles = StyleSheet.create({
   emptyIconContainer: {
     marginBottom: 24,
   },
+  emptyIconBackground: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+
+  },
+  emptyActionContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 16,
+
+  },
+  loadingBackground: {
+    flex: 1,
+    backgroundColor: Colors.light.primary,
+
+    justifyContent: "center",
+    alignItems: "center",
+
+  },
+  fabContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 16,
+
+  },
+
   emptyIconGradient: {
     width: 120,
     height: 120,
