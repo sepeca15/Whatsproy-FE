@@ -479,32 +479,21 @@ const filteredUsers = useMemo(() => {
     return `user-${index}`
   }
 
-  if (userData.loading || currentUserId === null) {
+if (userData.loading || currentUserId === null) {
   return (
     <View style={styles.loadingContainer}>
       <StatusBar barStyle="light-content" backgroundColor={Colors.light.primary} />
       <View style={styles.loadingBackground}>
         <View style={styles.loadingContent}>
-          <Animated.View
-            style={[
-              styles.loadingSpinner,
-              {
-                transform: [
-                  {
-                    rotate: fadeAnim.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: ["0deg", "360deg"],
-                    }),
-                  },
-                ],
-              },
-            ]}
+          <ActivityIndicator
+            size={60} // Más grande que "large"
+            color={Colors.light.success || Colors.light.primary || "#00C851"} // Usa tu verde
           />
           <Text style={styles.loadingText}>Cargando usuarios...</Text>
         </View>
       </View>
     </View>
-  )
+  );
 }
 
   return (
