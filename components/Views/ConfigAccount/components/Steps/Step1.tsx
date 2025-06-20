@@ -42,19 +42,20 @@ const Step1 = ({ onNext }: { onNext: any }) => {
           marginTop={20}
           type="text"
           label={formatMessage({ id: "enterFirstName" })}
-          placeholder={formatMessage({ id: "firstNamePlaceholder" })}
+          placeholder={"John"}
           onChangeText={(text) => handleChangeInputs("nombre", text)}
         />
         <InputField
           marginTop={20}
           type="text"
           label={formatMessage({ id: "enterLastName" })}
-          placeholder="Last name"
+          placeholder="Due"
           onChangeText={(text) => handleChangeInputs("apellido", text)}
         />
       </View>
       <View style={styles.ContainerFooter}>
         <CustomButton
+          borderRadius={8}
           isDisabled={!formData.nombre || !formData.apellido}
           onPress={saveDataUser}
         >

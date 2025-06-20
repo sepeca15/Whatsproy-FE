@@ -10,6 +10,7 @@
     "schedules": "Schedules",
     "manageSchedules": "Set your business hours and availability",
     "company.description": "Description",
+    "configAccount": "Finish setting up your account",
     "company.address": "Address",
     "company.openingHour": "Opening Hour (HH:mm)",
     "company.closingHour": "Closing Hour (HH:mm)",
@@ -298,7 +299,7 @@
     "step2Description": "Complete the payment process to confirm your subscription.",
     "step3Title": "Connecting information",
     "step3Description": "We are connecting all your information and processing it, this process may take several minutes.",
-    "step4Title": "Connect with Green API",
+    "step4Title": "Enable your assistent",
     "step4Description": "Connect your system to the Green API to enable the Whatsapp assistent.",
     "noPermission": "You do not have permission to manage users",
     "confirmDeleteUser": "Do you want to delete the selected user?",
@@ -585,6 +586,12 @@
     "addSchedule": "Add schedule",
     "startHour": "Start hour",
     "endHour": "End hour",
+    "activeSubscription": "Active Subscription",
+    "benefits": "Benefits",
+    "subscriptionDetails": "Subscription Details",
+    "currentPlan": "Current Plan",
+    "nextBilling": "Next Billing",
+    "subscriptionStatus": "Status",
     "productNamePlaceholder": "Enter product name",
     "schedule.created": "Schedule created successfully",
     "schedule.deleted": "Schedule deleted",
@@ -639,15 +646,27 @@
     "provisionalClosureAnswer": "A soft shutdown allows you to temporarily pause your service without affecting your primary configuration. Useful for breaks or emergencies.",
     "trustedNumbersQuestion": "How do trust numbers work?",
     "usersRolesHelp": "Usuarios y Roles",
+<<<<<<< HEAD
+=======
+
+>>>>>>> cd20413ee5be38ea577c2ae4783cef033326f13b
     "adminDifferenceQuestion": "What is the difference between admin and regular user?",
     "adminDifferenceAnswer": "Administrators can manage users, configure schedules, view statistics, and access all features. Regular users can only view and manage their own orders.",
     "createUsersQuestion": "How do I create new users?",
     "createUsersAnswer": "Only administrators can create users. Go to the 'Users' section and click 'Add User'.",
+<<<<<<< HEAD
+=======
+
+>>>>>>> cd20413ee5be38ea577c2ae4783cef033326f13b
     "securityHelp": "Security",
     "protectAccountQuestion": "How do I protect my account?",
     "protectAccountAnswer": "Use strong passwords, do not share your credentials, and regularly review the Privacy and Security section.",
     "dataStorageQuestion": "What data is stored?",
     "dataStorageAnswer": "We only store the data necessary for the service to function. See our privacy policy for more details.",
+<<<<<<< HEAD
+=======
+
+>>>>>>> cd20413ee5be38ea577c2ae4783cef033326f13b
     "dashboardScreenshot": "Main Panel",
     "dashboardScreenshotDesc": "General view of the dashboard with metrics and recent orders",
     "dashboardMainTitle": "Dashboard View",
@@ -668,6 +687,10 @@
     "ordersStep2": "Tap any order to see its full details",
     "ordersStep3": "Use filters to search for specific orders",
     "ordersStep4": "Swipe an order to the left for quick actions",
+<<<<<<< HEAD
+=======
+
+>>>>>>> cd20413ee5be38ea577c2ae4783cef033326f13b
     "scheduleScreenshot": "Schedule Configuration",
     "scheduleScreenshotDesc": "How to set your working hours and availability",
     "scheduleWeeklyTitle": "Weekly Schedules",
@@ -690,6 +713,10 @@
     "holidaysStep2": "Tap the calendar to select dates",
     "holidaysStep3": "Mark the days as 'Not available'",
     "holidaysStep4": "Add an optional note for each day off",
+<<<<<<< HEAD
+=======
+
+>>>>>>> cd20413ee5be38ea577c2ae4783cef033326f13b
     "paymentsScreenshot": "Payment Methods",
     "paymentsScreenshotDesc": "Configure and manage available payment methods",
     "paymentsMethodsTitle": "Available Methods",
@@ -698,6 +725,10 @@
     "paymentsStep2": "Review all available methods",
     "paymentsStep3": "Enable or disable methods as you prefer",
     "paymentsStep4": "Set minimum and maximum limits if necessary",
+<<<<<<< HEAD
+=======
+
+>>>>>>> cd20413ee5be38ea577c2ae4783cef033326f13b
     "paymentsConfigTitle": "Payment Configuration",
     "paymentsConfigDesc": "Specific settings for each payment method, including commissions.",
     "configStep1": "Select a specific payment method",
@@ -705,8 +736,12 @@
     "configStep3": "Set transaction limits",
     "configStep4": "Configure payment notifications",
     "configStep5": "Test the configuration before activating",
+<<<<<<< HEAD
     "usersScreenshot": "User Management",
     "usersScreenshotDesc": "Create and manage system users",
+=======
+
+>>>>>>> cd20413ee5be38ea577c2ae4783cef033326f13b
     "helpCenter": "Help Center",
     "helpCenterDesc": "Find answers to your questions",
     "searchHelp": "Search help...",
@@ -714,10 +749,15 @@
     "noQuestionsFound": "No questions matched your search",
     "visualGuides": "Visual Guides",
     "tapToViewGuide": "Tap to view the guide",
+<<<<<<< HEAD
+=======
+    "step": "step",
+>>>>>>> cd20413ee5be38ea577c2ae4783cef033326f13b
     "steps": "steps",
     "noScreenshotsFound": "No guides matched your search",
     "needMoreHelp": "Can’t find what you’re looking for?",
     "contactSupport": "Contact us for personalized help",
+<<<<<<< HEAD
     "contactSupportButton": "Contact Support",
     "usersListTitle": "User List",
     "usersListDesc": "Overview of all users registered in the system.",
@@ -765,6 +805,11 @@
     "permissionsStep5": "Guarda los cambios y notifica al usuario",
     "usersScreenshot": "Gestión de Usuarios",
     "usersScreenshotDesc": "Crear y administrar usuarios del sistema",
+=======
+    "contactSupportButton": "Contact Support"
+  },
+  "es": {
+>>>>>>> cd20413ee5be38ea577c2ae4783cef033326f13b
     "scheduleScreenshot": "Configuración de Horarios",
     "scheduleScreenshotDesc": "Cómo establecer tus horarios de trabajo y disponibilidad",
     "scheduleWeeklyTitle": "Horarios Semanales",
@@ -787,6 +832,10 @@
     "holidaysStep2": "Toca el calendario para seleccionar fechas",
     "holidaysStep3": "Marca los días como 'No disponible'",
     "holidaysStep4": "Agrega una nota opcional para cada día libre",
+<<<<<<< HEAD
+=======
+
+>>>>>>> cd20413ee5be38ea577c2ae4783cef033326f13b
     "paymentsScreenshot": "Métodos de Pago",
     "paymentsScreenshotDesc": "Configurar y gestionar métodos de pago disponibles",
     "paymentsMethodsTitle": "Métodos Disponibles",
@@ -795,6 +844,10 @@
     "paymentsStep2": "Revisa todos los métodos disponibles",
     "paymentsStep3": "Activa o desactiva métodos según tu preferencia",
     "paymentsStep4": "Configura límites mínimos y máximos si es necesario",
+<<<<<<< HEAD
+=======
+    "configAccount": "Terminar de configurar su cuenta",
+>>>>>>> cd20413ee5be38ea577c2ae4783cef033326f13b
     "paymentsConfigTitle": "Configuración de Pagos",
     "paymentsConfigDesc": "Ajustes específicos para cada método de pago, incluyendo comisiones.",
     "configStep1": "Selecciona un método de pago específico",
@@ -802,6 +855,10 @@
     "configStep3": "Establece límites de transacción",
     "configStep4": "Configura notificaciones de pago",
     "configStep5": "Prueba la configuración antes de activar",
+<<<<<<< HEAD
+=======
+
+>>>>>>> cd20413ee5be38ea577c2ae4783cef033326f13b
     "helpCenter": "Centro de Ayuda",
     "helpCenterDesc": "Encuentra respuestas a tus preguntas",
     "searchHelp": "Buscar ayuda...",
@@ -809,21 +866,37 @@
     "noQuestionsFound": "No se encontraron preguntas que coincidan con tu búsqueda",
     "visualGuides": "Guías Visuales",
     "tapToViewGuide": "Toca para ver la guía",
+<<<<<<< HEAD
+=======
+
+>>>>>>> cd20413ee5be38ea577c2ae4783cef033326f13b
     "steps": "pasos",
     "noScreenshotsFound": "No se encontraron guías que coincidan con tu búsqueda",
     "needMoreHelp": "¿No encuentras lo que buscas?",
     "contactSupport": "Contáctanos para obtener ayuda personalizada",
     "contactSupportButton": "Contactar Soporte",
+<<<<<<< HEAD
+=======
+
+>>>>>>> cd20413ee5be38ea577c2ae4783cef033326f13b
     "usersRolesHelp": "Usuarios y Roles",
     "adminDifferenceQuestion": "¿Cuál es la diferencia entre admin y usuario normal?",
     "adminDifferenceAnswer": "Los administradores pueden gestionar usuarios, configurar horarios, ver estadísticas y acceder a todas las funciones. Los usuarios normales solo pueden ver y gestionar sus propios pedidos.",
     "createUsersQuestion": "¿Cómo creo nuevos usuarios?",
     "createUsersAnswer": "Solo los administradores pueden crear usuarios. Ve a la sección 'Usuarios' y haz clic en 'Agregar Usuario'.",
+<<<<<<< HEAD
+=======
+
+>>>>>>> cd20413ee5be38ea577c2ae4783cef033326f13b
     "securityHelp": "Seguridad",
     "protectAccountQuestion": "¿Cómo protejo mi cuenta?",
     "protectAccountAnswer": "Usa contraseñas seguras, no compartas tus credenciales y revisa regularmente la sección de Privacidad y Seguridad.",
     "dataStorageQuestion": "¿Qué datos se almacenan?",
     "dataStorageAnswer": "Solo almacenamos los datos necesarios para el funcionamiento del servicio. Consulta nuestra política de privacidad para más detalles.",
+<<<<<<< HEAD
+=======
+
+>>>>>>> cd20413ee5be38ea577c2ae4783cef033326f13b
     "dashboardScreenshot": "Panel Principal",
     "dashboardScreenshotDesc": "Vista general del dashboard con métricas y pedidos recientes",
     "dashboardMainTitle": "Vista del Dashboard",
@@ -844,6 +917,15 @@
     "ordersStep2": "Toca cualquier pedido para ver sus detalles completos",
     "ordersStep3": "Usa los filtros para buscar pedidos específicos",
     "ordersStep4": "Desliza un pedido hacia la izquierda para acciones rápidas",
+<<<<<<< HEAD
+=======
+    "activeSubscription": "Suscripción Activa",
+    "benefits": "Beneficios",
+    "subscriptionDetails": "Detalles de Suscripción",
+    "currentPlan": "Plan Actual",
+    "nextBilling": "Próxima Facturación",
+    "subscriptionStatus": "Estado",
+>>>>>>> cd20413ee5be38ea577c2ae4783cef033326f13b
     "trustedNumbersQuestion": "¿Cómo funcionan los números de confianza?",
     "provisionalClosureAnswer": "El cierre provisorio te permite pausar temporalmente tu servicio sin afectar tu configuración principal. Útil para descansos o emergencias.",
     "provisionalClosureQuestion": "¿Qué es el cierre provisorio?",
@@ -1058,7 +1140,7 @@
     "step2Description": "Completa el proceso de pago para confirmar tu suscripción.",
     "step3Title": "Procesando información",
     "step3Description": "Estamos conectando toda tu información y procesando, este proceso puede tomar varios minutos.",
-    "step4Title": "Conecta con Green API",
+    "step4Title": "Habilitá tu asistente",
     "step4Description": "Conecta tu sistema con la Green API para habilitar el asistente de whatsapp.",
     "informationAditional": "Informacion adicional",
     "noDetailsInOrdersDetails": "No dio detalles.",
