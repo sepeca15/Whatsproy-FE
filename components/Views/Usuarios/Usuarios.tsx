@@ -22,7 +22,7 @@ import type { IUser, IUserInfo } from "./UsuariosType"
 import { Colors } from "@/constants/Coloresuser"
 import { styles } from "./UsuariosStyles"
 import api from "@/services/api/admin"
-import { useUser } from "@/hooks/redux/useUser";
+import { useUser } from "@/hooks/redux/useUser"
 
 const UsersScreen: React.FC = () => {
   const [userData, setUserData] = useState<IUserInfo>({
@@ -41,7 +41,7 @@ const UsersScreen: React.FC = () => {
   const fadeAnim = useRef(new Animated.Value(0)).current
   const searchAnim = useRef(new Animated.Value(0)).current
   const fabAnim = useRef(new Animated.Value(0)).current
-  const { user } = useUser();
+  const { user } = useUser()
 
   useEffect(() => {
     loadUsers()
@@ -71,9 +71,10 @@ const UsersScreen: React.FC = () => {
   const getCurrentUser = async () => {
     try {
       const currentUser = await api.auth.me()
+      console.log("Current user data:", currentUser)
+
       if (currentUser?.id) {
         setCurrentUserId(currentUser.id)
-        // Asumiendo que el usuario actual tiene información de la empresa
         if (currentUser.id_empresa) {
           setCompanyId(currentUser.id_empresa)
         }
@@ -91,37 +92,66 @@ const UsersScreen: React.FC = () => {
       fadeAnim.setValue(0)
       fabAnim.setValue(0)
 
-    const response = await api.user.findAll(user.id_empresa)
-    console.log("Usuarios cargados:", response)
+      const response = await api.user.findAll(user.id_empresa)
+      console.log("Usuarios cargados:", response)
 
-      if (!response || response.error) {
-        throw new Error(response?.error || "Error al cargar los usuarios")
+      if (!response) {
+        throw new Error("No se recibió respuesta de la API")
       }
 
+      let mappedUsers: IUser[] = []
 
-      if (response && Array.isArray(response)) {
-        // Mapear los datos de la API al formato esperado
-        const mappedUsers: IUser[] = response.map((user: any) => ({
-          id: user.id,
+      // Verificar si la respuesta es un array o un objeto único
+      if (Array.isArray(response)) {
+        // Si es un array, mapear cada usuario
+        mappedUsers = response.map((userItem: any) => ({
+          id: userItem.id,
           nombre:
-            user.nombre && user.apellido
-              ? `${user.nombre} ${user.apellido}`.trim()
-              : user.name || user.nombre || `${user.firstName || ""} ${user.lastName || ""}`.trim(),
-          correo: user.correo || user.email || "",
-          activo: user.activo !== undefined ? user.activo : user.active !== undefined ? user.active : true,
-          isAdmin: user.isAdmin || user.role === "admin" || false,
-          image: user.image || user.avatar || null,
+            userItem.nombre && userItem.apellido
+              ? `${userItem.nombre} ${userItem.apellido}`.trim()
+              : userItem.name || userItem.nombre || `${userItem.firstName || ""} ${userItem.lastName || ""}`.trim(),
+          correo: userItem.correo || userItem.email || "",
+          activo:
+            userItem.activo !== undefined ? userItem.activo : userItem.active !== undefined ? userItem.active : true,
+          isAdmin: userItem.isAdmin || userItem.role === "admin" || false,
+          image: userItem.image || userItem.avatar || null,
         }))
+      } else if (response && typeof response === "object") {
+        // Si es un objeto único, crear un array con ese usuario
+        const singleUser: IUser = {
+          id: response.id,
+          nombre:
+            response.nombre && response.apellido
+              ? `${response.nombre} ${response.apellido}`.trim()
+              : response.name || response.nombre || `${response.firstName || ""} ${response.lastName || ""}`.trim(),
+          correo: response.correo || response.email || "",
+          activo:
+            response.activo !== undefined ? response.activo : response.active !== undefined ? response.active : true,
+          isAdmin: response.isAdmin || response.role === "admin" || false,
+          image: response.image || response.avatar || null,
+        }
+        mappedUsers = [singleUser]
+      }
 
-        setUserData({
-          data: mappedUsers,
-          loading: false,
-        })
-      } else {
-        setUserData({
-          data: [],
-          loading: false,
-        })
+      setUserData({
+        data: mappedUsers,
+        loading: false,
+      })
+
+      // Animar elementos si hay datos
+      if (mappedUsers.length > 0) {
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 600,
+          useNativeDriver: true,
+        }).start()
+
+        Animated.spring(fabAnim, {
+          toValue: 1,
+          tension: 100,
+          friction: 8,
+          useNativeDriver: true,
+        }).start()
       }
     } catch (error) {
       console.error("Error loading users:", error)
@@ -201,7 +231,7 @@ const UsersScreen: React.FC = () => {
 
   const handleCreateUser = async (newUserData: Omit<IUser, "id">) => {
     try {
-      if (!companyId) {
+      if (!user?.id_empresa) {
         Alert.alert("Error", "No se pudo obtener la información de la empresa")
         return
       }
@@ -216,8 +246,8 @@ const UsersScreen: React.FC = () => {
         nombre: nombre,
         apellido: apellido,
         correo: newUserData.correo,
-        password: "123456", // Contraseña temporal - deberías manejar esto de manera más segura
-        id_empresa: companyId,
+        password: "123456", // Contraseña temporal
+        id_empresa: user.id_empresa,
       }
 
       const createdUser = await api.user.create(userData)
@@ -232,7 +262,7 @@ const UsersScreen: React.FC = () => {
               : createdUser.name || "",
           correo: createdUser.correo || createdUser.email || "",
           activo: createdUser.activo !== undefined ? createdUser.activo : true,
-          isAdmin: newUserData.isAdmin, // Usar el valor del formulario
+          isAdmin: newUserData.isAdmin,
           image: createdUser.image || null,
         }
 
@@ -258,7 +288,7 @@ const UsersScreen: React.FC = () => {
       const apellido = nameParts.slice(1).join(" ") || ""
 
       // Mapear los datos al formato esperado por la API
-      const userData = {
+      const updateData = {
         id: updatedUser.id,
         nombre: nombre,
         apellido: apellido,
@@ -267,7 +297,7 @@ const UsersScreen: React.FC = () => {
         isAdmin: updatedUser.isAdmin,
       }
 
-      const response = await api.user.update(user.id, userData)
+      const response = await api.user.update( user.id, updateData)
 
       if (response) {
         // Actualizar la lista local
@@ -298,7 +328,11 @@ const UsersScreen: React.FC = () => {
         {searchQuery ? "Intenta con otros términos de búsqueda" : "Comienza agregando tu primer usuario"}
       </Text>
       {!searchQuery && (
-        <TouchableOpacity style={styles.emptyActionButton} onPress={() => setShowCreateModal(true)} activeOpacity={0.8}>
+        <TouchableOpacity
+          style={[styles.emptyActionButton, { backgroundColor: Colors.light.primary }]}
+          onPress={() => setShowCreateModal(true)}
+          activeOpacity={0.8}
+        >
           <View style={styles.emptyActionContent}>
             <Ionicons name="add" size={20} color="white" />
             <Text style={styles.emptyActionText}>Crear Usuario</Text>
@@ -367,7 +401,7 @@ const UsersScreen: React.FC = () => {
       <StatusBar barStyle="light-content" backgroundColor={Colors.light.primary} />
 
       {/* Header */}
-      <View style={styles.header}>
+      <View style={[styles.header, { backgroundColor: Colors.light.primary }]}>
         <View style={styles.headerContent}>
           <TouchableOpacity style={styles.backButton} activeOpacity={0.7}>
             <Ionicons name="arrow-back" size={24} color="white" />
@@ -450,7 +484,11 @@ const UsersScreen: React.FC = () => {
           },
         ]}
       >
-        <TouchableOpacity style={styles.fab} onPress={() => setShowCreateModal(true)} activeOpacity={0.8}>
+        <TouchableOpacity
+          style={[styles.fab, { backgroundColor: Colors.light.primary }]}
+          onPress={() => setShowCreateModal(true)}
+          activeOpacity={0.8}
+        >
           <View style={styles.fabContent}>
             <Ionicons name="add" size={28} color="white" />
           </View>
