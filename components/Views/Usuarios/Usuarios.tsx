@@ -487,7 +487,7 @@ if (userData.loading || currentUserId === null) {
         <View style={styles.loadingContent}>
           <ActivityIndicator
             size={60} // Más grande que "large"
-            color={Colors.light.success || Colors.light.primary || "#00C851"} // Usa tu verde
+            color={   Colors.light.secondary ||  Colors.light.success || "#fff"} // Usa tu verde
           />
           <Text style={styles.loadingText}>Cargando usuarios...</Text>
         </View>
