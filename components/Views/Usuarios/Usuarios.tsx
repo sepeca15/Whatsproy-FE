@@ -18,6 +18,7 @@ import { SafeAreaView } from "react-native-safe-area-context"
 import UserCard from "@/components/Views/Usuarios/components/UserCard/UserCard"
 import CreateUserModal from "./components/ModalCreateUser/ModalCreateUser"
 import EditUserModal from "./components/ModalEditUser/ModalEditUser"
+import EditProfileModal from "./components/ModalEditUser/ModalEditUser"
 import type { IUser, IUserInfo } from "./UsuariosType"
 import { Colors } from "@/constants/Coloresuser"
 import { styles } from "./UsuariosStyles"
@@ -34,8 +35,10 @@ const UsersScreen: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<IUser | null>(null)
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showEditModal, setShowEditModal] = useState(false)
+  const [showProfileModal, setShowProfileModal] = useState(false)
   const [refreshing, setRefreshing] = useState(false)
   const [currentUserId, setCurrentUserId] = useState<number | null>(null)
+  const [currentUserData, setCurrentUserData] = useState<IUser | null>(null)
   const [companyId, setCompanyId] = useState<number | null>(null)
 
   const fadeAnim = useRef(new Animated.Value(0)).current
@@ -75,6 +78,22 @@ const UsersScreen: React.FC = () => {
 
       if (currentUser?.id) {
         setCurrentUserId(currentUser.id)
+
+        // Mapear los datos del usuario actual al formato IUser
+        const mappedCurrentUser: IUser = {
+          id: currentUser.id,
+          nombre:
+            currentUser.nombre && currentUser.apellido
+              ? `${currentUser.nombre} ${currentUser.apellido}`.trim()
+              : currentUser.name || "Sin nombre",
+          correo: currentUser.correo || currentUser.email || "Sin email",
+          activo: currentUser.activo !== undefined ? currentUser.activo : true,
+          isAdmin: currentUser.isAdmin || false,
+          image: currentUser.image || null,
+        }
+
+        setCurrentUserData(mappedCurrentUser)
+
         if (currentUser.id_empresa) {
           setCompanyId(currentUser.id_empresa)
         }
@@ -147,6 +166,7 @@ const UsersScreen: React.FC = () => {
   const onRefresh = async () => {
     setRefreshing(true)
     await uploadUsers()
+    await getCurrentUser()
     setRefreshing(false)
   }
 
@@ -179,6 +199,12 @@ const UsersScreen: React.FC = () => {
   const handleEditUser = (user: IUser) => {
     setSelectedUser(user)
     setShowEditModal(true)
+  }
+
+  const handleEditProfile = () => {
+    if (currentUserData) {
+      setShowProfileModal(true)
+    }
   }
 
   const handleDeleteUser = async (userId: number) => {
@@ -277,9 +303,10 @@ const UsersScreen: React.FC = () => {
         correo: updatedUser.correo,
         activo: updatedUser.activo,
         isAdmin: updatedUser.isAdmin,
+        photo: updatedUser.image, // Incluir la foto
       }
 
-      const response = await api.user.update(user.id, updateData)
+      const response = await api.user.update(updatedUser.id, updateData)
 
       if (response) {
         // Actualizar la lista local
@@ -295,6 +322,42 @@ const UsersScreen: React.FC = () => {
     } catch (error) {
       console.error("Error updating user:", error)
       Alert.alert("Error", "No se pudo actualizar el usuario")
+    }
+  }
+
+  const handleUpdateProfile = async (updatedProfile: IUser) => {
+    try {
+      // Separar nombre y apellido del nombre completo
+      const nameParts = updatedProfile.nombre.trim().split(" ")
+      const nombre = nameParts[0] || ""
+      const apellido = nameParts.slice(1).join(" ") || ""
+
+      // Mapear los datos al formato esperado por la API
+      const updateData = {
+        nombre: nombre,
+        apellido: apellido,
+        correo: updatedProfile.correo,
+        photo: updatedProfile.image, // Incluir la foto
+      }
+
+      const response = await api.user.update(updatedProfile.id, updateData)
+
+      if (response) {
+        // Actualizar los datos del usuario actual
+        setCurrentUserData(updatedProfile)
+
+        // También actualizar en la lista si está presente
+        setUserData((prev) => ({
+          ...prev,
+          data: prev.data.map((user) => (user.id === updatedProfile.id ? updatedProfile : user)),
+        }))
+
+        setShowProfileModal(false)
+        Alert.alert("Éxito", "Perfil actualizado correctamente")
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error)
+      Alert.alert("Error", "No se pudo actualizar el perfil")
     }
   }
 
@@ -407,9 +470,14 @@ const UsersScreen: React.FC = () => {
             <Text style={styles.headerSubtitle}>{userData.data.length} usuarios registrados</Text>
           </View>
 
-          <TouchableOpacity style={styles.searchButton} onPress={toggleSearch} activeOpacity={0.7}>
-            <Ionicons name="search" size={24} color="white" />
-          </TouchableOpacity>
+          <View style={styles.headerActions}>
+            <TouchableOpacity style={styles.profileButton} onPress={handleEditProfile} activeOpacity={0.7}>
+              <Ionicons name="person-circle-outline" size={24} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.searchButton} onPress={toggleSearch} activeOpacity={0.7}>
+              <Ionicons name="search" size={24} color="white" />
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Search Bar */}
@@ -510,6 +578,15 @@ const UsersScreen: React.FC = () => {
           }}
           user={selectedUser}
           onUpdateUser={handleUpdateUser}
+        />
+      )}
+
+      {currentUserData && (
+        <EditProfileModal
+          visible={showProfileModal}
+          onClose={() => setShowProfileModal(false)}
+          user={currentUserData}
+          onUpdateUser={handleUpdateProfile} // Cambiar de onUpdateProfile a onUpdateUser
         />
       )}
     </SafeAreaView>

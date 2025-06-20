@@ -39,6 +39,31 @@ export const styles = StyleSheet.create({
   form: {
     padding: 20,
   },
+  // Profile Banner
+  profileBanner: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: `${Colors.light.primary}10`,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 32,
+    borderLeftWidth: 4,
+    borderLeftColor: Colors.light.primary,
+  },
+  bannerContent: {
+    marginLeft: 12,
+    flex: 1,
+  },
+  bannerTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: Colors.light.primary,
+    marginBottom: 2,
+  },
+  bannerSubtitle: {
+    fontSize: 14,
+    color: Colors.light.textSecondary,
+  },
   // Photo Section Styles
   photoSection: {
     marginBottom: 32,
@@ -52,24 +77,24 @@ export const styles = StyleSheet.create({
     marginBottom: 16,
   },
   profilePhoto: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    borderWidth: 3,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    borderWidth: 4,
     borderColor: Colors.light.primary,
   },
   defaultAvatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
     backgroundColor: Colors.light.secondary,
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 3,
+    borderWidth: 4,
     borderColor: Colors.light.primary,
   },
   avatarText: {
-    fontSize: 32,
+    fontSize: 36,
     fontWeight: "700",
     color: "white",
   },
@@ -77,13 +102,13 @@ export const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     right: 0,
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: Colors.light.primary,
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 2,
+    borderWidth: 3,
     borderColor: Colors.light.background,
   },
   photoActions: {
@@ -93,9 +118,9 @@ export const styles = StyleSheet.create({
   changePhotoButton: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 25,
     backgroundColor: `${Colors.light.primary}10`,
     borderWidth: 1,
     borderColor: Colors.light.primary,
@@ -109,9 +134,9 @@ export const styles = StyleSheet.create({
   removePhotoButton: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 25,
     backgroundColor: `${Colors.light.danger}10`,
     borderWidth: 1,
     borderColor: Colors.light.danger,
@@ -137,7 +162,7 @@ export const styles = StyleSheet.create({
     backgroundColor: Colors.light.surface,
     borderRadius: 12,
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 14,
     borderWidth: 1,
     borderColor: Colors.light.border,
   },
@@ -158,38 +183,35 @@ export const styles = StyleSheet.create({
     marginTop: 4,
     fontWeight: "500",
   },
-  switchGroup: {
-    marginBottom: 20,
-  },
-  switchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+  // Account Info Section
+  accountInfo: {
     backgroundColor: Colors.light.surface,
     borderRadius: 12,
     padding: 16,
     borderWidth: 1,
     borderColor: Colors.light.border,
-    shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+    marginTop: 8,
   },
-  switchIcon: {
+  infoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 8,
+  },
+  infoIcon: {
     marginRight: 12,
   },
-  switchContent: {
+  infoContent: {
     flex: 1,
   },
-  switchLabel: {
+  infoLabel: {
+    fontSize: 14,
+    color: Colors.light.textSecondary,
+    marginBottom: 2,
+  },
+  infoValue: {
     fontSize: 16,
     fontWeight: "600",
     color: Colors.light.text,
-    marginBottom: 2,
-  },
-  switchDescription: {
-    fontSize: 14,
-    color: Colors.light.textSecondary,
-    lineHeight: 18,
   },
   footer: {
     flexDirection: "row",
@@ -237,23 +259,5 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "700",
     color: "white",
-  },
-  userInfoBanner: {
-    backgroundColor: `${Colors.light.primary}10`,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 24,
-    borderLeftWidth: 4,
-    borderLeftColor: Colors.light.primary,
-  },
-  userInfoText: {
-    fontSize: 14,
-    color: Colors.light.primary,
-    fontWeight: "600",
-  },
-  userInfoSubtext: {
-    fontSize: 12,
-    color: Colors.light.textSecondary,
-    marginTop: 2,
   },
 })

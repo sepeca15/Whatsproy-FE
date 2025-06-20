@@ -11,10 +11,11 @@ export const styles = StyleSheet.create({
   loadingContainer: {
     flex: 1,
   },
-  loadingGradient: {
+  loadingBackground: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: Colors.light.primary,
   },
   loadingContent: {
     alignItems: "center",
@@ -37,6 +38,7 @@ export const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 20,
     paddingHorizontal: 20,
+    backgroundColor: Colors.light.primary,
   },
   headerContent: {
     flexDirection: "row",
@@ -65,6 +67,18 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     color: "rgba(255,255,255,0.8)",
     marginTop: 2,
+  },
+  headerActions: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  profileButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    alignItems: "center",
+    justifyContent: "center",
   },
   searchButton: {
     width: 44,
@@ -120,46 +134,7 @@ export const styles = StyleSheet.create({
     borderRadius: 60,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4,
-
-  },
-  emptyActionContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 16,
-
-  },
-  loadingBackground: {
-    flex: 1,
-    backgroundColor: Colors.light.primary,
-
-    justifyContent: "center",
-    alignItems: "center",
-
-  },
-  fabContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 16,
-
-  },
-
-  emptyIconGradient: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: `${Colors.light.primary}20`,
   },
   emptyTitle: {
     fontSize: 22,
@@ -178,8 +153,9 @@ export const styles = StyleSheet.create({
   emptyActionButton: {
     borderRadius: 25,
     overflow: "hidden",
+    backgroundColor: Colors.light.primary,
   },
-  emptyActionGradient: {
+  emptyActionContent: {
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 24,
@@ -206,8 +182,9 @@ export const styles = StyleSheet.create({
     },
     shadowOpacity: 0.3,
     shadowRadius: 8,
+    backgroundColor: Colors.light.primary,
   },
-  fabGradient: {
+  fabContent: {
     width: 60,
     height: 60,
     borderRadius: 30,

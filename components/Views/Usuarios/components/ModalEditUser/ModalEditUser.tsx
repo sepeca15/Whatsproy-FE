@@ -8,7 +8,6 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  Switch,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -21,19 +20,17 @@ import { Colors } from "@/constants/Coloresuser"
 import { styles } from "./ModalEditUserStyles"
 import useImagePicker from "@/utils/ImagePicker/useImagePicker"
 
-interface EditUserModalProps {
+interface EditProfileModalProps {
   visible: boolean
   onClose: () => void
   user: IUser
   onUpdateUser: (user: IUser) => Promise<void>
 }
 
-const EditUserModal: React.FC<EditUserModalProps> = ({ visible, onClose, user, onUpdateUser }) => {
+const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, user, onUpdateUser }) => {
   const [formData, setFormData] = useState({
     nombre: "",
     correo: "",
-    activo: true,
-    isAdmin: false,
     photo: "",
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -53,8 +50,6 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ visible, onClose, user, o
       setFormData({
         nombre: user.nombre,
         correo: user.correo,
-        activo: user.activo,
-        isAdmin: user.isAdmin || false,
         photo: user.image || "",
       })
       setImageUri(user.image || null)
@@ -89,14 +84,14 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ visible, onClose, user, o
         })
         setErrors({})
       } catch (error) {
-        console.error("Error updating user:", error)
+        console.error("Error updating profile:", error)
       } finally {
         setIsLoading(false)
       }
     }
   }
 
-  const handleInputChange = (field: string, value: string | boolean) => {
+  const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: "" }))
@@ -129,7 +124,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ visible, onClose, user, o
             <TouchableOpacity onPress={handleClose} style={styles.closeButton} disabled={isLoading}>
               <Ionicons name="close" size={24} color="white" />
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>Editar Usuario</Text>
+            <Text style={styles.headerTitle}>Mi Perfil</Text>
             <View style={styles.placeholder} />
           </View>
         </View>
@@ -137,6 +132,15 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ visible, onClose, user, o
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           {/* Form */}
           <View style={styles.form}>
+            {/* Profile Info Banner */}
+            <View style={styles.profileBanner}>
+              <Ionicons name="person-circle" size={24} color={Colors.light.primary} />
+              <View style={styles.bannerContent}>
+                <Text style={styles.bannerTitle}>Editar mi información personal</Text>
+                <Text style={styles.bannerSubtitle}>Actualiza tu perfil y foto</Text>
+              </View>
+            </View>
+
             {/* Profile Photo Section */}
             <View style={styles.photoSection}>
               <Text style={styles.label}>Foto de perfil</Text>
@@ -193,7 +197,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ visible, onClose, user, o
                 <Ionicons name="person-outline" size={20} color={Colors.light.textSecondary} />
                 <TextInput
                   style={styles.input}
-                  placeholder="Ingresa el nombre completo"
+                  placeholder="Ingresa tu nombre completo"
                   value={formData.nombre}
                   onChangeText={(text) => handleInputChange("nombre", text)}
                   placeholderTextColor={Colors.light.textSecondary}
@@ -210,7 +214,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ visible, onClose, user, o
                 <MaterialIcons name="email" size={20} color={Colors.light.textSecondary} />
                 <TextInput
                   style={styles.input}
-                  placeholder="usuario@empresa.com"
+                  placeholder="tu@empresa.com"
                   value={formData.correo}
                   onChangeText={(text) => handleInputChange("correo", text)}
                   keyboardType="email-address"
@@ -222,50 +226,31 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ visible, onClose, user, o
               {errors.correo && <Text style={styles.errorText}>{errors.correo}</Text>}
             </View>
 
-            {/* Status Switch */}
-            <View style={styles.switchGroup}>
-              <View style={styles.switchContainer}>
-                <View style={styles.switchIcon}>
-                  <Ionicons name="checkmark-circle" size={24} color={Colors.light.success} />
+            {/* Account Info */}
+            <View style={styles.accountInfo}>
+              <View style={styles.infoRow}>
+                <View style={styles.infoIcon}>
+                  <Ionicons name="business-outline" size={20} color={Colors.light.textSecondary} />
                 </View>
-                <View style={styles.switchContent}>
-                  <Text style={styles.switchLabel}>Usuario activo</Text>
-                  <Text style={styles.switchDescription}>El usuario puede acceder al sistema</Text>
+                <View style={styles.infoContent}>
+                  <Text style={styles.infoLabel}>Estado de la cuenta</Text>
+                  <Text style={[styles.infoValue, { color: user.activo ? Colors.light.success : Colors.light.danger }]}>
+                    {user.activo ? "Activa" : "Inactiva"}
+                  </Text>
                 </View>
-                <Switch
-                  value={formData.activo}
-                  onValueChange={(value) => handleInputChange("activo", value)}
-                  trackColor={{
-                    false: Colors.light.border,
-                    true: Colors.light.success,
-                  }}
-                  thumbColor="white"
-                  disabled={isLoading}
-                />
               </View>
-            </View>
 
-            {/* Admin Switch */}
-            <View style={styles.switchGroup}>
-              <View style={styles.switchContainer}>
-                <View style={styles.switchIcon}>
-                  <Ionicons name="shield-checkmark" size={24} color={Colors.light.warning} />
+              {user.isAdmin && (
+                <View style={styles.infoRow}>
+                  <View style={styles.infoIcon}>
+                    <Ionicons name="shield-checkmark" size={20} color={Colors.light.warning} />
+                  </View>
+                  <View style={styles.infoContent}>
+                    <Text style={styles.infoLabel}>Permisos</Text>
+                    <Text style={[styles.infoValue, { color: Colors.light.warning }]}>Administrador</Text>
+                  </View>
                 </View>
-                <View style={styles.switchContent}>
-                  <Text style={styles.switchLabel}>Permisos de administrador</Text>
-                  <Text style={styles.switchDescription}>Puede gestionar otros usuarios</Text>
-                </View>
-                <Switch
-                  value={formData.isAdmin}
-                  onValueChange={(value) => handleInputChange("isAdmin", value)}
-                  trackColor={{
-                    false: Colors.light.border,
-                    true: Colors.light.warning,
-                  }}
-                  thumbColor="white"
-                  disabled={isLoading}
-                />
-              </View>
+              )}
             </View>
           </View>
         </ScrollView>
@@ -301,4 +286,4 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ visible, onClose, user, o
   )
 }
 
-export default EditUserModal
+export default EditProfileModal
