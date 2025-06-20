@@ -174,7 +174,7 @@ export const styles = StyleSheet.create({
   },
   fab: {
     borderRadius: 30,
-    elevation: 8,
+    // elevation: 8,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
