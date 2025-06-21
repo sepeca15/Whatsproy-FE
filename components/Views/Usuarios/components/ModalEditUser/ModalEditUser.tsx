@@ -1,233 +1,291 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { TouchableOpacity, ScrollView, Image } from "react-native";
-import { FormControl, Input, Modal, Select } from "native-base";
-import { Ionicons, AntDesign, MaterialIcons } from "@expo/vector-icons";
-import * as ImagePicker from "expo-image-picker";
-import styles from "./ModalEditUserStyles";
-import api from "@/services/api/admin";
-import CustomButton from "@/components/CustomButton";
-import { useIntl } from "react-intl"; // Importa useIntl
-import useImagePicker from "@/utils/ImagePicker/useImagePicker";
-import { useToastContext } from "@/contexts/ToastContext";
-import GlobalModal from "@/components/Modal";
+"use client"
 
-interface IEditUser {
-  nombre: string;
-  apellido: string;
-  photo: string;
-  activo: boolean;
+import type React from "react"
+import { useState, useEffect } from "react"
+import {
+  Modal,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native"
+import { Ionicons, MaterialIcons } from "@expo/vector-icons"
+import { Image } from "react-native"
+import type { IUser } from "../../UsuariosType"
+import { Colors } from "@/constants/Coloresuser"
+import { styles } from "./ModalEditUserStyles"
+import useImagePicker from "@/utils/ImagePicker/useImagePicker"
+
+interface EditProfileModalProps {
+  visible: boolean
+  onClose: () => void
+  user: IUser
+  onUpdateUser: (user: IUser) => Promise<void>
 }
 
-interface IModalCreateUser {
-  onToogleModal: () => void;
-  isOpen: boolean;
-  userInfo: any;
-  editUserSelected: (userId: number, userData: any) => void;
-}
+const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, user, onUpdateUser }) => {
+  const [formData, setFormData] = useState({
+    nombre: "",
+    correo: "",
+    photo: "",
+  })
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [isLoading, setIsLoading] = useState(false)
 
-const ModalEditUser = ({
-  onToogleModal,
-  isOpen,
-  userInfo,
-  editUserSelected,
-}: IModalCreateUser) => {
-  const [formData, setFormData] = useState<IEditUser>(userInfo);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [loading, setLoading] = useState(false);
-  const intl = useIntl();
-  const { showToast } = useToastContext();
-
-  const [selectedImage, setSelectedImage] = useState<string | null>();
-  useEffect(() => {
-    if (userInfo) {
-      setFormData(userInfo);
-    }
-  }, [userInfo]);
-
-  const handleInputChange = useCallback(
-    (key: keyof IEditUser, value: string | boolean) => {
-      setFormData((prev) => ({ ...prev, [key]: value }));
-    },
-    []
-  );
-
-  const { pickImage } = useImagePicker({
+  const { pickImage, imageUri, setImageUri } = useImagePicker({
     toastErrorMessage: "Error al seleccionar la imagen",
-    onImagePicked: async ({ localUri, apiUrl }) => {
-      if (localUri) {
-        setSelectedImage(localUri.toString());
-      }
-
-      if (apiUrl) {
-        setFormData((prevData) => ({
-          ...prevData,
-          image: apiUrl,
-        }));
+    onImagePicked: (data) => {
+      if (data.apiUrl) {
+        console.log("Imagen subida:", data.apiUrl)
+        setFormData((prev) => ({ ...prev, photo: data.apiUrl || "" }))
       }
     },
-  });
+  })
 
-  const handleImagePick = async () => {
-    try {
-      await pickImage(setFormData);
-    } catch (error) {
-      console.error("Error selecting image:", error);
-      showToast({
-        title: intl.formatMessage({ id: "errorSelectingImage" }),
-        status: "error",
-      });
-    } finally {
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        nombre: user.nombre,
+        correo: user.correo,
+        photo: user.image || "",
+      })
+      setImageUri(user.image || null)
     }
-  };
+  }, [user, setImageUri])
 
-  const validate = (): boolean => {
-    const newErrors: { [key: string]: string } = {};
-    if (!formData.nombre)
-      newErrors.nombre = intl.formatMessage({
-        id: "modalValidName",
-        defaultMessage: "Please enter a valid name",
-      });
-    if (!formData.apellido)
-      newErrors.apellido = intl.formatMessage({
-        id: "modalValidLastName",
-        defaultMessage: "Please enter a valid last name",
-      });
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {}
+
+    if (!formData.nombre.trim()) {
+      newErrors.nombre = "El nombre es requerido"
+    }
+
+    if (!formData.correo.trim()) {
+      newErrors.correo = "El email es requerido"
+    } else if (!/\S+@\S+\.\S+/.test(formData.correo)) {
+      newErrors.correo = "El email no es válido"
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleSubmit = async () => {
-    console.log(validate());
-
-    if (!validate()) return;
-    setLoading(true);
-    try {
-      await editUserSelected(userInfo.id, formData);
-    } catch (error) {
-      console.error("Error updating user:", error);
-    } finally {
-      setLoading(false);
+    if (validateForm()) {
+      setIsLoading(true)
+      try {
+        await onUpdateUser({
+          ...user,
+          ...formData,
+          image: formData.photo ,
+        })
+        console.log("Perfil actualizado:", formData.photo)
+        setErrors({})
+      } catch (error) {
+        console.error("Error updating profile:", error)
+      } finally {
+        setIsLoading(false)
+      }
     }
-  };
+  }
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }))
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: "" }))
+    }
+  }
+
+  const handleClose = () => {
+    if (!isLoading) {
+      onClose()
+    }
+  }
+
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((word) => word.charAt(0))
+      .join("")
+      .toUpperCase()
+      .slice(0, 2)
+  }
+
+  const currentImageUri = imageUri || formData.photo || user.image
 
   return (
-    <GlobalModal
-      label={intl.formatMessage({
-        id: "modalEditUser",
-        defaultMessage: "Edit User",
-      })}
-      content={
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
+    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={handleClose}>
+      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+        {/* Header */}
+        <View style={styles.header}>
+          <View style={styles.headerContent}>
+            <TouchableOpacity onPress={handleClose} style={styles.closeButton} disabled={isLoading}>
+              <Ionicons name="close" size={24} color="white" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Mi Perfil</Text>
+            <View style={styles.placeholder} />
+          </View>
+        </View>
+
+        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+          {/* Form */}
+          <View style={styles.form}>
+            {/* Profile Info Banner */}
+            <View style={styles.profileBanner}>
+              <Ionicons name="person-circle" size={24} color={Colors.light.primary} />
+              <View style={styles.bannerContent}>
+                <Text style={styles.bannerTitle}>Editar mi información personal</Text>
+                <Text style={styles.bannerSubtitle}>Actualiza tu perfil y foto</Text>
+              </View>
+            </View>
+
+            {/* Profile Photo Section */}
+            <View style={styles.photoSection}>
+              <Text style={styles.label}>Foto de perfil</Text>
+              <View style={styles.photoContainer}>
+                <View style={styles.photoWrapper}>
+                  {currentImageUri ? (
+                    <Image source={{ uri: currentImageUri }} style={styles.profilePhoto} resizeMode="cover" />
+                  ) : (
+                    <View style={styles.defaultAvatar}>
+                      <Text style={styles.avatarText}>{getInitials(formData.nombre || user.nombre)}</Text>
+                    </View>
+                  )}
+                  <TouchableOpacity
+                    style={styles.photoButton}
+                    onPress={() => pickImage(setFormData)}
+                    activeOpacity={0.7}
+                    disabled={isLoading}
+                  >
+                    <Ionicons name="camera" size={20} color="white" />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.photoActions}>
+                  <TouchableOpacity
+                    style={styles.changePhotoButton}
+                    onPress={() => pickImage(setFormData)}
+                    activeOpacity={0.7}
+                    disabled={isLoading}
+                  >
+                    <Ionicons name="image-outline" size={16} color={Colors.light.primary} />
+                    <Text style={styles.changePhotoText}>Cambiar foto</Text>
+                  </TouchableOpacity>
+                  {currentImageUri && (
+                    <TouchableOpacity
+                      style={styles.removePhotoButton}
+                      onPress={() => {
+                        setImageUri(null)
+                        setFormData((prev) => ({ ...prev, photo: "" }))
+                      }}
+                      activeOpacity={0.7}
+                      disabled={isLoading}
+                    >
+                      <Ionicons name="trash-outline" size={16} color={Colors.light.danger} />
+                      <Text style={styles.removePhotoText}>Eliminar</Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+              </View>
+            </View>
+
+            {/* Name Input */}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Nombre completo</Text>
+              <View style={[styles.inputContainer, errors.nombre && styles.inputError]}>
+                <Ionicons name="person-outline" size={20} color={Colors.light.textSecondary} />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Ingresa tu nombre completo"
+                  value={formData.nombre}
+                  onChangeText={(text) => handleInputChange("nombre", text)}
+                  placeholderTextColor={Colors.light.textSecondary}
+                  editable={!isLoading}
+                />
+              </View>
+              {errors.nombre && <Text style={styles.errorText}>{errors.nombre}</Text>}
+            </View>
+
+            {/* Email Input */}
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Email</Text>
+              <View style={[styles.inputContainer, errors.correo && styles.inputError]}>
+                <MaterialIcons name="email" size={20} color={Colors.light.textSecondary} />
+                <TextInput
+                  style={styles.input}
+                  placeholder="tu@empresa.com"
+                  value={formData.correo}
+                  onChangeText={(text) => handleInputChange("correo", text)}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  placeholderTextColor={Colors.light.textSecondary}
+                  editable={!isLoading}
+                />
+              </View>
+              {errors.correo && <Text style={styles.errorText}>{errors.correo}</Text>}
+            </View>
+
+            {/* Account Info */}
+            <View style={styles.accountInfo}>
+              <View style={styles.infoRow}>
+                <View style={styles.infoIcon}>
+                  <Ionicons name="business-outline" size={20} color={Colors.light.textSecondary} />
+                </View>
+                <View style={styles.infoContent}>
+                  <Text style={styles.infoLabel}>Estado de la cuenta</Text>
+                  <Text style={[styles.infoValue, { color: user.activo ? Colors.light.success : Colors.light.danger }]}>
+                    {user.activo ? "Activa" : "Inactiva"}
+                  </Text>
+                </View>
+              </View>
+
+              {user.isAdmin && (
+                <View style={styles.infoRow}>
+                  <View style={styles.infoIcon}>
+                    <Ionicons name="shield-checkmark" size={20} color={Colors.light.warning} />
+                  </View>
+                  <View style={styles.infoContent}>
+                    <Text style={styles.infoLabel}>Permisos</Text>
+                    <Text style={[styles.infoValue, { color: Colors.light.warning }]}>Administrador</Text>
+                  </View>
+                </View>
+              )}
+            </View>
+          </View>
+        </ScrollView>
+
+        {/* Footer */}
+        <View style={styles.footer}>
           <TouchableOpacity
-            onPress={handleImagePick}
-            style={styles.imageContainer}
+            style={[styles.cancelButton, isLoading && { opacity: 0.5 }]}
+            onPress={handleClose}
+            activeOpacity={0.7}
+            disabled={isLoading}
           >
-            <Image
-              source={{
-                uri:
-                  selectedImage ||
-                  "https://static.vecteezy.com/system/resources/previews/036/280/651/non_2x/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-illustration-vector.jpg",
-              }}
-              style={styles.image}
-            />
-            <Ionicons
-              name="camera"
-              size={16}
-              color="#fff"
-              style={styles.imagePicker}
-            />
+            <Text style={styles.cancelButtonText}>Cancelar</Text>
           </TouchableOpacity>
 
-          <FormControl isInvalid={!!errors.nombre}>
-            <FormControl.Label>
-              {intl.formatMessage({
-                id: "modalName",
-                defaultMessage: "Name",
-              })}
-            </FormControl.Label>
-            <Input
-              placeholder={intl.formatMessage({
-                id: "modalEnterName",
-                defaultMessage: "Enter a name",
-              })}
-              value={formData.nombre}
-              onChangeText={(value) => handleInputChange("nombre", value)}
-              InputLeftElement={
-                <AntDesign
-                  name="user"
-                  size={16}
-                  color="gray"
-                  style={styles.marginCont}
-                />
-              }
-            />
-            <FormControl.ErrorMessage>{errors.nombre}</FormControl.ErrorMessage>
-          </FormControl>
+          <TouchableOpacity
+            style={[styles.updateButton, isLoading && { opacity: 0.7 }]}
+            onPress={handleSubmit}
+            activeOpacity={0.8}
+            disabled={isLoading}
+          >
+            <View style={styles.updateButtonContent}>
+              {isLoading ? (
+                <ActivityIndicator size="small" color="white" />
+              ) : (
+                <Text style={styles.updateButtonText}>Guardar Cambios</Text>
+              )}
+            </View>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+    </Modal>
+  )
+}
 
-          <FormControl isInvalid={!!errors.apellido}>
-            <FormControl.Label>
-              {intl.formatMessage({
-                id: "modalLastName",
-                defaultMessage: "Last Name",
-              })}
-            </FormControl.Label>
-            <Input
-              placeholder={intl.formatMessage({
-                id: "modalEnterLastName",
-                defaultMessage: "Enter a last name",
-              })}
-              value={formData.apellido}
-              onChangeText={(value) => handleInputChange("apellido", value)}
-              InputLeftElement={
-                <AntDesign
-                  name="user"
-                  size={16}
-                  color="gray"
-                  style={styles.marginCont}
-                />
-              }
-            />
-            <FormControl.ErrorMessage>
-              {errors.apellido}
-            </FormControl.ErrorMessage>
-          </FormControl>
-
-          <FormControl>
-            <FormControl.Label>
-              {intl.formatMessage({
-                id: "modalActive",
-                defaultMessage: "Active",
-              })}
-            </FormControl.Label>
-            <Select
-              borderRadius={8}
-              selectedValue={formData.activo ? "Si" : "No"}
-              onValueChange={(value) =>
-                handleInputChange("activo", value === "Si")
-              }
-              minWidth="100%"
-            >
-              <Select.Item label="Si" value="Si" />
-              <Select.Item label="No" value="No" />
-            </Select>
-          </FormControl>
-        </ScrollView>
-      }
-      onClose={onToogleModal}
-      isVisible={isOpen}
-      actions={[
-        <CustomButton
-          colorSpiner="white"
-          loading={loading}
-          borderRadius={20}
-          onPress={handleSubmit}
-          style={styles.buttonCreate}
-        >
-          {intl.formatMessage({ id: "modalSave", defaultMessage: "Save" })}
-        </CustomButton>,
-      ]}
-    />
-  );
-};
-
-export default ModalEditUser;
+export default EditProfileModal

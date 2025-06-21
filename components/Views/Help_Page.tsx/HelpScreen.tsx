@@ -1,4 +1,3 @@
-"use client"
 
 import { useState } from "react"
 import { View, Text, ScrollView, TouchableOpacity, TextInput, StyleSheet, Dimensions, Platform } from "react-native"
@@ -11,7 +10,7 @@ import * as Animatable from "react-native-animatable"
 import Feather from "react-native-vector-icons/Feather"
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5"
 import VisualGuideModal from "@/hooks/GuieModal/VisualGuideModal"
-import { GuideImages } from "@/constants/images/index"
+import { GuideImages } from "@/assets/images/index"
 
 const primaryColor = "#075e54"
 const secondaryColor = "#128c7e"
@@ -361,46 +360,46 @@ const HelpScreen = () => {
             }),
           ],
         },
-        {
-          id: 5,
-          src: GuideImages.schedule.breaks,
-          title: intl.formatMessage({
-            id: "scheduleBreaksTitle",
-            defaultMessage: "Pausas y Descansos",
-          }),
-          description: intl.formatMessage({
-            id: "scheduleBreaksDesc",
-            defaultMessage: "Establece pausas automáticas durante tu jornada laboral.",
-          }),
-          instructions: [
-            intl.formatMessage({
-              id: "breaksStep1",
-              defaultMessage: "En la pantalla de horarios, toca 'Configurar Pausas'",
-            }),
-            intl.formatMessage({
-              id: "breaksStep2",
-              defaultMessage: "Selecciona el tipo de pausa (almuerzo, descanso, etc.)",
-            }),
-            intl.formatMessage({
-              id: "breaksStep3",
-              defaultMessage: "Establece la hora de inicio y duración",
-            }),
-            intl.formatMessage({
-              id: "breaksStep4",
-              defaultMessage: "Marca si la pausa es automática o manual",
-            }),
-            intl.formatMessage({
-              id: "breaksStep5",
-              defaultMessage: "Confirma la configuración",
-            }),
-          ],
-        },
+        // {
+        //   id: 5,
+        //   src: GuideImages.schedule.breaks,
+        //   title: intl.formatMessage({
+        //     id: "scheduleBreaksTitle",
+        //     defaultMessage: "Pausas y Descansos",
+        //   }),
+        //   description: intl.formatMessage({
+        //     id: "scheduleBreaksDesc",
+        //     defaultMessage: "Establece pausas automáticas durante tu jornada laboral.",
+        //   }),
+        //   instructions: [
+        //     intl.formatMessage({
+        //       id: "breaksStep1",
+        //       defaultMessage: "En la pantalla de horarios, toca 'Configurar Pausas'",
+        //     }),
+        //     intl.formatMessage({
+        //       id: "breaksStep2",
+        //       defaultMessage: "Selecciona el tipo de pausa (almuerzo, descanso, etc.)",
+        //     }),
+        //     intl.formatMessage({
+        //       id: "breaksStep3",
+        //       defaultMessage: "Establece la hora de inicio y duración",
+        //     }),
+        //     intl.formatMessage({
+        //       id: "breaksStep4",
+        //       defaultMessage: "Marca si la pausa es automática o manual",
+        //     }),
+        //     intl.formatMessage({
+        //       id: "breaksStep5",
+        //       defaultMessage: "Confirma la configuración",
+        //     }),
+        //   ],
+        // },
         {
           id: 6,
           src: GuideImages.schedule.holidays,
           title: intl.formatMessage({
-            id: "scheduleHolidaysTitle",
-            defaultMessage: "Días Libres",
+            id: "cierreprovisorio",
+            defaultMessage: "Cierre Provisorio",
           }),
           description: intl.formatMessage({
             id: "scheduleHolidaysDesc",
@@ -409,20 +408,17 @@ const HelpScreen = () => {
           instructions: [
             intl.formatMessage({
               id: "holidaysStep1",
-              defaultMessage: "Ve a la sección 'Días Libres' en configuración",
+              defaultMessage: "Ve a la sección 'Cierre provisorios' en configuración",
             }),
             intl.formatMessage({
               id: "holidaysStep2",
-              defaultMessage: "Toca el calendario para seleccionar fechas",
+              defaultMessage: "Toca el boton ' + ' para agregar una nueva fecha de cierre",
             }),
             intl.formatMessage({
               id: "holidaysStep3",
-              defaultMessage: "Marca los días como 'No disponible'",
+              defaultMessage: "Selecciona las fechas de inicio y fin del cierre provisorio",
             }),
-            intl.formatMessage({
-              id: "holidaysStep4",
-              defaultMessage: "Agrega una nota opcional para cada día libre",
-            }),
+           
           ],
         },
       ],
@@ -453,24 +449,13 @@ const HelpScreen = () => {
           instructions: [
             intl.formatMessage({
               id: "usersListStep1",
-              defaultMessage: "Accede al panel de administración",
+              defaultMessage: "Ve a la sección 'Usuarios' en configuración",
             }),
             intl.formatMessage({
               id: "usersListStep2",
-              defaultMessage: "Selecciona 'Gestión de Usuarios' en el menú",
-            }),
-            intl.formatMessage({
-              id: "usersListStep3",
               defaultMessage: "Revisa la lista completa de usuarios activos",
             }),
-            intl.formatMessage({
-              id: "usersListStep4",
-              defaultMessage: "Usa la barra de búsqueda para encontrar usuarios específicos",
-            }),
-            intl.formatMessage({
-              id: "usersListStep5",
-              defaultMessage: "Toca en cualquier usuario para ver su perfil completo",
-            }),
+          
           ],
         },
         {
@@ -493,18 +478,9 @@ const HelpScreen = () => {
               id: "usersCreateStep2",
               defaultMessage: "Completa todos los campos obligatorios",
             }),
-            intl.formatMessage({
-              id: "usersCreateStep3",
-              defaultMessage: "Selecciona el rol apropiado (Admin, Usuario, etc.)",
-            }),
-            intl.formatMessage({
-              id: "usersCreateStep4",
-              defaultMessage: "Establece permisos específicos si es necesario",
-            }),
-            intl.formatMessage({
-              id: "usersCreateStep5",
-              defaultMessage: "Envía la invitación al nuevo usuario",
-            }),
+           
+           
+           
           ],
         },
         {
@@ -516,29 +492,14 @@ const HelpScreen = () => {
           }),
           description: intl.formatMessage({
             id: "usersPermissionsDesc",
-            defaultMessage: "Configuración de permisos específicos para cada tipo de usuario.",
+            defaultMessage: "Asignar permisos específicos para cada tipo de usuario.",
           }),
           instructions: [
             intl.formatMessage({
-              id: "permissionsStep1",
-              defaultMessage: "Selecciona un usuario de la lista",
+              id: "usersCreateStep1",
+              defaultMessage: "Al momento de crear un usuario selecciona el rol correspondiente",
             }),
-            intl.formatMessage({
-              id: "permissionsStep2",
-              defaultMessage: "Toca en 'Editar Permisos'",
-            }),
-            intl.formatMessage({
-              id: "permissionsStep3",
-              defaultMessage: "Revisa los permisos actuales del usuario",
-            }),
-            intl.formatMessage({
-              id: "permissionsStep4",
-              defaultMessage: "Modifica los permisos según sea necesario",
-            }),
-            intl.formatMessage({
-              id: "permissionsStep5",
-              defaultMessage: "Guarda los cambios y notifica al usuario",
-            }),
+          
           ],
         },
       ],
@@ -585,40 +546,40 @@ const HelpScreen = () => {
             }),
           ],
         },
-        {
-          id: 11,
-          src: GuideImages.payments.config,
-          title: intl.formatMessage({
-            id: "paymentsConfigTitle",
-            defaultMessage: "Configuración de Pagos",
-          }),
-          description: intl.formatMessage({
-            id: "paymentsConfigDesc",
-            defaultMessage: "Ajustes específicos para cada método de pago, incluyendo comisiones.",
-          }),
-          instructions: [
-            intl.formatMessage({
-              id: "configStep1",
-              defaultMessage: "Selecciona un método de pago específico",
-            }),
-            intl.formatMessage({
-              id: "configStep2",
-              defaultMessage: "Configura las comisiones y tarifas",
-            }),
-            intl.formatMessage({
-              id: "configStep3",
-              defaultMessage: "Establece límites de transacción",
-            }),
-            intl.formatMessage({
-              id: "configStep4",
-              defaultMessage: "Configura notificaciones de pago",
-            }),
-            intl.formatMessage({
-              id: "configStep5",
-              defaultMessage: "Prueba la configuración antes de activar",
-            }),
-          ],
-        },
+        // {
+        //   id: 11,
+        //   src: GuideImages.payments.config,
+        //   title: intl.formatMessage({
+        //     id: "paymentsConfigTitle",
+        //     defaultMessage: "Configuración de Pagos",
+        //   }),
+        //   description: intl.formatMessage({
+        //     id: "paymentsConfigDesc",
+        //     defaultMessage: "Ajustes específicos para cada método de pago, incluyendo comisiones.",
+        //   }),
+        //   instructions: [
+        //     intl.formatMessage({
+        //       id: "configStep1",
+        //       defaultMessage: "Selecciona un método de pago específico",
+        //     }),
+        //     intl.formatMessage({
+        //       id: "configStep2",
+        //       defaultMessage: "Configura las comisiones y tarifas",
+        //     }),
+        //     intl.formatMessage({
+        //       id: "configStep3",
+        //       defaultMessage: "Establece límites de transacción",
+        //     }),
+        //     intl.formatMessage({
+        //       id: "configStep4",
+        //       defaultMessage: "Configura notificaciones de pago",
+        //     }),
+        //     intl.formatMessage({
+        //       id: "configStep5",
+        //       defaultMessage: "Prueba la configuración antes de activar",
+        //     }),
+        //   ],
+        // },
       ],
     },
   ]

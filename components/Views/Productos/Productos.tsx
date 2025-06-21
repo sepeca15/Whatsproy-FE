@@ -74,6 +74,8 @@ const Productos: React.FC = () => {
     }
   };
 
+  console.log('allCategories', ProductsBD);
+
   const loadProductsFromCategory = async () => {
     try {
       console.log('llamare');
