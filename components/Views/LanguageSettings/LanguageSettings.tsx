@@ -21,7 +21,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLocalization } from "../../../app/LocalizationContext"; // Usa tu contexto existente
 import { globalStyles } from "@/components/globalStyles";
 import AntDesign from "react-native-vector-icons/AntDesign";
-import { useToastContext } from "@/contexts/ToastContext";
+// import { useToastContext } from "@/contexts/ToastContext";
 
 const primaryColor = "#075e54";
 const secondaryColor = "#128c7e";
@@ -69,99 +69,106 @@ const LanguageSettings = () => {
       region: "Português",
     },
   ];
-  const { showToast } = useToastContext();
+  // const { showToast } = useToastContext();
 
-  useEffect(() => {
-    loadLanguageSettings();
-  }, []);
+useEffect(() => {
+  loadLanguageSettings();
+}, []);
 
-  const loadLanguageSettings = async () => {
-    try {
-      const autoDetect = await AsyncStorage.getItem("auto_detect_language");
-      setAutoDetectEnabled(autoDetect !== "false");
-    } catch (error) {
-      console.error("Error loading language settings:", error);
-    }
-  };
+const loadLanguageSettings = async () => {
+  try {
+    const autoDetect = await AsyncStorage.getItem("auto_detect_language");
+    setAutoDetectEnabled(autoDetect !== "false");
+  } catch (error) {
+    console.error("Error loading language settings:", error);
+  }
+};
 
-  const handleLanguageChange = async (languageCode: "en" | "es" | "pt") => {
-    setIsLoading(true);
+const handleLanguageChange = async (languageCode: "en" | "es" | "pt") => {
+  if (languageCode === locale || autoDetectEnabled) return;
 
-    try {
-      // Usar el setLocale de tu contexto existente
-      await setLocale(languageCode);
+  setIsLoading(true);
+  try {
+    await AsyncStorage.setItem("manual_language_override", languageCode);
+    await AsyncStorage.setItem("auto_detect_language", "false");
+    await setLocale(languageCode);
+    setAutoDetectEnabled(false);
 
-      // Marcar que se seleccionó manualmente
-      await AsyncStorage.setItem("manual_language_override", languageCode);
+    // showToast({
+    //   status: "success",
+    //   title: intl.formatMessage({
+    //     id: "languageChanged",
+    //     defaultMessage: "Idioma cambiado",
+    //   }),
+    //   description: intl.formatMessage({
+    //     id: "languageChangedDesc",
+    //     defaultMessage: "El idioma se ha cambiado correctamente.",
+    //   }),
+    // });
+  } catch (error) {
+    console.error("Error saving language:", error);
+    // showToast({
+    //   status: "error",
+    //   title: intl.formatMessage({
+    //     id: "languageChangeError",
+    //     defaultMessage: "Error al cambiar el idioma",
+    //   }),
+    // });
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+
+
+const handleAutoDetectToggle = async () => {
+  try {
+    const newAutoDetectState = !autoDetectEnabled;
+
+    // Evita guardar si el estado no cambia realmente
+    if (newAutoDetectState === autoDetectEnabled) return;
+
+    setAutoDetectEnabled(newAutoDetectState);
+
+    if (newAutoDetectState) {
+      await AsyncStorage.removeItem("manual_language_override");
+      await AsyncStorage.setItem("auto_detect_language", "true");
+
+      const sysLocale = Intl.DateTimeFormat().resolvedOptions().locale.split("-")[0];
+      const detectedLocale = ["en", "es", "pt"].includes(sysLocale)
+        ? (sysLocale as "en" | "es" | "pt")
+        : "en";
+
+      await setLocale(detectedLocale);
+    } else {
       await AsyncStorage.setItem("auto_detect_language", "false");
-
-      setAutoDetectEnabled(false);
-
-      showToast({
-        status: "success",
-        title: intl.formatMessage({
-          id: "languageChanged",
-          defaultMessage: "Idioma cambiado",
-        }),
-        description: intl.formatMessage({
-          id: "languageChangedDesc",
-          defaultMessage: "El idioma se ha cambiado correctamente.",
-        }),
-      });
-    } catch (error) {
-      console.error("Error saving language:", error);
-      showToast({
-        status: "error",
-        title: intl.formatMessage({
-          id: "languageChangeError",
-          defaultMessage: "Idioma cambiado",
-        }),
-      });
-    } finally {
-      setIsLoading(false);
     }
-  };
 
-  const handleAutoDetectToggle = async () => {
-    try {
-      const newAutoDetectState = !autoDetectEnabled;
-      await AsyncStorage.setItem(
-        "auto_detect_language",
-        newAutoDetectState.toString()
-      );
-      setAutoDetectEnabled(newAutoDetectState);
+    // Mostrar solo si el cambio es útil
+    // showToast({
+    //   status: "success",
+    //   title: intl.formatMessage({
+    //     id: newAutoDetectState
+    //       ? "autoDetectEnabled"
+    //       : "autoDetectDisabled",
+    //     defaultMessage: newAutoDetectState
+    //       ? "Detección automática activada"
+    //       : "Detección automática desactivada",
+    //   }),
+    //   description: intl.formatMessage({
+    //     id: newAutoDetectState
+    //       ? "autoDetectEnabledDesc"
+    //       : "autoDetectDisabledDesc",
+    //     defaultMessage: newAutoDetectState
+    //       ? "El idioma se detectará automáticamente según tu dispositivo."
+    //       : "Ahora puedes seleccionar el idioma manualmente.",
+    //   }),
+    // });
+  } catch (error) {
+    console.error("Error toggling auto detect:", error);
+  }
+};
 
-      if (newAutoDetectState) {
-        // Si se activa la detección automática, limpiar la selección manual
-        await AsyncStorage.removeItem("manual_language_override");
-
-        // Detectar idioma del sistema y aplicarlo usando tu lógica existente
-        const sysLocale = Intl.DateTimeFormat()
-          .resolvedOptions()
-          .locale.split("-")[0];
-        const detectedLocale = ["en", "es", "pt"].includes(sysLocale)
-          ? (sysLocale as "en" | "es" | "pt")
-          : "en";
-
-        await setLocale(detectedLocale);
-
-        showToast({
-          status: "success",
-          title: intl.formatMessage({
-            id: "autoDetectEnabled",
-            defaultMessage: "Detección automática activada",
-          }),
-          description: intl.formatMessage({
-            id: "autoDetectEnabledDesc",
-            defaultMessage:
-              "El idioma se detectará automáticamente según la configuración de tu dispositivo.",
-          }),
-        });
-      }
-    } catch (error) {
-      console.error("Error toggling auto detect:", error);
-    }
-  };
 
   const renderLanguageItem = ({
     item,
@@ -362,14 +369,9 @@ const LanguageSettings = () => {
             </Animatable.View>
 
             {/* Section Title */}
-            <Animatable.View animation="fadeInUp" duration={800} delay={200}>
-              <Text style={[styles.sectionTitle, { color: colors.text }]}>
-                <FormattedMessage
-                  id="availableLanguages"
-                  defaultMessage="Idiomas Disponibles"
-                />
-              </Text>
-              <Text style={[styles.sectionSubtitle, { color: colors.icon }]}>
+            <Animatable.View animation="fadeInUp" duration={800} delay={200} style={{ marginBottom: 20 }}>
+             
+              <Text style={[styles.sectionTitle, { color: colors.text, marginBottom: 5 }]}>
                 {autoDetectEnabled ? (
                   <FormattedMessage
                     id="autoDetectActive"
