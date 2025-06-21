@@ -124,7 +124,7 @@ const CardNewPedido = ({ pending, orderData, active }: ICardNewPedido) => {
                 </CustomText>
               </View>
             </View>
-            {orderData?.reclamo && pending && (
+            {orderData?.reclamo && (
               <View style={styles.reclamoBox}>
                 <View style={styles.reclamoRow}>
                   <MaterialIconss name="alert-circle-outline" size={18} color="#f59e0b" />
