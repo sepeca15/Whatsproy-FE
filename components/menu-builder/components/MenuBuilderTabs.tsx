@@ -10,7 +10,7 @@ import { MenuPreview } from "./MenuPreview"
 import { CustomizationPanel } from "./CustomizationPanel"
 import { ExportPanel } from "./ExportPanel"
 import type { Product, MenuSettings } from "@/constants/menu.types"
-
+import {Colors} from "@/constants/Colors"
 const { width } = Dimensions.get("window")
 
 interface MenuBuilderTabsProps {
