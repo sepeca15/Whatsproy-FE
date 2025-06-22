@@ -86,7 +86,7 @@ export const MenuBuilderTabs: React.FC<MenuBuilderTabsProps> = ({
     <View style={styles.container}>
       {/* Tab Bar */}
       <View style={[styles.tabBar, { backgroundColor: colors.card }]}>
-        <Animated.View style={[styles.indicator, { backgroundColor: colors.primary }, indicatorStyle]} />
+        <Animated.View style={[styles.indicator, { backgroundColor: Colors.light.primary }, indicatorStyle]} />
         {tabs.map((tab, index) => (
           <TouchableOpacity key={tab.id} style={styles.tab} onPress={() => handleTabPress(tab.id, index)}>
             <MaterialCommunityIcons
