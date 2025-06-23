@@ -1,17 +1,13 @@
-export interface IUserInfo {
-  data: IUser[] | [];
-  loading: boolean;
+export interface IUser {
+  id: number
+  nombre: string
+  correo: string
+  activo: boolean
+  image?: string
+  isAdmin?: boolean
 }
 
-export interface IUser {
-  createdAt: string;
-  id: number;
-  nombre: string;
-  apellido: string;
-  correo: string;
-  id_empresa: number;
-  id_rol: number;
-  activo: boolean;
-  firstUser: boolean;
-  image: string
+export interface IUserInfo {
+  data: IUser[]
+  loading: boolean
 }

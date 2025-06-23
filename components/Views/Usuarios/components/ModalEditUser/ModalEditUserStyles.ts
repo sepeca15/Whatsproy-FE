@@ -1,106 +1,263 @@
-import { Colors } from "@/constants/Colors";
-import { StyleSheet } from "react-native";
+import { StyleSheet } from "react-native"
+import { Colors } from "@/constants/Coloresuser"
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.light.background,
   },
-  scrollContainer: {
-    flexGrow: 1,
+  header: {
+    paddingTop: 60,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+    backgroundColor: Colors.light.primary,
+  },
+  headerContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  closeButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 12,
-    paddingVertical: 10,
   },
-  formContainer: {
-    width: "100%",
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "white",
+  },
+  placeholder: {
+    width: 40,
+  },
+  content: {
+    flex: 1,
+  },
+  form: {
+    padding: 20,
+  },
+  // Profile Banner
+  profileBanner: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: `${Colors.light.primary}10`,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 32,
+    borderLeftWidth: 4,
+    borderLeftColor: Colors.light.primary,
+  },
+  bannerContent: {
+    marginLeft: 12,
+    flex: 1,
+  },
+  bannerTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: Colors.light.primary,
+    marginBottom: 2,
+  },
+  bannerSubtitle: {
+    fontSize: 14,
+    color: Colors.light.textSecondary,
+  },
+  // Photo Section Styles
+  photoSection: {
+    marginBottom: 32,
     alignItems: "center",
   },
-  imageContainer: {
-    position: "relative",
-    marginBottom: 20,
+  photoContainer: {
+    alignItems: "center",
   },
-  image: {
-    width: 80,
-    height: 80,
+  photoWrapper: {
+    position: "relative",
+    marginBottom: 16,
+  },
+  profilePhoto: {
+    width: 120,
+    height: 120,
     borderRadius: 60,
+    borderWidth: 4,
+    borderColor: Colors.light.primary,
+  },
+  defaultAvatar: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: Colors.light.secondary,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 4,
+    borderColor: Colors.light.primary,
+  },
+  avatarText: {
+    fontSize: 36,
+    fontWeight: "700",
+    color: "white",
+  },
+  photoButton: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: Colors.light.primary,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 3,
+    borderColor: Colors.light.background,
+  },
+  photoActions: {
+    flexDirection: "row",
+    gap: 16,
+  },
+  changePhotoButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 25,
+    backgroundColor: `${Colors.light.primary}10`,
     borderWidth: 1,
     borderColor: Colors.light.primary,
   },
-  imagePicker: {
-    position: "absolute",
-    right: 0,
-    bottom: 0,
-    backgroundColor: Colors.light.primary,
-    borderRadius: 20,
-    padding: 6,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    marginVertical: 20,
-    color: Colors.light.text,
-    textAlign: "center",
-  },
-  icon: {
-    marginRight: 10,
+  changePhotoText: {
+    fontSize: 14,
+    fontWeight: "600",
     color: Colors.light.primary,
-  },
-  input: {
-    width: "100%",
-    height: 40,
-    color: "#333333",
-    fontSize: 12,
-    paddingHorizontal: 10,
-    borderRadius: 4,
-  },
-
-  placeholderText: {},
-  button: {
-    width: "100%",
-    height: 50,
-    borderRadius: 25,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 20,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  buttonDisabled: {
-    opacity: 0.6,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  buttonCreate: {
-    backgroundColor: "black",
-    borderRadius: 4,
-    width: 100,
-  },
-  marginCont: {
     marginLeft: 6,
   },
-  focused: {
-    borderColor: "black",
-    backgroundColor: "#f2f2f2",
+  removePhotoButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 25,
+    backgroundColor: `${Colors.light.danger}10`,
+    borderWidth: 1,
+    borderColor: Colors.light.danger,
   },
-});
-
-export default styles;
+  removePhotoText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: Colors.light.danger,
+    marginLeft: 6,
+  },
+  inputGroup: {
+    marginBottom: 24,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: Colors.light.text,
+    marginBottom: 8,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: Colors.light.surface,
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderWidth: 1,
+    borderColor: Colors.light.border,
+  },
+  inputError: {
+    borderColor: Colors.light.danger,
+    backgroundColor: `${Colors.light.danger}05`,
+  },
+  input: {
+    flex: 1,
+    fontSize: 16,
+    color: Colors.light.text,
+    marginLeft: 12,
+    fontWeight: "500",
+  },
+  errorText: {
+    fontSize: 14,
+    color: Colors.light.danger,
+    marginTop: 4,
+    fontWeight: "500",
+  },
+  // Account Info Section
+  accountInfo: {
+    backgroundColor: Colors.light.surface,
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: Colors.light.border,
+    marginTop: 8,
+  },
+  infoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 8,
+  },
+  infoIcon: {
+    marginRight: 12,
+  },
+  infoContent: {
+    flex: 1,
+  },
+  infoLabel: {
+    fontSize: 14,
+    color: Colors.light.textSecondary,
+    marginBottom: 2,
+  },
+  infoValue: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: Colors.light.text,
+  },
+  footer: {
+    flexDirection: "row",
+    padding: 20,
+    gap: 12,
+    borderTopWidth: 1,
+    borderTopColor: Colors.light.border,
+    backgroundColor: Colors.light.surface,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  cancelButton: {
+    flex: 1,
+    paddingVertical: 16,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: Colors.light.border,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: Colors.light.surface,
+  },
+  cancelButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: Colors.light.textSecondary,
+  },
+  updateButton: {
+    flex: 1,
+    borderRadius: 12,
+    overflow: "hidden",
+    backgroundColor: Colors.light.primary,
+    shadowColor: Colors.light.primary,
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  updateButtonContent: {
+    paddingVertical: 16,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  updateButtonText: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "white",
+  },
+})

@@ -33,6 +33,7 @@ const Home: React.FC = () => {
   const firstLoadRef = React.useRef(true);
 
   const { user } = useUser();
+  console.log("User data:", user);
   const { lastThreeOrders, numberClientes, numberIngresos, numberPedidos, handleAddStatistics, loaded } = useHomeData()
   const empresaName = user?.empresaName ?? "Empresa Name";
   const isReserva = user?.id_rol === 1;
@@ -180,6 +181,7 @@ const Home: React.FC = () => {
               value={numberPedidos}
               onPress={() => { }}
             />
+            
             <MetricCard
               icon="account-group"
               title={intl.formatMessage({

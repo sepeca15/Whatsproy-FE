@@ -8,7 +8,9 @@
       ]
     },
     "baseUrl": ".",
-    "forceConsistentCasingInFileNames": true 
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "jsx": "react-jsx"
   },
   "include": [
     "**/*.ts",

@@ -1,256 +1,639 @@
 "use client"
 
-import React from "react"
-import { View, Text, TouchableOpacity, Animated } from "react-native"
-import { AntDesign, Ionicons, MaterialIcons } from "@expo/vector-icons"
-import { useRouter } from "expo-router"
-import UserCard from "./components/UserCard"
+import type React from "react"
+import { useState, useEffect, useRef, useMemo } from "react"
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Animated,
+  FlatList,
+  TextInput,
+  StatusBar,
+  RefreshControl,
+  Alert,
+} from "react-native"
+import { Ionicons } from "@expo/vector-icons"
+import { SafeAreaView } from "react-native-safe-area-context"
+import UserCard from "@/components/Views/Usuarios/components/UserCard/UserCard"
+import CreateUserModal from "./components/ModalCreateUser/ModalCreateUser"
+import EditUserModal from "./components/ModalEditUser/ModalEditUser"
+import EditProfileModal from "./components/ModalEditUser/ModalEditUser"
+import type { IUser, IUserInfo } from "./UsuariosType"
+import { Colors } from "@/constants/Coloresuser"
 import { styles } from "./UsuariosStyles"
 import api from "@/services/api/admin"
-import type { IUser, IUserInfo } from "./UsuariosType"
-import { Input, ScrollView } from "native-base"
-import * as Progress from "react-native-progress"
-import { Colors } from "@/constants/Colors"
 import { useUser } from "@/hooks/redux/useUser"
-import ModalCreateUser from "./components/ModalCreateUser"
-import ModalEditUser from "./components/ModalEditUser"
-import { FormattedMessage, useIntl } from "react-intl"
-import CustomText from "@/components/CustomText"
-import { useToastContext } from "@/contexts/ToastContext"
-import { globalStyles } from "@/components/globalStyles"
-import AddButton from "..../../hooks/add_Button/Add_button";  
-const initialValues = {
-  data: [],
-  loading: true,
-}
+import { router } from "expo-router"
+import { ActivityIndicator } from "react-native";
 
-const UsuariosEmpresasScreen: React.FC = () => {
-  const intlRef = useIntl()
-
-  const { user } = useUser()
-  const [userData, setUserData] = React.useState<IUserInfo>(initialValues)
-  const [stateModal, setStateModal] = React.useState({
-    modalEdit: false,
-    modalCreate: false,
+const UsersScreen: React.FC = () => {
+  const [userData, setUserData] = useState<IUserInfo>({
+    data: [],
+    loading: true,
   })
-  const [stateSearchValue, setStateSearchValue] = React.useState<boolean>(false)
-  const [valueSearch, setValueSearch] = React.useState<string>("")
-  const [selectedUser, setSelectedUser] = React.useState<any>(undefined)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [showSearch, setShowSearch] = useState(false)
+  const [selectedUser, setSelectedUser] = useState<IUser | null>(null)
+  const [showCreateModal, setShowCreateModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [showProfileModal, setShowProfileModal] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null)
+  const [currentUserData, setCurrentUserData] = useState<IUser | null>(null)
+  const [companyId, setCompanyId] = useState<number | null>(null)
 
-  const { showToast } = useToastContext()
-  const router = useRouter()
-  const fadeAnim = React.useRef(new Animated.Value(0)).current
-  const scaleAnim = React.useRef(new Animated.Value(0.95)).current
+  const fadeAnim = useRef(new Animated.Value(0)).current
+  const searchAnim = useRef(new Animated.Value(0)).current
+  const fabAnim = useRef(new Animated.Value(0)).current
+  const { user } = useUser()
 
-  const toggleSearchValue = () => {
-    setStateSearchValue((prev) => !prev)
+  useEffect(() => {
+    uploadUsers()
+    getCurrentUser()
+  }, [])
+
+  // Animar elementos cuando los datos se cargan
+  useEffect(() => {
+    if (!userData.loading && userData.data.length > 0) {
+      // Animar las cards
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 600,
+        useNativeDriver: true,
+      }).start()
+
+      // Animar el FAB
+      Animated.spring(fabAnim, {
+        toValue: 1,
+        tension: 100,
+        friction: 8,
+        useNativeDriver: true,
+      }).start()
+    }
+  }, [userData.loading, userData.data.length, fadeAnim, fabAnim])
+
+  const getCurrentUser = async () => {
+    try {
+      console.log("=== OBTENIENDO USUARIO ACTUAL ===")
+      const currentUser = await api.auth.me()
+      // console.log("Datos del usuario actual desde API:", currentUser)
+      console.log("Imagen del usuario actual:", currentUser?.image)
+
+      if (currentUser?.id) {
+        setCurrentUserId(currentUser.id)
+
+        // Mapear los datos del usuario actual al formato IUser
+        const mappedCurrentUser: IUser = {
+          id: currentUser.id,
+          nombre:
+            currentUser.nombre && currentUser.apellido
+              ? `${currentUser.nombre} ${currentUser.apellido}`.trim()
+              : currentUser.name || "Sin nombre",
+          correo: currentUser.correo || currentUser.email || "Sin email",
+          activo: currentUser.activo !== undefined ? currentUser.activo : true,
+          isAdmin: currentUser.isAdmin || false,
+          image: currentUser.image || null,
+        }
+
+        console.log("Usuario actual mapeado:", mappedCurrentUser)
+        setCurrentUserData(mappedCurrentUser)
+
+        if (currentUser.id_empresa) {
+          setCompanyId(currentUser.id_empresa)
+        }
+      }
+    } catch (error) {
+      console.error("Error getting current user:", error)
+    }
   }
 
   const uploadUsers = async () => {
     try {
-      const resp = await api.user.findAll(user.id_empresa)
-      setUserData((prevState) => ({
-        ...prevState,
-        data: resp.data,
-      }))
+      setUserData((prev) => ({ ...prev, loading: true }))
 
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 500,
-        useNativeDriver: true,
-      }).start()
+      // Reset animations
+      fadeAnim.setValue(0)
+      fabAnim.setValue(0)
 
-      Animated.timing(scaleAnim, {
-        toValue: 1,
-        duration: 400,
-        useNativeDriver: true,
-      }).start()
-    } catch (error) {
-      console.log("error", error)
-    } finally {
-      setUserData((prevState) => ({
-        ...prevState,
-        loading: false,
-      }))
-    }
-  }
+      console.log("=== CARGANDO USUARIOS ===")
+      const response = await api.user.findAll(user.id_empresa)
+      // console.log("Respuesta completa de usuarios:", response)
 
-  React.useEffect(() => {
-    uploadUsers()
-  }, [])
+      // Simplificado: asumimos que la API devuelve { data: [...] }
+      const users = response?.data || []
+      // console.log("Usuarios raw desde API:", users)
 
-  const toggleModalState = (key: "modalEdit" | "modalCreate", value: boolean) => {
-    setStateModal((prev) => ({
-      ...prev,
-      [key]: value,
-    }))
-  }
+      // Mapear usuarios con validación básica
+      const mappedUsers: IUser[] = users
+        .filter((userItem: any) => userItem && userItem.id) // Solo usuarios válidos
+        .map((userItem: any) => {
+          const mapped = {
+            id: userItem.id,
+            nombre: userItem.nombre || userItem.name || "Sin nombre",
+            correo: userItem.correo || userItem.email || "Sin email",
+            activo: userItem.activo !== undefined ? userItem.activo : true,
+            isAdmin: userItem.isAdmin || false,
+            image: userItem.image || null,
+          }
 
-  const addNewUser = (user: IUser) => {
-    setUserData((prevState) => ({
-      ...prevState,
-      data: [...prevState.data, user],
-    }))
-  }
+          // Log específico para el usuario actual
+          if (userItem.id === currentUserId) {
+            console.log(`=== USUARIO ACTUAL EN LISTA (ID: ${userItem.id}) ===`)
+            console.log("Datos raw:", userItem)
+            console.log("Datos mapeados:", mapped)
+            console.log("Imagen:", mapped.image)
+          }
 
-  const selectEditUser = (user: IUser) => {
-    toggleModalState("modalEdit", true)
-    setSelectedUser(user)
-  }
-
-  const editUserSelected = async (userId: number, userData: any) => {
-    try {
-      const resp = await api.user.update(userId, userData)
-      if (resp) {
-        console.log("respondio", resp.data)
-
-        setUserData((prevState) => ({
-          ...prevState,
-          data: prevState.data.map((user) => (user.id === userId ? resp : user)),
-        }))
-        toggleModalState("modalEdit", false)
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  const onDeleteUser = async (userId: number) => {
-    try {
-      const resp = await api.user.delete(userId)
-      if (resp.ok) {
-        setUserData((prevState) => ({
-          ...prevState,
-          data: prevState.data.filter((data) => data.id !== userId),
-        }))
-
-        showToast({
-          title: intlRef.formatMessage({
-            id: "userDeleted",
-            defaultMessage: "User deleted successfully",
-          }),
-          status: "success",
+          return mapped
         })
-      }
-    } catch (error: any) {
-      console.log("error")
-      showToast({
-        title: error.response.data.message,
-        status: "error",
+
+      console.log("Usuarios mapeados finales:", mappedUsers)
+
+      setUserData({
+        data: mappedUsers,
+        loading: false,
       })
+
+      // Animar elementos si hay datos
+      if (mappedUsers.length > 0) {
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 600,
+          useNativeDriver: true,
+        }).start()
+
+        Animated.spring(fabAnim, {
+          toValue: 1,
+          tension: 100,
+          friction: 8,
+          useNativeDriver: true,
+        }).start()
+      }
+    } catch (error) {
+      console.error("Error loading users:", error)
+      setUserData((prev) => ({
+        ...prev,
+        loading: false,
+        error: error instanceof Error ? error.message : String(error),
+      }))
+
+      Alert.alert("Error", "No se pudieron cargar los usuarios. Por favor, intenta de nuevo.", [{ text: "OK" }])
     }
   }
 
-  const filteredUsers = React.useMemo(() => {
-    return userData.data.filter((user) => user.nombre.toLowerCase().includes(valueSearch.toLocaleLowerCase()))
-  }, [userData.data, valueSearch])
+  const onRefresh = async () => {
+    setRefreshing(true)
+    await uploadUsers()
+    await getCurrentUser()
+    setRefreshing(false)
+  }
 
-  return (
-    <View style={styles.container}>
-      <View style={[styles.headerGradient, { backgroundColor: Colors.light.primary }]}>
-        <View style={globalStyles.headerContent}>
-          <TouchableOpacity style={globalStyles.backButton} onPress={() => router.back()} activeOpacity={0.7}>
-            <AntDesign name="arrowleft" size={24} color="white" />
-          </TouchableOpacity>
-          <View style={globalStyles.headerLeft}>
-            <CustomText style={[globalStyles.businessName, { fontSize: 24 }]} accessibilityLabel="Usuarios">
-              <FormattedMessage id="users" />
-            </CustomText>
-          </View>
-          <TouchableOpacity onPress={toggleSearchValue} style={globalStyles.backButton} activeOpacity={0.7}>
-            <MaterialIcons name="search" size={24} color="white" />
-          </TouchableOpacity>
+  const toggleSearch = () => {
+    setShowSearch(!showSearch)
+    Animated.timing(searchAnim, {
+      toValue: showSearch ? 0 : 1,
+      duration: 300,
+      useNativeDriver: false,
+    }).start()
+
+    if (showSearch) {
+      setSearchQuery("")
+    }
+  }
+
+const filteredUsers = useMemo(() => {
+  // Filtra según la búsqueda
+  const filtered = userData.data.filter(
+    (user) =>
+      user &&
+      user.nombre &&
+      user.correo &&
+      (user.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.correo.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
+  // Si tienes el id del usuario actual, lo pones primero
+  if (currentUserId) {
+    const currentUser = filtered.find(u => u.id === currentUserId);
+    const others = filtered.filter(u => u.id !== currentUserId);
+    return currentUser ? [currentUser, ...others] : filtered;
+  }
+  return filtered;
+}, [userData.data, searchQuery, currentUserId]);
+
+  const handleEditUser = (user: IUser) => {
+    setSelectedUser(user)
+    setShowEditModal(true)
+      }
+
+  const handleEditProfile = () => {
+    if (currentUserData) {
+      setShowProfileModal(true)
+    }
+  }
+
+  const handleDeleteUser = async (userId: number) => {
+    try {
+      Alert.alert("Confirmar eliminación", "¿Estás seguro de que deseas eliminar este usuario?", [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Eliminar",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await api.user.delete(userId)
+
+              // Actualizar la lista local
+              setUserData((prev) => ({
+                ...prev,
+                data: prev.data.filter((user) => user.id !== userId),
+              }))
+
+              Alert.alert("Éxito", "Usuario eliminado correctamente")
+            } catch (error) {
+              console.error("Error deleting user:", error)
+              Alert.alert("Error", "No se pudo eliminar el usuario")
+            }
+          },
+        },
+      ])
+    } catch (error) {
+      console.error("Error in handleDeleteUser:", error)
+    }
+  }
+
+  const handleCreateUser = async (newUserData: Omit<IUser, "id">) => {
+    try {
+      if (!user?.id_empresa) {
+        Alert.alert("Error", "No se pudo obtener la información de la empresa")
+        return
+      }
+
+      // Separar nombre y apellido del nombre completo
+      const nameParts = newUserData.nombre.trim().split(" ")
+      const nombre = nameParts[0] || ""
+      const apellido = nameParts.slice(1).join(" ") || ""
+
+      // Mapear los datos al formato esperado por la API
+      const userData = {
+        nombre: nombre,
+        apellido: apellido,
+        correo: newUserData.correo,
+        password: "123456", // Contraseña temporal
+        id_empresa: user.id_empresa,
+      }
+
+      const createdUser = await api.user.create(userData)
+
+      if (createdUser) {
+        // Mapear la respuesta de vuelta al formato local
+        const newUser: IUser = {
+          id: createdUser.id,
+          nombre:
+            createdUser.nombre && createdUser.apellido
+              ? `${createdUser.nombre} ${createdUser.apellido}`.trim()
+              : createdUser.name || "",
+          correo: createdUser.correo || createdUser.email || "",
+          activo: createdUser.activo !== undefined ? createdUser.activo : true,
+          isAdmin: newUserData.isAdmin,
+          image: createdUser.image || null,
+        }
+
+        setUserData((prev) => ({
+          ...prev,
+          data: [...prev.data, newUser],
+        }))
+
+        setShowCreateModal(false)
+        Alert.alert("Éxito", "Usuario creado correctamente")
+      }
+    } catch (error) {
+      console.error("Error creating user:", error)
+      Alert.alert("Error", "No se pudo crear el usuario")
+    }
+  }
+
+  const handleUpdateUser = async (updatedUser: IUser) => {
+    try {
+      // Separar nombre y apellido del nombre completo
+      const nameParts = updatedUser.nombre.trim().split(" ")
+      const nombre = nameParts[0] || ""
+      const apellido = nameParts.slice(1).join(" ") || ""
+
+      // Mapear los datos al formato esperado por la API
+      const updateData = {
+        id: updatedUser.id,
+        nombre: nombre,
+        apellido: apellido,
+        correo: updatedUser.correo,
+        activo: updatedUser.activo,
+        isAdmin: updatedUser.isAdmin,
+        photo: updatedUser.image, // Incluir la foto
+      }
+
+      const response = await api.user.update(updatedUser.id, updateData)
+
+      if (response) {
+        // Actualizar la lista local inmediatamente
+        setUserData((prev) => ({
+          ...prev,
+          data: prev.data.map((user) => (user.id === updatedUser.id ? updatedUser : user)),
+        }))
+
+        // Si es el usuario actual, también actualizar currentUserData
+        if (updatedUser.id === currentUserId) {
+          setCurrentUserData(updatedUser)
+        }
+
+        setShowEditModal(false)
+        setSelectedUser(null)
+        Alert.alert("Éxito", "Usuario actualizado correctamente")
+      }
+    } catch (error) {
+      console.error("Error updating user:", error)
+      Alert.alert("Error", "No se pudo actualizar el usuario")
+    }
+  }
+
+  const handleUpdateProfile = async (updatedProfile: IUser) => {
+    try {
+      // Separar nombre y apellido del nombre completo
+      const nameParts = updatedProfile.nombre.trim().split(" ")
+      const nombre = nameParts[0] || ""
+      const apellido = nameParts.slice(1).join(" ") || ""
+
+      // Mapear los datos al formato esperado por la API
+      const updateData = {
+        nombre: nombre,
+        apellido: apellido,
+        correo: updatedProfile.correo,
+        photo: updatedProfile.image, // Incluir la foto
+      }
+
+      console.log("=== ACTUALIZANDO PERFIL ===")
+      console.log("Datos a enviar:", updateData)
+      console.log("URL de imagen:", updatedProfile.image)
+
+      const response = await api.user.update(updatedProfile.id, updateData)
+      console.log("Respuesta del servidor:", response)
+
+      if (response) {
+        // ACTUALIZACIÓN OPTIMISTA: Actualizar inmediatamente en la UI
+        // independientemente de lo que devuelva el servidor
+        console.log("=== APLICANDO ACTUALIZACIÓN OPTIMISTA ===")
+
+        // Actualizar los datos del usuario actual PRIMERO
+        setCurrentUserData(updatedProfile)
+
+        // Actualizar en la lista de usuarios inmediatamente
+        setUserData((prev) => ({
+          ...prev,
+          data: prev.data.map((user) => (user.id === updatedProfile.id ? updatedProfile : user)),
+        }))
+
+        setShowProfileModal(false)
+
+        // Verificar después de un tiempo si la actualización se persistió
+        setTimeout(async () => {
+          try {
+            console.log("=== VERIFICACIÓN POST-ACTUALIZACIÓN ===")
+            // Recargar los datos para verificar
+            await uploadUsers()
+            await getCurrentUser()
+          } catch (error) {
+            console.error("Error en verificación:", error)
+          }
+        }, 3000) // Verificar después de 3 segundos
+
+        Alert.alert("Éxito", "Perfil actualizado correctamente")
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error)
+      Alert.alert("Error", "No se pudo actualizar el perfil")
+    }
+  }
+
+  const renderEmptyState = () => (
+    <View style={styles.emptyState}>
+      <View style={styles.emptyIconContainer}>
+        <View style={styles.emptyIconBackground}>
+          <Ionicons name="people-outline" size={60} color={Colors.light.primary} />
         </View>
-        {stateSearchValue && (
-          <View style={styles.inputContainer}>
-            <Input
-              onChangeText={(text: string) => setValueSearch(text)}
-              placeholder="Search user"
-              variant="unstyled"
-              style={styles.input}
-              value={valueSearch}
-              InputLeftElement={
-                <MaterialIcons name="search" size={20} color="rgba(255,255,255,0.7)" style={{ marginLeft: 10, marginRight: 10 }} />
-              }
-            />
-          </View>
-        )}
       </View>
-
-      {userData.loading ? (
-        <View style={styles.spinner}>
-          <Progress.Circle color={Colors.light.primary} indeterminate={true} size={60} borderWidth={3} />
-          <Text style={styles.loadingText}>
-            <FormattedMessage id="loading" defaultMessage="Loading users..." />
-          </Text>
-        </View>
-      ) : filteredUsers.length > 0 ? (
-        <Animated.View
-          style={[
-            styles.contentContainer,
-            {
-              opacity: fadeAnim,
-              transform: [{ scale: scaleAnim }],
-            },
-          ]}
+      <Text style={styles.emptyTitle}>{searchQuery ? "No se encontraron usuarios" : "No hay usuarios"}</Text>
+      <Text style={styles.emptySubtitle}>
+        {searchQuery ? "Intenta con otros términos de búsqueda" : "Comienza agregando tu primer usuario"}
+      </Text>
+      {!searchQuery && (
+        <TouchableOpacity
+          style={[styles.emptyActionButton, { backgroundColor: Colors.light.primary }]}
+          onPress={() => setShowCreateModal(true)}
+          activeOpacity={0.8}
         >
-          <ScrollView
-            style={styles.scrollView}
-            contentContainerStyle={styles.scrollViewContent}
-            showsVerticalScrollIndicator={false}
-          >
-            {filteredUsers.map((infoUser, index) => (
-              <UserCard
-                allowManage={user.isAdmin}
-                selectEditUser={selectEditUser}
-                deleteUser={onDeleteUser}
-                key={index}
-                infoUser={infoUser}
-              />
-            ))}
-          </ScrollView>
-        </Animated.View>
-      ) : (
-        <View style={styles.emptyState}>
-          <MaterialIcons name="people-outline" size={90} color={`${Colors.light.primary}80`} />
-          <Text style={styles.emptyStateText}>
-            <FormattedMessage id="noUsers" defaultMessage="No users found" />
-          </Text>
-          <Text style={styles.emptyStateSubtext}>
-            <FormattedMessage id="addUserPrompt" defaultMessage="Add your first user by clicking the + button below" />
-          </Text>
-        </View>
-      )}
-      {user.isAdmin && (
-        <View style={globalStyles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.addButton}
-            onPress={() => toggleModalState("modalCreate", true)}
-            activeOpacity={0.8}
-          >
-           
-              <Ionicons name="add"  style={globalStyles.addtext} color="#fff" />
-          
-          </TouchableOpacity>
-        </View>
-      )}
-
-      <ModalCreateUser
-        onToogleModal={() => toggleModalState("modalCreate", false)}
-        isOpen={stateModal.modalCreate}
-        addNewUser={addNewUser}
-      />
-
-      {selectedUser && (
-        <ModalEditUser
-          editUserSelected={editUserSelected}
-          onToogleModal={() => toggleModalState("modalEdit", false)}
-          isOpen={stateModal.modalEdit}
-          userInfo={selectedUser}
-        />
+          <View style={styles.emptyActionContent}>
+            <Ionicons name="add" size={20} color="white" />
+            <Text style={styles.emptyActionText}>Crear Usuario</Text>
+          </View>
+        </TouchableOpacity>
       )}
     </View>
   )
+
+  const renderUserCard = ({ item, index }: { item: IUser; index: number }) => {
+    // Validación adicional para asegurar que el item existe
+    if (!item || !item.id) {
+      return null
+    }
+
+    return (
+      <Animated.View
+        style={{
+          opacity: fadeAnim,
+          transform: [
+            {
+              translateY: fadeAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [50, 0],
+              }),
+            },
+          ],
+        }}
+      >
+        <UserCard
+          user={item}
+          onEdit={handleEditUser}
+          onDelete={handleDeleteUser}
+          currentUserId={currentUserId || 0}
+          allowManage={true}
+        />
+      </Animated.View>
+    )
+  }
+
+  // Función segura para keyExtractor
+  const keyExtractor = (item: IUser, index: number) => {
+    if (item && item.id) {
+      return `${item.id}-${item.image || "no-image"}`
+    }
+    return `user-${index}`
+  }
+
+if (userData.loading || currentUserId === null) {
+  return (
+    <View style={styles.loadingContainer}>
+      <StatusBar barStyle="light-content" backgroundColor={Colors.light.primary} />
+      <View style={styles.loadingBackground}>
+        <View style={styles.loadingContent}>
+          <ActivityIndicator
+            size={60} // Más grande que "large"
+            color={   Colors.light.secondary ||  Colors.light.success || "#fff"} // Usa tu verde
+          />
+          <Text style={styles.loadingText}>Cargando usuarios...</Text>
+        </View>
+      </View>
+    </View>
+  );
 }
 
-export default UsuariosEmpresasScreen
+  return (
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor={Colors.light.primary} />
+
+      {/* Header */}
+      <View style={[styles.header, { backgroundColor: Colors.light.primary }]}>
+        <View style={styles.headerContent}>
+          <TouchableOpacity style={styles.backButton} activeOpacity={0.7} onPress={() => router.back()}>
+            <Ionicons name="arrow-back" size={24} color="white" />
+          </TouchableOpacity>
+
+          <View style={styles.headerCenter}>
+            <Text style={styles.headerTitle}>Usuarios</Text>
+            <Text style={styles.headerSubtitle}>{userData.data.length} usuarios registrados</Text>
+          </View>
+
+          <View style={styles.headerActions}>
+            <TouchableOpacity style={styles.profileButton} onPress={handleEditProfile} activeOpacity={0.7}>
+              <Ionicons name="person-circle-outline" size={24} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.searchButton} onPress={toggleSearch} activeOpacity={0.7}>
+              <Ionicons name="search" size={24} color="white" />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Search Bar */}
+        <Animated.View
+          style={[
+            styles.searchContainer,
+            {
+              height: searchAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, 60],
+              }),
+              opacity: searchAnim,
+            },
+          ]}
+        >
+          <View style={styles.searchInputContainer}>
+            <Ionicons name="search" size={20} color="rgba(255,255,255,0.7)" style={styles.searchIcon} />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Buscar usuarios..."
+              placeholderTextColor="rgba(255,255,255,0.7)"
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+            />
+            {searchQuery.length > 0 && (
+              <TouchableOpacity onPress={() => setSearchQuery("")} style={styles.clearButton}>
+                <Ionicons name="close" size={20} color="rgba(255,255,255,0.7)" />
+              </TouchableOpacity>
+            )}
+          </View>
+        </Animated.View>
+      </View>
+
+      {/* Content */}
+      <View style={styles.content}>
+        {filteredUsers.length === 0 ? (
+          renderEmptyState()
+        ) : (
+          <FlatList
+            data={filteredUsers}
+            renderItem={renderUserCard}
+            keyExtractor={keyExtractor}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.listContent}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                colors={[Colors.light.primary]}
+                tintColor={Colors.light.primary}
+              />
+            }
+            removeClippedSubviews={false}
+            initialNumToRender={10}
+            maxToRenderPerBatch={10}
+            windowSize={10}
+            extraData={userData.data} // Forzar re-render cuando cambie userData
+          />
+        )}
+      </View>
+
+      {/* Floating Action Button */}
+      <Animated.View
+        style={[
+          styles.fabContainer,
+          {
+            transform: [
+              {
+                scale: fabAnim,
+              },
+            ],
+          },
+        ]}
+      >
+        <TouchableOpacity
+          style={[styles.fab, { backgroundColor: Colors.light.primary }]}
+          onPress={() => setShowCreateModal(true)}
+          activeOpacity={0.8}
+        >
+          <View style={styles.fabContent}>
+            <Ionicons name="add" size={28} color="white" />
+          </View>
+        </TouchableOpacity>
+      </Animated.View>
+
+      {/* Modals */}
+      <CreateUserModal
+        visible={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onCreateUser={handleCreateUser}
+      />
+
+      {selectedUser && (
+        <EditUserModal
+          visible={showEditModal}
+          onClose={() => {
+            setShowEditModal(false)
+            setSelectedUser(null)
+          }}
+          user={selectedUser}
+          onUpdateUser={handleUpdateUser}
+        />
+      )}
+
+      {currentUserData && (
+        <EditProfileModal
+          visible={showProfileModal}
+          onClose={() => setShowProfileModal(false)}
+          user={currentUserData}
+          onUpdateUser={handleUpdateProfile}
+        />
+      )}
+    </SafeAreaView>
+  )
+}
+
+export default UsersScreen

@@ -1,117 +1,123 @@
-import { StyleSheet, Dimensions, Platform } from "react-native"
-import { Colors } from "../../../constants/Colors"
+import { StyleSheet, Dimensions } from "react-native"
+import { Colors } from "@/constants/Coloresuser"
 
-const { width } = Dimensions.get("window")
+const { width, height } = Dimensions.get("window")
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f8f9fa",
+    backgroundColor: Colors.light.background,
   },
-  headerGradient: {
-    padding: 16,
-        paddingTop: 30,
-        paddingBottom: 20,
-        backgroundColor: Colors.light.primary,
-        // borderBottomLeftRadius: 15,
-        // borderBottomRightRadius: 15,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 3,
-        elevation: 3,
+  loadingContainer: {
+    flex: 1,
+  },
+  loadingBackground: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: Colors.light.primary,
+  },
+  loadingContent: {
+    alignItems: "center",
+  },
+  loadingSpinner: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    borderWidth: 4,
+    borderColor: "rgba(255,255,255,0.3)",
+    borderTopColor: "white",
+    marginBottom: 20,
+  },
+  loadingText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  header: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+    backgroundColor: Colors.light.primary,
   },
   headerContent: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 20,
-  },
-  headerLeft: {
-    flex: 1,
-  },
-  businessName: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#fff",
-    textShadowColor: "rgba(0, 0, 0, 0.1)",
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
+    justifyContent: "space-between",
   },
   backButton: {
     width: 44,
     height: 44,
     borderRadius: 22,
-    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.15)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
+    justifyContent: "center",
+  },
+  headerCenter: {
+    flex: 1,
+    alignItems: "center",
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: "white",
+    textAlign: "center",
+  },
+  headerSubtitle: {
+    fontSize: 14,
+    color: "rgba(255,255,255,0.8)",
+    marginTop: 2,
+  },
+  headerActions: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  profileButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    alignItems: "center",
+    justifyContent: "center",
   },
   searchButton: {
     width: 44,
     height: 44,
     borderRadius: 22,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    alignItems: "center",
     justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.15)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
   },
-  headerTitle: {
-    flex: 1,
-    alignItems: "center",
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: "bold",
-    marginBottom: 24,
-    color: Colors.light.text,
-    textAlign: "center",
-  },
-  contentContainer: {
-    flex: 1,
-    paddingTop: 10,
-    paddingHorizontal: 16,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollViewContent: {
-    paddingBottom: 100,
-  },
-  listContent: {
-    paddingBottom: 80,
-  },
-  inputContainer: {
-    paddingHorizontal: 20,
-    paddingTop: 16,
-    paddingBottom: 8,
-    marginTop: 8,
-  },
-  input: {
-    borderWidth: 0,
-    borderRadius: 12,
-    fontSize: 16,
-    color: "white",
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    backgroundColor: "rgba(255,255,255,0.15)",
-  },
-  spinner: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  loadingText: {
+  searchContainer: {
     marginTop: 16,
+    overflow: "hidden",
+  },
+  searchInputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(255,255,255,0.2)",
+    borderRadius: 25,
+    paddingHorizontal: 16,
+    height: 44,
+  },
+  searchIcon: {
+    marginRight: 12,
+  },
+  searchInput: {
+    flex: 1,
+    color: "white",
     fontSize: 16,
-    color: Colors.light.primary,
     fontWeight: "500",
   },
-  buttonCreate: {
-    backgroundColor: Colors.light.primary,
-    borderRadius: 4,
+  clearButton: {
+    padding: 4,
+  },
+  content: {
+    flex: 1,
+  },
+  listContent: {
+    paddingVertical: 16,
+    paddingBottom: 100,
   },
   emptyState: {
     flex: 1,
@@ -119,36 +125,70 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 40,
   },
-  emptyStateText: {
+  emptyIconContainer: {
+    marginBottom: 24,
+  },
+  emptyIconBackground: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: `${Colors.light.primary}20`,
+  },
+  emptyTitle: {
     fontSize: 22,
-    fontWeight: "bold",
-    color: "#555",
-    marginTop: 16,
-  },
-  emptyStateSubtext: {
-    fontSize: 16,
-    color: "#888",
+    fontWeight: "700",
+    color: Colors.light.text,
     textAlign: "center",
-    marginTop: 8,
+    marginBottom: 8,
   },
-  addButton: {
+  emptySubtitle: {
+    fontSize: 16,
+    color: Colors.light.textSecondary,
+    textAlign: "center",
+    lineHeight: 24,
+    marginBottom: 32,
+  },
+  emptyActionButton: {
+    borderRadius: 25,
+    overflow: "hidden",
     backgroundColor: Colors.light.primary,
+  },
+  emptyActionContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+  },
+  emptyActionText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "600",
+    marginLeft: 8,
+  },
+  fabContainer: {
+    position: "absolute",
+    bottom: 30,
+    right: 20,
+  },
+  fab: {
+    borderRadius: 30,
+    // elevation: 8,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    backgroundColor: Colors.light.primary,
+  },
+  fabContent: {
     width: 60,
     height: 60,
     borderRadius: 30,
-    justifyContent: "center",
     alignItems: "center",
-    elevation: 6,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-  addButtonGradient: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
     justifyContent: "center",
-    alignItems: "center",
   },
 })
