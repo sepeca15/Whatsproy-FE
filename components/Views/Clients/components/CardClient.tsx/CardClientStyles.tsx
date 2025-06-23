@@ -1,0 +1,150 @@
+import { Colors } from "@/constants/Colors"
+import { StyleSheet } from "react-native"
+
+
+export const cardClientStyles = StyleSheet.create({
+  cardContainer: {
+    backgroundColor: "#ffffff",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 2,
+    borderLeftWidth: 3,
+    borderLeftColor: Colors.light.primary,
+  },
+  cardHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    marginBottom: 16,
+  },
+  clientSection: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+    marginRight: 16,
+  },
+  avatarContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: Colors.light.primary,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
+  },
+  avatarText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  clientInfo: {
+    flex: 1,
+  },
+  clientName: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: Colors.light.text,
+    marginBottom: 4,
+  },
+  phoneContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  phoneText: {
+    fontSize: 13,
+    color: Colors.light.icon,
+    marginLeft: 6,
+  },
+  salesSection: {
+    alignItems: "flex-end",
+  },
+  salesBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(18, 140, 126, 0.1)",
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "rgba(18, 140, 126, 0.2)",
+  },
+  salesCount: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: Colors.light.secondary,
+    marginLeft: 6,
+    marginRight: 4,
+  },
+  salesLabel: {
+    fontSize: 12,
+    fontWeight: "500",
+    color: Colors.light.secondary,
+  },
+  statsSection: {
+    marginBottom: 12,
+  },
+  statItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  statIconContainer: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: "rgba(7, 94, 84, 0.1)",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
+  },
+  statTextContainer: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  statLabel: {
+    fontSize: 13,
+    color: Colors.light.icon,
+    fontWeight: "500",
+  },
+  statValue: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: Colors.light.text,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "#e5e7eb",
+    marginVertical: 12,
+  },
+  actionsSection: {
+    alignItems: "center",
+  },
+  detailsButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: Colors.light.primary,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 20,
+    width: "100%",
+    shadowColor: Colors.light.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  detailsButtonText: {
+    fontSize: 14,
+    color: "white",
+    fontWeight: "600",
+    marginLeft: 8,
+  },
+})

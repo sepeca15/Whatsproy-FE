@@ -1,47 +1,50 @@
+"use client";
+
 import * as React from "react";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, ScrollView, StyleSheet } from "react-native";
 import {
   Button,
-  View,
   Text,
   IconButton,
-  Center,
   HStack,
-  Alert,
   Avatar,
+  VStack,
+  Box,
+  Divider,
+  Badge,
+  View,
 } from "native-base";
 import InputField from "@/components/InputField";
 import { useUser } from "@/hooks/redux/useUser";
 import api from "@/services/api/admin";
 import { TipoServicio } from "../enums/TipoServicio";
 import MultiSelectInput from "@/components/MultiSelectInput";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons, Feather } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
-import { Cliente } from "@/services/api/clients/cliente.types";
-import { Producto } from "@/services/api/products/product.types";
+import type { Cliente } from "@/services/api/clients/cliente.types";
+import type { Producto } from "@/services/api/products/product.types";
 import { findClientsWithQuery } from "@/services/api/clients/clients";
 import { findProductsWithQuery } from "@/services/api/products/products";
 import moment from "moment";
 import {
-  CreateOrderDTO,
+  type CreateOrderDTO,
   OrderEstadoDefault,
 } from "@/services/api/order/order.type";
 import InfoLineForm from "@/components/InfoLineForm";
 import {
   EmpresaTypeStr,
   ID_TIPOSERVICIO_RESERVA,
-  TipoServicioType,
+  type TipoServicioType,
 } from "@/services/api/tiposervicio/tiposervicio.type";
-import { InfoLineDTO } from "@/services/api/dateOrder/dataOrder.type";
+import type { InfoLineDTO } from "@/services/api/dateOrder/dataOrder.type";
 import { DEFAULT_ESTADO_CREADO } from "@/services/api/estado/estado.type";
-import GlobalModal from "./Modal";
 import { useToastContext } from "@/contexts/ToastContext";
 import { filterOnlyHours, getHourNumber, removeAmPm } from "@/utils/date";
-import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import TimePicker from "./TimePicker";
-import { useIntl } from "react-intl";
+import { useIntl, FormattedMessage } from "react-intl";
 import { useHomeData } from "@/hooks/redux/useHomeData";
 import CustomButton from "./CustomButton";
+import GenericModal from "./Views/ConfigAccount/components/GenericModal/GenericModal";
 
 interface IProps {
   onClose: () => void;
@@ -99,7 +102,6 @@ const CreateOrderModal = ({
   const [selectedProductsIds, setSelectedProductsIds] = React.useState<
     string[]
   >([]);
-
   const [loadingNextDateAvailable, setLoadingNextDateAvailable] =
     React.useState(false);
   const [prodCant, setProdCant] = React.useState<prodItems[]>([]);
@@ -181,20 +183,31 @@ const CreateOrderModal = ({
   }, [hasErrors, form]);
 
   const handleValidateForm = (): boolean => {
-    let errors: any = {};
+    const errors: any = {};
     if (selectedProductsIds?.length <= 0) {
-      errors["products"] = "Debes agregar al menos un producto";
+      errors["products"] = intl.formatMessage({
+        id: "createOrder.validation.productsRequired",
+        defaultMessage: "Debes agregar al menos un producto",
+      });
     }
     if (tipoServicio === TipoServicio.RESERVA && !defaultDate) {
-      errors["date"] = "Debes agregar al menos un producto";
+      errors["date"] = intl.formatMessage({
+        id: "createOrder.validation.dateRequired",
+        defaultMessage: "Debes seleccionar una fecha",
+      });
     }
     infoLines
       .filter((itm) => itm?.show)
       .forEach((infoline) => {
         if (infoline) {
           if (infoline?.requerido && !form.infoLinesJson[infoline.nombre]) {
-            errors[infoline.nombre] =
-              `El campo ${infoline.nombre} es requerido`;
+            errors[infoline.nombre] = intl.formatMessage(
+              {
+                id: "createOrder.validation.fieldRequired",
+                defaultMessage: "El campo {field} es requerido",
+              },
+              { field: infoline.nombre }
+            );
           }
         }
       });
@@ -221,19 +234,19 @@ const CreateOrderModal = ({
     try {
       setLoadingCreate(true);
       setIsDirty(true);
-      let isValidForm = handleValidateForm();
+      const isValidForm = handleValidateForm();
       if (!isValidForm) {
         return;
       }
 
-      let dataToSend: any = {
+      const dataToSend: any = {
         ...form,
         tipoServicio: tipoServicio,
         confirmado: true,
         empresaType: EmpresaTypeStr[tipoServicio],
         products: selectedProductsIds.map((prod) => {
           const productSend = prodCant.find(
-            (product) => product.prodId === parseInt(prod)
+            (product) => product.prodId === Number.parseInt(prod)
           );
           return {
             productoId: prod,
@@ -253,7 +266,7 @@ const CreateOrderModal = ({
 
       if (tipoServicio === TipoServicio.RESERVA) {
         dataToSend.userId = selectedWorkerId;
-        let infoLines = JSON.parse(dataToSend.infoLinesJson);
+        const infoLines = JSON.parse(dataToSend.infoLinesJson);
         const fechaMoment = moment.tz(infoLines["Fecha y Hora"], user.timeZone);
         infoLines["Fecha y Hora"] = fechaMoment.format("YYYY-MM-DD HH:mm");
         dataToSend.infoLinesJson = JSON.stringify(infoLines);
@@ -263,8 +276,15 @@ const CreateOrderModal = ({
 
       if (data?.ok) {
         showToast({
-          title: "¡Evento creado!",
-          description: "Su evento fue agregado al calendario exitosamente.",
+          title: intl.formatMessage({
+            id: "createOrder.success.title",
+            defaultMessage: "¡Evento creado!",
+          }),
+          description: intl.formatMessage({
+            id: "createOrder.success.description",
+            defaultMessage:
+              "Su evento fue agregado al calendario exitosamente.",
+          }),
           status: "success",
         });
         if (onSuccess) {
@@ -278,11 +298,17 @@ const CreateOrderModal = ({
       setLoadingCreate(false);
 
       showToast({
-        title: "Error creando evento",
+        title: intl.formatMessage({
+          id: "createOrder.error.title",
+          defaultMessage: "Error creando evento",
+        }),
         description:
           error?.message?.data?.message ??
           error?.message ??
-          "Error desconocido creando cuenta",
+          intl.formatMessage({
+            id: "createOrder.error.unknown",
+            defaultMessage: "Error desconocido creando evento",
+          }),
         status: "error",
       });
     } finally {
@@ -324,13 +350,22 @@ const CreateOrderModal = ({
 
       if (data?.clientName) {
         showToast({
-          title: "Error creando Cliente",
-          description: "Ya existe un cliente con este numero.",
+          title: intl.formatMessage({
+            id: "createOrder.client.error.title",
+            defaultMessage: "Error creando Cliente",
+          }),
+          description: intl.formatMessage({
+            id: "createOrder.client.error.exists",
+            defaultMessage: "Ya existe un cliente con este numero.",
+          }),
           status: "error",
         });
       } else {
         showToast({
-          title: "Cliente creado Exitosamente",
+          title: intl.formatMessage({
+            id: "createOrder.client.success",
+            defaultMessage: "Cliente creado Exitosamente",
+          }),
           status: "success",
         });
       }
@@ -363,16 +398,16 @@ const CreateOrderModal = ({
     if (isSelected) {
       setProdCant((prev: any) => {
         const productExists = prev.some(
-          (item: any) => item.prodId === parseInt(value)
+          (item: any) => item.prodId === Number.parseInt(value)
         );
         if (!productExists) {
-          return [...prev, { prodId: parseInt(value), cantidad: 1 }];
+          return [...prev, { prodId: Number.parseInt(value), cantidad: 1 }];
         }
         return prev;
       });
     } else {
       setProdCant((prev: any) =>
-        prev.filter((item: any) => item.prodId !== parseInt(value))
+        prev.filter((item: any) => item.prodId !== Number.parseInt(value))
       );
     }
   };
@@ -382,337 +417,689 @@ const CreateOrderModal = ({
     return prod?.cantidad;
   };
 
-  return (
-    <GlobalModal
-      label={`${intl.formatMessage({ id: "add" })} ${tipoServicio === ID_TIPOSERVICIO_RESERVA ? intl.formatMessage({ id: "newReserva" }) : intl.formatMessage({ id: "newOrder" })}`}
-      isVisible={true}
-      onClose={onClose}
-      actions={[
-        <Button
-          onPress={() => onClose()}
-          size="sm"
-          variant={"ghost"}
-          borderRadius={"6"}
-          fontWeight={"bold"}
-        >
-          <Text fontWeight={500} color={"#2C2C2C"}>
-            {intl.formatMessage({ id: "cancel" })}
-          </Text>
-        </Button>,
-        <CustomButton
-          isLoading={loadingCreate || loadingNextDateAvailable}
-          onPress={() => createOrderData()}
-          size="sm"
-          isDisabled={allOcupped}
-          marginLeft={2}
-          backgroundColor={"#2C2C2C"}
-          borderRadius={"6"}
-          fontWeight={700}
-        >
-          <Text fontWeight={500} color={"white"}>
-            {intl.formatMessage({ id: "modalCreate" })}{" "}
-            {tipoServicio === ID_TIPOSERVICIO_RESERVA
-              ? intl.formatMessage({ id: "createEvent" })
-              : intl.formatMessage({ id: "order" })}
-          </Text>
-        </CustomButton>,
-      ]}
-      content={
-        <>
-          {!allOcupped && (
-            <Center mb={4}>
-              <HStack space={2} alignItems="center">
-                <Ionicons
-                  name="calendar-outline"
-                  size={20}
-                  color={Colors.light.primary}
+  const getTotalAmount = () => {
+    return selectedProductsIds.reduce((total, prodId) => {
+      const product = products.find((p) => p.id === Number.parseInt(prodId));
+      const quantity = searchCant(Number.parseInt(prodId)) || 1;
+      return total + (product?.precio || 0) * quantity;
+    }, 0);
+  };
+
+  const renderDateHeader = () => {
+    if (allOcupped) {
+      return (
+        <Box style={styles.warningHeader}>
+          <HStack space={3} alignItems="center">
+            <Box style={[styles.iconContainer, { backgroundColor: "#FEE2E2" }]}>
+              <MaterialIcons name="event-busy" size={24} color="#DC2626" />
+            </Box>
+            <VStack flex={1}>
+              <Text fontSize="md" fontWeight="600" color="red.700">
+                <FormattedMessage
+                  id="createOrder.noAvailableTimes.title"
+                  defaultMessage="No hay horarios disponibles"
                 />
-                <Text fontSize="md" fontWeight="medium" color="gray.800">
-                  {intl.formatMessage({ id: "reservation.addTo" })}{" "}
-                  <Text color={Colors.light.primary}>
-                    {moment(defaultDate).format("dddd, DD MMMM YYYY")}
+              </Text>
+              <Text fontSize="sm" color="red.600">
+                <FormattedMessage
+                  id="createOrder.noAvailableTimes.subtitle"
+                  defaultMessage="Intenta seleccionar otra fecha"
+                />
+              </Text>
+            </VStack>
+          </HStack>
+        </Box>
+      );
+    }
+
+    return (
+      <Box style={styles.dateHeader}>
+        <HStack space={3} alignItems="center">
+          <Box style={[styles.iconContainer, { backgroundColor: "#DBEAFE" }]}>
+            <Ionicons
+              name="calendar-outline"
+              size={24}
+              color={Colors.light.primary}
+            />
+          </Box>
+          <VStack flex={1}>
+            <Text fontSize="md" fontWeight="600" color="gray.800">
+              <FormattedMessage
+                id="createOrder.addToDate"
+                defaultMessage="Agregar a la fecha"
+              />
+            </Text>
+            <Text fontSize="lg" fontWeight="700" color={Colors.light.primary}>
+              {moment(defaultDate).format("dddd, DD MMMM YYYY")}
+            </Text>
+          </VStack>
+        </HStack>
+      </Box>
+    );
+  };
+
+  const renderProductCard = (prod: Producto) => {
+    const cantidad = searchCant(prod.id);
+    const isSelected = selectedProductsIds.includes(`${prod.id}`);
+
+    return (
+      <Box
+        key={prod.id}
+        style={[styles.productCard, isSelected && styles.selectedProductCard]}
+      >
+        <HStack space={3} alignItems="center">
+          <Avatar
+            size="md"
+            source={{ uri: prod?.imagen || undefined }}
+            bg={Colors.light.primary}
+            _text={{ color: "white", fontWeight: "bold" }}
+          >
+            {prod.nombre?.charAt(0).toUpperCase()}
+          </Avatar>
+
+          <VStack flex={1} space={1}>
+            <HStack justifyContent="space-between" alignItems="flex-start">
+              <VStack flex={1} flexDir={"column"} space={1}>
+                <Text
+                  fontSize="md"
+                  fontWeight="600"
+                  color="gray.800"
+                  numberOfLines={1}
+                >
+                  {prod.nombre}
+                </Text>
+                <Text fontSize="sm" color="gray.600" numberOfLines={2}>
+                  {prod.descripcion}
+                </Text>
+              </VStack>
+
+              <VStack alignItems="flex-end" space={2}>
+                <Text
+                  fontSize="lg"
+                  fontWeight="700"
+                  color={Colors.light.secondary}
+                >
+                  ${prod.precio}
+                </Text>
+
+                {isSelected && (
+                  <HStack space={1} alignItems="center">
+                    <IconButton
+                      onPress={() => addCantForProduct(prod.id, "less")}
+                      icon={<Feather name="minus" size={16} />}
+                      bg="red.100"
+                      _icon={{ color: "red.600" }}
+                      size="sm"
+                      borderRadius="full"
+                    />
+                    <Text
+                      fontSize="md"
+                      fontWeight="600"
+                      minW="8"
+                      textAlign="center"
+                    >
+                      {cantidad}
+                    </Text>
+                    <IconButton
+                      onPress={() => addCantForProduct(prod.id, "more")}
+                      icon={<Feather name="plus" size={16} />}
+                      bg="green.100"
+                      _icon={{ color: "green.600" }}
+                      size="sm"
+                      borderRadius="full"
+                    />
+                  </HStack>
+                )}
+              </VStack>
+            </HStack>
+          </VStack>
+        </HStack>
+      </Box>
+    );
+  };
+
+  const renderClientCard = (client: Cliente) => (
+    <Box key={client.id} style={styles.clientCard}>
+      <HStack space={3} alignItems="center">
+        <Box
+          style={[
+            styles.iconContainer,
+            { backgroundColor: Colors.light.primary },
+          ]}
+        >
+          <Ionicons name="person" size={24} color="white" />
+        </Box>
+        <VStack flex={1} space={1}>
+          <Text fontSize="md" fontWeight="600" color="gray.800">
+            {client.nombre}
+          </Text>
+          <HStack space={2} alignItems="center">
+            <Feather name="phone" size={14} color={Colors.light.icon} />
+            <Text fontSize="sm" color="gray.600">
+              {client.telefono}
+            </Text>
+          </HStack>
+        </VStack>
+      </HStack>
+    </Box>
+  );
+
+  const renderOrderSummary = () => {
+    if (selectedProductsIds.length === 0) return null;
+
+    return (
+      <Box style={styles.summaryCard}>
+        <HStack justifyContent="space-between" alignItems="center" mb="3">
+          <Text fontSize="lg" fontWeight="600" color="gray.800">
+            {tipoServicio === ID_TIPOSERVICIO_RESERVA ? <FormattedMessage
+              id="createOrder.orderSummaryReserva"
+              defaultMessage="Resumen de la reserva"
+            /> : <FormattedMessage
+              id="createOrder.orderSummary"
+              defaultMessage="Resumen del pedido"
+            />}
+          </Text>
+          <Badge colorScheme="primary" variant="solid" borderRadius="full">
+            <FormattedMessage
+              id="createOrder.productsCount"
+              defaultMessage="{count} productos"
+              values={{ count: selectedProductsIds.length }}
+            />
+          </Badge>
+        </HStack>
+
+        <VStack space={2}>
+          {selectedProductsIds.map((prodId) => {
+            const product = products.find(
+              (p) => p.id === Number.parseInt(prodId)
+            );
+            const quantity = searchCant(Number.parseInt(prodId)) || 1;
+            if (!product) return null;
+
+            return (
+              <HStack
+                key={prodId}
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <HStack space={2} flex={1}>
+                  <Text fontSize="sm" color="gray.600">
+                    {quantity}x
                   </Text>
+                  <Text
+                    fontSize="sm"
+                    color="gray.800"
+                    flex={1}
+                    numberOfLines={1}
+                  >
+                    {product.nombre}
+                  </Text>
+                </HStack>
+                <Text fontSize="sm" fontWeight="600" color="gray.800">
+                  ${(product.precio * quantity).toFixed(2)}
                 </Text>
               </HStack>
-            </Center>
-          )}
-          {allOcupped && (
-            <Alert
-              status="warning"
-              variant="left-accent"
-              borderRadius="md"
-              mb={4}
-            >
-              <HStack space={2} alignItems="center">
-                <Alert.Icon />
-                <Text fontSize="sm" color="gray.800">
-                  {intl.formatMessage({
-                    id: "allTimesOccupied",
-                    defaultMessage:
-                      "No hay horarios disponibles para esta fecha.",
-                  })}
-                </Text>
-              </HStack>
-            </Alert>
-          )}
-          {tipoServicio === ID_TIPOSERVICIO_RESERVA && (
-            <>
-              <TimePicker
-                setAllOcupped={setAllOcupped}
-                type="time"
-                horario={horarios}
-                interval={user?.intervaloTiempoCalendario ?? 30}
-                startHour={getHourNumber(user?.hora_apertura)}
-                endHour={getHourNumber(user?.hora_cierre)}
-                error={errors["fecha"]}
-                occupiedTimes={
-                  currentOrders
-                    ? filterOnlyHours(
+            );
+          })}
+
+          <Divider my="2" />
+
+          <HStack justifyContent="space-between" alignItems="center">
+            <Text fontSize="md" fontWeight="600" color="gray.800">
+              <FormattedMessage id="createOrder.total" defaultMessage="Total" />
+            </Text>
+            <Text fontSize="lg" fontWeight="700" color={Colors.light.primary}>
+              ${getTotalAmount().toFixed(2)}
+            </Text>
+          </HStack>
+        </VStack>
+      </Box>
+    );
+  };
+
+  const modalTitle = intl.formatMessage(
+    {
+      id:
+        tipoServicio === ID_TIPOSERVICIO_RESERVA
+          ? "createOrder.newReservation"
+          : "createOrder.newOrder",
+      defaultMessage:
+        tipoServicio === ID_TIPOSERVICIO_RESERVA
+          ? "Nueva Reserva"
+          : "Nuevo Pedido",
+    },
+    {}
+  );
+
+  return (
+    <GenericModal visible={true} onClose={onClose} title={modalTitle}>
+      <View style={styles.modalContainer}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+        >
+          <VStack space={6}>
+            {renderDateHeader()}
+
+            {tipoServicio === ID_TIPOSERVICIO_RESERVA && (
+              <Box style={styles.sectionCard}>
+                <HStack space={2} alignItems="center" mb="4">
+                  <Feather
+                    name="clock"
+                    size={20}
+                    color={Colors.light.primary}
+                  />
+                  <Text fontSize="lg" fontWeight="600" color="gray.800">
+                    <FormattedMessage
+                      id="createOrder.selectTime"
+                      defaultMessage="Seleccionar horario"
+                    />
+                  </Text>
+                </HStack>
+
+                <TimePicker
+                  setAllOcupped={setAllOcupped}
+                  type="time"
+                  horario={horarios}
+                  interval={user?.intervaloTiempoCalendario ?? 30}
+                  startHour={getHourNumber(user?.hora_apertura)}
+                  endHour={getHourNumber(user?.hora_cierre)}
+                  error={errors["fecha"]}
+                  occupiedTimes={
+                    currentOrders
+                      ? filterOnlyHours(
                         currentOrders?.map((order) =>
                           removeAmPm(order?.date ?? "")
                         )
                       )
-                    : []
-                }
-                checkAvailable={(hour: string) => availableDates.includes(hour)}
-                date={form?.fecha}
-                setDate={(val: any) => {
-                  handleChangeValue("fecha", val);
-                }}
-              />
-              <View
-                display="flex"
-                style={{ gap: 8 }}
-                flexDirection={"row"}
-                alignItems={"center"}
-              >
-                <Ionicons
-                  color={Colors.light.primary}
-                  name="sparkles-outline"
-                  size={20}
+                      : []
+                  }
+                  checkAvailable={(hour: string) =>
+                    availableDates.includes(hour)
+                  }
+                  date={form?.fecha}
+                  setDate={(val: any) => {
+                    handleChangeValue("fecha", val);
+                  }}
                 />
+
                 <TouchableOpacity
                   onPress={() => handleLoadNextAvaialbleDateForSignleDay()}
+                  style={styles.nextDateButton}
                 >
-                  <Text
-                    style={{
-                      textDecorationLine: "underline",
-                      fontSize: 14,
-                      cursor: "pointer",
-                      marginBottom: 0,
-                      color: Colors.light.primary,
-                    }}
-                  >
-                    {intl.formatMessage({ id: "nextDateAvailable" })}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </>
-          )}
-
-          <MultiSelectInput
-            isRequired
-            error={errors["products"]}
-            withAdd={false}
-            setItemsSelected={setSelectedProductsIds}
-            handleProductSelection={handleProductSelection}
-            isMultiple
-            placeholder="Seleccionar productos"
-            label="Productos"
-            loading={loadingProducts}
-            options={products?.map((prod) => {
-              const cantidad = searchCant(prod.id);
-              return {
-                label: (
-                  <View
-                    key={prod.id}
-                    display="flex"
-                    flexDirection="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    width="100%"
-                    style={{ paddingBottom: 10, paddingRight: 4 }}
-                  >
-                    <View
-                      style={{ gap: 5 }}
-                      flexDirection="row"
-                      alignItems="center"
-                      flex={1}
-                      minWidth={0}
-                    >
-                      <Avatar
-                        width={10}
-                        height={10}
-                        source={{ uri: prod?.imagen || undefined }}
-                      />
-                      <View
-                        flexDirection="column"
-                        justifyContent="flex-start"
-                        flex={1}
-                        minWidth={0}
-                      >
-                        <Text
-                          color="gray.800"
-                          fontSize={16}
-                          fontWeight="medium"
-                          numberOfLines={1}
-                          ellipsizeMode="tail"
-                        >
-                          {cantidad && `(${cantidad && " x" + cantidad}) `}
-                          {prod?.nombre ?? ""}
-                        </Text>
-                        <Text
-                          fontSize={12}
-                          color="gray.600"
-                          numberOfLines={2}
-                          ellipsizeMode="tail"
-                        >
-                          {prod?.descripcion ?? ""}
-                        </Text>
-                      </View>
-                    </View>
-
-                    <View
-                      flexDirection="row"
-                      alignItems="center"
-                      justifyContent="flex-end"
-                      paddingLeft={5}
-                    >
-                      <Text
-                        marginRight={2}
-                        fontWeight="semibold"
-                        color="yellow.800"
-                        fontSize={14}
-                      >
-                        ${prod?.precio}
-                      </Text>
-
-                      {selectedProductsIds.includes(`${prod?.id ?? ""}`) && (
-                        <View
-                          flexDirection="column"
-                          alignItems="center"
-                          justifyContent="center"
-                          borderWidth={1}
-                          borderColor="gray.300"
-                          borderRadius={8}
-                          padding={1}
-                          marginLeft={2}
-                        >
-                          <IconButton
-                            onPress={() => addCantForProduct(prod?.id, "more")}
-                            icon={<SimpleLineIcons size={14} name="arrow-up" />}
-                            _icon={{ color: "green.600" }}
-                            size="sm"
-                            variant="ghost"
-                          />
-                          <IconButton
-                            onPress={() => addCantForProduct(prod?.id, "less")}
-                            icon={
-                              <SimpleLineIcons size={14} name="arrow-down" />
-                            }
-                            _icon={{ color: "red.600" }}
-                            size="sm"
-                            variant="ghost"
-                          />
-                        </View>
-                      )}
-                    </View>
-                  </View>
-                ),
-                placeholder: prod?.nombre,
-                value: prod?.id ?? "",
-                subText: ` (x${prodCant.find((producto) => producto.prodId === prod?.id)?.cantidad})`,
-              };
-            })}
-            onSearch={(query: string) => {
-              handleFindProducts(query);
-            }}
-          />
-          <InputField
-            isRequired={false}
-            isTextArea
-            value={form.detalles}
-            onChangeText={(text) => handleChangeValue("detalles", text)}
-            label="Detalles"
-            placeholder="Agregar detalles"
-          />
-          <MultiSelectInput
-            actionToAddItem={(data: any) => addClient(data)}
-            setItemsSelected={(data: string[]) => {
-              const clientId = parseInt(data[0]) as any;
-              const clientInfo = clients?.find((c) => c.id === clientId);
-
-              handleChangeValue("clienteId", clientId);
-              handleChangeValue("clientName", clientInfo?.nombre ?? "");
-              handleChangeValue("numberSender", clientInfo?.telefono ?? "");
-            }}
-            initialStateAdd={[
-              {
-                name: "nombre",
-                type: "text",
-              },
-              {
-                name: "telefono",
-                type: "numeric",
-              },
-            ]}
-            isMultiple={false}
-            onSearch={(query: string) => {
-              handleFindClients(query);
-            }}
-            loading={loadingClients}
-            placeholder="Seleccionar cliente"
-            label="Cliente"
-            options={clients?.map((client) => {
-              return {
-                label: (
-                  <View
-                    key={client.id}
-                    display={"flex"}
-                    flexDirection={"row"}
-                    alignItems={"center"}
-                    justifyContent={"start"}
-                    style={{ gap: 5, paddingBottom: 10 }}
-                  >
+                  <HStack space={2} alignItems="center" justifyContent="center">
                     <Ionicons
                       color={Colors.light.primary}
-                      name="person-circle"
-                      size={36}
+                      name="sparkles-outline"
+                      size={20}
                     />
-                    <View
-                      display={"flex"}
-                      flexDirection={"column"}
-                      style={{ gap: 2 }}
-                      justifyContent={"start"}
+                    <Text
+                      fontSize="sm"
+                      fontWeight="500"
+                      color={Colors.light.primary}
                     >
-                      <Text
-                        color={"gray.800"}
-                        fontSize={16}
-                        fontWeight={"medium"}
-                      >
-                        {client?.nombre ?? ""}
-                      </Text>
-                      <Text fontSize={12} lineHeight={15} color={"gray.600"}>
-                        {client?.telefono ?? ""}
-                      </Text>
-                    </View>
-                  </View>
-                ),
-                placeholder: client?.nombre,
-                value: client?.id ?? "",
-              };
-            })}
-          />
-          <InfoLineForm
-            errors={errors}
-            infoLines={infoLines.filter((itm) => itm?.show)}
-            value={form.infoLinesJson ?? {}}
-            setValue={(val) => handleChangeValue("infoLinesJson", val)}
-          />
-        </>
-      }
-    />
+                      <FormattedMessage
+                        id="createOrder.nextAvailableDate"
+                        defaultMessage="Próxima fecha disponible"
+                      />
+                    </Text>
+                  </HStack>
+                </TouchableOpacity>
+              </Box>
+            )}
+
+            <Box style={styles.sectionCard}>
+              <HStack space={2} alignItems="center" mb="4">
+                <Feather
+                  name="package"
+                  size={20}
+                  color={Colors.light.primary}
+                />
+                <Text fontSize="lg" fontWeight="600" color="gray.800">
+                  <FormattedMessage
+                    id="createOrder.products"
+                    defaultMessage="Productos"
+                  />
+                </Text>
+                {errors["products"] && (
+                  <Badge colorScheme="red" variant="solid" borderRadius="full">
+                    <FormattedMessage
+                      id="createOrder.required"
+                      defaultMessage="Requerido"
+                    />
+                  </Badge>
+                )}
+              </HStack>
+
+              <MultiSelectInput
+                isRequired
+                error={errors["products"]}
+                withAdd={false}
+                setItemsSelected={setSelectedProductsIds}
+                handleProductSelection={handleProductSelection}
+                isMultiple
+                placeholder={intl.formatMessage({
+                  id: "createOrder.searchProducts",
+                  defaultMessage: "Buscar productos...",
+                })}
+                label={intl.formatMessage({
+                  id: "createOrder.products",
+                  defaultMessage: "Productos",
+                })}
+                loading={loadingProducts}
+                options={products?.map((prod) => ({
+                  label: renderProductCard(prod),
+                  placeholder: prod?.nombre,
+                  value: prod?.id ?? "",
+                  subText: ` (x${prodCant.find((producto) => producto.prodId === prod?.id)?.cantidad || 1})`,
+                }))}
+                onSearch={(query: string) => {
+                  handleFindProducts(query);
+                }}
+              />
+            </Box>
+
+            {renderOrderSummary()}
+
+            <Box style={styles.sectionCard}>
+              <HStack space={2} alignItems="center" mb="4">
+                <Feather name="user" size={20} color={Colors.light.primary} />
+                <Text fontSize="lg" fontWeight="600" color="gray.800">
+                  <FormattedMessage
+                    id="createOrder.client"
+                    defaultMessage="Cliente"
+                  />
+                </Text>
+              </HStack>
+
+              <MultiSelectInput
+                actionToAddItem={(data: any) => addClient(data)}
+                setItemsSelected={(data: string[]) => {
+                  const clientId = Number.parseInt(data[0]) as any;
+                  const clientInfo = clients?.find((c) => c.id === clientId);
+
+                  handleChangeValue("clienteId", clientId);
+                  handleChangeValue("clientName", clientInfo?.nombre ?? "");
+                  handleChangeValue("numberSender", clientInfo?.telefono ?? "");
+                }}
+                initialStateAdd={[
+                  {
+                    name: "nombre",
+                    type: "text",
+                  },
+                  {
+                    name: "telefono",
+                    type: "numeric",
+                  },
+                ]}
+                isMultiple={false}
+                onSearch={(query: string) => {
+                  handleFindClients(query);
+                }}
+                loading={loadingClients}
+                placeholder={intl.formatMessage({
+                  id: "createOrder.searchClient",
+                  defaultMessage: "Buscar cliente...",
+                })}
+                label={intl.formatMessage({
+                  id: "createOrder.client",
+                  defaultMessage: "Cliente",
+                })}
+                options={clients?.map((client) => ({
+                  label: renderClientCard(client),
+                  placeholder: client?.nombre,
+                  value: client?.id ?? "",
+                }))}
+              />
+            </Box>
+
+            <Box style={styles.sectionCard}>
+              <HStack space={2} alignItems="center" mb="4">
+                <Feather
+                  name="file-text"
+                  size={20}
+                  color={Colors.light.primary}
+                />
+                <Text fontSize="lg" fontWeight="600" color="gray.800">
+                  <FormattedMessage
+                    id="createOrder.additionalDetails"
+                    defaultMessage="Detalles adicionales"
+                  />
+                </Text>
+              </HStack>
+
+              <InputField
+                isRequired={false}
+                isTextArea
+                value={form.detalles}
+                onChangeText={(text) => handleChangeValue("detalles", text)}
+                placeholder={intl.formatMessage({
+                  id: "createOrder.detailsPlaceholder",
+                  defaultMessage: "Agregar detalles del pedido...",
+                })}
+                style={styles.textAreaInput}
+              />
+            </Box>
+
+            {infoLines.filter((itm) => itm?.show).length > 0 && (
+              <Box style={styles.sectionCard}>
+                <HStack space={2} alignItems="center" mb="4">
+                  <Feather name="info" size={20} color={Colors.light.primary} />
+                  <Text fontSize="lg" fontWeight="600" color="gray.800">
+                    <FormattedMessage
+                      id="createOrder.additionalInfo"
+                      defaultMessage="Información adicional"
+                    />
+                  </Text>
+                </HStack>
+
+                <InfoLineForm
+                  errors={errors}
+                  infoLines={infoLines.filter((itm) => itm?.show)}
+                  value={form.infoLinesJson ?? {}}
+                  setValue={(val) => handleChangeValue("infoLinesJson", val)}
+                />
+              </Box>
+            )}
+          </VStack>
+        </ScrollView>
+
+        <Box style={styles.actionButtonsContainer}>
+          <HStack space={3} justifyContent="flex-end">
+            <Button onPress={() => onClose()} style={styles.cancelButton}>
+              <Text style={styles.cancelButtonText}>
+                <FormattedMessage
+                  id="createOrder.cancel"
+                  defaultMessage="Cancelar"
+                />
+              </Text>
+            </Button>
+
+            <CustomButton
+              isLoading={loadingCreate || loadingNextDateAvailable}
+              onPress={() => createOrderData()}
+              isDisabled={allOcupped}
+              style={styles.actionButton}
+            >
+              <HStack space={2} alignItems="center">
+                <Feather name="check" size={16} color="white" />
+                <Text style={styles.actionButtonText}>
+                  <FormattedMessage
+                    id={
+                      tipoServicio === ID_TIPOSERVICIO_RESERVA
+                        ? "createOrder.createReservation"
+                        : "createOrder.createOrder"
+                    }
+                    defaultMessage={
+                      tipoServicio === ID_TIPOSERVICIO_RESERVA
+                        ? "Crear Reserva"
+                        : "Crear Pedido"
+                    }
+                  />
+                </Text>
+              </HStack>
+            </CustomButton>
+          </HStack>
+        </Box>
+      </View>
+    </GenericModal>
   );
 };
+
+const styles = StyleSheet.create({
+  modalContainer: {
+    flex: 1,
+    backgroundColor: "#f8fafc",
+  },
+
+  scrollContent: {
+    paddingBottom: 100,
+    paddingLeft: 2,
+    paddingRight: 2,
+  },
+
+  sectionCard: {
+    backgroundColor: "white",
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+
+  productCard: {
+    backgroundColor: "white",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    width: "100%",
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+    shadowColor: "#000",
+  },
+
+  selectedProductCard: {
+    borderColor: Colors.light.primary,
+    backgroundColor: "rgba(7, 94, 84, 0)",
+    shadowColor: Colors.light.primary,
+    shadowOpacity: 0.1,
+  },
+
+  clientCard: {
+    backgroundColor: "white",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    width: "100%",
+    borderColor: "#e5e7eb",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+
+  summaryCard: {
+    backgroundColor: "#f8fafc",
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: "#e2e8f0",
+  },
+
+  dateHeader: {
+    backgroundColor: "rgba(59, 130, 246, 0.1)",
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: "rgba(59, 130, 246, 0.2)",
+  },
+
+  warningHeader: {
+    backgroundColor: "rgba(239, 68, 68, 0.1)",
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: "rgba(239, 68, 68, 0.2)",
+  },
+
+  iconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  nextDateButton: {
+    marginTop: 16,
+    padding: 12,
+    backgroundColor: "rgba(59, 130, 246, 0.1)",
+    borderRadius: 12,
+  },
+
+  textAreaInput: {
+    borderRadius: 12,
+    borderColor: "#e2e8f0",
+    backgroundColor: "#f8fafc",
+  },
+
+  actionButtonsContainer: {
+    position: "absolute",
+    bottom: 0,
+    borderRadius: 16,
+    left: 0,
+    right: 0,
+    backgroundColor: "white",
+    padding: 16,
+    borderTopWidth: 1,
+    borderTopColor: "#e5e7eb",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+
+  actionButton: {
+    backgroundColor: Colors.light.primary,
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    shadowColor: Colors.light.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+
+  actionButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+
+  cancelButton: {
+    backgroundColor: "transparent",
+    borderWidth: 1,
+    borderColor: "#9ca3af",
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+  },
+
+  cancelButtonText: {
+    color: "#6b7280",
+    fontSize: 16,
+    fontWeight: "500",
+  },
+});
 
 export default CreateOrderModal;

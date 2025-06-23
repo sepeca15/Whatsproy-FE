@@ -1,10 +1,13 @@
 import React from "react";
-import { View, Text } from "react-native";
 import AddProduct from "./components/AddProduct";
-import { styles } from "./components/AddProductStyle";
+import { useRouter } from "expo-router";
+import { useUser } from "@/hooks/redux/useUser";
 
 const AddPro: React.FC = () => {
-  return <AddProduct />;
+  const { user } = useUser();
+
+  const router = useRouter();
+  return <AddProduct visible={true} onClose={() => router.navigate("/(tabs)/productos")} onSuccess={() => router.navigate("/(tabs)/productos")} />;
 };
 
 export default AddPro;

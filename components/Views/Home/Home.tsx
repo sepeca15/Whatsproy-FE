@@ -82,6 +82,7 @@ const Home: React.FC = () => {
                 <Image
                   w={"full"}
                   h={"full"}
+                  style={{ objectFit: "cover" }}
                   alt="logo"
                   rounded={"full"}
                   source={{ uri: user.logo }}

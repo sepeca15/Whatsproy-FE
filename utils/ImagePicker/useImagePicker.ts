@@ -4,9 +4,9 @@ import { useToastContext } from "@/contexts/ToastContext";
 import api from "@/services/api/admin";
 
 interface UseImagePickerProps {
-  toastErrorMessage: string;
+  toastErrorMessage?: string;
  
-  onImagePicked: (data: { localUri?: string; apiUrl?: string }) => void;
+  onImagePicked?: (data: { localUri?: string; apiUrl?: string }) => void;
 }
 
 const useImagePicker = ({ toastErrorMessage, onImagePicked }: UseImagePickerProps) => {
@@ -33,7 +33,9 @@ const useImagePicker = ({ toastErrorMessage, onImagePicked }: UseImagePickerProp
 
 
       setImageUri(asset.uri);
-      onImagePicked({ localUri: asset.uri });
+      if (onImagePicked) {
+        onImagePicked({ localUri: asset.uri });
+      }
 
       await uploadImage(asset, setFormData);
     } catch (error) {
@@ -61,7 +63,10 @@ const useImagePicker = ({ toastErrorMessage, onImagePicked }: UseImagePickerProp
 
       
         setImageApiUrl(uploadResponse.url);
-        onImagePicked({ apiUrl:  await uploadResponse.url });
+        if (onImagePicked) {
+          onImagePicked({ apiUrl:  await uploadResponse.url });
+        }
+        return uploadResponse?.url;
       } else {
         console.error("Error al subir la imagen: No se recibió una URL.");
         showToast({ title: toastErrorMessage, status: "error" });
@@ -69,10 +74,11 @@ const useImagePicker = ({ toastErrorMessage, onImagePicked }: UseImagePickerProp
     } catch (error) {
       console.error("Error en uploadImage:", error);
       showToast({ title: toastErrorMessage, status: "error" });
+      return undefined;
     }
   };
 
-  return { pickImage, setImageUri, imageUri };
+  return { pickImage, setImageUri, imageUri, uploadImage };
 };
 
 export default useImagePicker;

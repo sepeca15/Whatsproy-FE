@@ -6,6 +6,11 @@ export const CreateOrReturnClient = async (clientData: CreateClient) => {
   return data;
 };
 
+export const updateNotificationPreference = async (clientData: any) => {
+  const { data } = await ApiInstances("current").post("cliente/updateClientsNotifyMenu", clientData);
+  return data;
+};
+
 export const findClientsWithQuery = async (
   query: string,
   empresaId: string,

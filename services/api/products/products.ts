@@ -19,6 +19,14 @@ export const findProductsWithQuery = async (query: string) => {
   return data;
 };
 
+
+export const findAllDailyMenu = async (query: string) => {
+  const data = await ApiInstances("current").get(
+    `producto/findAllDailyMenu?query=${query}`,
+  );
+  return data;
+};
+
 export const find = async (id: number) => {
   const data = await ApiInstances("current").get(`producto/${id}`);
   return data;
@@ -39,6 +47,7 @@ export const deletProd = async (id: number) => {
 };
 
 export const create = async (product: ProductoTypes) => {
+  console.log("mando a la api", product)
   const data = await ApiInstances("current").post(`producto`, product);
   return data;
 };

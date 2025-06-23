@@ -6,5 +6,6 @@ export interface Cliente {
     totalGenerated: number
     createdAt: string
     updatedAt: string
+    notificar_menu: boolean;
     pedido: any[]
 }

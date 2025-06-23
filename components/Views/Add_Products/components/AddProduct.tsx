@@ -1,35 +1,35 @@
-import React, { useState } from "react";
-import {
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-  Platform,
-  ActivityIndicator,
-  Switch,
-  Alert,
-} from "react-native";
-import { Picker } from "@react-native-picker/picker";
-import { AntDesign } from "@expo/vector-icons";
-import { styles } from "./AddProductStyle";
-import { useRouter } from "expo-router";
-import ProductoTypes from "../../../../services/api/products/types";
-import api from "@/services/api/admin";
-import { FormattedMessage, useIntl } from "react-intl";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { useUser } from "@/hooks/redux/useUser";
-import useImagePicker from "../../../../utils/ImagePicker/useImagePicker";
-import { View } from "native-base";
-import MultiSelectInput from "@/components/MultiSelectInput";
-import { ICategoryData } from "../../Categories/components/CardCategory/CardCategory";
-import InputField from "@/components/InputField";
-import SelectField from "@/hooks/SelectField/SelectField";
-import { useEditProductValidation } from "@/hooks/productValidation/useProductValidation";
+"use client"
 
-const AddProduct: React.FC = () => {
-  const router = useRouter();
-  const intl = useIntl();
+import type React from "react"
+import { useState, useEffect } from "react"
+import { Text, TouchableOpacity, Image, ScrollView, Platform, ActivityIndicator } from "react-native"
+import { AntDesign } from "@expo/vector-icons"
+import { styles } from "./AddProductStyle"
+import type ProductoTypes from "../../../../services/api/products/types"
+import api from "@/services/api/admin"
+import { FormattedMessage, useIntl } from "react-intl"
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
+import { useUser } from "@/hooks/redux/useUser"
+import useImagePicker from "../../../../utils/ImagePicker/useImagePicker"
+import { View } from "native-base"
+import MultiSelectInput from "@/components/MultiSelectInput"
+import type { ICategoryData } from "../../Categories/components/CardCategory/CardCategory"
+import InputField from "@/components/InputField"
+import SelectField from "@/hooks/SelectField/SelectField"
+import { useEditProductValidation } from "@/hooks/productValidation/useProductValidation"
+import GenericModal from "../../ConfigAccount/components/GenericModal/GenericModal"
+import { useToastContext } from "@/contexts/ToastContext"
+
+interface AddProductModalProps {
+  visible: boolean
+  onClose: () => void
+  onSuccess?: () => void
+}
+
+const AddProductModal: React.FC<AddProductModalProps> = ({ visible, onClose, onSuccess }) => {
+  const intl = useIntl()
+  const { showToast } = useToastContext()
+
   const [formData, setFormData] = useState<ProductoTypes>({
     nombre: "",
     precio: 0,
@@ -40,285 +40,331 @@ const AddProduct: React.FC = () => {
     disponible: false,
     categoryIds: [],
     currency_id: null,
-  });
+  })
 
-  const { user } = useUser();
-  const currencies = user?.currencies || [];
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [allCategories, setAllCategories] = useState<ICategoryData[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [errors, setErrors] = useState<{ [key: string]: string | null }>({});
-  const { validateForm } = useEditProductValidation();
-
-  React.useEffect(() => {
-    loadAllCategories();
-  }, []);
+  const { user } = useUser()
+  const currencies = user?.currencies || []
+  const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [allCategories, setAllCategories] = useState<ICategoryData[]>([])
+  const [loading, setLoading] = useState<boolean>(false)
+  const [errors, setErrors] = useState<{ [key: string]: string | null }>({})
+  const { validateForm } = useEditProductValidation()
 
   const { pickImage, setImageUri, imageUri } = useImagePicker({
     toastErrorMessage: "Error al seleccionar la imagen",
     onImagePicked: ({ localUri }) => {
       if (localUri) {
-        setSelectedImage(localUri);
+        setSelectedImage(localUri)
       }
     },
-  });
+  })
+
+  // Reset form when modal opens
+  useEffect(() => {
+    if (visible) {
+      resetForm()
+      loadAllCategories()
+    }
+  }, [visible])
+
+  const resetForm = () => {
+    setFormData({
+      nombre: "",
+      precio: 0,
+      empresa_id: 0,
+      imagen: "",
+      descripcion: "",
+      plazoDuracionEstimadoMinutos: 0,
+      disponible: false,
+      categoryIds: [],
+      currency_id: null,
+    })
+    setSelectedImage(null)
+    setErrors({})
+    setImageUri(null)
+  }
 
   const loadAllCategories = async () => {
     try {
-      const resp = await api.category.getAll();
+      const resp = await api.category.getAll()
       if (resp.ok) {
-        setAllCategories(resp.data);
+        setAllCategories(resp.data)
       }
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
 
   const handleImagePick = async () => {
-    pickImage(setFormData);
-  };
-
-  // Nueva hook simple de validación
+    pickImage(setFormData)
+  }
 
   const handleSubmit = async () => {
-    if (!validateForm(formData, selectedImage, setErrors)) return;
+    if (!validateForm(formData, selectedImage, setErrors)) return
 
-    setLoading(true);
+    setLoading(true)
     try {
-      await api.products.create({
+      const response = await api.products.create({
         ...formData,
-        precio: parseFloat(formData.precio.toString()),
-        plazoDuracionEstimadoMinutos: parseFloat(
-          formData.plazoDuracionEstimadoMinutos.toString()
-        ),
-      });
-      router.push("/(tabs)/productos");
+        precio: Number.parseFloat(formData.precio.toString()),
+        plazoDuracionEstimadoMinutos: Number.parseFloat(formData.plazoDuracionEstimadoMinutos.toString()),
+      })
+
+      showToast({
+        status: "success",
+        title: intl.formatMessage({
+          id: "productCreatedSuccess",
+          defaultMessage: "Producto creado exitosamente",
+        }),
+      })
+
+      onSuccess?.()
+      onClose()
     } catch (error: any) {
-      console.error(
-        "Error al crear el producto:",
-        error?.response?.data?.message || error
-      );
+      console.error("Error al crear el producto:", error?.response?.data?.message || error)
+      showToast({
+        status: "error",
+        title: intl.formatMessage({
+          id: "errorCreatingProduct",
+          defaultMessage: "Error al crear el producto",
+        }),
+        descripcion: error?.response?.data?.message || error?.message,
+      })
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
+
+  const handleClose = () => {
+    if (!loading) {
+      resetForm()
+      onClose()
+    }
+  }
 
   return (
-    <KeyboardAwareScrollView
-      style={styles.container}
-      resetScrollToCoords={{ x: 0, y: 0 }}
-      scrollEnabled={true}
-      enableOnAndroid={true}
-      extraScrollHeight={Platform.OS === "ios" ? 20 : 50}
+    <GenericModal
+      visible={visible}
+      onClose={handleClose}
+      title={intl.formatMessage({
+        id: "addProduct",
+        defaultMessage: "Agregar Producto",
+      })}
     >
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <Text style={styles.title}>
-          <FormattedMessage id="addProduct" />
-        </Text>
+      <KeyboardAwareScrollView
+        style={styles.modalContainer}
+        resetScrollToCoords={{ x: 0, y: 0 }}
+        scrollEnabled={true}
+        enableOnAndroid={true}
+        extraScrollHeight={Platform.OS === "ios" ? 20 : 50}
+        showsVerticalScrollIndicator={false}
+      >
+        <ScrollView contentContainerStyle={styles.modalScrollContent} showsVerticalScrollIndicator={false}>
+          {/* Image Upload Section */}
+          <TouchableOpacity style={styles.imageUpload} onPress={handleImagePick} disabled={loading}>
+            {selectedImage ? (
+              <Image source={{ uri: selectedImage }} style={styles.uploadedImage} />
+            ) : (
+              <View style={styles.uploadPlaceholder}>
+                <AntDesign name="camera" size={40} color="gray" />
+                <Text style={styles.uploadText}>
+                  <FormattedMessage id="addImage" defaultMessage="Agregar imagen" />
+                </Text>
+              </View>
+            )}
+          </TouchableOpacity>
 
-        {/* <View style={styles.switchRow}>
-          <Text style={styles.label}>
-            <FormattedMessage id="available" defaultMessage="Disponible" />
-          </Text>
-          <Switch
-            value={formData.disponible}
-            onValueChange={(value) => setFormData({ ...formData, disponible: value })}
-          />
-        </View> */}
-
-        <TouchableOpacity style={styles.imageUpload} onPress={handleImagePick}>
-          {selectedImage ? (
-            <Image
-              source={{ uri: selectedImage }}
-              style={styles.uploadedImage}
-            />
-          ) : (
-            <View style={styles.uploadPlaceholder}>
-              <AntDesign name="camera" size={40} color="gray" />
-              <Text style={styles.uploadText}>
-                <FormattedMessage id="addImage" />
-              </Text>
+          <View style={styles.formContainer}>
+            {/* Product Name */}
+            <Text style={styles.label}>
+              <FormattedMessage id="productName" defaultMessage="Nombre del producto" />
+            </Text>
+            <View style={styles.inputfile}>
+              <InputField
+                placeholder={intl.formatMessage({
+                  id: "productNamePlaceholder",
+                  defaultMessage: "Ej: Milanesa de pollo",
+                })}
+                value={formData.nombre}
+                onChangeText={(text) => {
+                  setFormData({ ...formData, nombre: text })
+                  if (text.trim()) {
+                    setErrors((prev) => ({ ...prev, nombre: null }))
+                  }
+                }}
+                error={errors.nombre}
+                style={styles.input}
+                editable={!loading}
+              />
             </View>
-          )}
-        </TouchableOpacity>
 
-        <View style={styles.formContainer}>
-          <Text style={styles.label}>
-            <FormattedMessage id="productName" />
-          </Text>
-          <View style={styles.inputfile}>
-            <InputField
-              placeholder={intl.formatMessage({
-                id: "productNamePlaceholder",
-                defaultMessage: "Ej: Milanesa de pollo",
-              })}
-              value={formData.nombre}
-              onChangeText={(text) => {
-                setFormData({ ...formData, nombre: text });
-                if (text.trim()) {
-                  setErrors((prev) => ({ ...prev, nombre: null }));
-                }
-              }}
-              error={errors.nombre}
-              style={styles.input}
-            />
-          </View>
+            {/* Price and Currency Row */}
+            <View style={styles.row}>
+              <View style={styles.column}>
+                <Text style={styles.label}>
+                  <FormattedMessage id="price" defaultMessage="Precio" />
+                </Text>
+                <View style={styles.inputfile}>
+                  <InputField
+                    placeholder="0.00"
+                    keyboardType="numeric"
+                    value={formData.precio ? formData.precio.toString() : ""}
+                    onChangeText={(text) => {
+                      const value = Number.parseFloat(text)
+                      setFormData({
+                        ...formData,
+                        precio: isNaN(value) ? 0 : value,
+                      })
+                      if (!isNaN(value) && value > 0) {
+                        setErrors((prev) => ({ ...prev, precio: null }))
+                      }
+                    }}
+                    error={errors.precio}
+                    style={styles.input}
+                    editable={!loading}
+                  />
+                </View>
+              </View>
 
-          <View style={styles.row}>
-            <View style={styles.column}>
-              <Text style={styles.label}>
-                <FormattedMessage id="price" />
-              </Text>
-              <View style={styles.inputfile}>
-                <InputField
-                  placeholder="0.00"
-                  keyboardType="numeric"
-                  value={formData.precio ? formData.precio.toString() : ""}
-                  onChangeText={(text) => {
-                    const value = parseFloat(text);
-                    setFormData({
-                      ...formData,
-                      precio: isNaN(value) ? 0 : value,
-                    });
-                    if (!isNaN(value) && value > 0) {
-                      setErrors((prev) => ({ ...prev, precio: null }));
-                    }
+              <View style={styles.column}>
+                <Text style={styles.label}>
+                  <FormattedMessage id="currency" defaultMessage="Moneda" />
+                </Text>
+                <SelectField
+                  selectedValue={formData.currency_id}
+                  onValueChange={(value) => {
+                    setFormData({ ...formData, currency_id: value })
+                    setErrors((prev) => ({ ...prev, currency_id: null }))
                   }}
-                  error={errors.precio}
-                  style={styles.input}
+                  placeholder="Seleccione una moneda"
+                  options={currencies.map((c: { codigo: string; simbolo: string; id: number }) => ({
+                    label: `${c.codigo} (${c.simbolo})`,
+                    value: c.id,
+                  }))}
+                  error={errors.currency_id ?? undefined}
+                  disabled={loading}
                 />
               </View>
             </View>
 
-            <View style={styles.column}>
-              <Text style={styles.label}>
-                <FormattedMessage id="currency" />
-              </Text>
-              <SelectField
-                selectedValue={formData.currency_id}
-                onValueChange={(value) => {
-                  setFormData({ ...formData, currency_id: value });
-                  setErrors((prev) => ({ ...prev, currency_id: null }));
-                }}
-                placeholder="Seleccione una moneda"
-                options={currencies.map(
-                  (c: { codigo: string; simbolo: string; id: number }) => ({
-                    label: `${c.codigo} (${c.simbolo})`,
-                    value: c.id,
-                  })
-                )}
-                error={errors.currency_id ?? undefined}
-              />
-            </View>
-          </View>
-
-          <Text style={styles.label}>
-            <FormattedMessage id="estimatedDuration" />
-          </Text>
-          <View style={styles.inputfile}>
-            <InputField
-              placeholder="Ej: 45"
-              keyboardType="numeric"
-              value={
-                formData.plazoDuracionEstimadoMinutos
-                  ? formData.plazoDuracionEstimadoMinutos.toString()
-                  : ""
-              }
-              onChangeText={(text) => {
-                const value = parseInt(text);
-                setFormData({
-                  ...formData,
-                  plazoDuracionEstimadoMinutos: isNaN(value) ? 0 : value,
-                });
-                if (!isNaN(value) && value > 0) {
-                  setErrors((prev) => ({
-                    ...prev,
-                    plazoDuracionEstimadoMinutos: null,
-                  }));
-                }
-              }}
-              error={errors.plazoDuracionEstimadoMinutos}
-              style={styles.input}
-            />
-          </View>
-
-          <View mb={4} style={styles.column}>
+            {/* Estimated Duration */}
             <Text style={styles.label}>
-              <FormattedMessage id="category" defaultMessage="Categoría" />
+              <FormattedMessage id="estimatedDuration" defaultMessage="Duración estimada (minutos)" />
             </Text>
-            <View>
-              <MultiSelectInput
-                sizeText={16}
-                label={intl.formatMessage({ id: "selectCategory" })}
-                height={50}
-                isMultiple
-                placeholder={intl.formatMessage({
-                  id: "selectCategory",
-                  defaultMessage: "Seleccionar categoría",
-                })}
-                options={allCategories.map((cat) => ({
-                  label: cat.name,
-                  value: cat.id.toString(),
-                  placeholder: cat.name,
-                }))}
-                setItemsSelected={(selectedIds: number[]) => {
-                  setFormData((prev) => ({
-                    ...prev,
-                    categoryIds: selectedIds,
-                  }));
-
-                  if (selectedIds.length > 0 && errors.categoryIds) {
+            <View style={styles.inputfile}>
+              <InputField
+                placeholder="Ej: 45"
+                keyboardType="numeric"
+                value={formData.plazoDuracionEstimadoMinutos ? formData.plazoDuracionEstimadoMinutos.toString() : ""}
+                onChangeText={(text) => {
+                  const value = Number.parseInt(text)
+                  setFormData({
+                    ...formData,
+                    plazoDuracionEstimadoMinutos: isNaN(value) ? 0 : value,
+                  })
+                  if (!isNaN(value) && value > 0) {
                     setErrors((prev) => ({
                       ...prev,
-                      categoryIds: null,
-                    }));
+                      plazoDuracionEstimadoMinutos: null,
+                    }))
                   }
                 }}
-                onSearch={() => {}}
-                error={errors.categoryIds}
+                error={errors.plazoDuracionEstimadoMinutos}
+                style={styles.input}
+                editable={!loading}
               />
             </View>
-          </View>
 
-          <Text style={styles.label}>
-            <FormattedMessage id="description" />
-          </Text>
-          <View style={styles.inputfile}>
-            <InputField
-              placeholder={intl.formatMessage({
-                id: "productDescriptionPlaceholder",
-                defaultMessage: "Ej: Plato clásico con papas fritas",
-              })}
-              isTextArea
-              value={formData.descripcion}
-              onChangeText={(text) => {
-                setFormData({ ...formData, descripcion: text });
-                if (text.trim()) {
-                  setErrors((prev) => ({ ...prev, descripcion: null }));
-                }
-              }}
-              error={errors.descripcion}
-              style={styles.inputarea}
-            />
-          </View>
-
-          <TouchableOpacity
-            style={styles.button}
-            onPress={handleSubmit}
-            disabled={loading}
-          >
-            {loading ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={styles.buttonText}>
-                <FormattedMessage id="createProduct" />
+            {/* Categories */}
+            <View style={styles.column}>
+              <Text style={styles.label}>
+                <FormattedMessage id="category" defaultMessage="Categoría" />
               </Text>
-            )}
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </KeyboardAwareScrollView>
-  );
-};
+              <View>
+                <MultiSelectInput
+                  sizeText={16}
+                  label={intl.formatMessage({ id: "selectCategory" })}
+                  height={50}
+                  isMultiple
+                  placeholder={intl.formatMessage({
+                    id: "selectCategory",
+                    defaultMessage: "Seleccionar categoría",
+                  })}
+                  options={allCategories.map((cat) => ({
+                    label: cat.name,
+                    value: cat.id.toString(),
+                    placeholder: cat.name,
+                  }))}
+                  setItemsSelected={(selectedIds: number[]) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      categoryIds: selectedIds,
+                    }))
 
-export default AddProduct;
+                    if (selectedIds.length > 0 && errors.categoryIds) {
+                      setErrors((prev) => ({
+                        ...prev,
+                        categoryIds: null,
+                      }))
+                    }
+                  }}
+                  onSearch={() => {}}
+                  error={errors.categoryIds}
+                />
+              </View>
+            </View>
+
+            {/* Description */}
+            <Text style={styles.label}>
+              <FormattedMessage id="description" defaultMessage="Descripción" />
+            </Text>
+            <View style={styles.inputfile}>
+              <InputField
+                placeholder={intl.formatMessage({
+                  id: "productDescriptionPlaceholder",
+                  defaultMessage: "Ej: Plato clásico con papas fritas",
+                })}
+                isTextArea
+                value={formData.descripcion}
+                onChangeText={(text) => {
+                  setFormData({ ...formData, descripcion: text })
+                  if (text.trim()) {
+                    setErrors((prev) => ({ ...prev, descripcion: null }))
+                  }
+                }}
+                error={errors.descripcion}
+                style={styles.inputarea}
+                editable={!loading}
+              />
+            </View>
+
+            {/* Action Buttons */}
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={handleClose} disabled={loading}>
+                <Text style={[styles.buttonText, styles.cancelButtonText]}>
+                  <FormattedMessage id="cancel" defaultMessage="Cancelar" />
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.button, styles.createButton, loading && styles.disabledButton]}
+                onPress={handleSubmit}
+                disabled={loading}
+              >
+                {loading ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text style={styles.buttonText}>
+                    <FormattedMessage id="createProduct" defaultMessage="Crear Producto" />
+                  </Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ScrollView>
+      </KeyboardAwareScrollView>
+    </GenericModal>
+  )
+}
+
+export default AddProductModal

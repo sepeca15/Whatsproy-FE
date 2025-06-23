@@ -108,7 +108,6 @@ const GenericModal: React.FC<DynamicModalProps> = ({
       <SafeAreaView style={[styles.container, { backgroundColor: backgroundColor || colors.background }]}>
         <StatusBar barStyle={statusBarStyle || (isDark ? "light-content" : "dark-content")} />
 
-        {/* Header */}
         <View style={[styles.header, { backgroundColor: headerBackgroundColor || colors.primary }]}>
           {showCloseButton && (
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
@@ -129,7 +128,6 @@ const GenericModal: React.FC<DynamicModalProps> = ({
           {headerRightContent && <View style={styles.headerRight}>{headerRightContent}</View>}
         </View>
 
-        {/* Content */}
         <ContentWrapper
           style={[styles.contentContainer, !scrollable && styles.nonScrollableContent]}
           contentContainerStyle={scrollable ? styles.scrollContent : undefined}
@@ -138,7 +136,6 @@ const GenericModal: React.FC<DynamicModalProps> = ({
           {children}
         </ContentWrapper>
 
-        {/* Footer */}
         {(actions.length > 0 || footerContent) && (
           <View style={[styles.footer, { backgroundColor: backgroundColor || colors.background }]}>
             {footerContent}
@@ -221,12 +218,13 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
+    backgroundColor: "#f8fafc",
   },
   nonScrollableContent: {
     padding: 15,
   },
   scrollContent: {
-    padding: 20,
+    padding: 15,
   },
   footer: {
     paddingHorizontal: 20,

@@ -35,6 +35,7 @@ export interface IOrderDetails {
   client: IClient;
   products: IProduct[];
   reclamo?: any;
+  isDomicilio?: boolean;
   paymentMethod?: any;
   transferUrl?: string;
   chatId: IChatId;

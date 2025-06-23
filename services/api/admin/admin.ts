@@ -41,6 +41,8 @@ const api = {
     isEmpresaAvailable: products.isEmpresaAvailable,
     delete: products.deletProd,
     create: products.create,
+    findProductsWithQuery: products.findProductsWithQuery,
+    findAllDailyMenu: products.findAllDailyMenu,
   },
   payments: {
     createInitial: payments.createInitial,
@@ -111,6 +113,7 @@ const api = {
   client: {
     create: client.CreateOrReturnClient,
     findWithOrders: client.findClientsWithOrders,
+    updateNotificationPreference: client.updateNotificationPreference,
     findOneClientsWithOrders: client.findOneClientsWithOrders,
   },
   image: {

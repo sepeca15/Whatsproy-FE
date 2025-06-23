@@ -169,7 +169,7 @@ const EditProduct = ({
     try {
       const updatedFormData = {
         ...formData,
-        imagen: (formData.imagen || "") // Ensure imagen is always a string
+        imagen: (formData.imagen || "")
       };
 
       const res = await api.products.update(formData.id, updatedFormData);

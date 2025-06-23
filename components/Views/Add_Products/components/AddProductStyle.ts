@@ -57,7 +57,7 @@ export const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: "#fff",
     borderRadius: 12,
-    marginHorizontal: 16,
+    marginHorizontal: 1,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -138,5 +138,43 @@ export const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
+  },
+   modalContainer: {
+    flex: 1,
+    backgroundColor: "transparent",
+  },
+
+  modalScrollContent: {
+    paddingBottom: 20,
+  },
+
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 12,
+    marginTop: 24,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: "#f0f0f0",
+  },
+
+  cancelButton: {
+    flex: 1,
+    backgroundColor: "transparent",
+    borderWidth: 1,
+    borderColor: Colors.light.icon,
+  },
+
+  cancelButtonText: {
+    color: Colors.light.icon,
+  },
+
+  createButton: {
+    flex: 1,
+    backgroundColor: Colors.light.primary,
+  },
+
+  disabledButton: {
+    opacity: 0.6,
   },
 });

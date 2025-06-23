@@ -1,130 +1,98 @@
-import CustomText from "@/components/CustomText";
-import { getInitials } from "@/components/Views/TrustedNumbers/components/CardContact/CardContact";
-import { Colors } from "@/constants/Colors";
-import { useUser } from "@/hooks/redux/useUser";
-import { Ionicons } from "@expo/vector-icons";
-import moment from "moment-timezone";
-import {
-  Badge,
-  Box,
-  Button,
-  HStack,
-  Icon,
-  Text,
-  View,
-  VStack,
-} from "native-base";
-import { FormattedMessage } from "react-intl";
+"use client"
+
+import CustomText from "@/components/CustomText"
+import { getInitials } from "@/components/Views/TrustedNumbers/components/CardContact/CardContact"
+import { Colors } from "@/constants/Colors"
+import { useUser } from "@/hooks/redux/useUser"
+import { Feather } from "@expo/vector-icons"
+import moment from "moment-timezone"
+import { Pressable, View, StyleSheet } from "react-native"
+import { FormattedMessage } from "react-intl"
+import { cardClientStyles } from "./CardClientStyles"
 
 interface ICardClient {
-  item: any;
-  setClienteSeleccionado: () => void;
+  item: any
+  setClienteSeleccionado: () => void
 }
 
 const CardClient = ({ item, setClienteSeleccionado }: ICardClient) => {
-  const { user } = useUser();
-  const initials = getInitials(item.nombre);
+  const { user } = useUser()
+  const initials = getInitials(item.nombre)
+  const lastPurchase = item.pedido[item.pedido.length - 1]
+  const lastPurchaseDate = lastPurchase ? moment.tz(lastPurchase?.createdAt, user.timeZone).fromNow() : "-"
+
   return (
-    <Box
-      borderWidth={1}
-      borderColor={Colors.light.secondary}
-      borderRadius={20}
-      p={4}
-      my={2}
-    >
-      <HStack
-        display={"flex"}
-        flexDirection={"row"}
-        justifyContent="space-between"
-      >
-        <VStack>
-          <View
-            display={"flex"}
-            flex={1}
-            flexDir={"row"}
-            alignItems={"center"}
-            style={{ gap: 12 }}
-          >
-            <View
-              w={35}
-              h={35}
-              bg={"teal.700"}
-              rounded={"full"}
-              alignItems={"center"}
-              justifyContent={"center"}
-            >
-              <Text fontSize={14} fontWeight={"bold"} color={"white"}>
-                {initials}
-              </Text>
-            </View>
-            <View display={"flex"} flexDir={"column"}>
-              <Text fontWeight="bold" color="teal.800">
-                {item.nombre}
-              </Text>
-              <Text fontSize="sm" color="teal.700">
-                {item.telefono}
-              </Text>
+    <View style={[cardClientStyles.cardContainer]}>
+      <View style={cardClientStyles.cardHeader}>
+        <View style={cardClientStyles.clientSection}>
+          <View style={cardClientStyles.avatarContainer}>
+            <CustomText style={cardClientStyles.avatarText}>{initials}</CustomText>
+          </View>
+          <View style={cardClientStyles.clientInfo}>
+            <CustomText numberOfLines={1} style={cardClientStyles.clientName}>
+              {item.nombre}
+            </CustomText>
+            <View style={cardClientStyles.phoneContainer}>
+              <Feather name="phone" size={12} color={Colors.light.icon} />
+              <CustomText style={cardClientStyles.phoneText}>{item.telefono}</CustomText>
             </View>
           </View>
-        </VStack>
-        <Badge borderRadius={10} borderColor={"green.700"} colorScheme="green">
-          <View
-            style={{ gap: 4, borderRadius: 20 }}
-            display={"flex"}
-            flexDir={"row"}
-            alignItems={"center"}
-            borderRadius={5}
-          >
-            <Text fontWeight={600} >{item?.pedido?.length}</Text>
-            <Text fontWeight={600}>
+        </View>
+
+        <View style={cardClientStyles.salesSection}>
+          <View style={cardClientStyles.salesBadge}>
+            <Feather name="shopping-bag" size={14} color={Colors.light.secondary} />
+            <CustomText style={cardClientStyles.salesCount}>{item?.pedido?.length}</CustomText>
+            <CustomText style={cardClientStyles.salesLabel}>
               <FormattedMessage id="cardClient.sales" defaultMessage="ventas" />
-            </Text>
+            </CustomText>
           </View>
-        </Badge>
-      </HStack>
+        </View>
+      </View>
 
-      <VStack mt={3}>
-        <Text color="teal.700">
-          <FormattedMessage
-            id="cardClient.totalAmount"
-            defaultMessage="Monto Total"
-          />
-          :{" "}
-          <Text fontWeight="bold" color="teal.800">
-            ${item.totalGenerated.toFixed(2)}
-          </Text>
-        </Text>
-        <Text color="teal.700">
-          <FormattedMessage
-            id="cardClient.lastPurchase"
-            defaultMessage="Última Compra"
-          />
-          :{" "}
-          <Text fontWeight={600} color="teal.800">
-            {item.pedido[item.pedido.length - 1] ? moment
-              .tz(item.pedido[item.pedido.length - 1]?.createdAt, user.timeZone)
-              .fromNow() : "-"}
-          </Text>
-        </Text>
-      </VStack>
+      <View style={cardClientStyles.statsSection}>
+        <View style={cardClientStyles.statItem}>
+          <View style={cardClientStyles.statIconContainer}>
+            <Feather name="dollar-sign" size={14} color={Colors.light.primary} />
+          </View>
+          <View style={cardClientStyles.statTextContainer}>
+            <CustomText style={cardClientStyles.statLabel}>
+              <FormattedMessage id="cardClient.totalAmount" defaultMessage="Monto Total" />
+            </CustomText>
+            <CustomText style={cardClientStyles.statValue}>${item.totalGenerated.toFixed(2)}</CustomText>
+          </View>
+        </View>
 
-      <Button
-        mt={3}
-        background={Colors.light.primary}
-        onPress={() => setClienteSeleccionado()}
-        color={"white"}
-        borderRadius={20}
-        leftIcon={<Icon as={Ionicons} name="eye-outline" size={5}  fontWeight={600}/>}
-      >
-        <CustomText style={{ color: "white", fontWeight: 600 }}>
-          <FormattedMessage
-            id="cardClient.viewDetails"
-            defaultMessage="Ver Detalles"
-          />
-        </CustomText>
-      </Button>
-    </Box>
-  );
-};
+        <View style={cardClientStyles.statItem}>
+          <View style={cardClientStyles.statIconContainer}>
+            <Feather name="clock" size={14} color={Colors.light.warning} />
+          </View>
+          <View style={cardClientStyles.statTextContainer}>
+            <CustomText style={cardClientStyles.statLabel}>
+              <FormattedMessage id="cardClient.lastPurchase" defaultMessage="Última Compra" />
+            </CustomText>
+            <CustomText style={cardClientStyles.statValue}>{lastPurchaseDate}</CustomText>
+          </View>
+        </View>
+      </View>
 
-export default CardClient;
+      <View style={cardClientStyles.divider} />
+
+      <View style={cardClientStyles.actionsSection}>
+        <Pressable
+          accessibilityRole={"button"}
+          onPress={setClienteSeleccionado}
+          style={cardClientStyles.detailsButton}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <Feather name="eye" size={16} color="white" />
+          <CustomText style={cardClientStyles.detailsButtonText}>
+            <FormattedMessage id="cardClient.viewDetails" defaultMessage="Ver Detalles" />
+          </CustomText>
+        </Pressable>
+      </View>
+    </View>
+  )
+}
+
+export default CardClient

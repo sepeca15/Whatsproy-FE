@@ -1,18 +1,18 @@
-import React, { useState } from "react";
+"use client";
+
+import { useState } from "react";
 import { View } from "react-native";
 import { styles } from "./CardNewPedidoStyles";
 import CustomText from "@/components/CustomText";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import EvilIcons from "react-native-vector-icons/EvilIcons";
-import IonIcons from "react-native-vector-icons/Ionicons";
-import MaterialIconss from "react-native-vector-icons/MaterialCommunityIcons";
 import { useOrders } from "@/hooks/redux/useOrders";
 import { useRouter } from "expo-router";
 import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmAction";
 import { FormattedMessage, useIntl } from "react-intl";
 import { Button, Pressable, Spinner } from "native-base";
 import moment from "moment";
-import { MaterialIcons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
+import { Colors } from "@/constants/Colors";
+import { StyleSheet } from "react-native";
 
 interface IOrderData {
   clientName: string;
@@ -24,6 +24,7 @@ interface IOrderData {
   estado: any;
   orderId: number;
   createdAt?: string;
+  isDomicilio?: boolean;
   reclamo?: {
     createdAt: string;
     texto: string;
@@ -45,8 +46,8 @@ const CardNewPedido = ({ pending, orderData, active }: ICardNewPedido) => {
   const router = useRouter();
   const [statusModalDelete, setStateModalDelete] = useState<boolean>(false);
   const { handleDeleteOrder, confirmOrder, loadingApiAction } = useOrders();
-  const keyDeleteType = active ? 'active': pending ? "pending" : "finished";
-  const { clientName, numberSender, orderId, total } = orderData;
+  const keyDeleteType = active ? "active" : pending ? "pending" : "finished";
+  const { clientName, numberSender, orderId, total, isDomicilio } = orderData;
 
   const direccion = orderData?.direccion ?? "No direction";
   const intl = useIntl();
@@ -93,138 +94,160 @@ const CardNewPedido = ({ pending, orderData, active }: ICardNewPedido) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.column}>
-        <View style={styles.row1}>
-          <View style={styles.column}>
-            <View style={styles.row3}><View style={styles.column}>
-              <CustomText numberOfLines={1} style={styles.name}>
-                <FormattedMessage id="client" defaultMessage="Client" />: {clientName}
-              </CustomText>
-              <CustomText style={{ color: "#abcbfb", fontSize: 12 }}>
-                {fromNow ?? "-"}
-              </CustomText>
-              <View style={styles.miniSeparator}></View>
-              <CustomText style={styles.text}>{direccion}</CustomText>
-              <View style={styles.separator}></View>
-              <CustomText style={styles.text}>
-                {intl.formatMessage({ id: "phone", defaultMessage: "Tel" })}: {numberSender}
-              </CustomText>
-            </View>
-              <View style={styles.column2}>
-                <View style={styles.buttonsTop}>
-                  <CustomText style={styles.nuevo}>
-                    {!orderData?.estado
-                      ? intl.formatMessage({ id: "new", defaultMessage: "New" })
-                      : orderData?.estado?.nombre}
-                  </CustomText>
-                </View>
-                <CustomText style={styles.semiBold}>
-                  {intl.formatMessage({ id: "total", defaultMessage: "Total" })}: ${Number(total).toFixed(2)}
-                </CustomText>
-              </View>
-            </View>
-            {orderData?.reclamo && (
-              <View style={styles.reclamoBox}>
-                <View style={styles.reclamoRow}>
-                  <MaterialIconss name="alert-circle-outline" size={18} color="#f59e0b" />
-                  <CustomText style={styles.reclamoText}>
-                    <FormattedMessage id="hasClaim" defaultMessage="Has a claim" />
-                  </CustomText>
-                </View>
-                <CustomText style={styles.reclamoDate}>
-                  {moment(orderData.reclamo.createdAt).fromNow()}
-                </CustomText>
-              </View>
-            )}
-
-
-            {orderData.transferUrl && (
-              <View
-                style={{
-                  backgroundColor: "#e0f2fe",
-                  paddingVertical: 4,
-                  paddingHorizontal: 10,
-                  borderRadius: 12,
-                  alignSelf: "flex-start",
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginTop: 12,
-                }}
-              >
-                <MaterialIcons name="attach-file" size={16} color="#0284c7" />
-                <CustomText style={{ marginLeft: 6, fontSize: 13, color: "#0284c7" }}>
-                  <FormattedMessage
-                    id="attachedTransferProof"
-                    defaultMessage="Comprobante de transferencia adjunto"
-                  />
-                </CustomText>
-              </View>
-            )}
-
-
-          </View>
-
-        </View>
-        <View style={styles.row2}>
-          <Pressable
-            accessibilityRole={"button"}
-            onPress={handleSendPageDetails}
-            style={styles.detalles}
-            hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
-          >
-            <AntDesign color={"black"} name="eyeo" size={16} />
-            <CustomText style={{ color: "black" }}>
-              <FormattedMessage id="details" defaultMessage="Details" />
+    <View style={[styles.orderSummaryCard, formalStyles.cardContainer]}>
+      <View style={formalStyles.cardHeader}>
+        <View style={formalStyles.clientSection}>
+          <View style={formalStyles.clientInfo}>
+            <CustomText numberOfLines={1} style={formalStyles.clientName}>
+              {clientName}
             </CustomText>
-          </Pressable>
-          {pending === true ? (
-            <View style={styles.buttons}>
-              <Button
-                isLoading={loading.deleteState}
-                isDisabled={loadingApiAction}
-                onPress={() => handleModal(true)}
-                style={styles.buttonTransparent}
-                spinner={<Spinner color="black" />}
-                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-              >
-                {!loadingApiAction && (
-                  <EvilIcons color={"black"} name="close" size={22} />
-                )}
-              </Button>
-              <Button
-                style={styles.buttonTransparent}
-                onPress={handleConfirmOrder}
-                isLoading={loading.confirmState}
-                spinner={<Spinner color="black" />}
-                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-              >
-                <IonIcons color={"black"} name="checkmark-done" size={20} />
-              </Button>
-            </View>
-          ) : (
-            <Pressable
-              hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
-              onPress={() => handleModal(true)}
-              style={styles.deleteButton}
-            >
-              <MaterialIconss name="delete" size={20} color={"#FF6F6F"} />
-            </Pressable>
-          )}
+            <CustomText style={formalStyles.timeText}>
+              {fromNow ?? "-"}
+            </CustomText>
+          </View>
+        </View>
+
+        <View style={formalStyles.statusSection}>
+          <View style={[styles.statusBadge, formalStyles.statusBadge]}>
+            <CustomText style={[styles.statusText, formalStyles.statusText]}>
+              {!orderData?.estado
+                ? intl.formatMessage({ id: "new", defaultMessage: "Nuevo" })
+                : orderData?.estado?.nombre}
+            </CustomText>
+          </View>
         </View>
       </View>
+
+      <View style={formalStyles.deliverySection}>
+        <View style={formalStyles.deliveryInfo}>
+          <View style={formalStyles.deliveryIconContainer}>
+            {isDomicilio ? (
+              <Feather name="truck" size={14} color={Colors.light.secondary} />
+            ) : (
+              <Feather name="map-pin" size={14} color={Colors.light.warning} />
+            )}
+          </View>
+          <View style={formalStyles.deliveryTextContainer}>
+            <CustomText style={formalStyles.deliveryTypeText}>
+              {isDomicilio ? (
+                <FormattedMessage
+                  id="homeDelivery"
+                  defaultMessage="Envío a domicilio"
+                />
+              ) : (
+                <FormattedMessage
+                  id="storePickup"
+                  defaultMessage="Retiro en sucursal"
+                />
+              )}
+            </CustomText>
+            <CustomText style={formalStyles.addressText} numberOfLines={1}>
+              {direccion}
+            </CustomText>
+          </View>
+        </View>
+
+        <View style={formalStyles.totalSection}>
+          <CustomText style={formalStyles.totalLabel}>
+            <FormattedMessage id="total" defaultMessage="Total" />
+          </CustomText>
+          <CustomText style={formalStyles.totalValue}>
+            ${Number(total).toFixed(2)}
+          </CustomText>
+        </View>
+      </View>
+
+      <View style={formalStyles.contactSection}>
+        <Feather name="phone" size={12} color={Colors.light.icon} />
+        <CustomText style={formalStyles.phoneText}>{numberSender}</CustomText>
+      </View>
+
+      {orderData?.reclamo && (
+        <View style={formalStyles.claimSection}>
+          <Feather name="alert-triangle" size={14} color="#f59e0b" />
+          <CustomText style={formalStyles.claimText}>
+            <FormattedMessage id="hasClaim" defaultMessage="Tiene reclamo" />
+          </CustomText>
+          <CustomText style={formalStyles.claimDate}>
+            {moment(orderData.reclamo.createdAt).fromNow()}
+          </CustomText>
+        </View>
+      )}
+
+      {orderData.transferUrl && (
+        <View style={formalStyles.transferSection}>
+          <Feather name="paperclip" size={14} color="#0284c7" />
+          <CustomText style={formalStyles.transferText}>
+            <FormattedMessage
+              id="attachedTransferProof"
+              defaultMessage="Comprobante adjunto"
+            />
+          </CustomText>
+        </View>
+      )}
+
+      <View style={styles.divider} />
+
+      <View style={formalStyles.actionsSection}>
+        <Pressable
+          accessibilityRole={"button"}
+          onPress={handleSendPageDetails}
+          style={formalStyles.detailsButton}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <Feather name="eye" size={16} color={Colors.light.primary} />
+          <CustomText style={formalStyles.detailsButtonText}>
+            <FormattedMessage id="details" defaultMessage="Detalles" />
+          </CustomText>
+        </Pressable>
+
+        {pending === true ? (
+          <View style={formalStyles.pendingActions}>
+            <Button
+              isLoading={loading.deleteState}
+              isDisabled={loadingApiAction}
+              onPress={() => handleModal(true)}
+              style={formalStyles.rejectButton}
+              spinner={<Spinner color="#dc2626" size="sm" />}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              {!loadingApiAction && (
+                <Feather name="x" size={12} color="#dc2626" />
+              )}
+            </Button>
+            <Button
+              style={formalStyles.acceptButton}
+              onPress={handleConfirmOrder}
+              isLoading={loading.confirmState}
+              spinner={<Spinner color="white" size="sm" />}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              <Feather name="check" size={14} color="white" />
+            </Button>
+          </View>
+        ) : (
+          <Pressable
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            onPress={() => handleModal(true)}
+            style={formalStyles.deleteButton}
+          >
+            <Feather name="trash-2" size={16} color="#dc2626" />
+          </Pressable>
+        )}
+      </View>
+
       {statusModalDelete && (
         <ModalConfirmAction
           loading={loading.deleteState}
           onContinue={handleDeleteEntryOrder}
           title={intl.formatMessage({
             id: "deleteOrderTitle",
-            defaultMessage: "Delete order",
+            defaultMessage: "Eliminar pedido",
           })}
           message={intl.formatMessage({
             id: "deleteOrderMessage",
             defaultMessage:
-              "If you delete this order, you will not see it here but it will affect your company's statistics.",
+              "Si eliminas este pedido, no lo verás aquí pero afectará las estadísticas de tu empresa.",
           })}
           withReason={true}
           onClose={() => handleModal(false)}
@@ -236,5 +259,182 @@ const CardNewPedido = ({ pending, orderData, active }: ICardNewPedido) => {
     </View>
   );
 };
+
+const formalStyles = StyleSheet.create({
+  cardContainer: {
+    marginBottom: 12,
+    borderLeftWidth: 3,
+    borderLeftColor: Colors.light.primary,
+  },
+  cardHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    marginBottom: 12,
+  },
+  clientSection: {
+    flex: 1,
+  },
+  clientInfo: {
+    flexDirection: "column",
+  },
+  clientName: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: Colors.light.text,
+    marginBottom: 2,
+  },
+  timeText: {
+    fontSize: 12,
+    color: Colors.light.icon,
+  },
+  statusSection: {
+    alignItems: "flex-end",
+  },
+  statusBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  statusText: {
+    fontSize: 11,
+    fontWeight: "500",
+  },
+  deliverySection: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    marginBottom: 8,
+  },
+  deliveryInfo: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    flex: 1,
+    marginRight: 16,
+  },
+  deliveryIconContainer: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: "rgba(7, 94, 84, 0.1)",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 8,
+  },
+  deliveryTextContainer: {
+    flex: 1,
+  },
+  deliveryTypeText: {
+    fontSize: 13,
+    fontWeight: "500",
+    color: Colors.light.text,
+    marginBottom: 2,
+  },
+  addressText: {
+    fontSize: 12,
+    color: Colors.light.icon,
+  },
+  totalSection: {
+    alignItems: "flex-end",
+  },
+  totalLabel: {
+    fontSize: 11,
+    color: Colors.light.icon,
+    marginBottom: 2,
+  },
+  totalValue: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: Colors.light.primary,
+  },
+  contactSection: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  phoneText: {
+    fontSize: 12,
+    color: Colors.light.icon,
+    marginLeft: 6,
+  },
+  claimSection: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FEF3C7",
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  claimText: {
+    fontSize: 12,
+    color: "#92400e",
+    fontWeight: "500",
+    marginLeft: 6,
+    flex: 1,
+  },
+  claimDate: {
+    fontSize: 10,
+    color: "#92400e",
+  },
+  transferSection: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#e0f2fe",
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  transferText: {
+    fontSize: 12,
+    color: "#0284c7",
+    fontWeight: "500",
+    marginLeft: 6,
+  },
+  actionsSection: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingTop: 8,
+  },
+  detailsButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+    backgroundColor: "rgba(7, 94, 84, 0.1)",
+  },
+  detailsButtonText: {
+    fontSize: 13,
+    color: Colors.light.primary,
+    fontWeight: "500",
+    marginLeft: 6,
+  },
+  pendingActions: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  rejectButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "rgba(220, 38, 38, 0.1)",
+    borderWidth: 1,
+    borderColor: "#dc2626",
+  },
+  acceptButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: Colors.light.primary,
+  },
+  deleteButton: {
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: "rgba(220, 38, 38, 0.1)",
+  },
+});
 
 export default CardNewPedido;

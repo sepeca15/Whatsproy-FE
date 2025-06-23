@@ -33,6 +33,7 @@ import { globalStyles } from "@/components/globalStyles";
 import AddButton from "..../../hooks/add_Button/Add_button";
 import { useUser } from "@/hooks/redux/useUser";
 import { ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
+import DailyMenuTab from "./DailyMenuTab";
 
 const Productos: React.FC = () => {
   const router = useRouter();
@@ -43,6 +44,7 @@ const Productos: React.FC = () => {
   const intl = useIntl();
   const { showToast } = useToastContext();
   const [isDeleting, setIsDeleting] = useState(true);
+  const [activeTab, setActiveTab] = useState<'products' | 'dailyMenu'>('products');
 
   const [allCategories, setAllCategories] = useState<ICategoryData[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
@@ -56,6 +58,7 @@ const Productos: React.FC = () => {
   const [refreshing, setRefreshing] = useState(false);
 
   const { user } = useUser();
+  
   const loadAllCategories = async () => {
     try {
       setLoadingCategories(true);
@@ -76,21 +79,12 @@ const Productos: React.FC = () => {
 
   const loadProductsFromCategory = async () => {
     try {
-      console.log('llamare');
-      
       setLoadingProducts(true);
       if (selectCategory) {
-
-        console.log('si');
-        
         const resp = await api.category.getProducts({
           categoryId: selectCategory,
         });
-        console.log('respp esssss', resp);
-
         if (resp.ok) {
-          console.log('los productos son', resp.data);
-
           setProducts(resp.data);
         }
       }
@@ -102,13 +96,18 @@ const Productos: React.FC = () => {
   };
 
   const isInitialLoading = loadingCategories || loadingProducts;
+  
   useEffect(() => {
-    loadAllCategories();
-  }, []);
+    if (activeTab === 'products') {
+      loadAllCategories();
+    }
+  }, [activeTab]);
 
   useEffect(() => {
-    loadProductsFromCategory();
-  }, [selectCategory]);
+    if (activeTab === 'products') {
+      loadProductsFromCategory();
+    }
+  }, [selectCategory, activeTab]);
 
   useEffect(() => {
     if (!isInitialLoading) {
@@ -143,7 +142,10 @@ const Productos: React.FC = () => {
           setDeletingProductId(null);
 
           showToast({
-            title: error.response?.data?.message || "Error deleting product",
+            title: error.response?.data?.message || intl.formatMessage({
+              id: "errorDeletingProduct",
+              defaultMessage: "Error deleting product"
+            }),
             status: "error",
           });
         }
@@ -151,6 +153,7 @@ const Productos: React.FC = () => {
     },
     [intl]
   );
+
   const renderDeleteModal = () => {
     if (!showDeleteModal) return null;
 
@@ -190,8 +193,8 @@ const Productos: React.FC = () => {
             ref={deleteAnimationRef}
             source={
               isDeleting
-                ? require("../../../constants/Animation-black-trash-robot.json") // Animación mientras se elimina
-                : require("../../../constants/Animation-succes-deleted.json") // Animación de éxito
+                ? require("../../../constants/Animation-black-trash-robot.json")
+                : require("../../../constants/Animation-succes-deleted.json")
             }
             autoPlay
             loop={!isDeleting}
@@ -246,7 +249,6 @@ const Productos: React.FC = () => {
   const onDeleteProduct = (prodId: number) => {
     setProducts((prevState) => {
       const filter = prevState.filter((prod) => prod.id !== prodId);
-
       return filter;
     });
   };
@@ -257,22 +259,36 @@ const Productos: React.FC = () => {
     )
     .sort((a, b) => a.nombre.localeCompare(b.nombre, locale));
 
-  return (
-    <View style={styles.container}>
-      <AnimatedTwo.View style={styles.header}>
-        <View style={globalStyles.headerContent}>
-          <View style={globalStyles.headerLeft}>
-            <CustomText
-              style={globalStyles.businessName}
-              accessibilityLabel="Pedidos"
-            >
-              {user?.tipo_servicio === ID_TIPOSERVICIO_RESERVA ? <FormattedMessage id="servicesAndProduct" /> : <FormattedMessage id="products" />}
-            </CustomText>
-          </View>
-        </View>
-      </AnimatedTwo.View>
+  const renderTabButton = (tabKey: 'products' | 'dailyMenu', labelId: string, defaultLabel: string) => (
+    <TouchableOpacity
+      style={[
+        styles.tabButton,
+        {
+          backgroundColor: activeTab === tabKey ? Colors.light.primary : 'transparent',
+          borderBottomWidth: activeTab === tabKey ? 3 : 0,
+          borderBottomColor: Colors.light.primary,
+        }
+      ]}
+      onPress={() => setActiveTab(tabKey)}
+      activeOpacity={0.7}
+    >
+      <Text
+        style={[
+          styles.tabButtonText,
+          {
+            color: activeTab === tabKey ? '#fff' : Colors.light.text,
+            fontWeight: activeTab === tabKey ? 'bold' : 'normal',
+          }
+        ]}
+      >
+        <FormattedMessage id={labelId} defaultMessage={defaultLabel} />
+      </Text>
+    </TouchableOpacity>
+  );
 
-      <View style={{ paddingHorizontal: 6, height: "100%" }}>
+  const renderProductsTab = () => (
+    <>
+      <View style={{ paddingHorizontal: 6,paddingBottom: 80, height: "100%" }}>
         {renderDeleteModal()}
         <View style={styles.searchBarContainer}>
           <Icon name="search" size={20} style={styles.searchIcon} />
@@ -286,6 +302,7 @@ const Productos: React.FC = () => {
             onChangeText={(text) => setSearchTerm(text)}
           />
         </View>
+        
         {allCategories.length > 0 ? (
           <View style={styles.categoryContainer}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -322,21 +339,6 @@ const Productos: React.FC = () => {
         ) : (
           <View></View>
         )}
-        {/* (
-          !loadingCategories && (
-            <View
-              w={"full"}
-              display={"flex"}
-              flexDir={"row"}
-              alignItems={"center"}
-              justifyContent={"center"}
-            >
-              <Text>
-                <FormattedMessage id="nocategories" />
-              </Text>
-            </View>
-          )
-        ) */}
 
         <ScrollView
           contentContainerStyle={styles.scrollViewContent}
@@ -420,6 +422,40 @@ const Productos: React.FC = () => {
         </ScrollView>
       </View>
       <AddButton route="/(tabs)/addpro" />
+    </>
+  );
+
+  const isReserva = user?.tipo_servicio === ID_TIPOSERVICIO_RESERVA;
+
+  const renderDailyMenuTab = () => <DailyMenuTab />
+
+  return (
+    <View style={styles.container}>
+      <AnimatedTwo.View style={styles.header}>
+        <View style={globalStyles.headerContent}>
+          <View style={globalStyles.headerLeft}>
+            <CustomText
+              style={globalStyles.businessName}
+              accessibilityLabel={intl.formatMessage({
+                id: isReserva ? "servicesAndProduct" : "products",
+                defaultMessage: isReserva ? "Servicios y Productos" : "Productos"
+              })}
+            >
+              {isReserva ? 
+                <FormattedMessage id="servicesAndProduct" defaultMessage="Servicios y Productos" /> : 
+                <FormattedMessage id="products" defaultMessage="Productos" />
+              }
+            </CustomText>
+          </View>
+        </View>
+      </AnimatedTwo.View>
+
+      {!isReserva && <View style={styles.tabContainer}>
+        {renderTabButton('products', 'products', 'Productos')}
+        {renderTabButton('dailyMenu', 'dailyMenu', 'Menú Diario')}
+      </View>}
+
+      {activeTab === 'products' ? renderProductsTab() : renderDailyMenuTab()}
     </View>
   );
 };

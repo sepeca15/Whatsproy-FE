@@ -501,6 +501,30 @@ export const styles = StyleSheet.create({
 
   actionButtonText: {
     fontWeight: "bold",
-    
+  },
+  deliveryMethodContainer: {
+    marginTop: 12,
+  },
+
+  deliveryMethodBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 12,
+    marginBottom: 8,
+  },
+
+  deliveryMethodText: {
+    fontSize: 16,
+    fontWeight: "600",
+    marginLeft: 12,
+  },
+
+  deliveryMethodDescription: {
+    fontSize: 14,
+    color: Colors.light.icon,
+    fontStyle: "italic",
+    paddingHorizontal: 4,
   },
 });

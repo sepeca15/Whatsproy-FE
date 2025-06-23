@@ -1,4 +1,6 @@
+import { Colors } from "@/constants/Colors";
 import { StyleSheet } from "react-native";
+import { RFValue } from "react-native-responsive-fontsize";
 
 export const styles = StyleSheet.create({
   semiBold: {
@@ -6,12 +8,17 @@ export const styles = StyleSheet.create({
     color: "white",
   },
   name: {
-    flex:1,
+    flex: 1,
     fontWeight: "bold",
     fontSize: 24,
     color: "white",
     overflow: "hidden",
     textOverflow: "ellipsis",
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "#f0f0f0",
+    marginVertical: 16,
   },
   text: {
     color: "#D1D5DB",
@@ -64,7 +71,7 @@ export const styles = StyleSheet.create({
   column: {
     display: "flex",
     flexDirection: "column",
-    flex:1,
+    flex: 1,
   },
   column2: {
     alignItems: "flex-end",
@@ -83,8 +90,8 @@ export const styles = StyleSheet.create({
     borderTopEndRadius: 12,
     borderTopStartRadius: 12,
   },
-    row3: {
-      flex:1,
+  row3: {
+    flex: 1,
     width: "100%",
     display: "flex",
     flexDirection: "row",
@@ -122,7 +129,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   buttonTransparent: {
-    backgroundColor: 'transparent'
+    backgroundColor: "transparent",
   },
   separator: {
     marginTop: 10,
@@ -144,5 +151,32 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
     top: 0,
     padding: 6,
+  },
+   orderSummaryCard: {
+    backgroundColor: "#ffffff",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+
+  statusBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    backgroundColor: Colors.light.secondary,
+  },
+
+  statusText: {
+    color: "white",
+    fontSize: RFValue(12),
+    fontWeight: "500",
+    marginRight: 4,
   },
 });
