@@ -49,6 +49,7 @@ const Home: React.FC = () => {
     }
   }, []);
 
+
   useEffect(() => {
     if (firstLoadRef.current) {
       firstLoadRef.current = false;
