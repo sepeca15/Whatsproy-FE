@@ -15,7 +15,6 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: Colors.light.primary,
   },
   loadingContent: {
     alignItems: "center",
@@ -36,7 +35,7 @@ export const styles = StyleSheet.create({
   },
   header: {
     paddingTop: 20,
-    paddingBottom: 20,
+    paddingBottom: 10,
     paddingHorizontal: 20,
     backgroundColor: Colors.light.primary,
   },

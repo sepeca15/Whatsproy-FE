@@ -1,29 +1,61 @@
-import type React from "react";
-import { Progress } from "native-base";
+import { Colors } from "@/constants/Colors";
+import React from "react";
+import { View, ViewStyle, StyleSheet } from "react-native";
 
-/**
- * SafeProgress es un componente que envuelve el componente Progress de NativeBase
- * y garantiza que el valor pasado sea siempre un entero estricto para evitar
- * errores de precisión.
- */
-interface SafeProgressProps
-  extends Omit<React.ComponentProps<typeof Progress>, "value"> {
-  value: number;
+interface CustomProgressBarProps {
+  value: number; 
+  max?: number;
+  height?: number;
+  color?: string;
+  backgroundColor?: string;
+  borderRadius?: number;
+  style?: ViewStyle;
 }
 
-export const SafeProgress: React.FC<SafeProgressProps> = ({
+const CustomProgressBar: React.FC<CustomProgressBarProps> = ({
   value,
-  ...props
+  max = 100,
+  height = 6,
+  color = Colors.light.primary,
+  backgroundColor = "#e5e7eb",
+  borderRadius = 5,
+  style,
 }) => {
-const safeValue = Math.min(100, Math.max(0, Math.round(Number(value))));
+  const safeValue = Number.isFinite(value)
+    ? Math.min(max, Math.max(0, Number(value.toFixed(0))))
+    : 0;
+
+  const percentage = (safeValue / max) * 100;
 
   return (
-    <Progress
-      value={safeValue === 14 ? 15 : safeValue}
-      max={100}
-      {...props}
-    />
+    <View
+      style={[
+        styles.container,
+        {
+          height,
+          backgroundColor,
+          borderRadius,
+        },
+        style,
+      ]}
+    >
+      <View
+        style={{
+          width: `${percentage}%`,
+          height: "100%",
+          backgroundColor: color,
+          borderRadius,
+        }}
+      />
+    </View>
   );
 };
 
-export default SafeProgress;
+const styles = StyleSheet.create({
+  container: {
+    width: "100%",
+    overflow: "hidden",
+  },
+});
+
+export default CustomProgressBar;

@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useEffect } from "react"
+import type React from "react";
+import { useState, useEffect } from "react";
 import {
   Modal,
   View,
@@ -12,39 +12,44 @@ import {
   Platform,
   ScrollView,
   ActivityIndicator,
-} from "react-native"
-import { Ionicons, MaterialIcons } from "@expo/vector-icons"
-import { Image } from "react-native"
-import type { IUser } from "../../UsuariosType"
-import { Colors } from "@/constants/Coloresuser"
-import { styles } from "./ModalEditUserStyles"
-import useImagePicker from "@/utils/ImagePicker/useImagePicker"
+} from "react-native";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Image } from "react-native";
+import type { IUser } from "../../UsuariosType";
+import { Colors } from "@/constants/Coloresuser";
+import { styles } from "./ModalEditUserStyles";
+import useImagePicker from "@/utils/ImagePicker/useImagePicker";
 
 interface EditProfileModalProps {
-  visible: boolean
-  onClose: () => void
-  user: IUser
-  onUpdateUser: (user: IUser) => Promise<void>
+  visible: boolean;
+  onClose: () => void;
+  user: IUser;
+  onUpdateUser: (user: IUser) => Promise<void>;
 }
 
-const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, user, onUpdateUser }) => {
+const EditProfileModal: React.FC<EditProfileModalProps> = ({
+  visible,
+  onClose,
+  user,
+  onUpdateUser,
+}) => {
   const [formData, setFormData] = useState({
     nombre: "",
     correo: "",
     photo: "",
-  })
-  const [errors, setErrors] = useState<Record<string, string>>({})
-  const [isLoading, setIsLoading] = useState(false)
+  });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const { pickImage, imageUri, setImageUri } = useImagePicker({
     toastErrorMessage: "Error al seleccionar la imagen",
     onImagePicked: (data) => {
       if (data.apiUrl) {
-        console.log("Imagen subida:", data.apiUrl)
-        setFormData((prev) => ({ ...prev, photo: data.apiUrl || "" }))
+        console.log("Imagen subida:", data.apiUrl);
+        setFormData((prev) => ({ ...prev, photo: data.apiUrl || "" }));
       }
     },
-  })
+  });
 
   useEffect(() => {
     if (user) {
@@ -52,59 +57,59 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, u
         nombre: user.nombre,
         correo: user.correo,
         photo: user.image || "",
-      })
-      setImageUri(user.image || null)
+      });
+      setImageUri(user.image || null);
     }
-  }, [user, setImageUri])
+  }, [user, setImageUri]);
 
   const validateForm = () => {
-    const newErrors: Record<string, string> = {}
+    const newErrors: Record<string, string> = {};
 
     if (!formData.nombre.trim()) {
-      newErrors.nombre = "El nombre es requerido"
+      newErrors.nombre = "El nombre es requerido";
     }
 
     if (!formData.correo.trim()) {
-      newErrors.correo = "El email es requerido"
+      newErrors.correo = "El email es requerido";
     } else if (!/\S+@\S+\.\S+/.test(formData.correo)) {
-      newErrors.correo = "El email no es válido"
+      newErrors.correo = "El email no es válido";
     }
 
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async () => {
     if (validateForm()) {
-      setIsLoading(true)
+      setIsLoading(true);
       try {
         await onUpdateUser({
           ...user,
           ...formData,
-          image: formData.photo ,
-        })
-        console.log("Perfil actualizado:", formData.photo)
-        setErrors({})
+          image: formData.photo,
+        });
+        console.log("Perfil actualizado:", formData.photo);
+        setErrors({});
       } catch (error) {
-        console.error("Error updating profile:", error)
+        console.error("Error updating profile:", error);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
     }
-  }
+  };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
+    setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: "" }))
+      setErrors((prev) => ({ ...prev, [field]: "" }));
     }
-  }
+  };
 
   const handleClose = () => {
     if (!isLoading) {
-      onClose()
+      onClose();
     }
-  }
+  };
 
   const getInitials = (name: string) => {
     return name
@@ -112,18 +117,29 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, u
       .map((word) => word.charAt(0))
       .join("")
       .toUpperCase()
-      .slice(0, 2)
-  }
+      .slice(0, 2);
+  };
 
-  const currentImageUri = imageUri || formData.photo || user.image
+  const currentImageUri = imageUri || formData.photo || user.image;
 
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={handleClose}>
-      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
-        {/* Header */}
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="pageSheet"
+      onRequestClose={handleClose}
+    >
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
         <View style={styles.header}>
           <View style={styles.headerContent}>
-            <TouchableOpacity onPress={handleClose} style={styles.closeButton} disabled={isLoading}>
+            <TouchableOpacity
+              onPress={handleClose}
+              style={styles.closeButton}
+              disabled={isLoading}
+            >
               <Ionicons name="close" size={24} color="white" />
             </TouchableOpacity>
             <Text style={styles.headerTitle}>Mi Perfil</Text>
@@ -136,10 +152,18 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, u
           <View style={styles.form}>
             {/* Profile Info Banner */}
             <View style={styles.profileBanner}>
-              <Ionicons name="person-circle" size={24} color={Colors.light.primary} />
+              <Ionicons
+                name="person-circle"
+                size={24}
+                color={Colors.light.primary}
+              />
               <View style={styles.bannerContent}>
-                <Text style={styles.bannerTitle}>Editar mi información personal</Text>
-                <Text style={styles.bannerSubtitle}>Actualiza tu perfil y foto</Text>
+                <Text style={styles.bannerTitle}>
+                  Editar mi información personal
+                </Text>
+                <Text style={styles.bannerSubtitle}>
+                  Actualiza tu perfil y foto
+                </Text>
               </View>
             </View>
 
@@ -149,10 +173,16 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, u
               <View style={styles.photoContainer}>
                 <View style={styles.photoWrapper}>
                   {currentImageUri ? (
-                    <Image source={{ uri: currentImageUri }} style={styles.profilePhoto} resizeMode="cover" />
+                    <Image
+                      source={{ uri: currentImageUri }}
+                      style={styles.profilePhoto}
+                      resizeMode="cover"
+                    />
                   ) : (
                     <View style={styles.defaultAvatar}>
-                      <Text style={styles.avatarText}>{getInitials(formData.nombre || user.nombre)}</Text>
+                      <Text style={styles.avatarText}>
+                        {getInitials(formData.nombre || user.nombre)}
+                      </Text>
                     </View>
                   )}
                   <TouchableOpacity
@@ -171,20 +201,28 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, u
                     activeOpacity={0.7}
                     disabled={isLoading}
                   >
-                    <Ionicons name="image-outline" size={16} color={Colors.light.primary} />
+                    <Ionicons
+                      name="image-outline"
+                      size={16}
+                      color={Colors.light.primary}
+                    />
                     <Text style={styles.changePhotoText}>Cambiar foto</Text>
                   </TouchableOpacity>
                   {currentImageUri && (
                     <TouchableOpacity
                       style={styles.removePhotoButton}
                       onPress={() => {
-                        setImageUri(null)
-                        setFormData((prev) => ({ ...prev, photo: "" }))
+                        setImageUri(null);
+                        setFormData((prev) => ({ ...prev, photo: "" }));
                       }}
                       activeOpacity={0.7}
                       disabled={isLoading}
                     >
-                      <Ionicons name="trash-outline" size={16} color={Colors.light.danger} />
+                      <Ionicons
+                        name="trash-outline"
+                        size={16}
+                        color={Colors.light.danger}
+                      />
                       <Text style={styles.removePhotoText}>Eliminar</Text>
                     </TouchableOpacity>
                   )}
@@ -195,8 +233,17 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, u
             {/* Name Input */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Nombre completo</Text>
-              <View style={[styles.inputContainer, errors.nombre && styles.inputError]}>
-                <Ionicons name="person-outline" size={20} color={Colors.light.textSecondary} />
+              <View
+                style={[
+                  styles.inputContainer,
+                  errors.nombre && styles.inputError,
+                ]}
+              >
+                <Ionicons
+                  name="person-outline"
+                  size={20}
+                  color={Colors.light.textSecondary}
+                />
                 <TextInput
                   style={styles.input}
                   placeholder="Ingresa tu nombre completo"
@@ -206,14 +253,25 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, u
                   editable={!isLoading}
                 />
               </View>
-              {errors.nombre && <Text style={styles.errorText}>{errors.nombre}</Text>}
+              {errors.nombre && (
+                <Text style={styles.errorText}>{errors.nombre}</Text>
+              )}
             </View>
 
             {/* Email Input */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Email</Text>
-              <View style={[styles.inputContainer, errors.correo && styles.inputError]}>
-                <MaterialIcons name="email" size={20} color={Colors.light.textSecondary} />
+              <View
+                style={[
+                  styles.inputContainer,
+                  errors.correo && styles.inputError,
+                ]}
+              >
+                <MaterialIcons
+                  name="email"
+                  size={20}
+                  color={Colors.light.textSecondary}
+                />
                 <TextInput
                   style={styles.input}
                   placeholder="tu@empresa.com"
@@ -225,18 +283,33 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, u
                   editable={!isLoading}
                 />
               </View>
-              {errors.correo && <Text style={styles.errorText}>{errors.correo}</Text>}
+              {errors.correo && (
+                <Text style={styles.errorText}>{errors.correo}</Text>
+              )}
             </View>
 
             {/* Account Info */}
             <View style={styles.accountInfo}>
               <View style={styles.infoRow}>
                 <View style={styles.infoIcon}>
-                  <Ionicons name="business-outline" size={20} color={Colors.light.textSecondary} />
+                  <Ionicons
+                    name="business-outline"
+                    size={20}
+                    color={Colors.light.textSecondary}
+                  />
                 </View>
                 <View style={styles.infoContent}>
                   <Text style={styles.infoLabel}>Estado de la cuenta</Text>
-                  <Text style={[styles.infoValue, { color: user.activo ? Colors.light.success : Colors.light.danger }]}>
+                  <Text
+                    style={[
+                      styles.infoValue,
+                      {
+                        color: user.activo
+                          ? Colors.light.success
+                          : Colors.light.danger,
+                      },
+                    ]}
+                  >
                     {user.activo ? "Activa" : "Inactiva"}
                   </Text>
                 </View>
@@ -245,11 +318,22 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, u
               {user.isAdmin && (
                 <View style={styles.infoRow}>
                   <View style={styles.infoIcon}>
-                    <Ionicons name="shield-checkmark" size={20} color={Colors.light.warning} />
+                    <Ionicons
+                      name="shield-checkmark"
+                      size={20}
+                      color={Colors.light.warning}
+                    />
                   </View>
                   <View style={styles.infoContent}>
                     <Text style={styles.infoLabel}>Permisos</Text>
-                    <Text style={[styles.infoValue, { color: Colors.light.warning }]}>Administrador</Text>
+                    <Text
+                      style={[
+                        styles.infoValue,
+                        { color: Colors.light.warning },
+                      ]}
+                    >
+                      Administrador
+                    </Text>
                   </View>
                 </View>
               )}
@@ -285,7 +369,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, u
         </View>
       </KeyboardAvoidingView>
     </Modal>
-  )
-}
+  );
+};
 
-export default EditProfileModal
+export default EditProfileModal;

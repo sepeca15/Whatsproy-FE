@@ -21,12 +21,6 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, currentUser
   const scaleAnim = useRef(new Animated.Value(1)).current
   const isCurrentUser = user.id === currentUserId
 
-  // Efecto para forzar re-render cuando cambie la imagen
-  useEffect(() => {
-    // Este efecto se ejecutará cada vez que user.image cambie
-    console.log(`UserCard ${user.id} - imagen actualizada:`, user.image)
-  }, [user.image, user.id])
-
   const animatePress = () => {
     Animated.sequence([
       Animated.timing(scaleAnim, {

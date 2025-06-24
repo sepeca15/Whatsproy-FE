@@ -49,7 +49,7 @@ const OrdersActive = () => {
             }
           }}
           onEndReachedThreshold={0.2}
-          contentContainerStyle={{ paddingBottom: 100 }}
+          contentContainerStyle={{ paddingBottom: 100, paddingHorizontal: 1 }}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}

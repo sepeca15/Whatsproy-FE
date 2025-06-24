@@ -285,7 +285,7 @@ const FilterSearch = () => {
                   )}
                   keyExtractor={(item) => item.orderId.toString()}
                   onEndReachedThreshold={0.2}
-                  contentContainerStyle={{ paddingBottom: 100 }}
+                  contentContainerStyle={{ paddingBottom: 100, paddingHorizontal: 1 }}
                 />
               </View>
             ) : (

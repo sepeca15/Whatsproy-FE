@@ -842,9 +842,13 @@
     "permissionsStep3": "Review the user's current permissions",
     "permissionsStep4": "Adjust permissions as needed",
     "permissionsStep5": "Save changes and notify the user",
-    "cierreprovisorio": "Provisional Closure"
+    "cierreprovisorio": "Provisional Closure",
+    "modalDeleteUser.title": "Delete User",
+    "modalDeleteUser.message": "Are you sure you want to delete this user? This action cannot be undone."
   },
   "es": {
+    "modalDeleteUser.title": "Eliminar usuario",
+    "modalDeleteUser.message": "¿Estás seguro de que deseas eliminar este usuario? Esta acción no se puede deshacer.",
     "usersListTitle": "Lista de Usuarios",
     "usersListDesc": "Vista general de todos los usuarios registrados en el sistema.",
     "usersListStep1": "Ve a la sección 'Usuarios' en configuración",

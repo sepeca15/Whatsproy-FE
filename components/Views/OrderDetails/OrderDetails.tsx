@@ -817,7 +817,6 @@ const OrderDetails = () => {
           </View>
         )}
 
-        {/* Chat Button */}
         <TouchableOpacity style={styles.chatButton} onPress={handleViewChat} activeOpacity={0.7}>
           <IonIcons name="chatbubble-outline" size={20} color="white" />
           <Text style={styles.chatButtonText}>
@@ -826,7 +825,6 @@ const OrderDetails = () => {
         </TouchableOpacity>
       </ScrollView>
 
-      {/* Status Change Modal */}
       <CustomModalPicker
         loading={sendingChangeStatus}
         changeStatus={detailOfOrder.data?.cambiosEstado}

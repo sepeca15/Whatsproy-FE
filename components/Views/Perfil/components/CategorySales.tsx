@@ -153,7 +153,7 @@ const CategorySales: React.FC<CategorySalesProps> = ({
         ) : (
           <VStack space={4}>
             {categories.map((category) => {
-              const safeProgressValue =  Math.round(category.percentage);
+              const safeProgressValue =  Number(Math.round(category.percentage).toFixed(2));
 
               return (
               <VStack key={category.id} space={1}>
@@ -177,9 +177,6 @@ const CategorySales: React.FC<CategorySalesProps> = ({
                 <HStack space={2} alignItems="center">
                   <SafeProgress
                     value={safeProgressValue}
-                    _filledTrack={{ bg: category.color }}
-                    size="xs"
-                    flex={1}
                   />
                   <Text
                     style={{

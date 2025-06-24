@@ -367,14 +367,13 @@ export const styles = StyleSheet.create({
     color: Colors.light.primary,
   },
 
-  // Chat Button
   chatButton: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: Colors.light.primary,
     borderRadius: 12,
-    paddingVertical: 16,
+    paddingVertical: 12,
     marginTop: 8,
     shadowColor: Colors.light.primary,
     shadowOffset: { width: 0, height: 4 },
@@ -384,7 +383,7 @@ export const styles = StyleSheet.create({
   },
   chatButtonText: {
     marginLeft: 8,
-    fontSize: RFValue(16),
+    fontSize: RFValue(12),
     fontWeight: "600",
     color: "white",
   },
@@ -443,7 +442,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: Colors.light.primary,
     borderRadius: 12,
-    paddingVertical: 16,
+    paddingVertical: 12,
     marginTop: 8,
     shadowColor: Colors.light.primary,
     shadowOffset: { width: 0, height: 4 },
@@ -453,7 +452,7 @@ export const styles = StyleSheet.create({
   },
   printButtonText: {
     marginLeft: 8,
-    fontSize: RFValue(16),
+    fontSize: RFValue(12),
     fontWeight: "600",
     color: "white",
   },

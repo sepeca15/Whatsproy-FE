@@ -78,45 +78,6 @@ const Perfil: React.FC = () => {
     sales: [],
   });
 
-  // Datos de ventas simulados
-  const resumenVentasData = {
-    weeklySales: [1, 2, 3, 4, 5, 6, 7],
-    weeklyLabels: [
-      "week1",
-      "week2",
-      "week3",
-      "week4",
-      "wee5",
-      "week6",
-      "week7",
-    ],
-
-    monthlySales: [
-      12500, 14200, 13800, 15750, 16300, 15200, 16000, 17000, 18000, 19000,
-      20000, 21000,
-    ],
-    monthlyLabels: [
-      "Ene",
-      "Feb",
-      "Mar",
-      "Abr",
-      "May",
-      "Jun",
-      "Jul",
-      "Ago",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dic",
-    ],
-
-    quarterlySales: [11, 22, 33, 44],
-    quarterlyLabels: ["Q1", "Q2", "Q3", "Q4"],
-
-    yearlySales: [3333333, 14244400, 13444800, 155555750],
-    yearlyLabels: ["2021", "2022", "2023", "2024"],
-  };
-
   const fetchProfileData = async () => {
     try {
       setLoading(true);
@@ -167,50 +128,6 @@ const Perfil: React.FC = () => {
 
     fetchUser();
   }, [periodSalesByCategory]);
-
-  useEffect(() => {
-    if (resumenVentas) {
-      switch (salesPeriod) {
-        case "semanal":
-          setPedidos(resumenVentas.weekly);
-          setValorPrueba({
-            labels: resumenVentasData.weeklyLabels,
-            sales: resumenVentasData.weeklySales,
-          });
-          break;
-        case "mensual":
-          setPedidos(resumenVentas.monthly);
-          setValorPrueba({
-            labels: resumenVentasData.monthlyLabels,
-            sales: resumenVentasData.monthlySales,
-          });
-          break;
-        case "trimestral":
-          setPedidos(resumenVentas.quarterly);
-          setValorPrueba({
-            labels: resumenVentasData.quarterlyLabels,
-            sales: resumenVentasData.quarterlySales,
-          });
-          break;
-        case "anual":
-          setPedidos(resumenVentas.yearly);
-          setValorPrueba({
-            labels: resumenVentasData.yearlyLabels,
-            sales: resumenVentasData.yearlySales,
-          });
-
-          break;
-        default:
-          break;
-      }
-    } else {
-      setPedidos(0);
-      setValorPrueba({
-        labels: [],
-        sales: [],
-      });
-    }
-  }, [salesPeriod, resumenVentas]);
 
   return (
     <View style={styles.container}>
