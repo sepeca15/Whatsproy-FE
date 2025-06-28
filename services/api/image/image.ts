@@ -24,8 +24,10 @@ export const uploadImage = async (image: {
     );
 
     return data;
-  } catch (error) {
-    console.error("Error al subir la imagen", error);
+  } catch (error: any) {
+    console.log('xdxd');
+    
+    console.log("Error al subir la imagen", error.response.data.message);
     throw error;
   }
 };

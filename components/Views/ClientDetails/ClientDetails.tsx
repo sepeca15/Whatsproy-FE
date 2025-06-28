@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from "react";
 import { Box, Text, VStack, ScrollView, View } from "native-base";
-import { Cliente } from "../Clients/types";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import Animated from "react-native-reanimated";
 import { globalStyles } from "@/components/globalStyles";

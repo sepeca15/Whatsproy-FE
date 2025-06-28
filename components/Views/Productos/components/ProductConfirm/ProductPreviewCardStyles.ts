@@ -1,0 +1,206 @@
+import { StyleSheet } from "react-native"
+import { Colors } from "@/constants/Colors"
+
+export const styles = StyleSheet.create({
+  productCard: {
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    marginBottom: 12,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  productCardDisabled: {
+    backgroundColor: "#f9fafb",
+    opacity: 0.6,
+  },
+  productHeader: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+  },
+  checkboxContainer: {
+    marginRight: 12,
+    marginTop: 4,
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: "#d1d5db",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  checkboxChecked: {
+    backgroundColor: Colors.light.primary,
+    borderColor: Colors.light.primary,
+  },
+  productInfo: {
+    flex: 1,
+  },
+  productName: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: Colors.light.text,
+    marginBottom: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: "transparent",
+    paddingBottom: 4,
+  },
+  productNameDisabled: {
+    color: "#9ca3af",
+  },
+  badgeContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  confidenceBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  confidenceText: {
+    color: "#fff",
+    fontSize: 12,
+    fontWeight: "bold",
+  },
+  menuBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f0f9ff",
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 8,
+  },
+  menuBadgeText: {
+    color: Colors.light.primary,
+    fontSize: 10,
+    marginLeft: 2,
+  },
+  productDetails: {
+    marginTop: 12,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: "#f3f4f6",
+  },
+  detailRow: {
+    marginBottom: 12,
+  },
+  detailRowHorizontal: {
+    flexDirection: "row",
+    gap: 12,
+    marginBottom: 12,
+  },
+  halfWidth: {
+    flex: 1,
+  },
+  detailLabel: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: Colors.light.text,
+    marginBottom: 4,
+  },
+  detailInput: {
+    borderWidth: 1,
+    borderColor: "#d1d5db",
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    fontSize: 14,
+    backgroundColor: "#f9fafb",
+    minHeight: 40,
+  },
+  priceInput: {
+    borderWidth: 1,
+    borderColor: "#d1d5db",
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    fontSize: 14,
+    backgroundColor: "#f9fafb",
+  },
+  timeInputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  timeInput: {
+    borderWidth: 1,
+    borderColor: "#d1d5db",
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    fontSize: 14,
+    backgroundColor: "#f9fafb",
+    flex: 1,
+    marginRight: 8,
+  },
+  timeUnit: {
+    fontSize: 14,
+    color: Colors.light.tabIconDefault,
+    fontWeight: "500",
+  },
+  configSection: {
+    marginTop: 16,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: "#f3f4f6",
+  },
+  configSectionTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: Colors.light.text,
+    marginBottom: 12,
+  },
+  switchRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 8,
+  },
+  switchInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+  },
+  switchLabel: {
+    fontSize: 14,
+    color: Colors.light.text,
+    marginLeft: 8,
+  },
+  daySelector: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  dayButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "#d1d5db",
+    backgroundColor: "#fff",
+  },
+  dayButtonSelected: {
+    backgroundColor: Colors.light.primary,
+    borderColor: Colors.light.primary,
+  },
+  dayButtonText: {
+    fontSize: 12,
+    color: Colors.light.text,
+    fontWeight: "500",
+  },
+  dayButtonTextSelected: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
+})

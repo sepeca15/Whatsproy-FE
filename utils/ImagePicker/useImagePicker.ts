@@ -68,7 +68,7 @@ const useImagePicker = ({ toastErrorMessage, onImagePicked }: UseImagePickerProp
         }
         return uploadResponse?.url;
       } else {
-        console.error("Error al subir la imagen: No se recibió una URL.");
+        console.error(": No se recibió una URL.");
         showToast({ title: toastErrorMessage, status: "error" });
       }
     } catch (error) {

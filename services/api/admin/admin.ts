@@ -19,6 +19,7 @@ import * as payments from "../payments/payment";
 import * as cierreProvisorio from "../cierre_provisoro/cierreProvisorio";
 import * as numeroConfianza from "../numeroConfianza/numeroConfianza";
 import * as schedules from "../schedules/schedules";
+import * as menuImg from "../menuImg/menuImg";
 
 
 
@@ -154,7 +155,13 @@ const api = {
     create: numeroConfianza.create,
     findAll: numeroConfianza.getAllNumbers,
     delete: numeroConfianza.deleteNumber
-
+  },
+  menu: {
+    find: menuImg.getAllMenuImages,
+    create: menuImg.createMenuImage,
+    delete: menuImg.deleteMenuImage,
+    update: menuImg.markMenuImageAsProcessed,
+    parseImageToText: menuImg.parseImage
   }
 };
 

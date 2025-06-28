@@ -34,6 +34,7 @@ import AddButton from "..../../hooks/add_Button/Add_button";
 import { useUser } from "@/hooks/redux/useUser";
 import { ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
 import DailyMenuTab from "./DailyMenuTab";
+import MenusUpload from "./components/MenusUpload";
 
 const Productos: React.FC = () => {
   const router = useRouter();
@@ -44,7 +45,7 @@ const Productos: React.FC = () => {
   const intl = useIntl();
   const { showToast } = useToastContext();
   const [isDeleting, setIsDeleting] = useState(true);
-  const [activeTab, setActiveTab] = useState<'products' | 'dailyMenu'>('products');
+  const [activeTab, setActiveTab] = useState<'products' | 'dailyMenu' | 'uploadMenu'>('products');
 
   const [allCategories, setAllCategories] = useState<ICategoryData[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
@@ -58,7 +59,7 @@ const Productos: React.FC = () => {
   const [refreshing, setRefreshing] = useState(false);
 
   const { user } = useUser();
-  
+
   const loadAllCategories = async () => {
     try {
       setLoadingCategories(true);
@@ -77,7 +78,6 @@ const Productos: React.FC = () => {
     }
   };
 
-  console.log('allCategories', ProductsBD);
 
   const loadProductsFromCategory = async () => {
     try {
@@ -91,14 +91,14 @@ const Productos: React.FC = () => {
         }
       }
     } catch (error: any) {
-      console.log('xdxd',error.response?.data?.message);
+      console.log('xdxd', error.response?.data?.message);
     } finally {
       setLoadingProducts(false);
     }
   };
 
   const isInitialLoading = loadingCategories || loadingProducts;
-  
+
   useEffect(() => {
     if (activeTab === 'products') {
       loadAllCategories();
@@ -120,6 +120,7 @@ const Productos: React.FC = () => {
       }).start();
     }
   }, [isInitialLoading]);
+
 
   const handleDeleteRequest = useCallback(
     (productId: number) => {
@@ -261,7 +262,7 @@ const Productos: React.FC = () => {
     )
     .sort((a, b) => a.nombre.localeCompare(b.nombre, locale));
 
-  const renderTabButton = (tabKey: 'products' | 'dailyMenu', labelId: string, defaultLabel: string) => (
+  const renderTabButton = (tabKey: 'products' | 'dailyMenu' | 'uploadMenu', labelId: string, defaultLabel: string) => (
     <TouchableOpacity
       style={[
         styles.tabButton,
@@ -288,9 +289,12 @@ const Productos: React.FC = () => {
     </TouchableOpacity>
   );
 
+
+
+
   const renderProductsTab = () => (
     <>
-      <View style={{ paddingHorizontal: 6,paddingBottom: 80, height: "100%" }}>
+      <View style={{ paddingHorizontal: 6, paddingBottom: 80, height: "100%" }}>
         {renderDeleteModal()}
         <View style={styles.searchBarContainer}>
           <Icon name="search" size={20} style={styles.searchIcon} />
@@ -304,7 +308,7 @@ const Productos: React.FC = () => {
             onChangeText={(text) => setSearchTerm(text)}
           />
         </View>
-        
+
         {allCategories.length > 0 ? (
           <View style={styles.categoryContainer}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -443,8 +447,8 @@ const Productos: React.FC = () => {
                 defaultMessage: isReserva ? "Servicios y Productos" : "Productos"
               })}
             >
-              {isReserva ? 
-                <FormattedMessage id="servicesAndProduct" defaultMessage="Servicios y Productos" /> : 
+              {isReserva ?
+                <FormattedMessage id="servicesAndProduct" defaultMessage="Servicios y Productos" /> :
                 <FormattedMessage id="products" defaultMessage="Productos" />
               }
             </CustomText>
@@ -452,12 +456,17 @@ const Productos: React.FC = () => {
         </View>
       </AnimatedTwo.View>
 
-      {!isReserva && <View style={styles.tabContainer}>
-        {renderTabButton('products', 'products', 'Productos')}
-        {renderTabButton('dailyMenu', 'dailyMenu', 'Menú Diario')}
-      </View>}
+      {!isReserva && (
+        <View style={styles.tabContainer}>
+          {renderTabButton('products', 'products', 'Productos')}
+          {renderTabButton('dailyMenu', 'dailyMenu', 'Menú Diario')}
+          {renderTabButton('uploadMenu', 'uploadMenu', 'Subir Menú')}
+        </View>
+      )}
 
-      {activeTab === 'products' ? renderProductsTab() : renderDailyMenuTab()}
+      {activeTab === 'products' && renderProductsTab()}
+      {activeTab === 'dailyMenu' && renderDailyMenuTab()}
+      {activeTab === 'uploadMenu' && <MenusUpload />}
     </View>
   );
 };

@@ -22,7 +22,19 @@ export const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#f0f0f0",
   },
-
+    imageRecognitionButton: {
+    position: "absolute",
+    right: 15,
+    top: 15,
+    bottom: 15,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 12,
+    backgroundColor: "#f8f9fa",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: Colors.light.primary,
+  },
   emptyClientsSubtext: {
     fontSize: 14,
     color: Colors.light.icon,
