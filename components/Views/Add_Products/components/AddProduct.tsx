@@ -309,7 +309,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ visible, onClose, onS
                     }
                   }}
                   onSearch={() => {}}
-                  error={errors.categoryIds}
+                  error={errors.categoryIds ?? ""}
                 />
               </View>
             </View>

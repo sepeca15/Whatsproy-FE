@@ -1,9 +1,5 @@
 import React, { useEffect } from "react";
-import {
-  SafeAreaView,
-  ActivityIndicator,
-  ScrollView,
-} from "react-native";
+import { SafeAreaView, ActivityIndicator, ScrollView } from "react-native";
 import { Colors } from "../../../constants/Colors";
 import CustomText from "./components/CustomText";
 import MetricCard from "./components/MetricCard";
@@ -33,7 +29,15 @@ const Home: React.FC = () => {
   const firstLoadRef = React.useRef(true);
 
   const { user } = useUser();
-  const { lastThreeOrders, numberClientes, numberIngresos, numberPedidos, handleAddStatistics, loaded } = useHomeData()
+  const {
+    lastThreeOrders,
+    numberClientes,
+    numberIngresos,
+    loaidngStatitics,
+    numberPedidos,
+    handleAddStatistics,
+    loaded,
+  } = useHomeData();
   const empresaName = user?.empresaName ?? "Empresa Name";
   const isReserva = user?.id_rol === 1;
   const currentPlan = user?.payment?.plan;
@@ -45,10 +49,9 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     if (!loaded) {
-      handleAddStatistics(filterType)
+      handleAddStatistics(filterType);
     }
   }, []);
-
 
   useEffect(() => {
     if (firstLoadRef.current) {
@@ -104,10 +107,7 @@ const Home: React.FC = () => {
           style={styles.loader}
         />
       ) : (
-        <ScrollView
-          style={styles.content}
-          showsVerticalScrollIndicator
-        >
+        <ScrollView style={styles.content} showsVerticalScrollIndicator>
           <Animatable.View
             animation="fadeInUp"
             duration={800}
@@ -173,36 +173,38 @@ const Home: React.FC = () => {
               </Select>
             </HStack>
             <MetricCard
+              loading={loaidngStatitics}
               icon="cart-outline"
               title={intl.formatMessage({
                 id: isReserva ? "reservasToday.home" : "ordersToday.home",
                 defaultMessage: isReserva ? "Reservas Hoy" : "Pedidos Hoy",
               })}
               value={numberPedidos}
-              onPress={() => { }}
+              onPress={() => {}}
             />
-            
+
             <MetricCard
+              loading={loaidngStatitics}
               icon="account-group"
               title={intl.formatMessage({
                 id: "clients.home",
                 defaultMessage: "Clientes",
               })}
               value={numberClientes}
-              onPress={() => { }}
+              onPress={() => {}}
             />
             <MetricCard
+              loading={loaidngStatitics}
               icon="cash-multiple"
               title={intl.formatMessage({
                 id: "revenue.home",
                 defaultMessage: "Ingresos",
               })}
               value={`$${Number(numberIngresos ?? 0).toFixed(2)}`}
-              onPress={() => { }}
+              onPress={() => {}}
             />
           </Animatable.View>
 
-          {/* Componente de Suscripción - Ahora ubicado después de las métricas */}
           {currentPlan && subStatus && (
             <Animatable.View
               animation="fadeInUp"
@@ -288,7 +290,6 @@ const Home: React.FC = () => {
               </Animatable.View>
             )}
 
-            {/* Quick Actions */}
             <CustomText style={styles.sectionTitle}>
               <FormattedMessage
                 id="quickActions.home"

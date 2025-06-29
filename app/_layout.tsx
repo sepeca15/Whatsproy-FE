@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { NativeBaseProvider } from "native-base";
@@ -9,17 +9,17 @@ import { store } from "@/services/redux/store";
 import { ToastProvider } from "@/contexts/ToastContext";
 import { LocalizationProvider } from "./LocalizationContext";
 import { StatusBar, Linking } from "react-native";
-
+import { Provider as PaperProvider } from "react-native-paper";
+import Toast from 'react-native-toast-message';
 SplashScreen.preventAutoHideAsync();
 
 export const unstable_settings = {
-  initialRouteName: 'index',
+  initialRouteName: "index",
   reactStrictMode: false,
 };
 
-
 export default function RootLayout() {
-  const router = useRouter()
+  const router = useRouter();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
@@ -31,43 +31,49 @@ export default function RootLayout() {
   useEffect(() => {
     const handleDeepLink = (event: any) => {
       const url = new URL(event.url);
-      const token = url.searchParams.get('token');
+      const token = url.searchParams.get("token");
 
       if (token) {
         router.push(`/(auth)/reset-password?token=${token}` as any);
       }
     };
 
-    Linking.addEventListener('url', handleDeepLink);
+    Linking.addEventListener("url", handleDeepLink);
 
     return () => {
-      Linking.removeAllListeners('url');
+      Linking.removeAllListeners("url");
     };
   }, [router]);
-
 
   if (!loaded) return null;
 
   return (
     <Provider store={store}>
-
-      {/* <NotificationProvider> */}
       <LocalizationProvider>
         <NativeBaseProvider>
+          <Toast />
+
           <ToastProvider>
             <ThemeProvider value={DefaultTheme}>
-              <StatusBar barStyle="light-content" backgroundColor={"#075e54"} />
-              {/* <PedidosListener /> */}
+              <StatusBar
+                barStyle="light-content"
+                backgroundColor={"#075e54"}
+              />
               <Stack screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="(tabs)"
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="(auth)"
+                  options={{ headerShown: false }}
+                />
                 <Stack.Screen name="+not-found" />
               </Stack>
             </ThemeProvider>
           </ToastProvider>
         </NativeBaseProvider>
       </LocalizationProvider>
-      {/* </NotificationProvider> */}
     </Provider>
   );
 }

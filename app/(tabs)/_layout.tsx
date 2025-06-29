@@ -5,8 +5,6 @@ import { PrivateView } from "@/components/PrivateView";
 import Layout from "@/components/Layout";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useUser } from "@/hooks/redux/useUser";
-import toastConfig from "@/utils/toast";
-import Toast from "react-native-toast-message";
 import ConfigAccount from "@/components/Views/ConfigAccount";
 import { io } from "socket.io-client";
 import { useHomeData } from "@/hooks/redux/useHomeData";
@@ -58,7 +56,6 @@ const TabLayout: React.FC = () => {
   return (
     <GestureHandlerRootView>
       <NativeBaseProvider>
-        <Toast config={toastConfig} />
         <PrivateView>
           {globalConfig ? (
             <Layout>

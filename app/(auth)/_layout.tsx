@@ -5,8 +5,6 @@ import { useAuth } from "@/hooks/useAuth";
 import * as Progress from "react-native-progress";
 import { Colors } from "@/constants/Colors";
 import { StyleSheet } from "react-native";
-import Toast from "react-native-toast-message";
-import toastConfig from "@/utils/toast";
 import { usePushNotifications } from "@/hooks/usePushNotification";
 import { useUser } from "@/hooks/redux/useUser";
 import api from "@/services/api/admin";
@@ -53,7 +51,6 @@ const Layout: React.FC = () => {
   }
   return (
     <NativeBaseProvider>
-      <Toast config={toastConfig} />
       <Slot />
     </NativeBaseProvider>
   );

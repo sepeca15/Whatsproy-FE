@@ -8,7 +8,7 @@ import OrdersFinished from "./components/OrdersFinished";
 import OrdersPending from "./components/OrdersPending";
 import { useUser } from "@/hooks/redux/useUser";
 import CreateOrderModal from "@/components/CreateOrderModal";
-import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
+import { FormattedMessage } from "react-intl";
 import CustomText from "@/components/CustomText";
 import Animated from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -18,6 +18,7 @@ import { globalStyles } from "@/components/globalStyles";
 import { styles } from "./PedidosStyles";
 import { Button, View } from "native-base";
 import FilterSearch from "./components/FilterSearch";
+import { useToastContext } from "@/contexts/ToastContext";
 
 type pagesOrder = "finished" | "pending" | "active";
 
@@ -25,6 +26,7 @@ const PedidosEIngresos: React.FC = () => {
   const [optionSearchEnable, setOptionSearchEnable] = React.useState<boolean>(false);
   const [selected, setSelected] = React.useState<pagesOrder>("pending");
   const [openAddModal, setOpenAddModal] = React.useState<boolean>(false);
+const { showToast } = useToastContext();
 
   const togggleOptionModal = () => {
     setOptionSearchEnable((prev) => !prev)

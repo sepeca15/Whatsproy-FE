@@ -1,33 +1,33 @@
-"use client"
+"use client";
 
-import { View, Text, FlatList } from "react-native"
-import { useRouter } from "expo-router"
-import Feather from "react-native-vector-icons/Feather"
-import Entypo from "react-native-vector-icons/Entypo"
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5"
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
-import IonIcons from "react-native-vector-icons/Ionicons"
-import { FormattedMessage, useIntl } from "react-intl"
-import { useColorScheme } from "react-native"
-import { Colors } from "@/constants/Colors"
-import Animated from "react-native-reanimated"
-import styles from "./SettingsStyles"
-import SettingCard from "@/hooks/settingsCards/SettingCard"
-import * as Animatable from "react-native-animatable"
-import { useUser } from "@/hooks/redux/useUser"
-import { ID_TIPOSERVICIO_DELIVERY } from "@/services/api/tiposervicio/tiposervicio.type"
-import MaterialIcons from "react-native-vector-icons/MaterialIcons"
+import { View, Text, FlatList } from "react-native";
+import { useRouter } from "expo-router";
+import Feather from "react-native-vector-icons/Feather";
+import Entypo from "react-native-vector-icons/Entypo";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import IonIcons from "react-native-vector-icons/Ionicons";
+import { FormattedMessage, useIntl } from "react-intl";
+import { useColorScheme } from "react-native";
+import { Colors } from "@/constants/Colors";
+import Animated from "react-native-reanimated";
+import styles from "./SettingsStyles";
+import SettingCard from "@/hooks/settingsCards/SettingCard";
+import * as Animatable from "react-native-animatable";
+import { useUser } from "@/hooks/redux/useUser";
+import { ID_TIPOSERVICIO_DELIVERY } from "@/services/api/tiposervicio/tiposervicio.type";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 const Settings = () => {
-  const intl = useIntl()
-  const router = useRouter()
-  const colorScheme = useColorScheme()
-  const isDark = colorScheme === "dark"
-  const colors = isDark ? Colors.dark : Colors.light
+  const intl = useIntl();
+  const router = useRouter();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
+  const colors = isDark ? Colors.dark : Colors.light;
 
-  const { user } = useUser()
-  const isAdmin = user?.isAdmin
-  const isDelivery = user?.tipo_servicio === ID_TIPOSERVICIO_DELIVERY
+  const { user } = useUser();
+  const isAdmin = user?.isAdmin;
+  const isDelivery = user?.tipo_servicio === ID_TIPOSERVICIO_DELIVERY;
 
   const settingsPage = [
     ...(user?.isSuperAdmin
@@ -110,13 +110,22 @@ const Settings = () => {
             icon: <FontAwesome5 name="users" size={22} color={"white"} />,
           },
           {
-            title: intl.formatMessage({ id: "status", defaultMessage: "Status" }),
+            title: intl.formatMessage({
+              id: "status",
+              defaultMessage: "Status",
+            }),
             href: "/(tabs)/status",
             description: intl.formatMessage({
               id: "statusDescription",
               defaultMessage: "View and manage statuses",
             }),
-            icon: <MaterialCommunityIcons name="list-status" size={22} color={"white"} />,
+            icon: (
+              <MaterialCommunityIcons
+                name="list-status"
+                size={22}
+                color={"white"}
+              />
+            ),
           },
           {
             title: intl.formatMessage({
@@ -128,7 +137,9 @@ const Settings = () => {
               id: "orderDataDescription",
               defaultMessage: "Manage order-related data",
             }),
-            icon: <IonIcons size={22} color={"white"} name="newspaper-outline" />,
+            icon: (
+              <IonIcons size={22} color={"white"} name="newspaper-outline" />
+            ),
           },
           ...(isAdmin
             ? [
@@ -140,9 +151,16 @@ const Settings = () => {
                   href: "/(tabs)/price-adjustment",
                   description: intl.formatMessage({
                     id: "priceAdjustmentDesc",
-                    defaultMessage: "Adjust product prices globally or by category",
+                    defaultMessage:
+                      "Adjust product prices globally or by category",
                   }),
-                  icon: <MaterialIcons size={22} color={"white"} name="price-change" />,
+                  icon: (
+                    <MaterialIcons
+                      size={22}
+                      color={"white"}
+                      name="price-change"
+                    />
+                  ),
                 },
               ]
             : []),
@@ -170,7 +188,13 @@ const Settings = () => {
         id: "categoriesDesc",
         defaultMessage: "Organize and manage categories",
       }),
-      icon: <MaterialCommunityIcons size={22} color={"white"} name="format-list-bulleted-type" />,
+      icon: (
+        <MaterialCommunityIcons
+          size={22}
+          color={"white"}
+          name="format-list-bulleted-type"
+        />
+      ),
     },
     {
       title: intl.formatMessage({
@@ -180,7 +204,8 @@ const Settings = () => {
       href: "/(tabs)/menu-builder",
       description: intl.formatMessage({
         id: "dynamicMenuDesc",
-        defaultMessage: "Crea y personaliza tu menú con vista previa en tiempo real",
+        defaultMessage:
+          "Crea y personaliza tu menú con vista previa en tiempo real",
       }),
       icon: <MaterialCommunityIcons size={22} color={"white"} name="menu" />,
     },
@@ -218,7 +243,9 @@ const Settings = () => {
         id: "trustedNumberSettingsDesc",
         defaultMessage: "Activa numeros con los cuales no se activará el bot",
       }),
-      icon: <IonIcons size={22} color={"white"} name="phone-portrait-outline" />,
+      icon: (
+        <IonIcons size={22} color={"white"} name="phone-portrait-outline" />
+      ),
     },
     ...(isDelivery && isAdmin
       ? [
@@ -236,12 +263,13 @@ const Settings = () => {
           },
         ]
       : []),
-  ]
+  ];
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      {/* Header */}
-      <Animated.View style={[styles.header, { backgroundColor: colors.primary }]}>
+      <Animated.View
+        style={[styles.header, { backgroundColor: colors.primary }]}
+      >
         <View style={styles.headerContent}>
           <Text style={styles.headerTitle}>
             <FormattedMessage id="settings" />
@@ -249,27 +277,24 @@ const Settings = () => {
         </View>
       </Animated.View>
 
-      {/* Lista de Ajustes */}
       <FlatList
         data={settingsPage}
         keyExtractor={(item, index) => item.href || index.toString()}
         renderItem={({ item, index }) => (
-          <Animatable.View animation="fadeInUp" duration={800} delay={100 + index * 50} style={styles.metricsContainer}>
-            <SettingCard
-              item={item}
-              index={index}
-              isDark={false}
-              colors={colors}
-              onNavigate={(href) => router.push(href as any)}
-            />
-          </Animatable.View>
+          <SettingCard
+            item={item}
+            index={index}
+            isDark={false}
+            colors={colors}
+            onNavigate={(href) => router.push(href as any)}
+          />
         )}
         contentContainerStyle={styles.scrollContent}
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
       />
     </View>
-  )
-}
+  );
+};
 
-export default Settings
+export default Settings;

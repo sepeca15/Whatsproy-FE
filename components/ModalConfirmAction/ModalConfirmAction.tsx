@@ -2,9 +2,8 @@ import { Button, Modal, View } from "native-base";
 import React from "react";
 import CustomText from "../CustomText";
 import { styles } from "./ModalConfirmActionStyles";
-import { FormattedMessage, useIntl } from "react-intl"; 
+import { FormattedMessage, useIntl } from "react-intl";
 import InputField from "../InputField";
-
 
 interface IModalConfirmAction {
   onContinue: () => void;
@@ -31,7 +30,7 @@ const ModalConfirmAction = ({
   const submitAction = async () => {
     await onContinue();
     onClose();
-  };    
+  };
   const intl = useIntl();
 
   return (
@@ -48,17 +47,17 @@ const ModalConfirmAction = ({
           <CustomText style={styles.title}>{title}</CustomText>
           <CustomText style={styles.message}>{message}</CustomText>
 
-          {
-        withReason && setReason &&  <InputField
-            placeholder={intl.formatMessage({ id: "reasonEj" })}
-            isTextArea
-            label={intl.formatMessage({ id: "reason" })}
-            value={reason}
-            isRequired={false}
-            onChangeText={(text) => setReason(text)}
-            style={styles.textArea}
-          />
-}
+          {withReason && setReason && (
+            <InputField
+              placeholder={intl.formatMessage({ id: "reasonEj" })}
+              isTextArea
+              label={intl.formatMessage({ id: "reason" })}
+              value={reason}
+              isRequired={false}
+              onChangeText={(text) => setReason(text)}
+              style={styles.textArea}
+            />
+          )}
           <View style={styles.footer}>
             <Button onPress={onClose} style={styles.buttonCancel}>
               <CustomText
@@ -67,7 +66,12 @@ const ModalConfirmAction = ({
                 <FormattedMessage id="cancel" defaultMessage="Cancel" />
               </CustomText>
             </Button>
-            <Button background={'red.700'} isLoading={loading} onPress={submitAction} style={styles.buttonContinue}>
+            <Button
+              background={"red.700"}
+              isLoading={loading}
+              onPress={submitAction}
+              style={styles.buttonContinue}
+            >
               <CustomText style={{ color: "white", fontSize: 12 }}>
                 <FormattedMessage id="confirm" defaultMessage="Confirm" />
               </CustomText>

@@ -21,8 +21,8 @@ const ConfigAccount = () => {
 
   React.useEffect(() => {
     if (user?.id) {
-      let step = 1;
-
+      let step = 0;
+ 
       if (!user.userConfigured) step = 1;
       else if (!user.paymentMade) step = 2;
       else if (!user.apiConfigured) step = 3;
