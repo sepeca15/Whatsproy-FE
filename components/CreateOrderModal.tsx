@@ -591,13 +591,17 @@ const CreateOrderModal = ({
       <Box style={styles.summaryCard}>
         <HStack justifyContent="space-between" alignItems="center" mb="3">
           <Text fontSize="lg" fontWeight="600" color="gray.800">
-            {tipoServicio === ID_TIPOSERVICIO_RESERVA ? <FormattedMessage
-              id="createOrder.orderSummaryReserva"
-              defaultMessage="Resumen de la reserva"
-            /> : <FormattedMessage
-              id="createOrder.orderSummary"
-              defaultMessage="Resumen del pedido"
-            />}
+            {tipoServicio === ID_TIPOSERVICIO_RESERVA ? (
+              <FormattedMessage
+                id="createOrder.orderSummaryReserva"
+                defaultMessage="Resumen de la reserva"
+              />
+            ) : (
+              <FormattedMessage
+                id="createOrder.orderSummary"
+                defaultMessage="Resumen del pedido"
+              />
+            )}
           </Text>
           <Badge colorScheme="primary" variant="solid" borderRadius="full">
             <FormattedMessage
@@ -672,7 +676,25 @@ const CreateOrderModal = ({
   );
 
   return (
-    <GenericModal visible={true} onClose={onClose} title={modalTitle}>
+    <GenericModal
+    actions={[
+      {
+            label: `${intl.formatMessage({ id: "createOrder.cancel", defaultMessage: "Cancel" })}`,
+            onPress: () => onClose(),
+            style: "secondary",
+          },
+          {
+            label: `${intl.formatMessage({ id:
+                      tipoServicio === ID_TIPOSERVICIO_RESERVA
+                        ? "createOrder.createReservation"
+                        : "createOrder.createOrder"
+                    , defaultMessage: "Agregar" })}`,
+            onPress: () => createOrderData(),
+            style: "primary",
+            icon: "check",
+          }
+    ]}
+    visible={true} onClose={onClose} title={modalTitle}>
       <View style={styles.modalContainer}>
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -708,10 +730,10 @@ const CreateOrderModal = ({
                   occupiedTimes={
                     currentOrders
                       ? filterOnlyHours(
-                        currentOrders?.map((order) =>
-                          removeAmPm(order?.date ?? "")
+                          currentOrders?.map((order) =>
+                            removeAmPm(order?.date ?? "")
+                          )
                         )
-                      )
                       : []
                   }
                   checkAvailable={(hour: string) =>
@@ -903,44 +925,6 @@ const CreateOrderModal = ({
             )}
           </VStack>
         </ScrollView>
-
-        <Box style={styles.actionButtonsContainer}>
-          <HStack space={3} justifyContent="flex-end">
-            <Button onPress={() => onClose()} style={styles.cancelButton}>
-              <Text style={styles.cancelButtonText}>
-                <FormattedMessage
-                  id="createOrder.cancel"
-                  defaultMessage="Cancelar"
-                />
-              </Text>
-            </Button>
-
-            <CustomButton
-              isLoading={loadingCreate || loadingNextDateAvailable}
-              onPress={() => createOrderData()}
-              isDisabled={allOcupped}
-              style={styles.actionButton}
-            >
-              <HStack space={2} alignItems="center">
-                <Feather name="check" size={16} color="white" />
-                <Text style={styles.actionButtonText}>
-                  <FormattedMessage
-                    id={
-                      tipoServicio === ID_TIPOSERVICIO_RESERVA
-                        ? "createOrder.createReservation"
-                        : "createOrder.createOrder"
-                    }
-                    defaultMessage={
-                      tipoServicio === ID_TIPOSERVICIO_RESERVA
-                        ? "Crear Reserva"
-                        : "Crear Pedido"
-                    }
-                  />
-                </Text>
-              </HStack>
-            </CustomButton>
-          </HStack>
-        </Box>
       </View>
     </GenericModal>
   );

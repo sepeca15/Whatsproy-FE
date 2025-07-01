@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native"
 
 export const styles = StyleSheet.create({
   headerGradient: {
-    paddingTop: 50,
+    paddingTop: 20,
     paddingBottom: 20,
     borderBottomLeftRadius: 24,
     borderBottomRightRadius: 24,

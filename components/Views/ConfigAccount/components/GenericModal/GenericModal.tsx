@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 import {
   Modal,
   View,
@@ -10,34 +10,36 @@ import {
   StyleSheet,
   SafeAreaView,
   StatusBar,
-} from "react-native"
-import { useColorScheme } from "react-native"
-import { Colors } from "@/constants/Colors"
-import Feather from "react-native-vector-icons/Feather"
+} from "react-native";
+import { useColorScheme } from "react-native";
+import { Colors } from "@/constants/Colors";
+import Feather from "react-native-vector-icons/Feather";
+import { Spinner } from "native-base";
 
 interface ModalAction {
-  label: string
-  onPress: () => void
-  style?: "primary" | "secondary" | "danger" | "success"
-  icon?: string
-  disabled?: boolean
+  label: string;
+  onPress: () => void;
+  style?: "primary" | "secondary" | "danger" | "success";
+  icon?: string;
+  loading?: boolean;
+  disabled?: boolean;
 }
 
 interface DynamicModalProps {
-  visible: boolean
-  onClose: () => void
-  title?: string
-  subtitle?: string
-  children?: React.ReactNode
-  headerIcon?: React.ReactNode
-  headerRightContent?: React.ReactNode
-  showCloseButton?: boolean
-  scrollable?: boolean
-  actions?: ModalAction[]
-  footerContent?: React.ReactNode
-  backgroundColor?: string
-  headerBackgroundColor?: string
-  statusBarStyle?: "light-content" | "dark-content"
+  visible: boolean;
+  onClose: () => void;
+  title?: string;
+  subtitle?: string;
+  children?: React.ReactNode;
+  headerIcon?: React.ReactNode;
+  headerRightContent?: React.ReactNode;
+  showCloseButton?: boolean;
+  scrollable?: boolean;
+  actions?: ModalAction[];
+  footerContent?: React.ReactNode;
+  backgroundColor?: string;
+  headerBackgroundColor?: string;
+  statusBarStyle?: "light-content" | "dark-content";
 }
 
 const GenericModal: React.FC<DynamicModalProps> = ({
@@ -56,9 +58,9 @@ const GenericModal: React.FC<DynamicModalProps> = ({
   headerBackgroundColor,
   statusBarStyle,
 }) => {
-  const colorScheme = useColorScheme()
-  const isDark = colorScheme === "dark"
-  const colors = isDark ? Colors.dark : Colors.light
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
+  const colors = isDark ? Colors.dark : Colors.light;
 
   const getActionButtonStyle = (actionStyle = "primary") => {
     const baseStyle = {
@@ -69,11 +71,11 @@ const GenericModal: React.FC<DynamicModalProps> = ({
       alignItems: "center" as const,
       justifyContent: "center" as const,
       flexDirection: "row" as const,
-    }
+    };
 
     switch (actionStyle) {
       case "primary":
-        return [baseStyle, { backgroundColor: colors.primary || "#075e54" }]
+        return [baseStyle, { backgroundColor: colors.primary || "#075e54" }];
       case "secondary":
         return [
           baseStyle,
@@ -82,33 +84,56 @@ const GenericModal: React.FC<DynamicModalProps> = ({
             borderWidth: 1,
             borderColor: colors.border || "#e1e1e1",
           },
-        ]
+        ];
       case "danger":
-        return [baseStyle, { backgroundColor: "#dc3545" }]
+        return [baseStyle, { backgroundColor: "#dc3545" }];
       case "success":
-        return [baseStyle, { backgroundColor: "#28a745" }]
+        return [baseStyle, { backgroundColor: "#28a745" }];
       default:
-        return [baseStyle, { backgroundColor: colors.primary || "#075e54" }]
+        return [baseStyle, { backgroundColor: colors.primary || "#075e54" }];
     }
-  }
+  };
 
   const getActionButtonTextStyle = (actionStyle = "primary") => {
     switch (actionStyle) {
       case "secondary":
-        return { color: colors.text || "#000", fontWeight: "600" as const, marginLeft: 5 }
+        return {
+          color: colors.text || "#000",
+          fontWeight: "600" as const,
+          marginLeft: 5,
+        };
       default:
-        return { color: "#fff", fontWeight: "600" as const, marginLeft: 5 }
+        return { color: "#fff", fontWeight: "600" as const, marginLeft: 5 };
     }
-  }
+  };
 
-  const ContentWrapper = scrollable ? ScrollView : View
+  const ContentWrapper = scrollable ? ScrollView : View;
 
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="fullScreen" onRequestClose={onClose}>
-      <SafeAreaView style={[styles.container, { backgroundColor: backgroundColor || colors.background }]}>
-        <StatusBar barStyle={statusBarStyle || (isDark ? "light-content" : "dark-content")} />
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="fullScreen"
+      onRequestClose={onClose}
+    >
+      <SafeAreaView
+        style={[
+          styles.container,
+          { backgroundColor: backgroundColor || colors.background },
+        ]}
+      >
+        <StatusBar
+          barStyle={
+            statusBarStyle || (isDark ? "light-content" : "dark-content")
+          }
+        />
 
-        <View style={[styles.header, { backgroundColor: headerBackgroundColor || colors.primary }]}>
+        <View
+          style={[
+            styles.header,
+            { backgroundColor: headerBackgroundColor || colors.primary },
+          ]}
+        >
           {showCloseButton && (
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
               <Feather name="x" size={24} color="white" />
@@ -117,19 +142,28 @@ const GenericModal: React.FC<DynamicModalProps> = ({
 
           <View style={styles.headerContent}>
             <View style={styles.headerLeft}>
-              {headerIcon && <View style={styles.headerIcon}>{headerIcon}</View>}
+              {headerIcon && (
+                <View style={styles.headerIcon}>{headerIcon}</View>
+              )}
               <View style={styles.headerText}>
                 {title && <Text style={styles.headerTitle}>{title}</Text>}
-                {subtitle && <Text style={styles.headerSubtitle}>{subtitle}</Text>}
+                {subtitle && (
+                  <Text style={styles.headerSubtitle}>{subtitle}</Text>
+                )}
               </View>
             </View>
           </View>
 
-          {headerRightContent && <View style={styles.headerRight}>{headerRightContent}</View>}
+          {headerRightContent && (
+            <View style={styles.headerRight}>{headerRightContent}</View>
+          )}
         </View>
 
         <ContentWrapper
-          style={[styles.contentContainer, !scrollable && styles.nonScrollableContent]}
+          style={[
+            styles.contentContainer,
+            !scrollable && styles.nonScrollableContent,
+          ]}
           contentContainerStyle={scrollable ? styles.scrollContent : undefined}
           showsVerticalScrollIndicator={false}
         >
@@ -137,7 +171,12 @@ const GenericModal: React.FC<DynamicModalProps> = ({
         </ContentWrapper>
 
         {(actions.length > 0 || footerContent) && (
-          <View style={[styles.footer, { backgroundColor: backgroundColor || colors.background }]}>
+          <View
+            style={[
+              styles.footer,
+              { backgroundColor: backgroundColor || colors.background },
+            ]}
+          >
             {footerContent}
 
             {actions.length > 0 && (
@@ -154,12 +193,28 @@ const GenericModal: React.FC<DynamicModalProps> = ({
                     disabled={action.disabled}
                     activeOpacity={0.7}
                   >
-                    {action.icon && <Feather name={action.icon as any} size={16} color="#fff" />}
-                    <Text
-                      style={[getActionButtonTextStyle(action.style), action.disabled && styles.disabledButtonText]}
-                    >
-                      {action.label}
-                    </Text>
+                    {action.loading ? (
+                      <Spinner color="white" size="sm" />
+                    ) : (
+                      <>
+                        {" "}
+                        {action.icon && (
+                          <Feather
+                            name={action.icon as any}
+                            size={16}
+                            color={action.style === "secondary" ? "black": "#fff"}
+                          />
+                        )}
+                        <Text
+                          style={[
+                            getActionButtonTextStyle(action.style),
+                            action.disabled && styles.disabledButtonText,
+                          ]}
+                        >
+                          {action.label}
+                        </Text>
+                      </>
+                    )}
                   </TouchableOpacity>
                 ))}
               </View>
@@ -168,8 +223,8 @@ const GenericModal: React.FC<DynamicModalProps> = ({
         )}
       </SafeAreaView>
     </Modal>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -248,6 +303,6 @@ const styles = StyleSheet.create({
   disabledButtonText: {
     opacity: 0.5,
   },
-})
+});
 
-export default GenericModal
+export default GenericModal;

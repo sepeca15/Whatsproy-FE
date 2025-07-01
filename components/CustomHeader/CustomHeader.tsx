@@ -29,7 +29,7 @@ const CustomHeader: React.FC<GradientHeaderProps> = ({
   rightComponent,
   bottomComponent,
   gradientColors = [Colors.light.primary, Colors.light.primary + "E6"],
-  animationDuration = 300,
+  animationDuration = 0,
   style,
 }) => {
   const router = useRouter();
@@ -48,8 +48,7 @@ const CustomHeader: React.FC<GradientHeaderProps> = ({
       style={[styles.headerGradient, style]}
     >
       <View style={{ flexDirection: "column", width: "100%", gap: 5 }}>
-        <Animated.View
-          entering={FadeInUp.duration(animationDuration)}
+        <View
           style={styles.headerContent}
         >
           {showBackButton && (
@@ -75,7 +74,7 @@ const CustomHeader: React.FC<GradientHeaderProps> = ({
           {rightComponent && (
             <View style={styles.rightComponent}>{rightComponent}</View>
           )}
-        </Animated.View>
+        </View>
 
         {bottomComponent && (
           <View style={{ paddingHorizontal: 20 }}>{bottomComponent}</View>

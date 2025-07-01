@@ -312,12 +312,10 @@ export const CierreProvisorio = () => {
 
       {loadingCierres ? (
         <Animated.View entering={FadeInDown.duration(400)} style={styles.loadingContainer}>
-          <View style={styles.loadingCard}>
             <Spinner size="large" color={Colors.light.primary} />
             <Text style={styles.loadingText}>
               <FormattedMessage id="cierre.loading" defaultMessage="Cargando cierres..." />
             </Text>
-          </View>
         </Animated.View>
       ) : (
         <View style={styles.content}>

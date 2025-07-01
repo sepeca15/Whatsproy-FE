@@ -19,7 +19,6 @@ const ConfigAccount = () => {
   const [currentStep, setCurrentStep] = React.useState<number>(0);
   const [maxStep, setMaxStep] = React.useState<number>(0);
 
-  console.log('si1')
   React.useEffect(() => {
     if (user?.id) {
       let step = 0;

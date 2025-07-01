@@ -9,8 +9,9 @@ import { store } from "@/services/redux/store";
 import { ToastProvider } from "@/contexts/ToastContext";
 import { LocalizationProvider } from "./LocalizationContext";
 import { StatusBar, Linking } from "react-native";
-import { Provider as PaperProvider } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
+
 SplashScreen.preventAutoHideAsync();
 
 export const unstable_settings = {
@@ -39,10 +40,7 @@ export default function RootLayout() {
     };
 
     Linking.addEventListener("url", handleDeepLink);
-
-    return () => {
-      Linking.removeAllListeners("url");
-    };
+    return () => Linking.removeAllListeners("url");
   }, [router]);
 
   if (!loaded) return null;
@@ -52,13 +50,20 @@ export default function RootLayout() {
       <LocalizationProvider>
         <NativeBaseProvider>
           <Toast />
-
           <ToastProvider>
             <ThemeProvider value={DefaultTheme}>
-              <StatusBar barStyle="light-content" backgroundColor={"#075e54"} />
+              <SafeAreaView
+                style={{ flex: 0, backgroundColor: "#075e54" }}
+                edges={["top"]}
+              />
+              <StatusBar
+                translucent={false}
+                barStyle="light-content"
+                backgroundColor="#075e54"
+              />
               <Stack screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+                <Stack.Screen name="(tabs)" />
+                <Stack.Screen name="(auth)" />
                 <Stack.Screen name="+not-found" />
               </Stack>
             </ThemeProvider>

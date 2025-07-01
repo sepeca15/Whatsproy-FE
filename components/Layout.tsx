@@ -10,6 +10,10 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import { useUser } from "@/hooks/redux/useUser";
 import { TipoServicio } from "@/enums/TipoServicio";
 import Entypo from "react-native-vector-icons/Entypo";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 
 const Pages = (empresaType: number) => {
   return [
@@ -48,20 +52,20 @@ const Pages = (empresaType: number) => {
     {
       name: "productos",
       path: "/(tabs)/productos",
-      icon: (select: boolean) => (
-        empresaType === TipoServicio.RESERVA ?
-        <Entypo 
-          name="shopping-cart"
-          size={24}
-          color={select ? Colors.light.primary : "#717171"}
-        />
-        :
-        <IonIcon
-          name="fast-food"
-          size={24}
-          color={select ? Colors.light.primary : "#717171"}
-        />
-      ),
+      icon: (select: boolean) =>
+        empresaType === TipoServicio.RESERVA ? (
+          <Entypo
+            name="shopping-cart"
+            size={24}
+            color={select ? Colors.light.primary : "#717171"}
+          />
+        ) : (
+          <IonIcon
+            name="fast-food"
+            size={24}
+            color={select ? Colors.light.primary : "#717171"}
+          />
+        ),
     },
     {
       name: "clients",
@@ -94,10 +98,11 @@ const Layout = ({ children }: any) => {
   const { user } = useUser();
   const [selected, setSelected] = React.useState<string>("");
   const pages = Pages(user.tipo_servicio);
+  const insets = useSafeAreaInsets();
 
   React.useEffect(() => {
     const existRouter = pages.find(
-      (path) => pathname.split("/")[1] === path.name,
+      (path) => pathname.split("/")[1] === path.name
     );
     if (existRouter) {
       setSelected(existRouter.name);
@@ -106,10 +111,11 @@ const Layout = ({ children }: any) => {
 
   return (
     <View style={styles.mainContainer}>
-      <View style={{ flex: 1, width: "100%" }} >
-        {children}
-      </View>
-      <View style={styles.navigationMenu}>
+      <View style={{ flex: 1, width: "100%" }}>{children}</View>
+      <SafeAreaView
+        edges={["bottom"]}
+        style={[styles.navigationMenu, { paddingBottom: insets.left }]}
+      >
         {pages.map((page) => (
           <Pressable
             key={page.name}
@@ -125,7 +131,7 @@ const Layout = ({ children }: any) => {
             {page.name === selected && <View style={styles.roundedDivBottom} />}
           </Pressable>
         ))}
-      </View>
+      </SafeAreaView>
     </View>
   );
 };
@@ -136,18 +142,22 @@ const styles = StyleSheet.create({
   },
   navigationMenu: {
     width: "100%",
-    backgroundColor: "white",
     display: "flex",
     flexDirection: "row",
-    height: 60,
-    alignItems: "center",
-    justifyContent: "space-between",
+    height: 0,
+    alignItems: "flex-end",
+    justifyContent: "flex-end",
     borderTopColor: "#B8B8B8",
     borderTopWidth: 1,
   },
   LinkContainer: {
     height: 60,
     width: "20%",
+        backgroundColor: "white",
+        borderTopColor: Colors.light.primary + "50",
+        borderBottomColor: Colors.light.primary + "50",
+        borderBottomWidth: 1,
+        borderTopWidth: 1,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
