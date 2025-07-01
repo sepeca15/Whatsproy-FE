@@ -12,7 +12,11 @@
       "distribution": "internal"
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": false,
+      "distribution": "store",
+      "android": {
+        "buildType": "app-bundle"
+      }
     },
     "internal": {
       "developmentClient": false,

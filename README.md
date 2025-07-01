@@ -102,3 +102,7 @@ npx eas build --platform android --profile internal --local --clear-cache
 ## Internal testing generate APK:
 
 npx eas build --platform android --profile internalApk --local --clear-cache
+
+## AAB para prod:
+
+npx eas build --platform android --profile production --local --clear-cache

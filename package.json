@@ -109,7 +109,8 @@
     "react-native-webview": "^13.13.5",
     "react-redux": "^9.1.2",
     "socket.io-client": "^4.8.1",
-    "expo-network": "~7.0.5"
+    "expo-network": "~7.0.5",
+    "expo-build-properties": "~0.13.3"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
