@@ -37,6 +37,7 @@ import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { useColorScheme } from "react-native";
 import GenericModal from "../ConfigAccount/components/GenericModal/GenericModal";
+import CustomHeader from "@/components/CustomHeader/CustomHeader";
 
 // Colores definidos por el usuario
 const primaryColor = "#075e54";
@@ -216,8 +217,7 @@ const SubscriptionsView = () => {
               </Text>
               <Text style={styles.detailValue}>
                 {currentPayment.subscription_date
-                  ? moment(currentPayment.subscription_date)
-                      .format("LL")
+                  ? moment(currentPayment.subscription_date).format("LL")
                   : "-"}
               </Text>
             </HStack>
@@ -322,26 +322,13 @@ const SubscriptionsView = () => {
 
   return (
     <View style={styles.container}>
-      <Animated.View
-        style={[globalStyles.header2, { backgroundColor: colors.primary }]}
-      >
-        <TouchableOpacity
-          style={globalStyles.backButton}
-          onPress={() => router.back()}
-        >
-          <AntDesign name="arrowleft" size={22} color="white" />
-        </TouchableOpacity>
-        <View style={globalStyles.headerContent}>
-          <View style={globalStyles.headerLeft}>
-            <CustomText
-              style={globalStyles.businessName}
-              accessibilityLabel="Subscription"
-            >
-              <FormattedMessage id="subscription" />
-            </CustomText>
-          </View>
-        </View>
-      </Animated.View>
+      <CustomHeader
+        title={
+          <FormattedMessage id="subscription" defaultMessage="Subscription" />
+        }
+        onBack={() => router.back()}
+        showBackButton
+      />
 
       {shouldSubscribe && (
         <GenericModal

@@ -6,15 +6,47 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f8fafc",
   },
-  content: {
-    flex: 1,
+  headerGradient: {
+    paddingTop: 50,
+    paddingBottom: 20,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
+    elevation: 8,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
   },
-  scrollView: {
-    flex: 1,
+  headerContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
   },
-  scrollContent: {
-    padding: 20,
-    paddingBottom: 100,
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  headerTextContainer: {
+    flex: 1,
+    marginLeft: 16,
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "white",
+    marginBottom: 4,
+  },
+  headerSubtitle: {
+    fontSize: 14,
+    color: "rgba(255,255,255,0.8)",
   },
   headerStats: {
     backgroundColor: "rgba(255,255,255,0.2)",
@@ -34,6 +66,9 @@ export const styles = StyleSheet.create({
     color: "rgba(255,255,255,0.8)",
     textTransform: "uppercase",
     letterSpacing: 0.5,
+  },
+  content: {
+    flex: 1,
   },
   loadingContainer: {
     flex: 1,
@@ -62,89 +97,19 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "500",
   },
-  cierreCard: {
-    marginBottom: 16,
-    borderRadius: 16,
-    elevation: 3,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.12,
-    shadowRadius: 3.84,
+  headerSection: {
+    paddingHorizontal: 0,
+    paddingBottom: 20,
+    paddingTop: 20,
   },
-  cardGradient: {
-    borderRadius: 16,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: Colors.light.border + "40",
-    position: "relative",
-  },
-  statusBadgeContainer: {
-    position: "absolute",
-    top: 16,
-    right: 16,
-    zIndex: 10,
-  },
-  statusBadge: {
+  statsRow: {
     flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    gap: 4,
-  },
-  statusText: {
-    fontSize: 11,
-    fontWeight: "600",
-  },
-  cardContent: {
-    gap: 16,
-    marginRight: 80,
-  },
-  dateRow: {
-    flexDirection: "row",
-    alignItems: "center",
     gap: 12,
+    marginBottom: 20,
   },
-  dateIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  dateIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "rgba(0,0,0,0.1)",
-  },
-  dateInfo: {
+  statCard: {
     flex: 1,
-  },
-  dateLabel: {
-    fontSize: 12,
-    color: Colors.light.textSecondary,
-    fontWeight: "500",
-    marginBottom: 2,
-  },
-  dateValue: {
-    fontSize: 14,
-    color: Colors.light.text,
-    fontWeight: "600",
-  },
-  cardActions: {
-    position: "absolute",
-    bottom: 16,
-    right: 16,
-  },
-  deleteButton: {
-    borderRadius: 12,
+    borderRadius: 16,
     elevation: 2,
     shadowColor: "#000",
     shadowOffset: {
@@ -154,12 +119,75 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
   },
-  deleteButtonGradient: {
+  statGradient: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 16,
+    borderRadius: 16,
+    gap: 12,
+  },
+  statInfo: {
+    flex: 1,
+  },
+  statNumber: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: Colors.light.text,
+    marginBottom: 2,
+  },
+  statLabel: {
+    fontSize: 12,
+    color: Colors.light.textSecondary,
+    fontWeight: "500",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  infoBanner: {
+    flexDirection: "row",
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 16,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    borderLeftWidth: 4,
+    borderLeftColor: Colors.light.primary,
+  },
+  infoIconContainer: {
     width: 40,
     height: 40,
-    borderRadius: 12,
+    borderRadius: 20,
+    backgroundColor: Colors.light.primary + "15",
     justifyContent: "center",
     alignItems: "center",
+    marginRight: 16,
+  },
+  infoTextContainer: {
+    flex: 1,
+  },
+  infoTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: Colors.light.text,
+    marginBottom: 4,
+  },
+  infoDescription: {
+    fontSize: 14,
+    color: Colors.light.textSecondary,
+    lineHeight: 20,
+  },
+  categoriesList: {
+    paddingHorizontal: 20,
+    paddingBottom: 100,
+  },
+  categoryRow: {
+    justifyContent: "space-around",
+    marginBottom: 8,
   },
   emptyState: {
     flex: 1,

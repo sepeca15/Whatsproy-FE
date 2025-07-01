@@ -28,7 +28,7 @@ const SettingCard: React.FC<Props> = ({ item, index, isDark, colors, onNavigate 
           offset={[0, 2]}
           style={{ width: '100%', marginBottom: 12, borderRadius: 16 }}
         >
-    <Animated.View entering={FadeInDown.delay(100 * index).duration(400)}>
+    <View>
       <TouchableOpacity
         style={[styles.card, { backgroundColor: isDark ? "#1E2022" : "white" }]}
         onPress={() => item.href && onNavigate(item.href)}
@@ -58,7 +58,7 @@ const SettingCard: React.FC<Props> = ({ item, index, isDark, colors, onNavigate 
 
         <AntDesign name="right" size={16} color={isDark ? "#9BA1A6" : "#687076"} style={styles.chevron} />
       </TouchableOpacity>
-    </Animated.View>
+    </View>
     </Shadow>
   )
 }
@@ -67,18 +67,14 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: "row",
     width: "100%",
-    backgroundColor: "white", // Mismo color que el fondo
+    backgroundColor: "white",
     padding: 16,
     borderRadius: 16,
     alignItems: "center",
-   
-    // Efecto neumórfico
     shadowColor: "#5656f",
     shadowOffset: { width: -6, height: -6 },
     shadowOpacity: 0.8,
     shadowRadius: 6,
-    // Segunda sombra para el efecto completo
-    // Nota: React Native no soporta múltiples sombras, así que esto es una aproximación
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.1)",
   },

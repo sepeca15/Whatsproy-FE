@@ -5,6 +5,22 @@ export const getAll = async () => {
     return data;
 };
 
+export const getAllDailyMenu = async () => {
+    const { data } = await ApiInstances("current").get(`horario/daily-menu`);
+    return data;
+};
+
+export const createDailySchedule = async (newSchedule: any) => {
+    console.log("newSchedule", newSchedule)
+    const { data } = await ApiInstances("current").post(`horario/daily-menu`, newSchedule);
+    return data;
+};
+
+export const updateDailySchedule = async (id: any, newSchedule: any) => {
+    const { data } = await ApiInstances("current").put(`horario/daily-menu/${id}`, newSchedule);
+    return data;
+};
+
 export const create = async (newSchedule: any) => {
     const { data, status } = await ApiInstances("current").post(`horario`, newSchedule);
     return data;

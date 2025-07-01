@@ -11,7 +11,6 @@ import {
   TextInput,
   StatusBar,
   RefreshControl,
-  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -29,6 +28,7 @@ import { ActivityIndicator } from "react-native";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useToastContext } from "@/contexts/ToastContext";
 import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmAction";
+import CustomHeader from "@/components/CustomHeader/CustomHeader";
 
 const UsersScreen: React.FC = () => {
   const [userData, setUserData] = useState<IUserInfo>({
@@ -46,7 +46,6 @@ const UsersScreen: React.FC = () => {
   const [currentUserData, setCurrentUserData] = useState<IUser | null>(null);
   const [companyId, setCompanyId] = useState<number | null>(null);
   const { showToast } = useToastContext();
-
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const searchAnim = useRef(new Animated.Value(0)).current;
   const fabAnim = useRef(new Animated.Value(0)).current;
@@ -68,7 +67,6 @@ const UsersScreen: React.FC = () => {
         duration: 600,
         useNativeDriver: true,
       }).start();
-
       Animated.spring(fabAnim, {
         toValue: 1,
         tension: 100,
@@ -80,71 +78,75 @@ const UsersScreen: React.FC = () => {
 
   const getCurrentUser = async () => {
     try {
-      console.log("=== OBTENIENDO USUARIO ACTUAL ===");
       const currentUser = await api.auth.me();
-      console.log("Imagen del usuario actual:", currentUser?.image);
-
       if (currentUser?.id) {
         setCurrentUserId(currentUser.id);
-
         const mappedCurrentUser: IUser = {
           id: currentUser.id,
           nombre:
             currentUser.nombre && currentUser.apellido
               ? `${currentUser.nombre} ${currentUser.apellido}`.trim()
-              : currentUser.name || "Sin nombre",
-          correo: currentUser.correo || currentUser.email || "Sin email",
+              : currentUser.name ||
+                intl.formatMessage({
+                  id: "users.noName",
+                  defaultMessage: "Sin nombre",
+                }),
+          correo:
+            currentUser.correo ||
+            currentUser.email ||
+            intl.formatMessage({
+              id: "users.noEmail",
+              defaultMessage: "Sin email",
+            }),
           activo: currentUser.activo !== undefined ? currentUser.activo : true,
           isAdmin: currentUser.isAdmin || false,
           image: currentUser.image || null,
         };
-
-        console.log("Usuario actual mapeado:", mappedCurrentUser);
         setCurrentUserData(mappedCurrentUser);
-
         if (currentUser.id_empresa) {
           setCompanyId(currentUser.id_empresa);
         }
       }
     } catch (error) {
-      console.error("Error getting current user:", error);
+      showToast({
+        status: "error",
+        title: intl.formatMessage({
+          id: "users.errorLoadingCurrentUser",
+          defaultMessage: "Error al cargar usuario actual",
+        }),
+      });
     }
   };
 
   const uploadUsers = async () => {
     try {
       setUserData((prev) => ({ ...prev, loading: true }));
-
       fadeAnim.setValue(0);
       fabAnim.setValue(0);
-
       const response = await api.user.findAll(user.id_empresa);
-
       const users = response?.data || [];
-
       const mappedUsers: IUser[] = users
         .filter((userItem: any) => userItem && userItem.id)
-        .map((userItem: any) => {
-          const mapped = {
-            id: userItem.id,
-            nombre: userItem.nombre || userItem.name || "Sin nombre",
-            correo: userItem.correo || userItem.email || "Sin email",
-            activo: userItem.activo !== undefined ? userItem.activo : true,
-            isAdmin: userItem.isAdmin || false,
-            image: userItem.image || null,
-          };
-
-          if (userItem.id === currentUserId) {
-            console.log(`=== USUARIO ACTUAL EN LISTA (ID: ${userItem.id}) ===`);
-            console.log("Datos raw:", userItem);
-            console.log("Datos mapeados:", mapped);
-            console.log("Imagen:", mapped.image);
-          }
-
-          return mapped;
-        });
-
-      console.log("Usuarios mapeados finales:", mappedUsers);
+        .map((userItem: any) => ({
+          id: userItem.id,
+          nombre:
+            userItem.nombre ||
+            userItem.name ||
+            intl.formatMessage({
+              id: "users.noName",
+              defaultMessage: "Sin nombre",
+            }),
+          correo:
+            userItem.correo ||
+            userItem.email ||
+            intl.formatMessage({
+              id: "users.noEmail",
+              defaultMessage: "Sin email",
+            }),
+          activo: userItem.activo !== undefined ? userItem.activo : true,
+          isAdmin: userItem.isAdmin || false,
+          image: userItem.image || null,
+        }));
 
       setUserData({
         data: mappedUsers,
@@ -157,7 +159,6 @@ const UsersScreen: React.FC = () => {
           duration: 600,
           useNativeDriver: true,
         }).start();
-
         Animated.spring(fabAnim, {
           toValue: 1,
           tension: 100,
@@ -166,7 +167,6 @@ const UsersScreen: React.FC = () => {
         }).start();
       }
     } catch (error) {
-      console.error("Error loading users:", error);
       setUserData((prev) => ({
         ...prev,
         loading: false,
@@ -174,8 +174,11 @@ const UsersScreen: React.FC = () => {
       }));
       showToast({
         status: "error",
-        title:
-          "No se pudieron cargar los usuarios. Por favor, intenta de nuevo.",
+        title: intl.formatMessage({
+          id: "users.errorLoadingUsers",
+          defaultMessage:
+            "No se pudieron cargar los usuarios. Por favor, intenta de nuevo.",
+        }),
       });
     }
   };
@@ -194,7 +197,6 @@ const UsersScreen: React.FC = () => {
       duration: 300,
       useNativeDriver: false,
     }).start();
-
     if (showSearch) {
       setSearchQuery("");
     }
@@ -209,7 +211,6 @@ const UsersScreen: React.FC = () => {
         (user.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
           user.correo.toLowerCase().includes(searchQuery.toLowerCase()))
     );
-
     if (currentUserId) {
       const currentUser = filtered.find((u) => u.id === currentUserId);
       const others = filtered.filter((u) => u.id !== currentUserId);
@@ -233,26 +234,26 @@ const UsersScreen: React.FC = () => {
     try {
       setLoadingDeleteUser(true);
       await api.user.delete(openDeleteUserId);
-
       setUserData((prev) => ({
         ...prev,
         data: prev.data.filter((user) => user.id !== openDeleteUserId),
       }));
-
       setOpenDeleteModal(false);
       setOpenDeleteUserId(0);
-
       showToast({
         status: "success",
-        title: "Éxito",
-        description: "Usuario eliminado correctamente",
+        title: intl.formatMessage({
+          id: "users.deleteSuccess",
+          defaultMessage: "Usuario eliminado correctamente",
+        }),
       });
     } catch (error) {
-      console.error("Error deleting user:", error);
       showToast({
         status: "error",
-        title: "Error",
-        description: "Error eliminando usuario",
+        title: intl.formatMessage({
+          id: "users.deleteError",
+          defaultMessage: "Error eliminando usuario",
+        }),
       });
       setLoadingDeleteUser(false);
     }
@@ -268,8 +269,10 @@ const UsersScreen: React.FC = () => {
       if (!user?.id_empresa) {
         showToast({
           status: "error",
-          title: "Error",
-          description: "No se pudo obtener la información de la empresa",
+          title: intl.formatMessage({
+            id: "users.companyInfoError",
+            defaultMessage: "No se pudo obtener la información de la empresa",
+          }),
         });
         return;
       }
@@ -305,20 +308,22 @@ const UsersScreen: React.FC = () => {
           ...prev,
           data: [...prev.data, newUser],
         }));
-
         setShowCreateModal(false);
         showToast({
           status: "success",
-          title: "Éxito",
-          description: "Usuario creado correctamente",
+          title: intl.formatMessage({
+            id: "users.createSuccess",
+            defaultMessage: "Usuario creado correctamente",
+          }),
         });
       }
     } catch (error) {
-      console.error("Error creating user:", error);
       showToast({
-        status: "success",
-        title: "Error",
-        description: "Error creando usuario",
+        status: "error",
+        title: intl.formatMessage({
+          id: "users.createError",
+          defaultMessage: "Error creando usuario",
+        }),
       });
     }
   };
@@ -357,16 +362,19 @@ const UsersScreen: React.FC = () => {
         setSelectedUser(null);
         showToast({
           status: "success",
-          title: "Éxito",
-          description: "Usuario actualizado correctamente",
+          title: intl.formatMessage({
+            id: "users.updateSuccess",
+            defaultMessage: "Usuario actualizado correctamente",
+          }),
         });
       }
     } catch (error) {
-      console.error("Error updating user:", error);
       showToast({
         status: "error",
-        title: "Error",
-        description: "No se pudo actualizar el usuario",
+        title: intl.formatMessage({
+          id: "users.updateError",
+          defaultMessage: "No se pudo actualizar el usuario",
+        }),
       });
     }
   };
@@ -384,49 +392,42 @@ const UsersScreen: React.FC = () => {
         photo: updatedProfile.image,
       };
 
-      console.log("=== ACTUALIZANDO PERFIL ===");
-      console.log("Datos a enviar:", updateData);
-      console.log("URL de imagen:", updatedProfile.image);
-
       const response = await api.user.update(updatedProfile.id, updateData);
-      console.log("Respuesta del servidor:", response);
 
       if (response) {
-        console.log("=== APLICANDO ACTUALIZACIÓN OPTIMISTA ===");
-
         setCurrentUserData(updatedProfile);
-
         setUserData((prev) => ({
           ...prev,
           data: prev.data.map((user) =>
             user.id === updatedProfile.id ? updatedProfile : user
           ),
         }));
-
         setShowProfileModal(false);
 
         setTimeout(async () => {
           try {
-            console.log("=== VERIFICACIÓN POST-ACTUALIZACIÓN ===");
             await uploadUsers();
             await getCurrentUser();
           } catch (error) {
-            console.error("Error en verificación:", error);
+            // Silent error handling
           }
         }, 3000);
 
         showToast({
           status: "success",
-          title: "Éxito",
-          description: "Perfil actualizado correctamente",
+          title: intl.formatMessage({
+            id: "users.profileUpdateSuccess",
+            defaultMessage: "Perfil actualizado correctamente",
+          }),
         });
       }
     } catch (error) {
-      console.error("Error updating profile:", error);
       showToast({
         status: "error",
-        title: "Error",
-        description: "No se pudo actualizar el perfil",
+        title: intl.formatMessage({
+          id: "users.profileUpdateError",
+          defaultMessage: "No se pudo actualizar el perfil",
+        }),
       });
     }
   };
@@ -443,12 +444,26 @@ const UsersScreen: React.FC = () => {
         </View>
       </View>
       <Text style={styles.emptyTitle}>
-        {searchQuery ? "No se encontraron usuarios" : "No hay usuarios"}
+        {searchQuery
+          ? intl.formatMessage({
+              id: "users.noUsersFound",
+              defaultMessage: "No se encontraron usuarios",
+            })
+          : intl.formatMessage({
+              id: "users.noUsers",
+              defaultMessage: "No hay usuarios",
+            })}
       </Text>
       <Text style={styles.emptySubtitle}>
         {searchQuery
-          ? "Intenta con otros términos de búsqueda"
-          : "Comienza agregando tu primer usuario"}
+          ? intl.formatMessage({
+              id: "users.tryDifferentSearch",
+              defaultMessage: "Intenta con otros términos de búsqueda",
+            })
+          : intl.formatMessage({
+              id: "users.addFirstUser",
+              defaultMessage: "Comienza agregando tu primer usuario",
+            })}
       </Text>
       {!searchQuery && (
         <TouchableOpacity
@@ -461,7 +476,12 @@ const UsersScreen: React.FC = () => {
         >
           <View style={styles.emptyActionContent}>
             <Ionicons name="add" size={20} color="white" />
-            <Text style={styles.emptyActionText}>Crear Usuario</Text>
+            <Text style={styles.emptyActionText}>
+              <FormattedMessage
+                id="users.createUser"
+                defaultMessage="Crear Usuario"
+              />
+            </Text>
           </View>
         </TouchableOpacity>
       )}
@@ -469,7 +489,6 @@ const UsersScreen: React.FC = () => {
   );
 
   const renderUserCard = ({ item, index }: { item: IUser; index: number }) => {
-    // Validación adicional para asegurar que el item existe
     if (!item || !item.id) {
       return null;
     }
@@ -499,7 +518,6 @@ const UsersScreen: React.FC = () => {
     );
   };
 
-  // Función segura para keyExtractor
   const keyExtractor = (item: IUser, index: number) => {
     if (item && item.id) {
       return `${item.id}-${item.image || "no-image"}`;
@@ -507,34 +525,83 @@ const UsersScreen: React.FC = () => {
     return `user-${index}`;
   };
 
-  if (userData.loading || currentUserId === null) {
-    return (
-      <View style={styles.loadingContainer}>
-        <StatusBar
-          barStyle="light-content"
-          backgroundColor={Colors.light.primary}
-        />
-        <View style={styles.loadingBackground}>
-          <View style={styles.loadingContent}>
-            <ActivityIndicator
-              size={60}
-              color={Colors.light.secondary || Colors.light.success || "#fff"} // Usa tu verde
-            />
-            <Text style={styles.loadingText}>Cargando usuarios...</Text>
-          </View>
-        </View>
-      </View>
-    );
-  }
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar
         barStyle="light-content"
         backgroundColor={Colors.light.primary}
       />
+       <CustomHeader
+          title={
+            <FormattedMessage
+              id="users.title"
+              defaultMessage="Usuarios"
+            />
+          }
+          onBack={() => router.back()}
+          showBackButton
+          rightComponent={ <View style={styles.headerActions}>
+            <TouchableOpacity
+              style={styles.profileButton}
+              onPress={handleEditProfile}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="person-circle-outline" size={24} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.searchButton}
+              onPress={toggleSearch}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="search" size={24} color="white" />
+            </TouchableOpacity>
+          </View>}
+          bottomComponent={ <Animated.View
+          style={[
+            styles.searchContainer,
+            {
+              height: searchAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, 60],
+              }),
+              opacity: searchAnim,
+            },
+          ]}
+        >
+          <View style={styles.searchInputContainer}>
+            <Ionicons
+              name="search"
+              size={20}
+              color="rgba(255,255,255,0.7)"
+              style={styles.searchIcon}
+            />
+            <TextInput
+              style={styles.searchInput}
+              placeholder={intl.formatMessage({
+                id: "users.searchPlaceholder",
+                defaultMessage: "Buscar usuarios...",
+              })}
+              placeholderTextColor="rgba(255,255,255,0.7)"
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+            />
+            {searchQuery.length > 0 && (
+              <TouchableOpacity
+                onPress={() => setSearchQuery("")}
+                style={styles.clearButton}
+              >
+                <Ionicons
+                  name="close"
+                  size={20}
+                  color="rgba(255,255,255,0.7)"
+                />
+              </TouchableOpacity>
+            )}
+          </View>
+        </Animated.View>}
+        />
 
-      <View style={[styles.header, { backgroundColor: Colors.light.primary }]}>
+      {/* <View style={[styles.header, { backgroundColor: Colors.light.primary }]}>
         <View style={styles.headerContent}>
           <TouchableOpacity
             style={styles.backButton}
@@ -543,13 +610,11 @@ const UsersScreen: React.FC = () => {
           >
             <Ionicons name="arrow-back" size={24} color="white" />
           </TouchableOpacity>
-
           <View style={styles.headerCenter}>
             <Text style={styles.headerTitle}>
-              <FormattedMessage id="users" />
+              <FormattedMessage id="users.title" defaultMessage="Usuarios" />
             </Text>
           </View>
-
           <View style={styles.headerActions}>
             <TouchableOpacity
               style={styles.profileButton}
@@ -567,7 +632,6 @@ const UsersScreen: React.FC = () => {
             </TouchableOpacity>
           </View>
         </View>
-
         <Animated.View
           style={[
             styles.searchContainer,
@@ -589,7 +653,10 @@ const UsersScreen: React.FC = () => {
             />
             <TextInput
               style={styles.searchInput}
-              placeholder="Buscar usuarios..."
+              placeholder={intl.formatMessage({
+                id: "users.searchPlaceholder",
+                defaultMessage: "Buscar usuarios...",
+              })}
               placeholderTextColor="rgba(255,255,255,0.7)"
               value={searchQuery}
               onChangeText={setSearchQuery}
@@ -608,37 +675,50 @@ const UsersScreen: React.FC = () => {
             )}
           </View>
         </Animated.View>
-      </View>
+      </View> */}
 
-      {/* Content */}
-      <View style={styles.content}>
-        {filteredUsers.length === 0 ? (
-          renderEmptyState()
-        ) : (
-          <FlatList
-            data={filteredUsers}
-            renderItem={renderUserCard}
-            keyExtractor={keyExtractor}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.listContent}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={onRefresh}
-                colors={[Colors.light.primary]}
-                tintColor={Colors.light.primary}
-              />
-            }
-            removeClippedSubviews={false}
-            initialNumToRender={10}
-            maxToRenderPerBatch={10}
-            windowSize={10}
-            extraData={userData.data} // Forzar re-render cuando cambie userData
+      {userData.loading || currentUserId === null ? (
+        <View style={styles.loadingContent}>
+          <ActivityIndicator
+            size={60}
+            color={Colors.light.secondary || Colors.light.success || "#fff"}
           />
-        )}
-      </View>
+          <Text style={styles.loadingText}>
+            <FormattedMessage
+              id="users.loading"
+              defaultMessage="Cargando usuarios..."
+            />
+          </Text>
+        </View>
+      ) : (
+        <View style={styles.content}>
+          {filteredUsers.length === 0 ? (
+            renderEmptyState()
+          ) : (
+            <FlatList
+              data={filteredUsers}
+              renderItem={renderUserCard}
+              keyExtractor={keyExtractor}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.listContent}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                  colors={[Colors.light.primary]}
+                  tintColor={Colors.light.primary}
+                />
+              }
+              removeClippedSubviews={false}
+              initialNumToRender={10}
+              maxToRenderPerBatch={10}
+              windowSize={10}
+              extraData={userData.data}
+            />
+          )}
+        </View>
+      )}
 
-      {/* Floating Action Button */}
       <Animated.View
         style={[
           styles.fabContainer,
@@ -662,7 +742,6 @@ const UsersScreen: React.FC = () => {
         </TouchableOpacity>
       </Animated.View>
 
-      {/* Modals */}
       <CreateUserModal
         visible={showCreateModal}
         onClose={() => setShowCreateModal(false)}
@@ -689,12 +768,20 @@ const UsersScreen: React.FC = () => {
           onUpdateUser={handleUpdateProfile}
         />
       )}
+
       {openDeleteModal && (
         <ModalConfirmAction
           isOpen={!!openDeleteModal}
           onClose={() => setOpenDeleteModal(false)}
-          title={intl.formatMessage({ id: "modalDeleteUser.title" })}
-          message={intl.formatMessage({ id: "modalDeleteUser.message" })}
+          title={intl.formatMessage({
+            id: "users.deleteModal.title",
+            defaultMessage: "Eliminar Usuario",
+          })}
+          message={intl.formatMessage({
+            id: "users.deleteModal.message",
+            defaultMessage:
+              "¿Estás seguro de que deseas eliminar este usuario?",
+          })}
           loading={loadingDeleteUser}
           onContinue={() => {
             deleteUser();

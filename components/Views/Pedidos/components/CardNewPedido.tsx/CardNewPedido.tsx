@@ -35,9 +35,15 @@ interface ICardNewPedido {
   pending: boolean;
   orderData: IOrderData;
   active?: boolean;
+  trashIcon?: boolean;
 }
 
-const CardNewPedido = ({ pending, orderData, active }: ICardNewPedido) => {
+const CardNewPedido = ({
+  pending,
+  orderData,
+  trashIcon = true,
+  active,
+}: ICardNewPedido) => {
   const [loading, setLoading] = useState({
     deleteState: false,
     confirmState: false,
@@ -225,7 +231,7 @@ const CardNewPedido = ({ pending, orderData, active }: ICardNewPedido) => {
               <Feather name="check" size={14} color="white" />
             </Button>
           </View>
-        ) : (
+        ) : trashIcon ? (
           <Pressable
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             onPress={() => handleModal(true)}
@@ -233,6 +239,8 @@ const CardNewPedido = ({ pending, orderData, active }: ICardNewPedido) => {
           >
             <Feather name="trash-2" size={16} color="#dc2626" />
           </Pressable>
+        ) : (
+          <></>
         )}
       </View>
 

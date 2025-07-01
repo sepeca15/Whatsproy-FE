@@ -10,7 +10,7 @@ import { ToastProvider } from "@/contexts/ToastContext";
 import { LocalizationProvider } from "./LocalizationContext";
 import { StatusBar, Linking } from "react-native";
 import { Provider as PaperProvider } from "react-native-paper";
-import Toast from 'react-native-toast-message';
+import Toast from "react-native-toast-message";
 SplashScreen.preventAutoHideAsync();
 
 export const unstable_settings = {
@@ -55,19 +55,10 @@ export default function RootLayout() {
 
           <ToastProvider>
             <ThemeProvider value={DefaultTheme}>
-              <StatusBar
-                barStyle="light-content"
-                backgroundColor={"#075e54"}
-              />
+              <StatusBar barStyle="light-content" backgroundColor={"#075e54"} />
               <Stack screenOptions={{ headerShown: false }}>
-                <Stack.Screen
-                  name="(tabs)"
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                  name="(auth)"
-                  options={{ headerShown: false }}
-                />
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
                 <Stack.Screen name="+not-found" />
               </Stack>
             </ThemeProvider>

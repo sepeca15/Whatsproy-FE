@@ -115,14 +115,14 @@ export const useUser = () => {
         );
         showToast({
           title: "¡Empresa actualizada!",
-          description: "Su empresa fue actualizada exitosamente.",
+          descripcion: "Su empresa fue actualizada exitosamente.",
           status: "success",
         });
       }
     } catch (error: any) {
       showToast({
         title: "Error",
-        description: error.response.data.message,
+        descripcion: error.response.data.message,
         status: "error",
       });
     }

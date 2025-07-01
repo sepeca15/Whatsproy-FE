@@ -138,7 +138,7 @@ const Productos: React.FC = () => {
             setTimeout(() => {
               setShowDeleteModal(false);
               setDeletingProductId(null);
-            }, 1500);
+            }, 500);
           }
         } catch (error: any) {
           setShowDeleteModal(false);
@@ -152,89 +152,10 @@ const Productos: React.FC = () => {
             status: "error",
           });
         }
-      }, 2700);
+      }, 1000);
     },
     [intl]
   );
-
-  const renderDeleteModal = () => {
-    if (!showDeleteModal) return null;
-
-    return (
-      <View
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "rgba(0,0,0,0.7)",
-          zIndex: 50,
-        }}
-      >
-        <Animatable.View
-          animation="zoomIn"
-          duration={400}
-          style={{
-            width: 300,
-            height: 200,
-            backgroundColor: "white",
-            borderRadius: 20,
-            justifyContent: "center",
-            alignItems: "center",
-            padding: 20,
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.3,
-            shadowRadius: 4.65,
-            elevation: 8,
-          }}
-        >
-          <LottieView
-            ref={deleteAnimationRef}
-            source={
-              isDeleting
-                ? require("../../../constants/Animation-black-trash-robot.json")
-                : require("../../../constants/Animation-succes-deleted.json")
-            }
-            autoPlay
-            loop={!isDeleting}
-            style={{
-              width: isDeleting ? 150 : 200,
-              height: isDeleting ? 200 : 150,
-              position: "absolute",
-              top: isDeleting ? 0 : 0,
-            }}
-          />
-          <Animatable.Text
-            animation="pulse"
-            iterationCount="infinite"
-            duration={2000}
-            style={{
-              marginTop: 120,
-              fontWeight: "bold",
-              fontSize: 12,
-              color: Colors.light.primary,
-              textAlign: "center",
-            }}
-          >
-            <FormattedMessage
-              id={
-                isDeleting
-                  ? "deletingProduct"
-                  : "deletedProduct.modal.delete.card"
-              }
-              defaultMessage={
-                isDeleting ? "Deleting product..." : "Product deleted!"
-              }
-            />
-          </Animatable.Text>
-        </Animatable.View>
-      </View>
-    );
-  };
 
   const updateProduct = (newProduct: any) => {
     setProducts((prevState) => {
@@ -268,8 +189,6 @@ const Productos: React.FC = () => {
         styles.tabButton,
         {
           backgroundColor: activeTab === tabKey ? Colors.light.primary : 'transparent',
-          borderBottomWidth: activeTab === tabKey ? 3 : 0,
-          borderBottomColor: Colors.light.primary,
         }
       ]}
       onPress={() => setActiveTab(tabKey)}
@@ -295,7 +214,6 @@ const Productos: React.FC = () => {
   const renderProductsTab = () => (
     <>
       <View style={{ paddingHorizontal: 6, paddingBottom: 80, height: "100%" }}>
-        {renderDeleteModal()}
         <View style={styles.searchBarContainer}>
           <Icon name="search" size={20} style={styles.searchIcon} />
           <TextInput

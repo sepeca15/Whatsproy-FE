@@ -15,6 +15,7 @@ import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmActi
 import { styles } from "./StatusStyles"
 import { globalStyles } from "@/components/globalStyles"
 import { View } from "native-base"
+import CustomHeader from "@/components/CustomHeader/CustomHeader"
 
 export interface IEstado {
   id: number
@@ -22,6 +23,7 @@ export interface IEstado {
   es_defecto: boolean
   finalizador: boolean
   order: number | null
+  mensaje?: string;
   createdAt: string
   updatedAt: string
 }
@@ -69,6 +71,7 @@ const StatusView = () => {
   const deleteStatus = async (id: number) => {
     try {
       const resp = await api.status.delete(id)
+      console.log("resp is", resp)
       if (resp.ok) fetchStatus()
     } catch (error: any) {
       console.error(error.response.data.message)
@@ -177,18 +180,16 @@ const StatusView = () => {
 
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.background }}>
-      <View style={[globalStyles.header2, { backgroundColor: colors.primary }]}>
-        <View style={globalStyles.headerContent}>
-          <TouchableOpacity style={globalStyles.backButton} onPress={() => router.back()}>
-            <AntDesign name="arrowleft" size={22} color="white" />
-          </TouchableOpacity>
-          <View style={globalStyles.headerLeft}>
-            <CustomText style={globalStyles.businessName}>
-              {intl.formatMessage({ id: "statusTitlePage" })}
-            </CustomText>
-          </View>
-        </View>
-      </View>
+      <CustomHeader
+          title={
+            <FormattedMessage
+              id="statusTitlePage"
+              defaultMessage="Status"
+            />
+          }
+          onBack={() => router.back()}
+          showBackButton
+        />
 
       <View style={styles.container}>
         {/* Info Banner */}

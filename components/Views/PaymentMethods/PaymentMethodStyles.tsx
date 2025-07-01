@@ -62,10 +62,50 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "500",
   },
-  cierreCard: {
+  infoBanner: {
+    flexDirection: "row",
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 16,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    borderLeftWidth: 4,
+    borderLeftColor: Colors.light.primary,
+    marginBottom: 20,
+  },
+  infoIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: Colors.light.primary + "15",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 16,
+  },
+  infoTextContainer: {
+    flex: 1,
+  },
+  infoTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: Colors.light.text,
+    marginBottom: 4,
+  },
+  infoDescription: {
+    fontSize: 14,
+    color: Colors.light.textSecondary,
+    lineHeight: 20,
+  },
+  methodCard: {
     marginBottom: 16,
     borderRadius: 16,
-    elevation: 3,
+    elevation: 2,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -99,67 +139,63 @@ export const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "600",
   },
-  cardContent: {
-    gap: 16,
-    marginRight: 80,
-  },
-  dateRow: {
+  methodHeader: {
     flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
+    alignItems: "flex-start",
+    marginRight: 80,
+    marginBottom: 16,
   },
-  dateIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    justifyContent: "center",
-    alignItems: "center",
+  methodIconContainer: {
+    marginRight: 12,
   },
-  dateIcon: {
-    width: 40,
-    height: 40,
+  methodIcon: {
+    width: 48,
+    height: 48,
     borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,
     borderColor: "rgba(0,0,0,0.1)",
   },
-  dateInfo: {
+  methodInfo: {
     flex: 1,
   },
-  dateLabel: {
-    fontSize: 12,
-    color: Colors.light.textSecondary,
-    fontWeight: "500",
-    marginBottom: 2,
-  },
-  dateValue: {
-    fontSize: 14,
+  methodName: {
+    fontSize: 18,
+    fontWeight: "700",
     color: Colors.light.text,
-    fontWeight: "600",
+    marginBottom: 4,
   },
-  cardActions: {
-    position: "absolute",
-    bottom: 16,
-    right: 16,
+  methodDescription: {
+    fontSize: 14,
+    color: Colors.light.textSecondary,
+    lineHeight: 20,
   },
-  deleteButton: {
+  toggleContainer: {
+    marginLeft: 12,
+  },
+  loadingToggle: {
+    width: 51,
+    height: 31,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  methodActions: {
+    flexDirection: "row",
+    gap: 8,
+    justifyContent: "flex-end",
+  },
+  actionButton: {
     borderRadius: 12,
-    elevation: 2,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
   },
-  deleteButtonGradient: {
-    width: 40,
-    height: 40,
+  actionButtonGradient: {
+    width: 36,
+    height: 36,
     borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",
+    borderWidth: 1,
+    borderColor: "rgba(0,0,0,0.1)",
   },
   emptyState: {
     flex: 1,
@@ -191,55 +227,76 @@ export const styles = StyleSheet.create({
     color: Colors.light.textSecondary,
     textAlign: "center",
     lineHeight: 24,
-    marginBottom: 40,
   },
-  emptyButton: {
-    borderRadius: 28,
-    elevation: 4,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+  modalContent: {
+    padding: 16,
   },
-  emptyButtonGradient: {
+  fieldContainer: {
+    marginBottom: 20,
+  },
+  fieldLabel: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: Colors.light.text,
+    marginBottom: 8,
+  },
+  required: {
+    color: "#dc3545",
+  },
+  textArea: {
+    minHeight: 80,
+    textAlignVertical: "top",
+  },
+  switchContainer: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 32,
-    paddingVertical: 16,
-    borderRadius: 28,
+    justifyContent: "space-between",
+    backgroundColor: "white",
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: Colors.light.border,
+  },
+  switchInfo: {
+    flex: 1,
+    marginRight: 16,
+  },
+  switchLabel: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: Colors.light.text,
+    marginBottom: 2,
+  },
+  switchDescription: {
+    fontSize: 12,
+    color: Colors.light.textSecondary,
+    lineHeight: 16,
+  },
+  loadingIndicator: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 16,
     gap: 8,
   },
-  emptyButtonText: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "white",
+  loadingIndicatorText: {
+    fontSize: 14,
+    color: Colors.light.textSecondary,
   },
-  fabContainer: {
-    position: "absolute",
-    bottom: 30,
-    right: 20,
+  viewModalContent: {
+    padding: 16,
   },
-  fab: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    elevation: 8,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 4.65,
+  specificationsContainer: {
+    backgroundColor: Colors.light.background,
+    padding: 16,
+    borderRadius: 12,
+    borderLeftWidth: 4,
+    borderLeftColor: Colors.light.primary,
   },
-  fabGradient: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    justifyContent: "center",
-    alignItems: "center",
+  specificationsText: {
+    fontSize: 14,
+    color: Colors.light.text,
+    lineHeight: 20,
   },
 })

@@ -1,13 +1,14 @@
 "use client"
 
 import type React from "react"
-import { useRef, useEffect } from "react"
-import { View, Text, TouchableOpacity, Animated, Alert } from "react-native"
+import { useRef } from "react"
+import { View, Text, TouchableOpacity, Animated } from "react-native"
 import { Ionicons, MaterialIcons, Feather } from "@expo/vector-icons"
 import { Image } from "react-native"
 import type { IUser } from "../../UsuariosType"
 import { Colors } from "@/constants/Coloresuser"
 import { styles } from "./UserCardStyles"
+import { useIntl, FormattedMessage } from "react-intl"
 
 interface UserCardProps {
   user: IUser
@@ -20,6 +21,7 @@ interface UserCardProps {
 const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, currentUserId, allowManage }) => {
   const scaleAnim = useRef(new Animated.Value(1)).current
   const isCurrentUser = user.id === currentUserId
+  const intl = useIntl()
 
   const animatePress = () => {
     Animated.sequence([
@@ -36,17 +38,6 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, currentUser
     ]).start()
   }
 
-  const handleDelete = () => {
-    Alert.alert("Eliminar Usuario", `¿Estás seguro de que deseas eliminar a ${user.nombre}?`, [
-      { text: "Cancelar", style: "cancel" },
-      {
-        text: "Eliminar",
-        style: "destructive",
-        onPress: () => onDelete(user.id),
-      },
-    ])
-  }
-
   const getInitials = (name: string) => {
     return name
       .split(" ")
@@ -56,7 +47,6 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, currentUser
       .slice(0, 2)
   }
 
-  // Crear una key única que incluya la imagen para forzar re-render
   const imageKey = `${user.id}-${user.image || "no-image"}-${Date.now()}`
 
   return (
@@ -67,33 +57,27 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, currentUser
           transform: [{ scale: scaleAnim }],
         },
       ]}
-      key={imageKey} // Key única para forzar re-render
+      key={imageKey}
     >
       <TouchableOpacity activeOpacity={0.9} onPress={animatePress} style={styles.cardContent}>
-        {/* Current User Badge */}
         {isCurrentUser && (
           <View style={styles.currentUserBadge}>
-            <Text style={styles.currentUserText}>Tú</Text>
+            <Text style={styles.currentUserText}>
+              <FormattedMessage id="users.you" defaultMessage="Tú" />
+            </Text>
           </View>
         )}
 
-        {/* Header with Avatar and Info */}
         <View style={styles.header}>
           <View style={styles.avatarContainer}>
             {user.image ? (
-              <Image
-                source={{ uri: user.image }}
-                style={styles.avatar}
-                resizeMode="cover"
-                key={user.image} // Key única para la imagen
-              />
+              <Image source={{ uri: user.image }} style={styles.avatar} resizeMode="cover" key={user.image} />
             ) : (
               <View style={styles.avatarBackground}>
                 <Text style={styles.avatarText}>{getInitials(user.nombre)}</Text>
               </View>
             )}
 
-            {/* Status Indicator */}
             <View
               style={[
                 styles.statusIndicator,
@@ -117,7 +101,6 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, currentUser
           </View>
         </View>
 
-        {/* Status and Role Badges */}
         <View style={styles.badgesContainer}>
           <View
             style={[
@@ -143,29 +126,36 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, currentUser
                 },
               ]}
             >
-              {user.activo ? "Activo" : "Inactivo"}
+              <FormattedMessage
+                id={user.activo ? "users.status.active" : "users.status.inactive"}
+                defaultMessage={user.activo ? "Activo" : "Inactivo"}
+              />
             </Text>
           </View>
 
           {user.isAdmin && (
             <View style={styles.adminBadge}>
               <Ionicons name="shield-checkmark" size={12} color={Colors.light.warning} />
-              <Text style={styles.adminText}>Admin</Text>
+              <Text style={styles.adminText}>
+                <FormattedMessage id="users.role.admin" defaultMessage="Admin" />
+              </Text>
             </View>
           )}
         </View>
 
-        {/* Action Buttons */}
         {allowManage && !isCurrentUser && (
           <View style={styles.actionsContainer}>
             <TouchableOpacity style={styles.editButton} onPress={() => onEdit(user)} activeOpacity={0.7}>
               <Feather name="edit-2" size={16} color={Colors.light.primary} />
-              <Text style={styles.editButtonText}>Editar</Text>
+              <Text style={styles.editButtonText}>
+                <FormattedMessage id="users.actions.edit" defaultMessage="Editar" />
+              </Text>
             </TouchableOpacity>
-
-            <TouchableOpacity style={styles.deleteButton} onPress={handleDelete} activeOpacity={0.7}>
+            <TouchableOpacity style={styles.deleteButton} onPress={() => onDelete(user.id)} activeOpacity={0.7}>
               <MaterialIcons name="delete-outline" size={16} color="white" />
-              <Text style={styles.deleteButtonText}>Eliminar</Text>
+              <Text style={styles.deleteButtonText}>
+                <FormattedMessage id="users.actions.delete" defaultMessage="Eliminar" />
+              </Text>
             </TouchableOpacity>
           </View>
         )}
@@ -173,7 +163,9 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, currentUser
         {isCurrentUser && (
           <View style={styles.currentUserIndicator}>
             <Ionicons name="person" size={16} color={Colors.light.primary} />
-            <Text style={styles.currentUserIndicatorText}>Tu perfil</Text>
+            <Text style={styles.currentUserIndicatorText}>
+              <FormattedMessage id="users.yourProfile" defaultMessage="Tu perfil" />
+            </Text>
           </View>
         )}
       </TouchableOpacity>

@@ -7,32 +7,24 @@ import { FormattedMessage } from "react-intl";
 import { TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
+import CustomHeader from "@/components/CustomHeader/CustomHeader";
 
 const PrivacyView = () => {
   const router = useRouter();
 
   return (
     <View flex={1}>
-      <Animated.View style={globalStyles.header2}>
-        <TouchableOpacity
-          style={globalStyles.backButton}
-          onPress={() => router.back()}
-          activeOpacity={0.7}
-        >
-          <AntDesign name="arrowleft" size={24} color="white" />
-        </TouchableOpacity>
-        <View style={globalStyles.headerContent}>
-          <View style={globalStyles.headerLeft}>
-            <CustomText
-              style={globalStyles.businessName}
-              accessibilityLabel="Privacy Policy"
-            >
-              <FormattedMessage id="privacyPolicy.title" />
-            </CustomText>
-          </View>
-        </View>
-      </Animated.View>
-
+      <CustomHeader
+          title={
+            <FormattedMessage
+              id="privacyPolicy.title"
+              defaultMessage="Politicas de Privacidad"
+            />
+          }
+          onBack={() => router.back()}
+          showBackButton
+        />
+ 
       <ScrollView p={3}>
         <VStack shadow={1} mb={8} pb={12} bg={'white'} p={8} borderRadius={12} space={5}>
           <Box>

@@ -7,6 +7,15 @@ export const removeTimeZone = (dateString: any) => {
   return dateWithoutTimeZone;
 };
 
+   export const formatTime = (time: string) => {
+      if (!time) return "";
+      if (time.includes(":")) {
+        const parts = time.split(":");
+        return `${parts[0]}:${parts[1]}`;
+      }
+      return time;
+    };
+
 export const getHourNumber = (hourStr: string): number => {
   const hour = hourStr?.split(":")[0];
   return Number(hour ?? 0);

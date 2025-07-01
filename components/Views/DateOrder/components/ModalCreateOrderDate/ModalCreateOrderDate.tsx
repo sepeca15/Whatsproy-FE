@@ -1,15 +1,17 @@
+"use client";
+
 import * as React from "react";
-import { Modal, View, StyleSheet, Pressable } from "react-native";
+import { View, StyleSheet } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
-import { Button, FormControl, Text } from "native-base";
-import EvilIcons from "react-native-vector-icons/EvilIcons";
-import CustomText from "@/components/CustomText";
+import { Text, Spinner } from "native-base";
 import InputField from "@/components/InputField";
 import { useUser } from "@/hooks/redux/useUser";
 import api from "@/services/api/admin";
 import { useToastContext } from "@/contexts/ToastContext";
 import { FormattedMessage, useIntl } from "react-intl";
-import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmAction";
+import { Colors } from "@/constants/Colors";
+import GenericModal from "@/components/Views/ConfigAccount/components/GenericModal/GenericModal";
+import { useColorScheme } from "react-native";
 
 interface IDateOrder {
   es_defecto: boolean;
@@ -22,6 +24,7 @@ interface IDateOrder {
 
 interface IProps {
   data?: IDateOrder;
+  visible: boolean;
   onClose: () => void;
   updateOrder: (newOrder: IDateOrder) => void;
 }
@@ -34,158 +37,394 @@ const initialValues = {
   tipo: "",
 };
 
-const ModalCreateOrderDate = ({ data, onClose, updateOrder }: IProps) => {
+const ModalCreateOrderDate = ({
+  data,
+  visible,
+  onClose,
+  updateOrder,
+}: IProps) => {
   const { user } = useUser();
   const { showToast } = useToastContext();
   const intl = useIntl();
-  const [loadingApi, setloadingApi] = React.useState<boolean>(false)
-  const [stateModalConfirm, setstateModalConfirm] = React.useState<boolean>(false)
+  const colorScheme = useColorScheme();
+  const colors = Colors[colorScheme ?? "light"];
 
+  const [loadingApi, setLoadingApi] = React.useState<boolean>(false);
   const [form, setForm] = React.useState<IDateOrder>(
-    data ? data : initialValues,
+    data ? data : initialValues
   );
-  const isValidData = !!form.nombre && !!form.requerido && !!form.tipo;
+  const [errors, setErrors] = React.useState<{ [key: string]: string }>({});
+
+  // Reset form when modal opens/closes or data changes
+  React.useEffect(() => {
+    if (visible) {
+      setForm(data ? data : initialValues);
+      setErrors({});
+    }
+  }, [visible, data]);
+
+  const validateForm = (): boolean => {
+    const newErrors: { [key: string]: string } = {};
+
+    if (!form.nombre.trim()) {
+      newErrors.nombre = intl.formatMessage({
+        id: "orderData.nameRequired",
+        defaultMessage: "El nombre del campo es requerido",
+      });
+    }
+
+    if (form.requerido === undefined || form.requerido === null) {
+      newErrors.requerido = intl.formatMessage({
+        id: "orderData.requiredFieldRequired",
+        defaultMessage: "Debes seleccionar si el campo es requerido",
+      });
+    }
+
+    if (!form.tipo) {
+      newErrors.tipo = intl.formatMessage({
+        id: "orderData.typeRequired",
+        defaultMessage: "Debes seleccionar el tipo de campo",
+      });
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleChangeValue = (key: string, value: any) => {
     setForm((prevState) => ({
       ...prevState,
       [key]: value,
     }));
+    // Clear error when user makes changes
+    if (errors[key]) {
+      setErrors((prev) => ({ ...prev, [key]: "" }));
+    }
   };
 
+  const createOrUpdateOrderData = async () => {
+    if (!validateForm()) return;
 
-  const createOrderData = async () => {
-    setloadingApi(true)
+    setLoadingApi(true);
     try {
-      const data = await api.dataOrder.create({
-        ...form,
-        id_tipo_servicio: user.tipo_servicio,
-      });
-      if (data) {
-        updateOrder(data);
+      let response;
+      if (data?.id) {
+        response = await api.dataOrder.create({
+          ...form,
+          id_tipo_servicio: user.tipo_servicio,
+        });
+      }
+
+      if (response) {
+        updateOrder(response);
         onClose();
         showToast({
-          title: <FormattedMessage id="orderCreatedSuccess" />,
+          title: intl.formatMessage({
+            id: data?.id
+              ? "orderData.updateSuccess"
+              : "orderData.createSuccess",
+            defaultMessage: data?.id
+              ? "Campo actualizado exitosamente"
+              : "Campo creado exitosamente",
+          }),
           status: "success",
         });
       } else {
-         showToast({
-          title: <FormattedMessage id="unknownError" />,
+        showToast({
+          title: intl.formatMessage({
+            id: "unknownError",
+            defaultMessage: "Error desconocido",
+          }),
           status: "error",
         });
       }
     } catch (error: any) {
       showToast({
-          title: error.response.data.message ?? <FormattedMessage id="unknownError" />,
-          status: "error",
-        });
+        title:
+          error.response?.data?.message ??
+          intl.formatMessage({
+            id: "unknownError",
+            defaultMessage: "Error desconocido",
+          }),
+        status: "error",
+      });
     } finally {
-      setloadingApi(false)
+      setLoadingApi(false);
     }
   };
 
+  const getFieldTypeIcon = (type: string) => {
+    switch (type) {
+      case "string":
+        return "📝";
+      case "number":
+        return "🔢";
+      case "boolean":
+        return "✅";
+      case "date":
+        return "📅";
+      default:
+        return "❓";
+    }
+  };
+
+  const modalActions = [
+    {
+      label: intl.formatMessage({
+        id: "common.cancel",
+        defaultMessage: "Cancelar",
+      }),
+      onPress: onClose,
+      style: "secondary" as const,
+      disabled: loadingApi,
+    },
+    {
+      label: loadingApi
+        ? intl.formatMessage({
+            id: "common.saving",
+            defaultMessage: "Guardando...",
+          })
+        : intl.formatMessage({
+            id: data?.id ? "common.update" : "common.create",
+            defaultMessage: data?.id ? "Actualizar" : "Crear",
+          }),
+      onPress: createOrUpdateOrderData,
+      style: "primary" as const,
+      disabled: loadingApi,
+    },
+  ];
+
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={true}
-      onRequestClose={onClose}
+    <GenericModal
+      visible={visible}
+      onClose={onClose}
+      title={intl.formatMessage({
+        id: data?.id ? "orderData.editTitle" : "orderData.createTitle",
+        defaultMessage: data?.id
+          ? "Editar campo personalizado"
+          : "Crear campo personalizado",
+      })}
+      subtitle={intl.formatMessage({
+        id: "orderData.subtitle",
+        defaultMessage: "Configura campos adicionales para las órdenes",
+      })}
+      actions={modalActions}
+      scrollable={true}
     >
-      <Pressable onPress={onClose} style={styles.container}>
-        <View
-          style={styles.containerContent}
-          onStartShouldSetResponder={() => true}
-        >
-          <View style={styles.headerContent}>
-            <View style={styles.decorateDiv}></View>
+      <View style={styles.container}>
+        <Text style={[styles.description, { color: colors.textSecondary }]}>
+          <FormattedMessage
+            id="orderData.description"
+            defaultMessage="Define los campos personalizados que los clientes deberán completar al realizar una orden"
+          />
+        </Text>
 
-            <View style={styles.containerCreate}>
-              <View style={styles.containerTitle}>
-                <Button variant="unstyled" hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }} bg={'transparent'} onPress={onClose}>
-                  <EvilIcons name="close" size={25} color={"white"} />
-                </Button>
-                <CustomText style={{ color: "white", fontSize: 20 }}>
-                  <FormattedMessage id="create" />
-                </CustomText>
-              </View>
-              <Button
-                variant="unstyled"
-                hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
-                style={{ padding: 4 }}
-                onPress={createOrderData}
-                disabled={!isValidData}
-                bg={'transparent'}
-                isLoading={loadingApi}
-
-              >
-                <CustomText
-                  style={{ color: isValidData ? "white" : "#696969" }}
-                >
-                  <FormattedMessage id="save" />
-                </CustomText>
-              </Button>
-            </View>
-          </View>
-          <View style={styles.bodyContent}>
+        <View style={styles.formContainer}>
+          <View style={styles.fieldContainer}>
+            <Text style={[styles.label, { color: colors.text }]}>
+              <FormattedMessage
+                id="orderData.nameLabel"
+                defaultMessage="Nombre del campo"
+              />
+              <Text style={styles.required}> *</Text>
+            </Text>
             <InputField
               value={form.nombre}
               onChangeText={(text) => handleChangeValue("nombre", text)}
-              label={<Text mx={1}> <FormattedMessage id="name" /> </Text>}
-              placeholder={"Enter name"}
+              placeholder={intl.formatMessage({
+                id: "orderData.namePlaceholder",
+                defaultMessage: "Ej: Instrucciones especiales",
+              })}
+              style={[errors.nombre && styles.inputError]}
             />
-
-            <FormControl isRequired style={styles.containerInput}>
-              <FormControl.Label>
-                <Text mx={1}>
-                  <FormattedMessage id="required" />
-                </Text>
-              </FormControl.Label>
-              <View style={styles.input}>
-                <RNPickerSelect
-                  value={form.requerido}
-                  onValueChange={(value) =>
-                    handleChangeValue("requerido", value)
-                  }
-                  items={[
-                    { label: "Si", value: true },
-                    { label: "No", value: false },
-                  ]}
-                  useNativeAndroidPickerStyle={false}
-                  style={{
-                    inputAndroid: styles.inputElement,
-                    inputIOS: styles.inputElement,
-                  }}
-                />
-              </View>
-            </FormControl>
-            <FormControl isRequired style={styles.containerInput}>
-              <FormControl.Label>
-                <Text mx={1}>
-                  <FormattedMessage id="type" />
-                </Text>
-              </FormControl.Label>
-              <View style={styles.input}>
-                <RNPickerSelect
-                  value={form.tipo}
-                  onValueChange={(value) => handleChangeValue("tipo", value)}
-                  items={[
-                    { label: intl.formatMessage({ id: "dateOrderTypeText" }), value: "string" },
-                    { label: intl.formatMessage({ id: "dateOrderTypeNumber" }), value: "number" },
-                    { label: intl.formatMessage({ id: "dateOrderTypeBoolean" }), value: "boolean" },
-                    { label: intl.formatMessage({ id: "dateOrderTypeDate" }), value: "date" },
-                  ]}
-                  useNativeAndroidPickerStyle={false}
-                  style={{
-                    inputAndroid: styles.inputElement,
-                    inputIOS: styles.inputElement,
-                  }}
-                />
-              </View>
-            </FormControl>
+            {errors.nombre && (
+              <Text style={styles.errorText}>{errors.nombre}</Text>
+            )}
           </View>
+
+          <View style={styles.fieldContainer}>
+            <Text style={[styles.label, { color: colors.text }]}>
+              <FormattedMessage
+                id="orderData.requiredLabel"
+                defaultMessage="¿Es requerido?"
+              />
+              <Text style={styles.required}> *</Text>
+            </Text>
+            <View style={[styles.input, errors.requerido && styles.inputError]}>
+              <RNPickerSelect
+                value={form.requerido}
+                onValueChange={(value) => handleChangeValue("requerido", value)}
+                items={[
+                  {
+                    label: intl.formatMessage({
+                      id: "common.yes",
+                      defaultMessage: "Sí",
+                    }),
+                    value: true,
+                  },
+                  {
+                    label: intl.formatMessage({
+                      id: "common.no",
+                      defaultMessage: "No",
+                    }),
+                    value: false,
+                  },
+                ]}
+                placeholder={{
+                  label: intl.formatMessage({
+                    id: "orderData.selectRequired",
+                    defaultMessage: "Selecciona una opción",
+                  }),
+                  value: null,
+                }}
+                useNativeAndroidPickerStyle={false}
+                style={{
+                  inputAndroid: styles.inputElement,
+                  inputIOS: styles.inputElement,
+                  placeholder: styles.placeholderStyle,
+                }}
+              />
+            </View>
+            {errors.requerido && (
+              <Text style={styles.errorText}>{errors.requerido}</Text>
+            )}
+          </View>
+
+          {/* Type Field */}
+          <View style={styles.fieldContainer}>
+            <Text style={[styles.label, { color: colors.text }]}>
+              <FormattedMessage
+                id="orderData.typeLabel"
+                defaultMessage="Tipo de campo"
+              />
+              <Text style={styles.required}> *</Text>
+            </Text>
+            <View style={[styles.input, errors.tipo && styles.inputError]}>
+              <RNPickerSelect
+                value={form.tipo}
+                onValueChange={(value) => handleChangeValue("tipo", value)}
+                items={[
+                  {
+                    label: `📝 ${intl.formatMessage({
+                      id: "dateOrderTypeText",
+                      defaultMessage: "Texto",
+                    })}`,
+                    value: "string",
+                  },
+                  {
+                    label: `🔢 ${intl.formatMessage({
+                      id: "dateOrderTypeNumber",
+                      defaultMessage: "Número",
+                    })}`,
+                    value: "number",
+                  },
+                  {
+                    label: `✅ ${intl.formatMessage({
+                      id: "dateOrderTypeBoolean",
+                      defaultMessage: "Sí/No",
+                    })}`,
+                    value: "boolean",
+                  },
+                  {
+                    label: `📅 ${intl.formatMessage({
+                      id: "dateOrderTypeDate",
+                      defaultMessage: "Fecha",
+                    })}`,
+                    value: "date",
+                  },
+                ]}
+                placeholder={{
+                  label: intl.formatMessage({
+                    id: "orderData.selectType",
+                    defaultMessage: "Selecciona el tipo de campo",
+                  }),
+                  value: null,
+                }}
+                useNativeAndroidPickerStyle={false}
+                style={{
+                  inputAndroid: styles.inputElement,
+                  inputIOS: styles.inputElement,
+                  placeholder: styles.placeholderStyle,
+                }}
+              />
+            </View>
+            {errors.tipo && <Text style={styles.errorText}>{errors.tipo}</Text>}
+          </View>
+
+          {/* Preview Section */}
+          {form.nombre && form.tipo && form.requerido !== undefined && (
+            <View
+              style={[
+                styles.previewContainer,
+                { backgroundColor: colors.primary + "15" },
+              ]}
+            >
+              <Text style={[styles.previewLabel, { color: colors.primary }]}>
+                <FormattedMessage
+                  id="orderData.preview"
+                  defaultMessage="Vista previa del campo:"
+                />
+              </Text>
+              <View style={styles.previewContent}>
+                <Text style={styles.previewEmoji}>
+                  {getFieldTypeIcon(form.tipo)}
+                </Text>
+                <View style={styles.previewTextContainer}>
+                  <Text
+                    style={[styles.previewFieldName, { color: colors.text }]}
+                  >
+                    {form.nombre}
+                    {form.requerido && <Text style={styles.required}> *</Text>}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.previewFieldType,
+                      { color: colors.textSecondary },
+                    ]}
+                  >
+                    <FormattedMessage
+                      id="orderData.previewType"
+                      defaultMessage="Tipo: {type} • {required}"
+                      values={{
+                        type: intl.formatMessage({
+                          id: `dateOrderType${form.tipo.charAt(0).toUpperCase() + form.tipo.slice(1)}`,
+                          defaultMessage: form.tipo,
+                        }),
+                        required: form.requerido
+                          ? intl.formatMessage({
+                              id: "required",
+                              defaultMessage: "Requerido",
+                            })
+                          : intl.formatMessage({
+                              id: "optional",
+                              defaultMessage: "Opcional",
+                            }),
+                      }}
+                    />
+                  </Text>
+                </View>
+              </View>
+            </View>
+          )}
+
+          {loadingApi && (
+            <View style={styles.loadingContainer}>
+              <Spinner size="sm" color={colors.primary} />
+              <Text
+                style={[styles.loadingText, { color: colors.textSecondary }]}
+              >
+                <FormattedMessage
+                  id={data?.id ? "orderData.updating" : "orderData.creating"}
+                  defaultMessage={
+                    data?.id ? "Actualizando campo..." : "Creando campo..."
+                  }
+                />
+              </Text>
+            </View>
+          )}
         </View>
-      </Pressable>
-    </Modal>
+      </View>
+    </GenericModal>
   );
 };
 
@@ -193,71 +432,97 @@ export default ModalCreateOrderDate;
 
 const styles = StyleSheet.create({
   container: {
-    position: "absolute",
-    height: "100%",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    width: "100%",
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    padding: 16,
   },
-  containerContent: {
-    width: 300,
-    backgroundColor: "white",
-    borderRadius: 12,
+  description: {
+    fontSize: 14,
+    marginBottom: 20,
+    textAlign: "center",
+    lineHeight: 20,
   },
-  headerContent: {
-    borderTopEndRadius: 12,
-    borderTopStartRadius: 12,
-    paddingHorizontal: 8,
-    paddingTop: 40,
-    paddingBottom: 20,
-    backgroundColor: "#2C2C2C",
-    alignItems: "center",
+  formContainer: {
+    gap: 20,
   },
-  containerCreate: {
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 4,
+  fieldContainer: {
+    gap: 8,
   },
-  containerTitle: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
+  label: {
+    fontSize: 14,
+    fontWeight: "600",
+    marginBottom: 4,
   },
-  bodyContent: {
-    paddingHorizontal: 20,
-    paddingTop: 12,
-    paddingVertical: 30,
+  required: {
+    color: "#dc3545",
   },
   input: {
-    marginTop: 5,
-    width: "100%",
     borderWidth: 1,
-    borderColor: "#cfcfcf",
-    borderRadius: 5,
+    borderColor: Colors.light.border,
+    borderRadius: 8,
+    backgroundColor: "white",
   },
   inputElement: {
     height: 40,
     paddingVertical: 0,
-    paddingHorizontal: 8,
-    lineHeight: 40,
+    paddingHorizontal: 12,
     fontSize: 16,
-    color: 'black',
-    includeFontPadding: false, // 👈 solo en Android: remueve padding interno de la fuente
-    textAlignVertical: 'center', // 👈 centra el texto verticalmente en Android
+    color: Colors.light.text,
+    includeFontPadding: false,
+    textAlignVertical: "center",
   },
-  decorateDiv: {
-    marginBottom: 12,
-    width: "60%",
-    height: 12,
+  inputError: {
+    borderColor: "#dc3545",
+    borderWidth: 1,
+  },
+  placeholderStyle: {
+    color: Colors.light.icon,
+    fontSize: 16,
+  },
+  errorText: {
+    fontSize: 12,
+    color: "#dc3545",
+    marginTop: 4,
+  },
+  previewContainer: {
+    padding: 16,
     borderRadius: 12,
-    backgroundColor: "#818181",
+    borderLeftWidth: 4,
+    marginTop: 8,
   },
-  containerInput: {
-    marginTop: 15,
-    width: "100%",
+  previewLabel: {
+    fontSize: 12,
+    fontWeight: "600",
+    marginBottom: 12,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  previewContent: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  previewEmoji: {
+    fontSize: 24,
+    marginRight: 12,
+  },
+  previewTextContainer: {
+    flex: 1,
+  },
+  previewFieldName: {
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: 2,
+  },
+  previewFieldType: {
+    fontSize: 12,
+    opacity: 0.8,
+  },
+  loadingContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 16,
+    gap: 8,
+  },
+  loadingText: {
+    fontSize: 14,
   },
 });

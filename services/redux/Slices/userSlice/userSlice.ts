@@ -12,11 +12,12 @@ const userSlice = createSlice({
     mostrarMensaje: (state, { payload }) => {
     },
     onAddUserData: (state, { payload }) => {
+      console.log("onAddUserData")
       state.user = payload;
     },
     onUpdateKeys: (state, { payload }) => {
       const { data } = payload;
-
+      console.log("onUpdateKeys")
       Object.keys(data).forEach((key) => {
         if (key in state.user) {
           // @ts-ignore
@@ -39,6 +40,7 @@ const userSlice = createSlice({
       state.user.userConfigured = true;
     },
     greenApiConfigured: (state) => {
+      console.log("greenApiConfigured")
       state.user.greenApiConfigured = true;
       state.user.globalConfig = true;
     },

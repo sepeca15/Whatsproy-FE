@@ -24,6 +24,7 @@ import { StyleSheet } from "react-native";
 import api from "@/services/api/admin";
 import { useToastContext } from "@/contexts/ToastContext";
 import { ICategoryData } from "../Categories/components/CardCategory/CardCategory";
+import CustomHeader from "@/components/CustomHeader/CustomHeader";
 
 interface IPriceUpdateForm {
   updateType: "all" | "category";
@@ -78,7 +79,7 @@ const PriceManagementSettings = () => {
     setHasChanges(true);
   };
 
-  console.log("increaseType", form.increaseType)
+  console.log("increaseType", form.increaseType);
 
   const handlePriceUpdate = async () => {
     if (!form.increaseValue || Number.parseFloat(form.increaseValue) <= 0) {
@@ -111,7 +112,7 @@ const PriceManagementSettings = () => {
       return;
     }
 
-    console.log("form.increaseType", form.increaseType)
+    console.log("form.increaseType", form.increaseType);
 
     setLoadingApi(true);
     try {
@@ -125,7 +126,7 @@ const PriceManagementSettings = () => {
             : null,
         soloDisponibles: form.applyToActiveOnly,
       };
-      console.log("updateData", updateData)
+      console.log("updateData", updateData);
 
       const resp = await api.products.updatePrices(updateData);
 
@@ -191,24 +192,16 @@ const PriceManagementSettings = () => {
   return (
     <ScrollView>
       <View style={styles.container}>
-        <View style={globalStyles.header2}>
-          <TouchableOpacity
-            style={globalStyles.backButton}
-            onPress={() => router.back()}
-          >
-            <AntDesign name="arrowleft" size={22} color="white" />
-          </TouchableOpacity>
-          <View style={globalStyles.headerContent}>
-            <View style={globalStyles.headerLeft}>
-              <CustomText style={globalStyles.businessName}>
-                <FormattedMessage
-                  id="priceManagementTitle"
-                  defaultMessage="Gestión de Precios"
-                />
-              </CustomText>
-            </View>
-          </View>
-        </View>
+        <CustomHeader
+          title={
+            <FormattedMessage
+              id="priceManagementTitle"
+              defaultMessage="Ajuste de Precios"
+            />
+          }
+          onBack={() => router.back()}
+          showBackButton
+        />
 
         <View style={styles.containerGlobal}>
           <View style={styles.form}>

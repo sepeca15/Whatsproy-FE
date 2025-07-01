@@ -1,178 +1,335 @@
-import GlobalModal from "@/components/Modal";
-import { Button, FlatList, Text, View, Checkbox, Pressable, Icon } from "native-base";
-import * as Contacts from "expo-contacts";
-import React from "react";
-import { Ionicons } from "@expo/vector-icons";
-import { Colors } from "@/constants/Colors";
-import InputField from "@/components/InputField";
+"use client"
+
+import React from "react"
+import { View, Text, TouchableOpacity, FlatList, ActivityIndicator } from "react-native"
+import { Checkbox, Icon } from "native-base"
+import { Ionicons, MaterialIcons } from "@expo/vector-icons"
+import { LinearGradient } from "expo-linear-gradient"
+import Animated, { FadeInDown } from "react-native-reanimated"
+import { FormattedMessage, useIntl } from "react-intl"
+import { useColorScheme } from "react-native"
+import * as Contacts from "expo-contacts"
+
+import GenericModal from "@/components/Views/ConfigAccount/components/GenericModal/GenericModal"
+import InputField from "@/components/InputField"
+import { Colors } from "@/constants/Colors"
+import { styles } from "./ModalSelectContactStyles"
 
 interface IModalSelectContact {
-    onClose: () => void;
-    isOpen: boolean;
-    onImportContacts: (contacts: { id: number; nombre: string; numero: string }[]) => void;
-    loadingApi: boolean,
-    trustedPhones: string[]
+  onClose: () => void
+  isOpen: boolean
+  onImportContacts: (contacts: { id: number; nombre: string; numero: string }[]) => void
+  loadingApi: boolean
+  trustedPhones: string[]
 }
 
-const normalize = (num: string) => num.replace(/\D/g, '').replace(/^0+/, '');
+const normalize = (num: string) => num.replace(/\D/g, "").replace(/^0+/, "")
 
 const ModalSelectContact = ({ isOpen, onClose, onImportContacts, loadingApi, trustedPhones }: IModalSelectContact) => {
-    const [contacts, setContacts] = React.useState<any[]>([]);
-    const [contactsFilter, setContactsFilter] = React.useState<any[]>([]);
+  const intl = useIntl()
+  const colorScheme = useColorScheme()
+  const colors = Colors[colorScheme ?? "light"]
 
-    const [valueSearch, setValueSearch] = React.useState<string>('');
+  const [contacts, setContacts] = React.useState<any[]>([])
+  const [contactsFilter, setContactsFilter] = React.useState<any[]>([])
+  const [valueSearch, setValueSearch] = React.useState<string>("")
+  const [contactsSelected, setContactsSelected] = React.useState<Set<string>>(new Set())
+  const [loadingContacts, setLoadingContacts] = React.useState<boolean>(false)
+  const [permissionDenied, setPermissionDenied] = React.useState<boolean>(false)
 
-    const [contactsSelected, setContactsSelected] = React.useState<Set<string>>(new Set());
+  const importContacts = async () => {
+    setLoadingContacts(true)
+    setPermissionDenied(false)
 
-    const importContacts = async () => {
-        const { status } = await Contacts.requestPermissionsAsync();
+    try {
+      const { status } = await Contacts.requestPermissionsAsync()
 
-        try {
-            if (status === "granted") {
-                const { data } = await Contacts.getContactsAsync({
-                    fields: [Contacts.Fields.PhoneNumbers],
-                });
+      if (status === "granted") {
+        const { data } = await Contacts.getContactsAsync({
+          fields: [Contacts.Fields.PhoneNumbers],
+        })
 
-                if (data.length > 0) {
-                    setContacts(data);
-                    const matchedContacts = data.filter(c =>
-                        c.phoneNumbers?.some(p =>
-                            trustedPhones.includes((p.number ?? "").replace(/\D/g, '').replace(/^0+/, ''))
-                        )
-                    );
+        if (data.length > 0) {
+          // Filter contacts that have phone numbers
+          const contactsWithPhones = data.filter((c) => c.phoneNumbers && c.phoneNumbers.length > 0)
+          setContacts(contactsWithPhones)
 
-                    const matchedIds = new Set<string>(
-                        matchedContacts.map(c => String(c.id)).filter(Boolean)
-                    );
-                    setContactsSelected(matchedIds); setContactsSelected(matchedIds);
-                }
-            }
+          // Pre-select contacts that are already trusted
+          const matchedContacts = contactsWithPhones.filter((c) =>
+            c.phoneNumbers?.some((p) => trustedPhones.includes((p.number ?? "").replace(/\D/g, "").replace(/^0+/, ""))),
+          )
 
-        } catch (error) {
-            console.log(error);
-
+          const matchedIds = new Set<string>(matchedContacts.map((c) => String(c.id)).filter(Boolean))
+          setContactsSelected(matchedIds)
         }
-    };
-
-    React.useEffect(() => {
-        importContacts();
-    }, []);
-
-    const toggleContact = (contact: any) => {
-        const contactId = String(contact.id);
-        setContactsSelected((prevSelected) => {
-            const newSelected = new Set(prevSelected);
-            if (newSelected.has(contactId)) {
-                newSelected.delete(contactId);
-            } else {
-                newSelected.add(contactId);
-            }
-            return newSelected;
-        });
-    };
-
-    const renderItem = ({ item }: { item: any }) => {
-        const name = item.name ?? (`${item.firstName} ${item.lastName ?? ""}` || "No name");
-        const hasNumber = item.phoneNumbers && item.phoneNumbers.length > 0;
-        if (!hasNumber) return null;
-
-        const isSelected = contactsSelected.has(String(item.id));
-
-        return (
-            <Pressable py={4} borderBottomColor={'gray.200'} borderBottomWidth={1} style={{ gap: 12 }} onPress={() => toggleContact(item)} key={item.id} display={"flex"} flexDirection="row" alignItems="center">
-                <Checkbox
-                    value={item.id.toString()}
-                    isChecked={isSelected}
-                    aria-label={`Select contact ${item.name}`}
-                />
-                <View w={10} h={10} rounded={'full'} bg={'teal.500'}></View>
-                <View flex={1} display={'flex'} flexDir={'column'} alignItems={'flex-start'} style={{ gap: 4 }}>
-                    <Text fontWeight={'bold'}>{name}</Text>
-                    <Text color={'gray.400'}>{item.phoneNumbers[0].number}</Text>
-                </View>
-            </Pressable>
-        );
-    };
-
-    React.useEffect(() => {
-        const updateValue = setTimeout(() => {
-            handleFilterValue(valueSearch)
-        }, 500);
-
-        return () => clearTimeout(updateValue)
-
-    }, [valueSearch])
-
-    const handleFilterValue = (value: string) => {
-        setContactsFilter(contacts.filter((prv) => prv.name.includes(value)))
+      } else {
+        setPermissionDenied(true)
+      }
+    } catch (error) {
+      console.log(error)
+      setPermissionDenied(true)
+    } finally {
+      setLoadingContacts(false)
     }
+  }
 
+  React.useEffect(() => {
+    if (isOpen) {
+      importContacts()
+    }
+  }, [isOpen])
+
+  const toggleContact = (contact: any) => {
+    const contactId = String(contact.id)
+    setContactsSelected((prevSelected) => {
+      const newSelected = new Set(prevSelected)
+      if (newSelected.has(contactId)) {
+        newSelected.delete(contactId)
+      } else {
+        newSelected.add(contactId)
+      }
+      return newSelected
+    })
+  }
+
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((word) => word.charAt(0))
+      .join("")
+      .toUpperCase()
+      .slice(0, 2)
+  }
+
+  const renderContactItem = ({ item, index }: { item: any; index: number }) => {
+    const name = item.name ?? (`${item.firstName} ${item.lastName ?? ""}` || "No name")
+    const hasNumber = item.phoneNumbers && item.phoneNumbers.length > 0
+
+    if (!hasNumber) return null
+
+    const isSelected = contactsSelected.has(String(item.id))
+    const phoneNumber = item.phoneNumbers[0].number
 
     return (
-        <GlobalModal
-            manyItems={true}
-            isVisible={isOpen}
-            onClose={onClose}
-            content={
-                <View>
-                    <InputField
-                        placeholder="Buscar por nombre..."
-                        value={valueSearch}
-                        onChangeText={setValueSearch}
-                        InputLeftElement={<Icon as={Ionicons} name="search" size={5} ml="2" color={Colors.light.secondary} />}
-                    />
-                    <FlatList
-                        data={valueSearch? contactsFilter : contacts}
-                        renderItem={renderItem}
-                        keyExtractor={(item) => item.id.toString()}
-                        initialNumToRender={20}
-                        maxToRenderPerBatch={20}
-                        contentContainerStyle={{ paddingBottom: 40 }}
-                        windowSize={5}
-                    />
-                </View>
-            }
-            actions={[
-                <Button
-                    onPress={onClose}
-                    key="Cancel"
-                    size="md"
-                    background={"gray.50"}
-                    borderWidth={1}
-                    borderColor={"gray.500"}
-                    borderRadius="md"
-                    marginRight={4}
-                >
-                    <Text color={"gray.500"}>Cancelar</Text>
-                </Button>,
-                <Button
-                    key="Accept"
-                    size="md"
-                    backgroundColor={"#2C2C2C"}
-                    borderRadius="md"
-                    isLoading={loadingApi}
-                    onPress={() => {
-                        const selectedContacts = contacts.filter((contact) =>
-                            contactsSelected.has(contact.id)
-                        ).map((contact: any) => ({
-                            id: contact.id,
-                            nombre: contact.name ?? contact.firstName,
-                            numero: normalize(contact.phoneNumbers[0]?.number || ""),
-                        }));
+      <Animated.View entering={FadeInDown.duration(400).delay(index * 50)}>
+        <TouchableOpacity style={styles.contactItem} onPress={() => toggleContact(item)} activeOpacity={0.7}>
+          <View style={styles.contactContent}>
+            <Checkbox
+              value={item.id.toString()}
+              isChecked={isSelected}
+              aria-label={`Select contact ${name}`}
+              colorScheme="primary"
+              size="md"
+            />
 
-                        console.log('son', selectedContacts.length);
+            <View style={styles.avatarContainer}>
+              <LinearGradient colors={[colors.primary + "25", colors.primary + "15"]} style={styles.avatarGradient}>
+                <Text style={[styles.avatarText, { color: colors.primary }]}>{getInitials(name)}</Text>
+              </LinearGradient>
+            </View>
 
-                        onImportContacts(selectedContacts);
-                        setContactsSelected(new Set());
-                        onClose();
-                    }}
-                >
-                    <Text color={"white"}>Importar</Text>
-                </Button>,
-            ]}
-            label="Import contacts"
+            <View style={styles.contactInfo}>
+              <Text style={[styles.contactName, { color: colors.text }]} numberOfLines={1}>
+                {name}
+              </Text>
+              <Text style={[styles.contactPhone, { color: colors.textSecondary }]} numberOfLines={1}>
+                {phoneNumber}
+              </Text>
+            </View>
+
+            {isSelected && (
+              <View style={styles.selectedIndicator}>
+                <MaterialIcons name="check-circle" size={20} color={colors.success} />
+              </View>
+            )}
+          </View>
+        </TouchableOpacity>
+      </Animated.View>
+    )
+  }
+
+  React.useEffect(() => {
+    const updateValue = setTimeout(() => {
+      handleFilterValue(valueSearch)
+    }, 300)
+
+    return () => clearTimeout(updateValue)
+  }, [valueSearch])
+
+  const handleFilterValue = (value: string) => {
+    if (!value.trim()) {
+      setContactsFilter([])
+      return
+    }
+
+    const filtered = contacts.filter((contact) => {
+      const name = contact.name ?? (`${contact.firstName} ${contact.lastName ?? ""}` || "")
+      const phone = contact.phoneNumbers?.[0]?.number || ""
+      return name.toLowerCase().includes(value.toLowerCase()) || phone.includes(value)
+    })
+    setContactsFilter(filtered)
+  }
+
+  const handleImport = () => {
+    const selectedContacts = contacts
+      .filter((contact) => contactsSelected.has(contact.id))
+      .map((contact: any) => ({
+        id: contact.id,
+        nombre: contact.name ?? contact.firstName,
+        numero: normalize(contact.phoneNumbers[0]?.number || ""),
+      }))
+
+    onImportContacts(selectedContacts)
+    setContactsSelected(new Set())
+    onClose()
+  }
+
+  const modalActions = [
+    {
+      label: intl.formatMessage({ id: "common.cancel", defaultMessage: "Cancelar" }),
+      onPress: onClose,
+      style: "secondary" as const,
+      disabled: loadingApi,
+    },
+    {
+      label: loadingApi
+        ? intl.formatMessage({ id: "common.importing", defaultMessage: "Importando..." })
+        : intl.formatMessage(
+            { id: "trustedNumbers.modal.import", defaultMessage: "Importar ({count})" },
+            { count: contactsSelected.size },
+          ),
+      onPress: handleImport,
+      style: "primary" as const,
+      disabled: loadingApi || contactsSelected.size === 0,
+    },
+  ]
+
+  const renderContent = () => {
+    if (loadingContacts) {
+      return (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
+          <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
+            <FormattedMessage id="trustedNumbers.modal.loadingContacts" defaultMessage="Cargando contactos..." />
+          </Text>
+        </View>
+      )
+    }
+
+    if (permissionDenied) {
+      return (
+        <View style={styles.permissionContainer}>
+          <View style={styles.permissionIconContainer}>
+            <MaterialIcons name="contacts" size={48} color={colors.textSecondary} />
+          </View>
+          <Text style={[styles.permissionTitle, { color: colors.text }]}>
+            <FormattedMessage
+              id="trustedNumbers.modal.permissionDenied.title"
+              defaultMessage="Permisos de contactos requeridos"
+            />
+          </Text>
+          <Text style={[styles.permissionDescription, { color: colors.textSecondary }]}>
+            <FormattedMessage
+              id="trustedNumbers.modal.permissionDenied.description"
+              defaultMessage="Para importar contactos, necesitamos acceso a tu lista de contactos"
+            />
+          </Text>
+          <TouchableOpacity style={styles.retryButton} onPress={importContacts} activeOpacity={0.8}>
+            <LinearGradient colors={[colors.primary, colors.primary + "DD"]} style={styles.retryButtonGradient}>
+              <MaterialIcons name="refresh" size={20} color="white" />
+              <Text style={styles.retryButtonText}>
+                <FormattedMessage id="trustedNumbers.modal.retry" defaultMessage="Intentar de nuevo" />
+              </Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        </View>
+      )
+    }
+
+    if (contacts.length === 0) {
+      return (
+        <View style={styles.emptyContainer}>
+          <MaterialIcons name="contact-phone" size={48} color={colors.textSecondary} />
+          <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
+            <FormattedMessage id="trustedNumbers.modal.noContacts" defaultMessage="No se encontraron contactos" />
+          </Text>
+        </View>
+      )
+    }
+
+    const displayContacts = valueSearch ? contactsFilter : contacts
+
+    return (
+      <View style={styles.contentContainer}>
+        <View style={styles.searchContainer}>
+          <InputField
+            placeholder={intl.formatMessage({
+              id: "trustedNumbers.modal.searchPlaceholder",
+              defaultMessage: "Buscar por nombre o teléfono...",
+            })}
+            value={valueSearch}
+            onChangeText={setValueSearch}
+            InputLeftElement={<Icon as={Ionicons} name="search" size={5} ml="2" color={colors.textSecondary} />}
+            style={styles.searchInput}
+          />
+        </View>
+
+        {contactsSelected.size > 0 && (
+          <View style={[styles.selectionSummary, { backgroundColor: colors.primary + "15" }]}>
+            <MaterialIcons name="check-circle" size={16} color={colors.primary} />
+            <Text style={[styles.selectionText, { color: colors.primary }]}>
+              <FormattedMessage
+                id="trustedNumbers.modal.selectedCount"
+                defaultMessage="{count} contactos seleccionados"
+                values={{ count: contactsSelected.size }}
+              />
+            </Text>
+          </View>
+        )}
+
+        <FlatList
+          data={displayContacts}
+          renderItem={renderContactItem}
+          keyExtractor={(item) => item.id.toString()}
+          initialNumToRender={20}
+          maxToRenderPerBatch={20}
+          contentContainerStyle={styles.listContainer}
+          windowSize={5}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={() => (
+            <View style={styles.emptySearchContainer}>
+              <MaterialIcons name="search-off" size={32} color={colors.textSecondary} />
+              <Text style={[styles.emptySearchText, { color: colors.textSecondary }]}>
+                <FormattedMessage
+                  id="trustedNumbers.modal.noSearchResults"
+                  defaultMessage="No se encontraron contactos con ese criterio"
+                />
+              </Text>
+            </View>
+          )}
         />
-    );
-};
+      </View>
+    )
+  }
 
-export default ModalSelectContact;
+  return (
+    <GenericModal
+      visible={isOpen}
+      onClose={onClose}
+      title={intl.formatMessage({
+        id: "trustedNumbers.modal.title",
+        defaultMessage: "Importar contactos",
+      })}
+      subtitle={intl.formatMessage({
+        id: "trustedNumbers.modal.subtitle",
+        defaultMessage: "Selecciona los contactos de confianza",
+      })}
+      actions={modalActions}
+      scrollable={false}
+    >
+      {renderContent()}
+    </GenericModal>
+  )
+}
+
+export default ModalSelectContact

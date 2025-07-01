@@ -1,7 +1,6 @@
 "use client"
 
 import CustomText from "@/components/CustomText"
-import { getInitials } from "@/components/Views/TrustedNumbers/components/CardContact/CardContact"
 import { Colors } from "@/constants/Colors"
 import { useUser } from "@/hooks/redux/useUser"
 import { Feather } from "@expo/vector-icons"
@@ -15,10 +14,19 @@ interface ICardClient {
   setClienteSeleccionado: () => void
 }
 
+ const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((word) => word.charAt(0))
+      .join("")
+      .toUpperCase()
+      .slice(0, 2)
+  }
+
 const CardClient = ({ item, setClienteSeleccionado }: ICardClient) => {
   const { user } = useUser()
-  const initials = getInitials(item.nombre)
-  const lastPurchase = item.pedido[item.pedido.length - 1]
+  const initials = getInitials(item?.nombre)
+  const lastPurchase = item?.pedido ? item?.pedido[item?.pedido?.length - 1] : "-"
   const lastPurchaseDate = lastPurchase ? moment.tz(lastPurchase?.createdAt, user.timeZone).fromNow() : "-"
 
   return (

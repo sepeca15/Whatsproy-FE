@@ -83,6 +83,7 @@ const InputField: React.FC<InputFieldProps> = ({
           placeholder={
             typeof placeholder === "string" ? placeholder : undefined
           }
+          backgroundColor={"white"}
           onChangeText={onChangeText}
           value={props.value}
           {...props}

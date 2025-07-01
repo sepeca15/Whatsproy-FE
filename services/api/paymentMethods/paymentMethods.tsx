@@ -2,7 +2,7 @@
 import ApiInstances from "@/services/axios/axiosConfig";
 
 export const getPaymentMethods = async () => {
-  const { data } = await ApiInstances("current").get("payment-methods/");
+  const { data } = await ApiInstances("current").get("payment-methods/getAll");
   return data;
 };
 

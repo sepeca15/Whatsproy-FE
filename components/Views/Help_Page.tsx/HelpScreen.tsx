@@ -11,6 +11,7 @@ import Feather from "react-native-vector-icons/Feather"
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5"
 import VisualGuideModal from "@/hooks/GuieModal/VisualGuideModal"
 import { GuideImages } from "@/assets/images/index"
+import CustomHeader from "@/components/CustomHeader/CustomHeader"
 
 const primaryColor = "#075e54"
 const secondaryColor = "#128c7e"
@@ -622,17 +623,18 @@ const HelpScreen = () => {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
-      <Animated.View style={[styles.header, { backgroundColor: colors.primary }]}>
-        <View style={styles.headerContent}>
-          <Text style={styles.headerTitle}>
-            <FormattedMessage id="helpCenter" defaultMessage="Centro de Ayuda" />
-          </Text>
-          <Text style={styles.headerSubtitle}>
-            <FormattedMessage id="helpCenterDesc" defaultMessage="Encuentra respuestas a tus preguntas" />
-          </Text>
-        </View>
-      </Animated.View>
 
+      <CustomHeader 
+      title={<FormattedMessage id="helpCenter" defaultMessage="Centro de Ayuda" />}
+      subtitle={<FormattedMessage
+                id="helpCenterDesc"
+                defaultMessage="Encuentra respuestas a tus preguntas"
+              />}
+              onBack={() => router.back()}
+              showBackButton
+
+      />
+   
       {/* Search Bar */}
       <Animatable.View animation="fadeInDown" duration={800} style={styles.searchContainer}>
         <View style={styles.searchInputContainer}>

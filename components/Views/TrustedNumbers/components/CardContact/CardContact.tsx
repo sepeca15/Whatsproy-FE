@@ -1,52 +1,137 @@
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Text, View } from "native-base";
-import React from "react";
-import { Pressable } from "react-native";
+"use client";
 
-interface ICardContact {
-    nombre: string;
-    telefono: any
-    clickDeleteAction: () => void
+import type React from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import { MaterialIcons, Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import Animated, { FadeInDown } from "react-native-reanimated";
+import { FormattedMessage } from "react-intl";
+import { Colors } from "@/constants/Colors";
+import { styles } from "./CardContactStyles";
+
+interface CardContactProps {
+  nombre: string;
+  telefono: string;
+  clickDeleteAction: () => void;
+  index?: number;
 }
-export const getInitials = (nombre: string) => {
-    if (!isNaN(Number(nombre))) return "C";
-    const words = nombre.trim().split(" ");
-    if (words.length === 1) return words[0][0].toUpperCase();
-    return (words[0][0] + words[1][0]).toUpperCase();
+
+const CardContact: React.FC<CardContactProps> = ({
+  nombre,
+  telefono,
+  clickDeleteAction,
+  index = 0,
+}) => {
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((word) => word.charAt(0))
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  const formatPhoneNumber = (phone: string) => {
+    // Basic phone formatting - can be enhanced based on locale
+    const cleaned = phone.replace(/\D/g, "");
+    if (cleaned.length >= 10) {
+      return cleaned.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
+    }
+    return phone;
+  };
+
+  return (
+    <Animated.View entering={FadeInDown.duration(600).delay(index * 100)}>
+      <View style={styles.container}>
+        <LinearGradient colors={["#ffffff", "#f8fafc"]} style={styles.gradient}>
+          <View style={styles.avatarContainer}>
+            <LinearGradient
+              colors={[
+                Colors.light.primary + "25",
+                Colors.light.primary + "15",
+              ]}
+              style={styles.avatarGradient}
+            >
+              <Text style={styles.avatarText}>
+                {getInitials(nombre || "?")}
+              </Text>
+            </LinearGradient>
+            <View style={styles.statusIndicator}>
+              <View
+                style={[
+                  styles.statusDot,
+                  { backgroundColor: Colors.light.success },
+                ]}
+              />
+            </View>
+          </View>
+
+          <View style={styles.contactInfo}>
+            <Text style={styles.contactName} numberOfLines={1}>
+              {nombre || (
+                <FormattedMessage
+                  id="trustedNumbers.card.noName"
+                  defaultMessage="Sin nombre"
+                />
+              )}
+            </Text>
+            <View style={styles.phoneContainer}>
+              <MaterialIcons
+                name="phone"
+                size={14}
+                color={Colors.light.textSecondary}
+              />
+              <Text style={styles.contactPhone} numberOfLines={1}>
+                {formatPhoneNumber(telefono)}
+              </Text>
+            </View>
+            <View style={styles.badgeContainer}>
+              <View style={styles.trustedBadge}>
+                <MaterialIcons
+                  name="verified"
+                  size={12}
+                  color={Colors.light.success}
+                />
+                <Text style={styles.trustedText}>
+                  <FormattedMessage
+                    id="trustedNumbers.card.trusted"
+                    defaultMessage="Confianza"
+                  />
+                </Text>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.actionsContainer}>
+            {/* <TouchableOpacity style={styles.callButton} activeOpacity={0.7}>
+              <LinearGradient
+                colors={[
+                  Colors.light.primary + "25",
+                  Colors.light.primary + "15",
+                ]}
+                style={styles.callButtonGradient}
+              >
+                <Ionicons name="call" size={16} color={Colors.light.primary} />
+              </LinearGradient>
+            </TouchableOpacity> */}
+
+            <TouchableOpacity
+              style={styles.deleteButton}
+              onPress={clickDeleteAction}
+              activeOpacity={0.7}
+            >
+              <LinearGradient
+                colors={[Colors.light.danger, Colors.light.danger + "DD"]}
+                style={styles.deleteButtonGradient}
+              >
+                <MaterialIcons name="delete-outline" size={16} color="white" />
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
+        </LinearGradient>
+      </View>
+    </Animated.View>
+  );
 };
 
-const CardContact = ({ nombre, telefono, clickDeleteAction }: ICardContact) => {
-
-    const initials = getInitials(nombre);
-
-    return (
-        <View w={'full'} mb={2} bg={'white'} borderWidth={1} rounded={'md'} borderColor={'gray.200'} shadow={1} p={4} display={'flex'} flexDir={'row'} alignItems={'center'}>
-            <View display={'flex'} flex={1} flexDir={'row'} alignItems={'center'} style={{ gap: 12 }}>
-                <View
-                    w={50}
-                    h={50}
-                    bg={'teal.500'}
-                    rounded={'full'}
-                    alignItems={'center'}
-                    justifyContent={'center'}
-                >
-                    <Text fontSize={18} fontWeight={'bold'} color={'white'}>
-                        {initials}
-                    </Text>
-                </View>
-                <View display={'flex'} flexDir={'column'} alignItems={'flex-start'} justifyContent={'space-between'}>
-                    <Text fontWeight={'bold'}  >{nombre}</Text>
-                    <Text color={'gray.400'} >{telefono}</Text>
-                </View>
-            </View>
-            <Pressable
-                onPress={clickDeleteAction}
-                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-            >
-                <MaterialCommunityIcons size={25} color="#A80000" name="delete" />
-            </Pressable>
-        </View>
-    )
-}
-
-export default CardContact
+export default CardContact;

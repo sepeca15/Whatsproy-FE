@@ -355,7 +355,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
   tabButtonText: {
-    fontSize: 16,
+    fontSize: 14,
     textAlign: "center",
   },
   dayTitleContainer: {
@@ -371,6 +371,7 @@ export const styles = StyleSheet.create({
     backgroundColor: "white",
     marginHorizontal: 10,
     marginBottom: 16,
+    marginTop: 10,
     borderRadius: 12,
     padding: 16,
     shadowColor: "#000",
@@ -528,5 +529,48 @@ export const styles = StyleSheet.create({
     color: Colors.light.icon,
     marginTop: 16,
     textAlign: "center",
+  },
+  scheduleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    flex: 1,
+  },
+  scheduleActions: {
+    flexDirection: "row",
+    gap: 8,
+    marginRight: 6,
+  },
+  addScheduleButton: {
+    padding: 4,
+    borderRadius: 4,
+    backgroundColor: Colors.light.primary + "20",
+  },
+  editScheduleButton: {
+    padding: 4,
+    borderRadius: 4,
+    backgroundColor: Colors.light.secondary + "20",
+  },
+  noScheduleContainer: {
+    alignItems: "center",
+    paddingVertical: 32,
+    paddingHorizontal: 16,
+  },
+  noScheduleTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: Colors.light.text,
+    marginTop: 12,
+    marginBottom: 4,
+  },
+  noScheduleSubtitle: {
+    fontSize: 14,
+    color: Colors.light.textSecondary,
+    textAlign: "center",
+    lineHeight: 20,
+  },
+  noScheduleText: {
+    color: Colors.light.danger,
+    fontStyle: "italic",
   },
 });

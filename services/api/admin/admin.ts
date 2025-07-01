@@ -21,14 +21,12 @@ import * as numeroConfianza from "../numeroConfianza/numeroConfianza";
 import * as schedules from "../schedules/schedules";
 import * as menuImg from "../menuImg/menuImg";
 
-
-
 const api = {
   auth: {
     login: auth.Login,
     me: auth.GetMyAccountData,
     resetPassword: auth.resetPassword,
-    sendLink: auth.sendLinkToGmail
+    sendLink: auth.sendLinkToGmail,
   },
   paymentMethods: {
     getPaymentMethods: paymentMethods.getPaymentMethods,
@@ -54,6 +52,9 @@ const api = {
     create: schedules.create,
     getAll: schedules.getAll,
     remove: schedules.remove,
+    getAllDailyMenu: schedules.getAllDailyMenu,
+    updateDailySchedule: schedules.updateDailySchedule,
+    createDailySchedule: schedules.createDailySchedule,
   },
   plans: {
     getAll: plan.getAllPlans,
@@ -149,20 +150,20 @@ const api = {
   cierreProvisorio: {
     create: cierreProvisorio.createCierreProvisorio,
     getAll: cierreProvisorio.getAllCierreProvisorio,
-    delete: cierreProvisorio.deleteCierreProvisorio
+    delete: cierreProvisorio.deleteCierreProvisorio,
   },
   numeroConfianza: {
     create: numeroConfianza.create,
     findAll: numeroConfianza.getAllNumbers,
-    delete: numeroConfianza.deleteNumber
+    delete: numeroConfianza.deleteNumber,
   },
   menu: {
     find: menuImg.getAllMenuImages,
     create: menuImg.createMenuImage,
     delete: menuImg.deleteMenuImage,
     update: menuImg.markMenuImageAsProcessed,
-    parseImageToText: menuImg.parseImage
-  }
+    parseImageToText: menuImg.parseImage,
+  },
 };
 
 export default api;

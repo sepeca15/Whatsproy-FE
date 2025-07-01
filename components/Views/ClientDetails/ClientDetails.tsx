@@ -5,10 +5,18 @@ import Animated from "react-native-reanimated";
 import { globalStyles } from "@/components/globalStyles";
 import CustomText from "@/components/CustomText";
 import { FormattedMessage } from "react-intl";
-import { getInitials } from "../TrustedNumbers/components/CardContact/CardContact";
 import CardNewPedido from "../Pedidos/components/CardNewPedido.tsx";
 import { TouchableOpacity } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+
+const getInitials = (name: string) => {
+  return name
+    .split(" ")
+    .map((word) => word.charAt(0))
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+};
 
 const ClientDetails = ({}) => {
   const { clientDataString }: { clientDataString: string } =
@@ -89,7 +97,7 @@ const ClientDetails = ({}) => {
         {clientData?.pedido?.map((pedido: any) => {
           return (
             <View my={1} key={pedido?.id}>
-              <CardNewPedido pending={false} orderData={pedido} />
+              <CardNewPedido trashIcon={false} pending={false} active={false} orderData={pedido} />
             </View>
           );
         })}

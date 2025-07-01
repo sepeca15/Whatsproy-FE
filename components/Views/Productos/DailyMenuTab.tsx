@@ -1,65 +1,76 @@
-"use client"
+"use client";
 
-import { useState, useCallback, useRef, useEffect, useMemo } from "react"
-import { Text, View, ScrollView, Spinner, Avatar, Image, Switch, FlatList, Input, Icon as NBIcon } from "native-base"
-import { TouchableOpacity, RefreshControl } from "react-native"
-import * as Animatable from "react-native-animatable"
-import { styles } from "./ProductosStyles"
-import LottieView from "lottie-react-native"
-import { FormattedMessage, useIntl } from "react-intl"
-import Icon from "react-native-vector-icons/FontAwesome"
-import { Colors } from "../../../constants/Colors"
-import { useToastContext } from "@/contexts/ToastContext"
-import type { Schedule } from "../SchedulesView/SchedulesView"
-import api from "@/services/api/admin"
-import AddOrEditDailyMenu from "../AddOrEditDailyMenu/AddOrEditDailyMenu"
-import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmAction"
-import type { Cliente } from "../Clients/types"
-import { useUser } from "@/hooks/redux/useUser"
-import { MaterialIcons, Feather } from "@expo/vector-icons"
-import GenericModal from "../ConfigAccount/components/GenericModal/GenericModal"
+import { useState, useCallback, useRef, useEffect, useMemo } from "react";
+import {
+  Text,
+  View,
+  ScrollView,
+  Spinner,
+  Avatar,
+  Image,
+  Switch,
+  FlatList,
+  Input,
+  Icon as NBIcon,
+} from "native-base";
+import { TouchableOpacity, RefreshControl } from "react-native";
+import { styles } from "./ProductosStyles";
+import { FormattedMessage, useIntl } from "react-intl";
+import Icon from "react-native-vector-icons/FontAwesome";
+import { Colors } from "../../../constants/Colors";
+import { useToastContext } from "@/contexts/ToastContext";
+import type { Schedule } from "../SchedulesView/SchedulesView";
+import api from "@/services/api/admin";
+import AddOrEditDailyMenu from "../AddOrEditDailyMenu/AddOrEditDailyMenu";
+import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmAction";
+import type { Cliente } from "../Clients/types";
+import { useUser } from "@/hooks/redux/useUser";
+import { MaterialIcons, Feather } from "@expo/vector-icons";
+import GenericModal from "../ConfigAccount/components/GenericModal/GenericModal";
+import ScheduleModal from "./ScheduleModal";
+import { formatTime } from "@/utils/date";
 
 interface ProductoBDD {
-  id: number
-  nombre: string
-  precio: string
-  imagen: string
-  descripcion: string
-  plazoDuracionEstimadoMinutos: number
-  disponible: boolean
-  currency_id: number
-  isMenuDiario: boolean
-  orderMenuDiario: number
-  diaSemana: number
-  empresa_id: number
-  category?: any[]
+  id: number;
+  nombre: string;
+  precio: string;
+  imagen: string;
+  descripcion: string;
+  plazoDuracionEstimadoMinutos: number;
+  disponible: boolean;
+  currency_id: number;
+  isMenuDiario: boolean;
+  orderMenuDiario: number;
+  diaSemana: number;
+  empresa_id: number;
+  category?: any[];
 }
 
 interface DailyMenuItem {
-  id: number
-  imagen?: string
-  name: string
-  description: string
-  price: number
-  available: boolean
-  image?: string
-  estimatedDuration: number
-  currencyId: number
-  order: number
+  id: number;
+  imagen?: string;
+  name: string;
+  description: string;
+  price: number;
+  available: boolean;
+  image?: string;
+  estimatedDuration: number;
+  currencyId: number;
+  order: number;
 }
 
 interface DayMenu {
-  dayId: number
-  dayName: string
-  schedules: Schedule[]
-  items: DailyMenuItem[]
+  dayId: number;
+  dayName: string;
+  schedules: Schedule[];
+  items: DailyMenuItem[];
 }
 
 interface IValues {
-  offset: number
-  limit: number
-  clients: Cliente[]
-  totalItems: number
+  offset: number;
+  limit: number;
+  clients: Cliente[];
+  totalItems: number;
 }
 
 const initialState = {
@@ -67,37 +78,46 @@ const initialState = {
   limit: 10,
   clients: [],
   totalItems: 0,
-}
+};
 
 const DailyMenuTab = () => {
-  const intl = useIntl()
-  const { showToast } = useToastContext()
-  const { user } = useUser()
+  const intl = useIntl();
+  const { showToast } = useToastContext();
+  const { user } = useUser();
 
-  const [refreshing, setRefreshing] = useState(false)
-  const [isDeleting, setIsDeleting] = useState(true)
-  const deleteAnimationRef = useRef(null)
-  const [loading, setLoading] = useState(false)
-  const [loadingDailyMenus, setLoadingDailyMenus] = useState(false)
-  const [schedules, setSchedules] = useState<Schedule[]>([])
-  const [dailyMenuProducts, setDailyMenuProducts] = useState<ProductoBDD[]>([])
-  const [weeklyMenu, setWeeklyMenu] = useState<DayMenu[]>([])
-  const [showAddModal, setShowAddModal] = useState(false)
-  const [editingItem, setEditingItem] = useState<any | null>(null)
-  const [selectedDayId, setSelectedDayId] = useState<number | null>(null)
-  const [selectedDayName, setSelectedDayName] = useState<string>("")
-  const [deleteOpen, setDeleteOpen] = useState(false)
-  const [deleteOrderId, setDeleteOrderId] = useState(0)
-  const [loadingClients, setLoadingClients] = useState(false)
-  const [values, setValues] = useState<IValues>(initialState)
+  const [refreshing, setRefreshing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const deleteAnimationRef = useRef(null);
+  const [loading, setLoading] = useState(false);
+  const [loadingDailyMenus, setLoadingDailyMenus] = useState(false);
+  const [schedules, setSchedules] = useState<Schedule[]>([]);
+  const [dailyMenuProducts, setDailyMenuProducts] = useState<ProductoBDD[]>([]);
+  const [weeklyMenu, setWeeklyMenu] = useState<DayMenu[]>([]);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [editingItem, setEditingItem] = useState<any | null>(null);
+  const [selectedDayId, setSelectedDayId] = useState<number | null>(null);
+  const [selectedDayName, setSelectedDayName] = useState<string>("");
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteOrderId, setDeleteOrderId] = useState(0);
+  const [loadingClients, setLoadingClients] = useState(false);
+  const [values, setValues] = useState<IValues>(initialState);
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const [updatingNotification, setUpdatingNotification] = useState<
+    number | null
+  >(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(
+    null
+  );
 
-  // New states for notification management
-  const [showNotificationModal, setShowNotificationModal] = useState(false)
-  const [updatingNotification, setUpdatingNotification] = useState<number | null>(null)
-
-  // New states for search functionality
-  const [searchQuery, setSearchQuery] = useState("")
-  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(null)
+  // New states for schedule management
+  const [showScheduleModal, setShowScheduleModal] = useState(false);
+  const [editingSchedule, setEditingSchedule] = useState<Schedule | null>(null);
+  const [selectedScheduleDayId, setSelectedScheduleDayId] = useState<
+    number | null
+  >(null);
+  const [selectedScheduleDayName, setSelectedScheduleDayName] =
+    useState<string>("");
 
   const allDaysOfWeek = useMemo(
     () => [
@@ -148,38 +168,22 @@ const DailyMenuTab = () => {
         }),
       },
     ],
-    [intl],
-  )
+    [intl]
+  );
 
   const activeDaysOfWeek = useMemo(() => {
-    if (schedules?.length === 0) return []
-
-    const uniqueDays = schedules.reduce(
-      (acc, schedule) => {
-        const existingDay = acc.find((day) => day.dayOfWeek === schedule.dayOfWeek)
-
-        if (existingDay) {
-          existingDay.schedules.push(schedule)
-        } else {
-          acc.push({
-            dayOfWeek: schedule.dayOfWeek,
-            schedules: [schedule],
-          })
-        }
-
-        return acc
-      },
-      [] as { dayOfWeek: number; schedules: Schedule[] }[],
-    )
-
-    return uniqueDays
-      .map((dayGroup) => {
-        const dayInfo = allDaysOfWeek.find((day) => day.id === dayGroup.dayOfWeek)
-        return dayInfo ? { ...dayInfo, schedules: dayGroup.schedules } : null
-      })
-      .filter(Boolean)
-      .sort((a, b) => a!.id - b!.id)
-  }, [schedules, allDaysOfWeek])
+    // Always show all days, but mark which ones have schedules
+    return allDaysOfWeek.map((day) => {
+      const daySchedules = schedules.filter(
+        (schedule) => schedule.dayOfWeek === day.id
+      );
+      return {
+        ...day,
+        schedules: daySchedules,
+        hasSchedules: daySchedules.length > 0,
+      };
+    });
+  }, [schedules, allDaysOfWeek]);
 
   const mapProductToDailyMenuItem = (product: ProductoBDD): DailyMenuItem => ({
     id: product.id,
@@ -192,30 +196,90 @@ const DailyMenuTab = () => {
     estimatedDuration: product.plazoDuracionEstimadoMinutos,
     currencyId: product.currency_id,
     order: product.orderMenuDiario || 0,
-  })
+  });
 
   const handleAddItem = (dayId: number, dayName: string) => {
-    setSelectedDayId(dayId)
-    setSelectedDayName(dayName)
-    setEditingItem(null)
-    setShowAddModal(true)
-  }
+    setSelectedDayId(dayId);
+    setSelectedDayName(dayName);
+    setEditingItem(null);
+    setShowAddModal(true);
+  };
 
-  const handleEditItem = (dayId: number, dayName: string, item: DailyMenuItem) => {
-    setSelectedDayId(dayId)
-    setSelectedDayName(dayName)
-    setEditingItem(item)
-    setShowAddModal(true)
-  }
+  const handleEditItem = (
+    dayId: number,
+    dayName: string,
+    item: DailyMenuItem
+  ) => {
+    setSelectedDayId(dayId);
+    setSelectedDayName(dayName);
+    setEditingItem(item);
+    setShowAddModal(true);
+  };
+
+  // New functions for schedule management
+  const handleAddSchedule = (dayId: number, dayName: string) => {
+    setSelectedScheduleDayId(dayId);
+    setSelectedScheduleDayName(dayName);
+    setEditingSchedule(null);
+    setShowScheduleModal(true);
+  };
+
+  const handleEditSchedule = (schedule: Schedule, dayName: string) => {
+    setSelectedScheduleDayId(schedule.dayOfWeek);
+    setSelectedScheduleDayName(dayName);
+    setEditingSchedule(schedule);
+    setShowScheduleModal(true);
+  };
+
+  const handleSaveSchedule = async (scheduleData: Schedule) => {
+    try {
+      if (editingSchedule?.id) {
+        const response = await api.schedules.updateDailySchedule(
+          editingSchedule.id,
+          scheduleData
+        );
+        if (response.ok) {
+          showToast({
+            status: "success",
+            title: intl.formatMessage({
+              id: "schedule.updateSuccess",
+              defaultMessage: "Horario actualizado correctamente",
+            }),
+          });
+        }
+      } else {
+        const response = await api.schedules.createDailySchedule(scheduleData);
+        if (response.ok) {
+          showToast({
+            status: "success",
+            title: intl.formatMessage({
+              id: "schedule.createSuccess",
+              defaultMessage: "Horario creado correctamente",
+            }),
+          });
+        }
+      }
+      await loadSchedules();
+    } catch (error: any) {
+      showToast({
+        status: "error",
+        title: intl.formatMessage({
+          id: "schedule.saveError",
+          defaultMessage: "Error al guardar el horario",
+        }),
+      });
+      throw error;
+    }
+  };
 
   const handleSaveMenuItem = async (item: any) => {
     try {
       if (editingItem) {
         const resp = await api.products.update(editingItem?.id, {
           ...(item as any),
-        })
+        });
         if (!resp.data?.ok) {
-          throw new Error("Unknown error")
+          throw new Error("Unknown error");
         }
       } else {
         const resp = await api.products.create({
@@ -231,86 +295,86 @@ const DailyMenuTab = () => {
           plazoDuracionEstimadoMinutos: item?.plazoDuracionEstimadoMinutos,
           disponible: true,
           imagen: item?.imagen,
-        })
+        });
         if (!resp.data?.ok) {
-          throw new Error("Unknown error")
+          throw new Error("Unknown error");
         }
       }
-
-      await loadDailyMenus()
+      await loadDailyMenus();
     } catch (error) {
-      throw error
+      throw error;
     }
-  }
+  };
 
-  const handleLoadClients = async (offset = 0, limit = values.limit, nombre = "", reset = true) => {
-    setLoadingClients(true)
+  const handleLoadClients = async (
+    offset = 0,
+    limit = values.limit,
+    nombre = "",
+    reset = true
+  ) => {
+    setLoadingClients(true);
     try {
       const resp = await api.client.findWithOrders({
         offset,
         limit,
         query: nombre,
-      })
-
+      });
       if (resp.ok) {
         setValues((prev) => ({
           ...prev,
           clients: reset ? resp.data : [...prev.clients, ...resp.data],
           offset: reset ? limit : offset + limit,
           totalItems: resp.totalItems ?? prev.totalItems,
-        }))
+        }));
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     } finally {
-      setLoadingClients(false)
+      setLoadingClients(false);
     }
-  }
+  };
 
-  // New function to handle search with debounce
   const handleSearchChange = (text: string) => {
-    setSearchQuery(text)
-
-    // Clear previous timeout
+    setSearchQuery(text);
     if (searchTimeout) {
-      clearTimeout(searchTimeout)
+      clearTimeout(searchTimeout);
     }
-
-    // Set new timeout for debounced search
     const newTimeout = setTimeout(() => {
-      handleLoadClients(0, values.limit, text, true)
-    }, 500) // 500ms debounce
+      handleLoadClients(0, values.limit, text, true);
+    }, 500);
+    setSearchTimeout(newTimeout);
+  };
 
-    setSearchTimeout(newTimeout)
-  }
-
-  // Clear search
   const handleClearSearch = () => {
-    setSearchQuery("")
-    handleLoadClients(0, values.limit, "", true)
-  }
+    setSearchQuery("");
+    handleLoadClients(0, values.limit, "", true);
+  };
 
-  const handleToggleClientNotification = async (clientId: number, currentValue: boolean) => {
-    setUpdatingNotification(clientId)
+  const handleToggleClientNotification = async (
+    clientId: number,
+    currentValue: boolean
+  ) => {
+    setUpdatingNotification(clientId);
     try {
-      const response = await api.client.updateNotificationPreference([{ id: clientId, notificar: currentValue }])
-      console.log("response", response)
-
+      const response = await api.client.updateNotificationPreference([
+        { id: clientId, notificar: currentValue },
+      ]);
       if (response.ok) {
         setValues((prev) => ({
           ...prev,
           clients: prev.clients.map((client) =>
-            client.id === clientId ? { ...client, notificar_menu: !currentValue } : client,
+            client.id === clientId
+              ? { ...client, notificar_menu: !currentValue }
+              : client
           ),
-        }))
-
+        }));
         showToast({
           status: "success",
           title: intl.formatMessage({
             id: "notificationPreferenceUpdated",
             defaultMessage: "Preferencia de notificación actualizada",
           }),
-        })
+        });
       }
     } catch (error) {
       showToast({
@@ -319,18 +383,19 @@ const DailyMenuTab = () => {
           id: "errorUpdatingNotification",
           defaultMessage: "Error al actualizar preferencia",
         }),
-      })
+      });
     } finally {
-      setUpdatingNotification(null)
+      setUpdatingNotification(null);
     }
-  }
+  };
 
   const loadSchedules = async () => {
     try {
-      setLoading(true)
-      const response = await api.schedules.getAll()
+      setLoading(true);
+      // Changed from getAll() to getAllDailyMenu()
+      const response = await api.schedules.getAllDailyMenu();
       if (response) {
-        setSchedules(response)
+        setSchedules(response);
       }
     } catch (err: any) {
       showToast({
@@ -341,27 +406,28 @@ const DailyMenuTab = () => {
             id: "errorLoadingSchedules",
             defaultMessage: "Error al cargar horarios",
           }),
-      })
+      });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const loadDailyMenus = async () => {
     try {
-      setLoadingDailyMenus(true)
-      const response = await api.products.findAllDailyMenu("")
-
+      setLoadingDailyMenus(true);
+      const response = await api.products.findAllDailyMenu("");
       if (response && response.data) {
         const dailyMenuItems = response.data.filter(
           (product: ProductoBDD) =>
-            product.isMenuDiario === true && product.diaSemana && product.diaSemana >= 1 && product.diaSemana <= 7,
-        )
-
-        setDailyMenuProducts(dailyMenuItems)
+            product.isMenuDiario === true &&
+            product.diaSemana &&
+            product.diaSemana >= 1 &&
+            product.diaSemana <= 7
+        );
+        setDailyMenuProducts(dailyMenuItems);
       }
     } catch (err: any) {
-      console.error("Error loading daily menus:", err)
+      console.error("Error loading daily menus:", err);
       showToast({
         status: "error",
         title:
@@ -370,66 +436,63 @@ const DailyMenuTab = () => {
             id: "errorLoadingDailyMenus",
             defaultMessage: "Error al cargar menús diarios",
           }),
-      })
+      });
     } finally {
-      setLoadingDailyMenus(false)
+      setLoadingDailyMenus(false);
     }
-  }
+  };
 
   const initializeWeeklyMenu = useCallback(() => {
-    if (activeDaysOfWeek.length === 0) return
-
     const initialMenu: DayMenu[] = activeDaysOfWeek.map((day) => {
       const dayProducts = dailyMenuProducts
         .filter((product) => {
-          return product.diaSemana === day!.id && product.nombre && product.precio
+          return (
+            product.diaSemana === day!.id && product.nombre && product.precio
+          );
         })
         .sort((a, b) => (a.orderMenuDiario || 0) - (b.orderMenuDiario || 0))
-        .map(mapProductToDailyMenuItem)
+        .map(mapProductToDailyMenuItem);
 
       return {
         dayId: day!.id,
         dayName: day!.name,
         schedules: day!.schedules,
         items: dayProducts,
-      }
-    })
-    setWeeklyMenu(initialMenu)
-  }, [activeDaysOfWeek, dailyMenuProducts])
+      };
+    });
+    setWeeklyMenu(initialMenu);
+  }, [activeDaysOfWeek, dailyMenuProducts]);
 
   useEffect(() => {
-    loadSchedules()
-    loadDailyMenus()
-  }, [])
+    loadSchedules();
+    loadDailyMenus();
+  }, []);
 
   useEffect(() => {
-    if (schedules?.length > 0 && !loadingDailyMenus) {
-      initializeWeeklyMenu()
+    if (!loadingDailyMenus) {
+      initializeWeeklyMenu();
     }
-  }, [schedules, dailyMenuProducts, initializeWeeklyMenu, loadingDailyMenus])
+  }, [schedules, dailyMenuProducts, initializeWeeklyMenu, loadingDailyMenus]);
 
-  // Cleanup timeout on unmount
   useEffect(() => {
     return () => {
       if (searchTimeout) {
-        clearTimeout(searchTimeout)
+        clearTimeout(searchTimeout);
       }
-    }
-  }, [searchTimeout])
+    };
+  }, [searchTimeout]);
 
   const truncateText = (text: string, maxLength = 50) => {
-    if (text.length <= maxLength) return text
-    return text.substring(0, maxLength) + "..."
-  }
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + "...";
+  };
 
   const handleDeleteRequest = useCallback(
     (dayId: number, itemId: number) => {
-      setIsDeleting(true)
-
+      setIsDeleting(true);
       setTimeout(async () => {
         try {
-          await api.products.delete(itemId)
-
+          await api.products.delete(itemId);
           setWeeklyMenu((prevMenu) =>
             prevMenu.map((day) =>
               day.dayId === dayId
@@ -437,12 +500,10 @@ const DailyMenuTab = () => {
                     ...day,
                     items: day.items.filter((item) => item.id !== itemId),
                   }
-                : day,
-            ),
-          )
-
-          setIsDeleting(false)
-
+                : day
+            )
+          );
+          setIsDeleting(false);
           setTimeout(() => {
             showToast({
               title: intl.formatMessage({
@@ -450,8 +511,8 @@ const DailyMenuTab = () => {
                 defaultMessage: "Producto eliminado del menú",
               }),
               status: "success",
-            })
-          }, 0)
+            });
+          }, 0);
         } catch (error: any) {
           showToast({
             title: intl.formatMessage({
@@ -459,17 +520,21 @@ const DailyMenuTab = () => {
               defaultMessage: "Error al eliminar producto",
             }),
             status: "error",
-          })
+          });
         }
-      }, 2700)
+      }, 2700);
     },
-    [intl, showToast],
-  )
+    [intl, showToast]
+  );
 
   const renderClientItem = ({ item: client }: { item: Cliente }) => (
     <View key={`client-${client.id}`} style={styles.clientNotificationItem}>
       <View style={styles.clientInfo}>
-        <Avatar size="md" bg={Colors.light.primary} _text={{ color: "white", fontWeight: "bold" }}>
+        <Avatar
+          size="md"
+          bg={Colors.light.primary}
+          _text={{ color: "white", fontWeight: "bold" }}
+        >
           {client.nombre.charAt(0).toUpperCase()}
         </Avatar>
         <View style={styles.clientDetails}>
@@ -477,21 +542,22 @@ const DailyMenuTab = () => {
           <Text style={styles.clientPhone}>{client.telefono}</Text>
         </View>
       </View>
-
       <View style={styles.notificationToggle}>
         {updatingNotification === client.id ? (
           <Spinner size="sm" color={Colors.light.primary} />
         ) : (
           <Switch
             isChecked={client.notificar_menu}
-            onToggle={() => handleToggleClientNotification(client.id, client.notificar_menu)}
+            onToggle={() =>
+              handleToggleClientNotification(client.id, client.notificar_menu)
+            }
             size="md"
             colorScheme="primary"
           />
         )}
       </View>
     </View>
-  )
+  );
 
   const renderSearchHeader = () => (
     <View style={styles.searchContainer}>
@@ -508,45 +574,85 @@ const DailyMenuTab = () => {
         py="3"
         px="4"
         fontSize="14"
-        InputLeftElement={<NBIcon as={<Feather name="search" />} size={5} ml="3" color="muted.400" />}
+        InputLeftElement={
+          <NBIcon
+            as={<Feather name="search" />}
+            size={5}
+            ml="3"
+            color="muted.400"
+          />
+        }
         InputRightElement={
           searchQuery ? (
-            <TouchableOpacity onPress={handleClearSearch} style={{ marginRight: 12 }}>
+            <TouchableOpacity
+              onPress={handleClearSearch}
+              style={{ marginRight: 12 }}
+            >
               <Feather name="x" size={20} color={Colors.light.icon} />
             </TouchableOpacity>
           ) : undefined
         }
       />
     </View>
-  )
+  );
 
   const renderNotificationSection = () => {
-    console.log("user", user?.notificarMenuDiario)
-    const isEnabled = user?.notificarMenuDiario === true
+    const isEnabled = user?.notificarMenuDiario === true;
 
     return (
-      <View style={[styles.notificationSection, !isEnabled && styles.disabledSection]}>
+      <View
+        style={[
+          styles.notificationSection,
+          !isEnabled && styles.disabledSection,
+        ]}
+      >
         <View style={styles.notificationHeader}>
-          <MaterialIcons name="notifications" size={20} color={isEnabled ? Colors.light.primary : Colors.light.icon} />
-          <Text style={[styles.notificationTitle, !isEnabled && styles.disabledText]}>
-            <FormattedMessage id="clientNotificationTitle" defaultMessage="Aquí puedes ver los clientes a notificar" />
+          <MaterialIcons
+            name="notifications"
+            size={20}
+            color={isEnabled ? Colors.light.primary : Colors.light.icon}
+          />
+          <Text
+            style={[
+              styles.notificationTitle,
+              !isEnabled && styles.disabledText,
+            ]}
+          >
+            <FormattedMessage
+              id="clientNotificationTitle"
+              defaultMessage="Aquí puedes ver los clientes a notificar"
+            />
           </Text>
         </View>
-
         <TouchableOpacity
-          style={[styles.notificationButton, !isEnabled && styles.disabledButton]}
+          style={[
+            styles.notificationButton,
+            !isEnabled && styles.disabledButton,
+          ]}
           onPress={() => {
             if (isEnabled) {
-              setShowNotificationModal(true)
-              handleLoadClients()
+              setShowNotificationModal(true);
+              handleLoadClients();
             }
           }}
           disabled={!isEnabled}
           activeOpacity={0.7}
         >
-          <MaterialIcons name="people" size={18} color={isEnabled ? Colors.light.primary : Colors.light.icon} />
-          <Text style={[styles.notificationButtonText, !isEnabled && styles.disabledText]}>
-            <FormattedMessage id="manageNotifications" defaultMessage="Gestionar notificaciones" />
+          <MaterialIcons
+            name="people"
+            size={18}
+            color={isEnabled ? Colors.light.primary : Colors.light.icon}
+          />
+          <Text
+            style={[
+              styles.notificationButtonText,
+              !isEnabled && styles.disabledText,
+            ]}
+          >
+            <FormattedMessage
+              id="manageNotifications"
+              defaultMessage="Gestionar notificaciones"
+            />
           </Text>
           <MaterialIcons
             name="arrow-forward-ios"
@@ -554,7 +660,6 @@ const DailyMenuTab = () => {
             color={isEnabled ? Colors.light.primary : Colors.light.icon}
           />
         </TouchableOpacity>
-
         {!isEnabled && (
           <Text style={styles.disabledHint}>
             <FormattedMessage
@@ -564,10 +669,14 @@ const DailyMenuTab = () => {
           </Text>
         )}
       </View>
-    )
-  }
+    );
+  };
 
-  const renderMenuItem = (item: DailyMenuItem, dayId: number, dayName: string) => {
+  const renderMenuItem = (
+    item: DailyMenuItem,
+    dayId: number,
+    dayName: string
+  ) => {
     return (
       <View key={`menu-item-${dayId}-${item.id}`} style={styles.menuItemCard}>
         <View style={styles.menuItemContent}>
@@ -587,13 +696,13 @@ const DailyMenuTab = () => {
               <Icon name="cutlery" size={20} color={Colors.light.primary} />
             )}
           </View>
-
           <View style={styles.menuItemInfo}>
             <Text style={styles.menuItemName}>{item.name}</Text>
-            <Text style={styles.menuItemDescription}>{truncateText(item.description, 45)}</Text>
+            <Text style={styles.menuItemDescription}>
+              {truncateText(item.description, 45)}
+            </Text>
             <Text style={styles.menuItemPrice}>${item.price.toFixed(2)}</Text>
           </View>
-
           <View style={styles.menuItemActions}>
             <TouchableOpacity
               style={styles.editItemButton}
@@ -602,13 +711,12 @@ const DailyMenuTab = () => {
             >
               <Icon name="edit" size={16} color={Colors.light.secondary} />
             </TouchableOpacity>
-
             <TouchableOpacity
               style={styles.deleteItemButton}
               onPress={() => {
-                setDeleteOpen(true)
-                setDeleteOrderId(item?.id)
-                setSelectedDayId(dayId)
+                setDeleteOpen(true);
+                setDeleteOrderId(item?.id);
+                setSelectedDayId(dayId);
               }}
               activeOpacity={0.7}
             >
@@ -617,64 +725,129 @@ const DailyMenuTab = () => {
           </View>
         </View>
       </View>
-    )
-  }
+    );
+  };
 
   const renderScheduleInfo = (schedules: Schedule[]) => {
-    const formatTime = (time: string) => {
-      if (!time) return ""
 
-      if (time.includes(":")) {
-        const parts = time.split(":")
-        return `${parts[0]}:${parts[1]}`
-      }
-
-      return time
+    if (schedules?.length === 0) {
+      return intl.formatMessage({
+        id: "schedule.noSchedules",
+        defaultMessage: "Sin horarios configurados",
+      });
     }
 
     if (schedules?.length === 1) {
-      return `${formatTime(schedules[0].hora_inicio)} - ${formatTime(schedules[0].hora_fin)}`
+      return `${formatTime(schedules[0].hora_inicio)} - ${formatTime(schedules[0].hora_fin)}`;
     }
 
     return schedules
-      .map((schedule) => `${formatTime(schedule.hora_inicio)} - ${formatTime(schedule.hora_fin)}`)
-      .join(", ")
-  }
+      .map(
+        (schedule) =>
+          `${formatTime(schedule.hora_inicio)} - ${formatTime(schedule.hora_fin)}`
+      )
+      .join(", ");
+  };
 
-  const renderDayCard = (day: DayMenu) => (
-    <View key={`day-${day.dayId}`} style={styles.dayCard}>
-      <View style={styles.dayHeader}>
-        <View style={styles.dayTitleContainer}>
-          <Text style={styles.dayTitle}>{day.dayName}</Text>
-          <Text style={styles.daySchedule}>{renderScheduleInfo(day.schedules)}</Text>
-        </View>
+  const renderScheduleActions = (day: any) => (
+    <View style={styles.scheduleActions}>
+      {day.schedules.length > 0 && (
         <TouchableOpacity
-          style={styles.addItemButton}
-          onPress={() => {
-            handleAddItem(day.dayId, day.dayName)
-          }}
+          style={styles.editScheduleButton}
+          onPress={() => handleEditSchedule(day.schedules[0], day.name)}
           activeOpacity={0.7}
         >
-          <Icon name="plus" size={14} color={Colors.light.primary} />
+          <MaterialIcons name="edit" size={16} color={Colors.light.secondary} />
         </TouchableOpacity>
-      </View>
-
-      {day.items.length > 0 ? (
-        <View style={styles.menuItemsContainer}>
-          {day.items.map((item) => {
-            return renderMenuItem(item, day.dayId, day.dayName)
-          })}
-        </View>
-      ) : (
-        <View style={styles.emptyDayContainer}>
-          <Icon name="cutlery" size={24} color={Colors.light.icon} />
-          <Text style={styles.emptyDayText}>
-            <FormattedMessage id="noDailyMenuItems" defaultMessage="No hay productos para este día" />
-          </Text>
-        </View>
       )}
+      <TouchableOpacity
+        style={styles.addScheduleButton}
+        onPress={() => handleAddSchedule(day.id, day.name)}
+        activeOpacity={0.7}
+      >
+        <MaterialIcons
+          name="access-time"
+          size={16}
+          color={Colors.light.primary}
+        />
+      </TouchableOpacity>
     </View>
-  )
+  );
+
+  const renderDayCard = (day: DayMenu) => {
+    const dayInfo = activeDaysOfWeek.find((d) => d.id === day.dayId);
+    const hasSchedules = dayInfo?.hasSchedules || false;
+
+    return (
+      <View key={`day-${day.dayId}`} style={styles.dayCard}>
+        <View style={styles.dayHeader}>
+          <View style={styles.dayTitleContainer}>
+            <Text style={styles.dayTitle}>{day.dayName}</Text>
+            <View style={styles.scheduleContainer}>
+              <Text
+                style={[
+                  styles.daySchedule,
+                  !hasSchedules && styles.noScheduleText,
+                ]}
+              >
+                {renderScheduleInfo(day.schedules)}
+              </Text>
+              {renderScheduleActions(dayInfo)}
+            </View>
+          </View>
+          {hasSchedules && (
+            <TouchableOpacity
+              style={styles.addItemButton}
+              onPress={() => {
+                handleAddItem(day.dayId, day.dayName);
+              }}
+              activeOpacity={0.7}
+            >
+              <Icon name="plus" size={14} color={Colors.light.primary} />
+            </TouchableOpacity>
+          )}
+        </View>
+
+        {!hasSchedules ? (
+          <View style={styles.noScheduleContainer}>
+            <MaterialIcons
+              name="access-time"
+              size={32}
+              color={Colors.light.icon}
+            />
+            <Text style={styles.noScheduleTitle}>
+              <FormattedMessage
+                id="schedule.noScheduleForDay"
+                defaultMessage="Sin horarios configurados"
+              />
+            </Text>
+            <Text style={styles.noScheduleSubtitle}>
+              <FormattedMessage
+                id="schedule.addScheduleToEnableMenu"
+                defaultMessage="Agrega un horario para habilitar el menú de este día"
+              />
+            </Text>
+          </View>
+        ) : day.items.length > 0 ? (
+          <View style={styles.menuItemsContainer}>
+            {day.items.map((item) => {
+              return renderMenuItem(item, day.dayId, day.dayName);
+            })}
+          </View>
+        ) : (
+          <View style={styles.emptyDayContainer}>
+            <Icon name="cutlery" size={24} color={Colors.light.icon} />
+            <Text style={styles.emptyDayText}>
+              <FormattedMessage
+                id="noDailyMenuItems"
+                defaultMessage="No hay productos para este día"
+              />
+            </Text>
+          </View>
+        )}
+      </View>
+    );
+  };
 
   if (loading || loadingDailyMenus) {
     return (
@@ -683,35 +856,13 @@ const DailyMenuTab = () => {
         <Text style={{ marginTop: 16, color: Colors.light.text }}>
           <FormattedMessage
             id={loading ? "loadingSchedules" : "loadingDailyMenus"}
-            defaultMessage={loading ? "Cargando horarios..." : "Cargando menús diarios..."}
+            defaultMessage={
+              loading ? "Cargando horarios..." : "Cargando menús diarios..."
+            }
           />
         </Text>
       </View>
-    )
-  }
-
-  if (schedules?.length === 0) {
-    return (
-      <View style={{ flex: 1, paddingHorizontal: 6 }}>
-        <Animatable.View animation="fadeIn" style={[styles.emptyStateContainer, { flex: 1, justifyContent: "center" }]}>
-          <LottieView
-            source={require("../../../constants/Animation-empty-box.json")}
-            autoPlay
-            loop
-            style={styles.emptyStateAnimation}
-          />
-          <Text style={styles.emptyStateTitle}>
-            <FormattedMessage id="noSchedulesConfigured" defaultMessage="No hay horarios configurados" />
-          </Text>
-          <Text style={styles.emptyStateSubtitle}>
-            <FormattedMessage
-              id="configureSchedulesFirst"
-              defaultMessage="Configura primero los horarios de tu negocio para gestionar el menú diario"
-            />
-          </Text>
-        </Animatable.View>
-      </View>
-    )
+    );
   }
 
   return (
@@ -724,12 +875,12 @@ const DailyMenuTab = () => {
             refreshing={refreshing}
             onRefresh={async () => {
               try {
-                setRefreshing(true)
-                await Promise.all([loadSchedules(), loadDailyMenus()])
+                setRefreshing(true);
+                await Promise.all([loadSchedules(), loadDailyMenus()]);
               } catch (error) {
-                console.log(error)
+                console.log(error);
               } finally {
-                setRefreshing(false)
+                setRefreshing(false);
               }
             }}
             tintColor={Colors.light.primary}
@@ -745,8 +896,8 @@ const DailyMenuTab = () => {
       <AddOrEditDailyMenu
         visible={showAddModal}
         onClose={() => {
-          setShowAddModal(false)
-          setEditingItem(null)
+          setShowAddModal(false);
+          setEditingItem(null);
         }}
         onSave={handleSaveMenuItem}
         editingItem={editingItem}
@@ -754,13 +905,25 @@ const DailyMenuTab = () => {
         dayName={selectedDayName}
       />
 
+      <ScheduleModal
+        visible={showScheduleModal}
+        onClose={() => {
+          setShowScheduleModal(false);
+          setEditingSchedule(null);
+        }}
+        onSave={handleSaveSchedule as any}
+        editingSchedule={editingSchedule}
+        dayId={selectedScheduleDayId ?? 0}
+        dayName={selectedScheduleDayName}
+      />
+
       {deleteOpen && deleteOrderId && selectedDayId && (
         <ModalConfirmAction
           isOpen={deleteOpen}
           onClose={() => {
-            setDeleteOpen(false)
-            setDeleteOrderId(0)
-            setSelectedDayId(null)
+            setDeleteOpen(false);
+            setDeleteOrderId(0);
+            setSelectedDayId(null);
           }}
           title={intl.formatMessage({ id: "modalDelete.deleteProduct" })}
           message={intl.formatMessage({
@@ -768,7 +931,10 @@ const DailyMenuTab = () => {
           })}
           loading={isDeleting}
           onContinue={async () => {
-            await handleDeleteRequest(Number(selectedDayId ?? 0), deleteOrderId)
+            await handleDeleteRequest(
+              Number(selectedDayId ?? 0),
+              deleteOrderId
+            );
           }}
         />
       )}
@@ -776,9 +942,9 @@ const DailyMenuTab = () => {
       <GenericModal
         visible={showNotificationModal}
         onClose={() => {
-          setShowNotificationModal(false)
-          setSearchQuery("")
-          handleLoadClients(0, values.limit, "", true)
+          setShowNotificationModal(false);
+          setSearchQuery("");
+          handleLoadClients(0, values.limit, "", true);
         }}
         title={intl.formatMessage({
           id: "manageClientNotifications",
@@ -793,14 +959,16 @@ const DailyMenuTab = () => {
             />
           </Text>
 
-          {/* Search Header */}
           {renderSearchHeader()}
 
           {loadingClients && values.clients.length === 0 ? (
             <View style={styles.loadingContainer}>
               <Spinner size="lg" color={Colors.light.primary} />
               <Text style={styles.loadingText}>
-                <FormattedMessage id="loadingClients" defaultMessage="Cargando clientes..." />
+                <FormattedMessage
+                  id="loadingClients"
+                  defaultMessage="Cargando clientes..."
+                />
               </Text>
             </View>
           ) : (
@@ -811,8 +979,16 @@ const DailyMenuTab = () => {
               showsVerticalScrollIndicator={false}
               contentContainerStyle={styles.clientsList}
               onEndReached={() => {
-                if (values.clients.length < values.totalItems && !loadingClients) {
-                  handleLoadClients(values.offset, values.limit, searchQuery, false)
+                if (
+                  values.clients.length < values.totalItems &&
+                  !loadingClients
+                ) {
+                  handleLoadClients(
+                    values.offset,
+                    values.limit,
+                    searchQuery,
+                    false
+                  );
                 }
               }}
               onEndReachedThreshold={0.1}
@@ -825,11 +1001,19 @@ const DailyMenuTab = () => {
               }
               ListEmptyComponent={() => (
                 <View style={styles.emptyClients}>
-                  <MaterialIcons name="people-outline" size={48} color={Colors.light.icon} />
+                  <MaterialIcons
+                    name="people-outline"
+                    size={48}
+                    color={Colors.light.icon}
+                  />
                   <Text style={styles.emptyClientsText}>
                     <FormattedMessage
                       id="noClientsFound"
-                      defaultMessage={searchQuery ? "No se encontraron clientes" : "No hay clientes"}
+                      defaultMessage={
+                        searchQuery
+                          ? "No se encontraron clientes"
+                          : "No hay clientes"
+                      }
                     />
                   </Text>
                   {searchQuery && (
@@ -847,7 +1031,7 @@ const DailyMenuTab = () => {
         </View>
       </GenericModal>
     </View>
-  )
-}
+  );
+};
 
-export default DailyMenuTab
+export default DailyMenuTab;

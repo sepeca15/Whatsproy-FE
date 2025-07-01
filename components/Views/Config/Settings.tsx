@@ -198,19 +198,6 @@ const Settings = () => {
     },
     {
       title: intl.formatMessage({
-        id: "dynamicMenu",
-        defaultMessage: "Constructor de Menú",
-      }),
-      href: "/(tabs)/menu-builder",
-      description: intl.formatMessage({
-        id: "dynamicMenuDesc",
-        defaultMessage:
-          "Crea y personaliza tu menú con vista previa en tiempo real",
-      }),
-      icon: <MaterialCommunityIcons size={22} color={"white"} name="menu" />,
-    },
-    {
-      title: intl.formatMessage({
         id: "cierreProvisorioTittleSettings",
         defaultMessage: "Cierre Provisorio",
       }),

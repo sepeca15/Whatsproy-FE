@@ -18,6 +18,10 @@ export const styles = StyleSheet.create({
   },
   loadingContent: {
     alignItems: "center",
+    flex: 1,
+    height: '100%',
+    display: "flex",
+    justifyContent: "center",
   },
   loadingSpinner: {
     width: 50,
@@ -29,7 +33,7 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
   },
   loadingText: {
-    color: "white",
+    color: "black",
     fontSize: 16,
     fontWeight: "600",
   },
@@ -88,7 +92,6 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
   searchContainer: {
-    marginTop: 16,
     overflow: "hidden",
   },
   searchInputContainer: {

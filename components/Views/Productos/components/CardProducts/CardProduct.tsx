@@ -1,26 +1,39 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useEffect, useRef } from "react"
-import { View, Text, Image, TouchableOpacity, Modal, Animated } from "react-native"
-import Icon from "react-native-vector-icons/Feather"
-import { useRouter } from "expo-router"
-import api from "@/services/api/admin"
-import { FormattedMessage, useIntl } from "react-intl"
-import LottieView from "lottie-react-native"
-import type { Product, ProductBDD, DayslySalesData, MonthlySalesData } from "../../../../../hooks/dataProduct"
-import { useUser } from "@/hooks/redux/useUser"
-import AlertConfirmationModal from "../../../../../hooks/AlertModalConfirmation/alertConfirmation"
-import { useToastContext } from "@/contexts/ToastContext"
+import type React from "react";
+import { useState, useEffect, useRef } from "react";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  Modal,
+  Animated,
+} from "react-native";
+import Icon from "react-native-vector-icons/Feather";
+import { useRouter } from "expo-router";
+import api from "@/services/api/admin";
+import { FormattedMessage, useIntl } from "react-intl";
+import LottieView from "lottie-react-native";
+import type {
+  Product,
+  ProductBDD,
+  DayslySalesData,
+  MonthlySalesData,
+} from "../../../../../hooks/dataProduct";
+import { useUser } from "@/hooks/redux/useUser";
+import AlertConfirmationModal from "../../../../../hooks/AlertModalConfirmation/alertConfirmation";
+import { useToastContext } from "@/contexts/ToastContext";
+import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmAction";
 
 interface ProductCardProps {
-  product: Product
-  productBDD: ProductBDD
-  monthlySalesData: MonthlySalesData
-  dayslySalesData: DayslySalesData
-  onUpdateProduct: (newProduct: any) => void
-  onDeleteRequest: (productId: number) => void
-  isBeingDeleted: boolean
+  product: Product;
+  productBDD: ProductBDD;
+  monthlySalesData: MonthlySalesData;
+  dayslySalesData: DayslySalesData;
+  onUpdateProduct: (newProduct: any) => void;
+  onDeleteRequest: (productId: number) => void;
+  isBeingDeleted: boolean;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -32,24 +45,26 @@ const ProductCard: React.FC<ProductCardProps> = ({
   onDeleteRequest,
   isBeingDeleted,
 }) => {
-  const router = useRouter()
-  const intl = useIntl()
-  const [modalVisible, setModalVisible] = useState(false)
-  const [localDisponible, setLocalDisponible] = useState(productBDD.disponible)
-  const [loading, setLoading] = useState(true)
-  const [processing, setProcessing] = useState(false)
-  const [showDisableAlert, setShowDisableAlert] = useState(false)
-  const [showDeleteAlert, setShowDeleteAlert] = useState(false)
-  const { user } = useUser()
+  const router = useRouter();
+  const intl = useIntl();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [localDisponible, setLocalDisponible] = useState(productBDD.disponible);
+  const [loading, setLoading] = useState(true);
+  const [processing, setProcessing] = useState(false);
+  const [showDisableAlert, setShowDisableAlert] = useState(false);
+  const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+  const { user } = useUser();
 
-  const currencies = user?.currencies ?? []
-  const currenctCurrency = currencies.find((itm: any) => itm?.id === productBDD?.currency_id) ?? {
+  const currencies = user?.currencies ?? [];
+  const currenctCurrency = currencies.find(
+    (itm: any) => itm?.id === productBDD?.currency_id
+  ) ?? {
     simbolo: "$",
     codigo: "USD",
-  }
+  };
 
-  const slideOutAnim = useRef(new Animated.Value(0)).current
-  const opacityAnim = useRef(new Animated.Value(1)).current
+  const slideOutAnim = useRef(new Animated.Value(0)).current;
+  const opacityAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     if (isBeingDeleted) {
@@ -64,20 +79,19 @@ const ProductCard: React.FC<ProductCardProps> = ({
           duration: 500,
           useNativeDriver: true,
         }),
-      ]).start()
+      ]).start();
     }
-  }, [isBeingDeleted, slideOutAnim, opacityAnim])
+  }, [isBeingDeleted, slideOutAnim, opacityAnim]);
 
-
-  const handleImageLoad = () => setLoading(false)
-  const { showToast } = useToastContext()
+  const handleImageLoad = () => setLoading(false);
+  const { showToast } = useToastContext();
 
   const toast = (msgKey: string, type: "success" | "error", action: string) => {
     showToast({
       title: intl.formatMessage({ id: msgKey }),
       status: type,
-    })
-  }
+    });
+  };
 
   const handleEdit = () => {
     router.push({
@@ -94,8 +108,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
         disponible: productBDD?.disponible?.toString(),
         category: productBDD?.category?.map((cat) => cat.id).join(","),
       },
-    })
-  }
+    });
+  };
 
   const handleView = () => {
     router.push({
@@ -118,86 +132,99 @@ const ProductCard: React.FC<ProductCardProps> = ({
         empresa_id: productBDD.empresa_id.toString(),
         category: productBDD.category,
       },
-    })
-  }
+    });
+  };
 
   const confirmDisable = async () => {
-    setShowDisableAlert(false)
-    setProcessing(true)
-    const newDisponible = false
-    setLocalDisponible(newDisponible)
+    setShowDisableAlert(false);
+    setProcessing(true);
+    const newDisponible = false;
+    setLocalDisponible(newDisponible);
 
     try {
       const res = await api.products.update(productBDD.id, {
         ...productBDD,
         disponible: newDisponible,
-      })
+      });
 
       if (res.data?.ok) {
-        toast(intl.formatMessage({ id: "disableSuccess" }), "success", "disable")
-        onUpdateProduct(res.data.data)
+        toast(
+          intl.formatMessage({ id: "disableSuccess" }),
+          "success",
+          "disable"
+        );
+        onUpdateProduct(res.data.data);
       }
     } catch {
-      toast(intl.formatMessage({ id: "disableError" }), "error", "disable")
-      setLocalDisponible(true)
+      toast(intl.formatMessage({ id: "disableError" }), "error", "disable");
+      setLocalDisponible(true);
     } finally {
-      setProcessing(false)
+      setProcessing(false);
     }
-  }
+  };
 
   const toggleAvailability = () => {
-    if (processing) return
+    if (processing) return;
 
     if (localDisponible) {
-      setShowDisableAlert(true)
+      setShowDisableAlert(true);
     } else {
-      setProcessing(true)
-      const newDisponible = true
-      setLocalDisponible(newDisponible)
+      setProcessing(true);
+      const newDisponible = true;
+      setLocalDisponible(newDisponible);
 
       api.products
         .update(productBDD.id, { ...productBDD, disponible: newDisponible })
         .then(({ data }) => {
           if (data.ok) {
-            toast("enableSuccess", "success", "enable")
-            onUpdateProduct(data.data)
+            toast("enableSuccess", "success", "enable");
+            onUpdateProduct(data.data);
           }
         })
         .catch(() => {
-          toast("enableError", "error", "enable")
-          setLocalDisponible(false)
+          toast("enableError", "error", "enable");
+          setLocalDisponible(false);
         })
-        .finally(() => setProcessing(false))
+        .finally(() => setProcessing(false));
     }
-    setModalVisible(false)
-  }
+    setModalVisible(false);
+  };
 
   const handleDelete = () => {
-    setShowDeleteAlert(true)
-    setModalVisible(false)
-  }
+    setShowDeleteAlert(true);
+    setModalVisible(false);
+  };
 
   const confirmDelete = () => {
-    setShowDeleteAlert(false)
-    onDeleteRequest(productBDD.id)
-    toast("deleteSuccess", "success", "delete")
-  }
-
+    setShowDeleteAlert(false);
+    onDeleteRequest(productBDD.id);
+    toast("productDeleted", "success", "delete");
+  };
 
   return (
     <>
       <Animated.View
-        style={[enhancedStyles.container, { transform: [{ translateX: slideOutAnim }], opacity: opacityAnim }]}
+        style={[
+          enhancedStyles.container,
+          { transform: [{ translateX: slideOutAnim }], opacity: opacityAnim },
+        ]}
       >
         {!localDisponible && (
           <View style={enhancedStyles.disabledBadge}>
             <Text style={enhancedStyles.disabledText}>
-              <FormattedMessage id="notAvailable" defaultMessage="No disponible" />
+              <FormattedMessage
+                id="notAvailable"
+                defaultMessage="No disponible"
+              />
             </Text>
           </View>
         )}
 
-        <TouchableOpacity onPress={handleView} style={enhancedStyles.cardTouchable} disabled={processing}>
+        <TouchableOpacity
+          onPress={handleView}
+          style={enhancedStyles.cardTouchable}
+          disabled={processing}
+        >
           <View style={enhancedStyles.card as any}>
             <View style={enhancedStyles.imageContainer}>
               {loading && (
@@ -210,10 +237,17 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   />
                 </View>
               )}
-              <Image source={{ uri: productBDD.imagen }} style={enhancedStyles.image as any} onLoad={handleImageLoad} />
+              <Image
+                source={{ uri: productBDD.imagen }}
+                style={enhancedStyles.image as any}
+                onLoad={handleImageLoad}
+              />
 
               <View
-                style={[enhancedStyles.statusIndicator, { backgroundColor: localDisponible ? "#10b981" : "#ef4444" }]}
+                style={[
+                  enhancedStyles.statusIndicator,
+                  { backgroundColor: localDisponible ? "#10b981" : "#ef4444" },
+                ]}
               />
             </View>
 
@@ -237,7 +271,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   {currenctCurrency.simbolo}
                   {Number(productBDD.precio).toFixed(2)}
                 </Text>
-                <Text style={enhancedStyles.currency}>{currenctCurrency.codigo}</Text>
+                <Text style={enhancedStyles.currency}>
+                  {currenctCurrency.codigo}
+                </Text>
               </View>
 
               <Text style={enhancedStyles.description} numberOfLines={2}>
@@ -247,7 +283,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </View>
         </TouchableOpacity>
 
-        <Modal animationType="fade" transparent visible={modalVisible} onRequestClose={() => setModalVisible(false)}>
+        <Modal
+          animationType="fade"
+          transparent
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        >
           <TouchableOpacity
             style={enhancedStyles.modalOverlay}
             activeOpacity={1}
@@ -255,22 +296,45 @@ const ProductCard: React.FC<ProductCardProps> = ({
           >
             <View style={enhancedStyles.modalContainer as any}>
               <View style={enhancedStyles.modalHeader}>
-                <Text style={enhancedStyles.modalTitle}>Opciones del producto</Text>
+                <Text style={enhancedStyles.modalTitle}>
+                  Opciones del producto
+                </Text>
               </View>
 
               <View style={enhancedStyles.modalContent}>
-                <TouchableOpacity style={enhancedStyles.modalOption} onPress={handleView} disabled={processing}>
-                  <View style={[enhancedStyles.modalIconContainer, { backgroundColor: "#f0f9ff" }]}>
+                <TouchableOpacity
+                  style={enhancedStyles.modalOption}
+                  onPress={handleView}
+                  disabled={processing}
+                >
+                  <View
+                    style={[
+                      enhancedStyles.modalIconContainer,
+                      { backgroundColor: "#f0f9ff" },
+                    ]}
+                  >
                     <Icon name="eye" size={18} color="#0ea5e9" />
                   </View>
                   <Text style={enhancedStyles.modalOptionText}>
-                    <FormattedMessage id="viewModal" defaultMessage="Ver detalles" />
+                    <FormattedMessage
+                      id="viewModal"
+                      defaultMessage="Ver detalles"
+                    />
                   </Text>
                   <Icon name="chevron-right" size={16} color="#9ca3af" />
                 </TouchableOpacity>
 
-                <TouchableOpacity style={enhancedStyles.modalOption} onPress={handleEdit} disabled={processing}>
-                  <View style={[enhancedStyles.modalIconContainer, { backgroundColor: "#f0fdf4" }]}>
+                <TouchableOpacity
+                  style={enhancedStyles.modalOption}
+                  onPress={handleEdit}
+                  disabled={processing}
+                >
+                  <View
+                    style={[
+                      enhancedStyles.modalIconContainer,
+                      { backgroundColor: "#f0fdf4" },
+                    ]}
+                  >
                     <Icon name="edit" size={18} color="#22c55e" />
                   </View>
                   <Text style={enhancedStyles.modalOptionText}>
@@ -279,22 +343,46 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   <Icon name="chevron-right" size={16} color="#9ca3af" />
                 </TouchableOpacity>
 
-                <TouchableOpacity style={enhancedStyles.modalOption} onPress={toggleAvailability} disabled={processing}>
-                  <View style={[enhancedStyles.modalIconContainer, { backgroundColor: "#fef3c7" }]}>
+                <TouchableOpacity
+                  style={enhancedStyles.modalOption}
+                  onPress={toggleAvailability}
+                  disabled={processing}
+                >
+                  <View
+                    style={[
+                      enhancedStyles.modalIconContainer,
+                      { backgroundColor: "#fef3c7" },
+                    ]}
+                  >
                     <Icon name="archive" size={18} color="#f59e0b" />
                   </View>
                   <Text style={enhancedStyles.modalOptionText}>
                     {localDisponible ? (
-                      <FormattedMessage id="disable" defaultMessage="Deshabilitar" />
+                      <FormattedMessage
+                        id="disable"
+                        defaultMessage="Deshabilitar"
+                      />
                     ) : (
-                      <FormattedMessage id="enable" defaultMessage="Habilitar" />
+                      <FormattedMessage
+                        id="enable"
+                        defaultMessage="Habilitar"
+                      />
                     )}
                   </Text>
                   <Icon name="chevron-right" size={16} color="#9ca3af" />
                 </TouchableOpacity>
 
-                <TouchableOpacity style={enhancedStyles.modalOption} onPress={handleDelete} disabled={processing}>
-                  <View style={[enhancedStyles.modalIconContainer, { backgroundColor: "#fef2f2" }]}>
+                <TouchableOpacity
+                  style={enhancedStyles.modalOption}
+                  onPress={handleDelete}
+                  disabled={processing}
+                >
+                  <View
+                    style={[
+                      enhancedStyles.modalIconContainer,
+                      { backgroundColor: "#fef2f2" },
+                    ]}
+                  >
                     <Icon name="trash-2" size={18} color="#ef4444" />
                   </View>
                   <Text style={enhancedStyles.modalOptionText}>
@@ -317,33 +405,40 @@ const ProductCard: React.FC<ProductCardProps> = ({
         })}
         message={intl.formatMessage({
           id: "confirmDisableMessage",
-          defaultMessage: "¿Estás seguro de que quieres deshabilitar este producto?",
+          defaultMessage:
+            "¿Estás seguro de que quieres deshabilitar este producto?",
         })}
-        cancelText={intl.formatMessage({ id: "cancel", defaultMessage: "Cancelar" })}
-        confirmText={intl.formatMessage({ id: "disable", defaultMessage: "Deshabilitar" })}
+        cancelText={intl.formatMessage({
+          id: "cancel",
+          defaultMessage: "Cancelar",
+        })}
+        confirmText={intl.formatMessage({
+          id: "disable",
+          defaultMessage: "Deshabilitar",
+        })}
         onCancel={() => setShowDisableAlert(false)}
         onConfirm={confirmDisable}
       />
 
-      <AlertConfirmationModal
-        show={showDeleteAlert}
-        processing={processing}
+      <ModalConfirmAction
+        isOpen={showDeleteAlert}
+        loading={processing}
         title={intl.formatMessage({
           id: "confirmDelete",
           defaultMessage: "Confirmar eliminación",
         })}
         message={intl.formatMessage({
           id: "confirmDeleteMessage",
-          defaultMessage: "¿Estás seguro de que quieres eliminar este producto?",
+          defaultMessage:
+            "¿Estás seguro de que quieres eliminar este producto?",
         })}
-        cancelText={intl.formatMessage({ id: "cancel", defaultMessage: "Cancelar" })}
-        confirmText={intl.formatMessage({ id: "delete", defaultMessage: "Eliminar" })}
-        onCancel={() => setShowDeleteAlert(false)}
-        onConfirm={confirmDelete}
+        withReason={false}
+        onClose={() => setShowDeleteAlert(false)}
+        onContinue={confirmDelete}
       />
     </>
-  )
-}
+  );
+};
 
 const enhancedStyles = {
   container: {
@@ -516,6 +611,6 @@ const enhancedStyles = {
     color: "#374151",
     flex: 1,
   },
-}
+};
 
-export default ProductCard
+export default ProductCard;

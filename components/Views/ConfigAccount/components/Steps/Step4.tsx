@@ -35,7 +35,6 @@ const Step4 = () => {
     try {
       setLoadingChecking(true);
       const resp = await isGreenApiConfigured();
-      console.log("xd3", resp)
       if (resp?.isDone) {
         showToast({
           description: intl.formatMessage({ id: 'configSuccessDescription' }),
