@@ -92,8 +92,8 @@ missingDimensionStrategy "store", "play"
         applicationId 'com.whatsproy'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 20007
-        versionName "2.0.7"
+        versionCode 20008
+        versionName "2.0.8"
     }
     signingConfigs {
         debug {

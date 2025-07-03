@@ -316,7 +316,7 @@ const Home: React.FC = () => {
                   id: "settings.schedule",
                   defaultMessage: "Settings",
                 })}
-                onPress={() => router.push("/(tabs)/generalSettings")}
+                onPress={() => router.push("/(tabs)/schedules")}
               />
             </View>
           </Animatable.View>

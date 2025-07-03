@@ -344,14 +344,12 @@ const MenusUpload: React.FC = () => {
   const deleteMenu = async (menuId: number) => {
     try {
       const resp = await api.menu.delete(menuId);
-
-      if (resp) {
-        setMenus((prev) => prev.filter((p) => p.id !== menuId));
-        showToast({
-          title: "Menú eliminado correctamente",
-          status: "success",
-        });
-      }
+      setMenus((prev) => prev.filter((p) => p.id !== menuId));
+      showToast({
+        title: "Menú eliminado correctamente",
+        status: "success",
+      });
+      loadMenus();
     } catch (error) {
       console.error(error);
       showToast({

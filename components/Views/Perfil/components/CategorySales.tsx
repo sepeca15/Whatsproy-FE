@@ -174,7 +174,7 @@ const CategorySales: React.FC<CategorySalesProps> = ({
                     {formatNumber(category.sales)}
                   </Text>
                 </HStack>
-                <HStack space={2} alignItems="center">
+                <HStack space={2} alignItems="start" flexDir={"column"} style={{gap:4}}>
                   <SafeProgress
                     value={safeProgressValue}
                   />
@@ -182,7 +182,6 @@ const CategorySales: React.FC<CategorySalesProps> = ({
                     style={{
                       fontSize: 12,
                       color: "#666",
-                      width: 35,
                       textAlign: "right",
                     }}
                   >
