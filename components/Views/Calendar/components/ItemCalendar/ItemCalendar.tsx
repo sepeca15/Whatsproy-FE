@@ -1,285 +1,301 @@
-import { Pressable, StyleSheet, View, Animated } from "react-native";
-import { IInfoItem } from "../../types";
-import { useState, useRef, useEffect } from "react";
-import { Button, Container, ScrollView, Text } from "native-base";
-import EvilIcons from "react-native-vector-icons/EvilIcons";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import Ion from "react-native-vector-icons/Ionicons";
-import * as Progress from "react-native-progress";
-import api from "@/services/api/admin";
-import { IOrderDetails } from "@/components/Views/OrderDetails/OrderDetailsTypes";
-import { useRouter } from "expo-router";
-import { styles } from "./ItemCalendarStyles";
-import * as moment from "moment-timezone";
-import { useUser } from "@/hooks/redux/useUser";
-import Icon from "react-native-vector-icons/Feather";
-import { FormattedMessage } from "react-intl"; // Importa FormattedMessage
-import CustomButton from "@/components/CustomButton";
-import DateTimeInputField from "@/components/DateTimePickerField";
+import { Pressable, StyleSheet, View, Animated } from "react-native"
+import { useState, useRef, useEffect } from "react"
+import { Text } from "native-base"
+import { Ionicons } from "@expo/vector-icons"
+import * as Progress from "react-native-progress"
+import api from "@/services/api/admin"
+import type { IOrderDetails } from "@/components/Views/OrderDetails/OrderDetailsTypes"
+import { useRouter } from "expo-router"
+import * as moment from "moment-timezone"
+import { useUser } from "@/hooks/redux/useUser"
+import { FormattedMessage } from "react-intl"
+import { styles } from "./ItemCalendarStyles"
+
+const primaryColor = "#075e54"
+const secondaryColor = "#128c7e"
+
+const Colors = {
+  light: {
+    text: "#11181C",
+    background: "#fff",
+    primary: primaryColor,
+    secondary: secondaryColor,
+    warning: "#F39C12",
+    border: "#e1e1e1",
+    success: "#2ECC71",
+    error: "#ef4444",
+    textSecondary: "#666",
+    danger: "#E74C3C",
+    icon: "#687076",
+    muted: "#f8f9fa",
+  },
+}
+
+interface IInfoItem {
+  orderId: number
+  date: string
+  product: string
+  status?: boolean
+}
 
 interface IItemCalendar {
-  InfoItem: IInfoItem;
-  deleteOrder: (orderId: number) => void;
-  confirmOrder: (orderId: number) => void;
-  confirmed: boolean;
+  InfoItem: IInfoItem
+  deleteOrder: (orderId: number) => void
+  confirmOrder: (orderId: number) => void
+  confirmed: boolean
 }
 
 interface IDataDetails {
-  info: IOrderDetails | null;
-  loadingApi: boolean;
+  info: IOrderDetails | null
+  loadingApi: boolean
 }
 
-const ItemCalendar = ({
-  InfoItem,
-  confirmOrder,
-  deleteOrder,
-  confirmed,
-}: IItemCalendar) => {
-  const [loading, setLoading] = useState(false);
-  const [loadingDelete, setLoadingDelete] = useState(false);
-  const { user } = useUser();
-  const router = useRouter();
-  const [expanded, setExpanded] = useState<boolean>(false);
+const ItemCalendar = ({ InfoItem, confirmOrder, deleteOrder, confirmed }: IItemCalendar) => {
+  const [loading, setLoading] = useState(false)
+  const [loadingDelete, setLoadingDelete] = useState(false)
+  const { user } = useUser()
+  const router = useRouter()
+  const [expanded, setExpanded] = useState<boolean>(false)
   const [dataDetails, setDataDetails] = useState<IDataDetails>({
     info: null,
     loadingApi: true,
-  });
+  })
 
-  const keyDeleteType = confirmed ? "pending" : "finished";
-  const animationHeight = useRef(new Animated.Value(0)).current;
+  const keyDeleteType = confirmed ? "pending" : "finished"
+  const animationHeight = useRef(new Animated.Value(0)).current
+  const rotateAnim = useRef(new Animated.Value(0)).current
 
   const toggleLoadingApi = (value: boolean) => {
     setDataDetails((prevState) => ({
       ...prevState,
       loadingApi: value,
-    }));
-  };
+    }))
+  }
 
   const onLoadingDetails = async () => {
-    toggleLoadingApi(true);
+    toggleLoadingApi(true)
     try {
-      const data = await api.order.getOrderDetails(InfoItem.orderId);
+      const data = await api.order.getOrderDetails(InfoItem.orderId)
       if (data.data) {
         setDataDetails({
           info: data.data,
           loadingApi: false,
-        });
+        })
       }
     } catch (error) {
-      console.log(error);
-      toggleLoadingApi(false);
+      console.log(error)
+      toggleLoadingApi(false)
     }
-  };
+  }
 
   const toggleExpand = () => {
-    setExpanded((prevState) => !prevState);
+    setExpanded((prevState) => !prevState)
+
+    // Animación de altura
     Animated.timing(animationHeight, {
-      toValue: expanded ? 0 : 200,
+      toValue: expanded ? 0 : 1,
       duration: 300,
       useNativeDriver: false,
-    }).start();
-  };
+    }).start()
+
+    // Animación de rotación del ícono
+    Animated.timing(rotateAnim, {
+      toValue: expanded ? 0 : 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start()
+  }
 
   useEffect(() => {
     if (expanded && !dataDetails.info) {
-      onLoadingDetails();
+      onLoadingDetails()
     }
-  }, [expanded, dataDetails.info]);
+  }, [expanded, dataDetails.info])
 
   const formatDate = (dateString: any) => {
-    const date = moment.utc(dateString);
-    const datePart = date.format("DD-MM-YYYY, HH:mm");
-
-    return datePart;
-  };
+    const date = moment.utc(dateString)
+    return date.format("DD/MM/YYYY, HH:mm")
+  }
 
   const validateFunction = async () => {
     if (confirmed) {
       router.push({
         pathname: "/(tabs)/orderDetails",
         params: { orderId: InfoItem.orderId, keyDeleteType: keyDeleteType },
-      });
+      })
     } else {
       try {
-        setLoading(true);
-        const resp = await confirmOrder(InfoItem.orderId);
+        setLoading(true)
+        await confirmOrder(InfoItem.orderId)
       } catch (error) {
         console.log("error is", error)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     }
-  };
+  }
 
   const productsText = () => {
-    let productsText = "";
+    let productsText = ""
     dataDetails.info?.products.map((product, index) => {
-      const isEnd = dataDetails.info?.products.length === index + 1;
-      productsText += product.productoInfo.nombre + (isEnd ? "" : ", ");
-    });
+      const isEnd = dataDetails.info?.products.length === index + 1
+      productsText += product.productoInfo.nombre + (isEnd ? "" : ", ")
+    })
+    return productsText
+  }
 
-    return productsText;
-  };
+  const rotateInterpolate = rotateAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["0deg", "180deg"],
+  })
 
   return (
-    <View style={{ paddingRight: 10 }}>
-      <View
-        style={[
-          styles.container,
-          { backgroundColor: confirmed === true ? "#128c7e" : "#A9A9A9" },
-        ]}
-      >
-        <View style={styles.mainInfo}>
-          <Container
-            color={"white"}
-            display={"flex"}
-            flexDir={"row"}
-            style={{ gap: 5 }}
-            alignItems={"center"}
-            fontWeight={"medium"}
-          >
-            <Text color={"white"}>{InfoItem.product}</Text>
-          </Container>
-          <View style={styles.containerRight}>
-            <Container
-              flexDirection={"row"}
-              alignItems={"center"}
-              style={{ gap: 4 }}
-            >
-              <Ion color={"white"} name="time-outline" size={16} />
-              <Text color={"white"} fontWeight={"500"}>
-                {InfoItem?.date?.split("T")[0]}
-              </Text>
-            </Container>
-            <Pressable style={{ padding: 3 }} onPress={toggleExpand}>
-              <EvilIcons
-                color={"white"}
-                size={30}
-                name={expanded ? "chevron-up" : "chevron-down"}
-              />
-            </Pressable>
+    <View style={styles.cardContainer}>
+      {/* Header Principal */}
+      <Pressable style={styles.cardHeader} onPress={toggleExpand}>
+        <View style={styles.headerLeft}>
+          <View style={styles.statusIndicator}>
+            <View
+              style={[styles.statusDot, { backgroundColor: confirmed ? Colors.light.success : Colors.light.warning }]}
+            />
+          </View>
+          <View style={styles.headerContent}>
+            <Text style={styles.productName} numberOfLines={1}>
+              {InfoItem.product}
+            </Text>
+            <View style={styles.dateRow}>
+              <Ionicons name="calendar-outline" size={14} color={Colors.light.icon} />
+              <Text style={styles.dateText}>{InfoItem?.date?.split("T")[0]}</Text>
+            </View>
           </View>
         </View>
-        <Animated.View
-          style={[styles.expandedContent, { minHeight: animationHeight }]}
-        >
-          {expanded &&
-            (dataDetails.loadingApi ? (
-              <View style={styles.containerSpiner}>
-                <Progress.Circle
-                  color={"white"}
-                  indeterminate={true}
-                  size={40}
-                />
+
+        <Animated.View style={{ transform: [{ rotate: rotateInterpolate }] }}>
+          <Ionicons name="chevron-down" size={20} color={Colors.light.icon} />
+        </Animated.View>
+      </Pressable>
+
+      {/* Contenido Expandible */}
+      <Animated.View
+        style={[
+          styles.expandedContainer,
+          {
+            height: animationHeight.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0, 280], // Altura fija para evitar saltos
+            }),
+          },
+        ]}
+      >
+        {expanded && (
+          <View style={styles.expandedContent}>
+            {dataDetails.loadingApi ? (
+              <View style={styles.loadingContainer}>
+                <Progress.Circle color={Colors.light.primary} indeterminate={true} size={30} />
               </View>
             ) : (
-              <View style={styles.additionalInfo}>
-                <View style={styles.rowInfo}>
-                  <AntDesign name="user" size={16} color={"white"} />
-                  <Text color={"white"}>
-                    {dataDetails.info?.client?.name || (
-                      <FormattedMessage id="clientName" />
-                    )}
-                  </Text>
-                </View>
-                <View style={styles.rowInfo}>
-                  <AntDesign name="phone" size={16} color={"white"} />
-                  <Text color={"white"}>
-                    {dataDetails.info?.client?.phone || (
-                      <FormattedMessage id="clientPhone" />
-                    )}
-                  </Text>
-                </View>
-                <View style={styles.rowInfo}>
-                  <MaterialIcons name="access-time" size={16} color={"white"} />
-                  <Text color={"white"}>
-                    {dataDetails.info?.estimateTime || (
-                      <FormattedMessage id="estimateTime" />
-                    )}{" "}
-                    mn
-                  </Text>
-                </View>
-                <View style={styles.rowInfo}>
-                  <AntDesign name="calendar" size={16} color={"white"} />
-                  <Text color={"white"}>
-                    {formatDate(dataDetails.info?.date) || (
-                      <FormattedMessage id="date" />
-                    )}
-                  </Text>
-                </View>
-                <View style={styles.rowInfo}>
-                  <Icon name="shopping-bag" size={16} color="white" />
-                  <Text color={"white"}>{productsText()}</Text>
-                </View>
-                <View style={styles.total}>
-                  <Text fontSize={18} fontWeight={"bold"} color={"white"}>
-                    <FormattedMessage id="total" />:
-                  </Text>
-                  <View style={styles.rowInfo}>
-                    <FontAwesome name="money" size={12} color={"white"} />
-                    <Text fontSize={18} fontWeight={"bold"} color={"white"}>
-                      {dataDetails.info?.total}
+              <>
+                {/* Información del Cliente */}
+                <View style={styles.section}>
+                  <View style={styles.infoRow}>
+                    <Ionicons name="person-outline" size={16} color={Colors.light.icon} />
+                    <Text style={styles.infoText}>
+                      {dataDetails.info?.client?.name || <FormattedMessage id="clientName" />}
+                    </Text>
+                  </View>
+
+                  <View style={styles.infoRow}>
+                    <Ionicons name="call-outline" size={16} color={Colors.light.icon} />
+                    <Text style={styles.infoText}>
+                      {dataDetails.info?.client?.phone || <FormattedMessage id="clientPhone" />}
+                    </Text>
+                  </View>
+
+                  <View style={styles.infoRow}>
+                    <Ionicons name="time-outline" size={16} color={Colors.light.icon} />
+                    <Text style={styles.infoText}>
+                      {dataDetails.info?.estimateTime || <FormattedMessage id="estimateTime" />} min
+                    </Text>
+                  </View>
+
+                  <View style={styles.infoRow}>
+                    <Ionicons name="calendar-outline" size={16} color={Colors.light.icon} />
+                    <Text style={styles.infoText}>
+                      {formatDate(dataDetails.info?.date) || <FormattedMessage id="date" />}
+                    </Text>
+                  </View>
+
+                  <View style={styles.infoRow}>
+                    <Ionicons name="bag-outline" size={16} color={Colors.light.icon} />
+                    <Text style={styles.infoText} numberOfLines={2}>
+                      {productsText()}
                     </Text>
                   </View>
                 </View>
-                <View style={styles.buttons}>
+
+                {/* Total */}
+                <View style={styles.totalSection}>
+                  <View style={styles.totalRow}>
+                    <Text style={styles.totalLabel}>
+                      <FormattedMessage id="total" />
+                    </Text>
+                    <View style={styles.totalValue}>
+                      <Ionicons name="cash-outline" size={16} color={Colors.light.success} />
+                      <Text style={styles.totalAmount}>${dataDetails.info?.total}</Text>
+                    </View>
+                  </View>
+                </View>
+
+                {/* Botones de Acción */}
+                <View style={styles.actionSection}>
                   {!confirmed && (
-                    <CustomButton
-                      loading={loadingDelete}
-                      disabled={loading || loadingDelete}
-                      style={[
-                        styles.buttonNormal,
-                        {
-                          backgroundColor: confirmed ? "128c7e" : "transparent",
-                        },
-                      ]}
+                    <Pressable
+                      style={[styles.actionButton, styles.deleteButton]}
                       onPress={async () => {
                         try {
-                          setLoadingDelete(true);
-                          await deleteOrder(InfoItem.orderId);
+                          setLoadingDelete(true)
+                          await deleteOrder(InfoItem.orderId)
                         } catch (error) {
+                          console.error(error)
                         } finally {
-                          setLoadingDelete(false);
+                          setLoadingDelete(false)
                         }
                       }}
+                      disabled={loading || loadingDelete}
                     >
-                      <Text color={"white"} fontSize={12}>
+                      {loadingDelete ? (
+                        <Progress.Circle color={Colors.light.danger} indeterminate={true} size={16} />
+                      ) : (
+                        <Ionicons name="trash-outline" size={16} color={Colors.light.danger} />
+                      )}
+                      <Text style={styles.deleteButtonText}>
                         <FormattedMessage id="deleteOrder" />
                       </Text>
-                      <EvilIcons
-                        style={{ paddingTop: 2 }}
-                        color={"white"}
-                        name="close"
-                        size={16}
-                      />
-                    </CustomButton>
+                    </Pressable>
                   )}
-                  <CustomButton
-                    loading={loading}
-                    disabled={loading || loadingDelete}
-                    onPress={validateFunction}
-                    style={[
-                      styles.buttonConfirm,
-                      { backgroundColor: confirmed ? "#1eab9b" : "black" },
-                    ]}
-                  >
-                    <Text color={"white"} fontSize={13}>
-                      {confirmed ? (
-                        <FormattedMessage id="viewDetails" />
-                      ) : (
-                        <FormattedMessage id="confirmOrder" />
-                      )}
-                    </Text>
-                  </CustomButton>
-                </View>
-              </View>
-            ))}
-        </Animated.View>
-      </View>
-    </View>
-  );
-};
 
-export default ItemCalendar;
+                  <Pressable
+                    style={[styles.actionButton, styles.primaryButton]}
+                    onPress={validateFunction}
+                    disabled={loading || loadingDelete}
+                  >
+                    {loading ? (
+                      <Progress.Circle color="white" indeterminate={true} size={16} />
+                    ) : (
+                      <Ionicons name={confirmed ? "eye-outline" : "checkmark-circle-outline"} size={16} color="white" />
+                    )}
+                    <Text style={styles.primaryButtonText}>
+                      {confirmed ? <FormattedMessage id="viewDetails" /> : <FormattedMessage id="confirmOrder" />}
+                    </Text>
+                  </Pressable>
+                </View>
+              </>
+            )}
+          </View>
+        )}
+      </Animated.View>
+    </View>
+  )
+}
+
+export default ItemCalendar

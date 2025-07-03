@@ -8,14 +8,13 @@ import CreateOrderModal from "@/components/CreateOrderModal";
 import { FormattedMessage } from "react-intl";
 import CustomText from "@/components/CustomText";
 import Animated from "react-native-reanimated";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import OrdersActive from "./components/OrdersActive";
 import { globalStyles } from "@/components/globalStyles";
 import { styles } from "./PedidosStyles";
 import { Box, Button, View } from "native-base";
 import FilterSearch from "./components/FilterSearch";
-import { useToastContext } from "@/contexts/ToastContext";
+import GestureRecognizer from 'react-native-swipe-gestures';
 
 type pagesOrder = "finished" | "pending" | "active";
 
@@ -24,7 +23,6 @@ const PedidosEIngresos: React.FC = () => {
     React.useState<boolean>(false);
   const [selected, setSelected] = React.useState<pagesOrder>("pending");
   const [openAddModal, setOpenAddModal] = React.useState<boolean>(false);
-  const { showToast } = useToastContext();
 
   const togggleOptionModal = () => {
     setOptionSearchEnable((prev) => !prev);
@@ -33,6 +31,18 @@ const PedidosEIngresos: React.FC = () => {
   const { user } = useUser();
   const handleSelectPage = (key: pagesOrder) => {
     setSelected(key);
+  };
+
+  const pages: pagesOrder[] = ["pending", "active", "finished"];
+
+  const handleSwipe = (direction: string) => {
+    const currentIndex = pages.indexOf(selected);
+    if (direction === "SWIPE_LEFT" && currentIndex < pages.length - 1) {
+      setSelected(pages[currentIndex + 1]);
+    }
+    if (direction === "SWIPE_RIGHT" && currentIndex > 0) {
+      setSelected(pages[currentIndex - 1]);
+    }
   };
 
   return (
@@ -118,15 +128,23 @@ const PedidosEIngresos: React.FC = () => {
               </View>
             ))}
           </View>
-          <View style={styles.orders}>
-            {selected === "finished" ? (
-              <OrdersFinished />
-            ) : selected === "pending" ? (
-              <OrdersPending />
-            ) : (
-              <OrdersActive />
-            )}
-          </View>
+
+          <GestureRecognizer
+            onSwipeLeft={() => handleSwipe("SWIPE_LEFT")}
+            onSwipeRight={() => handleSwipe("SWIPE_RIGHT")}
+            style={{ flex: 1 }}
+          >
+            <View style={styles.orders}>
+              {selected === "finished" ? (
+                <OrdersFinished />
+              ) : selected === "pending" ? (
+                <OrdersPending />
+              ) : (
+                <OrdersActive />
+              )}
+            </View>
+          </GestureRecognizer>
+
           <View style={globalStyles.buttonContainer}>
             <Pressable
               style={globalStyles.addButton}
@@ -144,8 +162,9 @@ const PedidosEIngresos: React.FC = () => {
             />
           )}
         </Box>
-      )}
-    </Box>
+      )
+      }
+    </Box >
   );
 };
 

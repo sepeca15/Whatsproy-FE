@@ -23,6 +23,7 @@
     "totalProductosVendidos": "Total Products Sold",
     "enabled": "Enabled",
     "noDescription": "No description available",
+    "noSlotsForSelectedDay": "There are no places available for this date.",
     "viewSpecifications": "View specifications",
     "company.calendarInterval": "Calendar Interval (minutes)",
     "company.notifyByHour": "Notify reservation by hour?",
@@ -922,7 +923,6 @@
     "status.creating": "Creating status...",
     "status.updating": "Updating status...",
     "common.saving": "Saving...",
-
     "orderData.createTitle": "Create custom field",
     "orderData.editTitle": "Edit custom field",
     "orderData.subtitle": "Configure additional fields for orders",
@@ -938,7 +938,6 @@
     "orderData.updateSuccess": "Field updated successfully",
     "orderData.creating": "Creating field...",
     "orderData.updating": "Updating field...",
-
     "users.title": "Users",
     "users.loading": "Loading users...",
     "users.noName": "No name",
@@ -990,7 +989,6 @@
     "profile.account.permissions.admin": "Admin",
     "profile.actions.cancel": "Cancel",
     "profile.actions.save": "Save Changes",
-
     "orderData.title": "Custom Fields",
     "orderData.loading": "Loading fields...",
     "orderData.stats.fields": "Fields",
@@ -1034,7 +1032,6 @@
     "categories.card.noName": "No name",
     "categories.card.products": "products",
     "categories.card.product": "producto",
-
     "cierre.title": "Provisional Closures",
     "cierre.subtitle": "Manage closure schedules",
     "cierre.loading": "Loading closures...",
@@ -1066,7 +1063,6 @@
     "cierre.modal.info.title": "Important information",
     "cierre.modal.info.description": "During this period, your business will appear as closed and no orders can be placed",
     "cierre.modal.creating": "Creating provisional closure...",
-
     "trustedNumbers.title": "Trusted Numbers",
     "trustedNumbers.subtitle": "Manage authorized contacts",
     "trustedNumbers.loading": "Loading trusted numbers...",
@@ -1085,6 +1081,9 @@
     "trustedNumbers.deleteModal.message": "Are you sure you want to delete this trusted number?",
     "trustedNumbers.card.noName": "No name",
     "trustedNumbers.card.trusted": "Trusted",
+    "calendarEventText": "Events",
+    "calendarConfirmatedText": "Confirmated",
+    "calendarPendingText": "Pendings",
     "trustedNumbers.modal.title": "Import contacts",
     "trustedNumbers.modal.subtitle": "Select trusted contacts",
     "trustedNumbers.modal.loadingContacts": "Loading contacts...",
@@ -1167,19 +1166,15 @@
     "scheduleBannerText": "Configura los horarios en los que tu asistente estará disponible",
     "noSchedulesYet": "Sin horarios configurados",
     "noSchedulesDescription": "Configura los horarios de disponibilidad para tu asistente",
-
     "enterStartTime": "Ingresa la hora de inicio",
     "enterEndTime": "Ingresa la hora de fin",
-
     "startHourBeforeEnd": "La hora de inicio debe ser antes de la hora de fin",
     "endHourAfterStart": "La hora de fin debe ser después de la hora de inicio",
-
     "information": "Información",
     "scheduleInfo1": "Configura los horarios en los que tu asistente estará disponible para recibir reservas.",
     "scheduleInfo2": "Puedes agregar múltiples horarios por día para mayor flexibilidad.",
     "scheduleInfo3": "Los clientes solo podrán hacer consultas durante estos horarios configurados.",
     "understood": "Entendido",
-
     "trustedNumbers.title": "Números de confianza",
     "trustedNumbers.subtitle": "Gestiona contactos autorizados",
     "trustedNumbers.loading": "Cargando números de confianza...",
@@ -1284,7 +1279,6 @@
     "orderData.deleteModal.title": "Eliminar campo",
     "orderData.deleteModal.message": "¿Estás seguro de que deseas eliminar este campo? Esta acción no se puede deshacer.",
     "common.unknownError": "Error desconocido",
-
     "profile.title": "Mi Perfil",
     "profile.imagePickerError": "Error al seleccionar la imagen",
     "profile.validation.nameRequired": "El nombre es requerido",
@@ -1306,7 +1300,6 @@
     "profile.account.permissions.admin": "Administrador",
     "profile.actions.cancel": "Cancelar",
     "profile.actions.save": "Guardar Cambios",
-
     "users.title": "Usuarios",
     "users.loading": "Cargando usuarios...",
     "users.noName": "Sin nombre",
@@ -1509,6 +1502,7 @@
     "createUsersQuestion": "¿Cómo creo nuevos usuarios?",
     "createUsersAnswer": "Solo los administradores pueden crear usuarios. Ve a la sección 'Usuarios' y haz clic en 'Agregar Usuario'.",
     "securityHelp": "Seguridad",
+    "noSlotsForSelectedDay": "There are no places available for this date.",
     "protectAccountQuestion": "¿Cómo protejo mi cuenta?",
     "protectAccountAnswer": "Usa contraseñas seguras, no compartas tus credenciales y revisa regularmente la sección de Privacidad y Seguridad.",
     "dataStorageQuestion": "¿Qué datos se almacenan?",
@@ -2136,6 +2130,9 @@
     "sales.period.semanal": "Semanal",
     "sales.period.trimestral": "Trimestral",
     "sales.period.anual": "Anual",
+    "calendarEventText": "Eventos",
+    "calendarConfirmatedText": "Confirmados",
+    "calendarPendingText": "Pendientes",
     "nameRequired": "Nombre es requerido",
     "currencyRequired": "Moneda es requerida",
     "descriptionRequired": "Descripción es requerida",
@@ -2521,6 +2518,10 @@
     "confirmedProductsCount": "{confirmed} de {total} produtos confirmados",
     "processing": "Processando...",
     "createMenu": "Criar Menu",
+    "calendarEventText": "Eventos",
+    "calendarConfirmatedText": "Confirmado",
+    "calendarPendingText": "Brico",
+    "noSlotsForSelectedDay": "Não há vagas disponíveis para esta data.",
     "loadingMenus": "Carregando menus...",
     "dailyMenus": "Menus",
     "menuCreatedSuccessfully": "Menu criado com sucesso",

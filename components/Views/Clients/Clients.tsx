@@ -2,18 +2,8 @@ import React, { useState, useMemo } from "react";
 import { FlatList } from "react-native";
 import {
   Box,
-  Input,
   Text,
-  Heading,
   VStack,
-  HStack,
-  Select,
-  CheckIcon,
-  Button,
-  Badge,
-  Modal,
-  Divider,
-  ScrollView,
   Icon,
   View,
   Center,
@@ -23,75 +13,45 @@ import { FormattedMessage, useIntl } from "react-intl";
 import Animated from "react-native-reanimated";
 import { globalStyles } from "@/components/globalStyles";
 import CustomText from "@/components/CustomText";
-import api from "@/services/api/admin";
 import { Cliente } from "./types";
 import { Colors } from "@/constants/Colors";
 import InputField from "@/components/InputField";
 import * as Progress from "react-native-progress";
 import CardClient from "./components/CardClient.tsx";
 import { useRouter } from "expo-router";
-
-type typeKeys = "clients" | "offset" | "limit" | "totalItems";
-
-interface IValues {
-  offset: number;
-  limit: number;
-  clients: Cliente[];
-  totalItems: number;
-}
-
-const initialState = {
-  offset: 0,
-  limit: 10,
-  clients: [],
-  totalItems: 0,
-};
+import { useClientsData } from "@/hooks/redux/useClientsData";
 
 const Clients = () => {
+  const isFetchingRef = React.useRef(false);
   const intl = useIntl();
   const [filtroNombre, setFiltroNombre] = useState("");
-  const [loadingApi, setLoadingApi] = React.useState(false);
-  const [values, setValues] = useState<IValues>(initialState);
   const router = useRouter();
+  const [refreshing, setRefreshing] = useState(false);
 
-  const handleLoadClients = async (
-    offset = values.offset,
-    limit = values.limit,
-    nombre = filtroNombre,
-    reset = false
-  ) => {
-    setLoadingApi(true);
-    try {
-      const resp = await api.client.findWithOrders({
-        offset,
-        limit,
-        query: nombre,
-      });
-
-      if (resp.ok) {
-        setValues((prev) => ({
-          ...prev,
-          clients: reset ? resp.data : [...prev.clients, ...resp.data],
-          offset: offset + limit,
-          totalItems: resp.totalItems ?? prev.totalItems,
-        }));
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoadingApi(false);
-    }
+  const handleRefresh = async () => {
+    if (isFetchingRef.current) return;
+    isFetchingRef.current = true;
+    setRefreshing(true);
+    await handleLoadClientData(filtroNombre, true);
+    isFetchingRef.current = false;
+    setRefreshing(false);
   };
 
+  const { totalItems, offset, loaded, loadingApi, limit, clientsData, handleLoadClientData } = useClientsData()
+
   React.useEffect(() => {
-    handleLoadClients();
+    if (!loaded) {
+      handleLoadClientData('', false);
+    }
   }, []);
+
+  console.log(loadingApi);
+
 
   React.useEffect(() => {
     const delayDebounce = setTimeout(() => {
-      handleLoadClients(0, initialState.limit, filtroNombre, true);
+      handleLoadClientData(filtroNombre, true);
     }, 500);
-
     return () => clearTimeout(delayDebounce);
   }, [filtroNombre]);
 
@@ -136,10 +96,10 @@ const Clients = () => {
           />
         </VStack>
 
-        {values.clients.length > 0 && (
+        {clientsData.length > 0 && (
           <FlatList
             contentContainerStyle={{ paddingTop: 8, paddingHorizontal: 5 }}
-            data={values.clients}
+            data={clientsData}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <CardClient
@@ -147,14 +107,19 @@ const Clients = () => {
                 item={item}
               />
             )}
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
             onEndReached={() => {
-              if (values.clients.length < values.totalItems && !loadingApi) {
-                handleLoadClients();
+              if (clientsData.length < totalItems && !loadingApi && !isFetchingRef.current) {
+                isFetchingRef.current = true;
+                handleLoadClientData(filtroNombre, false).finally(() => {
+                  isFetchingRef.current = false;
+                });
               }
             }}
             onEndReachedThreshold={0.2}
             ListFooterComponent={
-              loadingApi && values.clients.length > 0 ? (
+              loadingApi && clientsData.length > 0 ? (
                 <Center>
                   <Progress.Circle
                     color={"#075e54"}
@@ -167,7 +132,7 @@ const Clients = () => {
           />
         )}
 
-        {values.clients.length === 0 && loadingApi && (
+        {clientsData.length === 0 && loadingApi && (
           <Center
             flex={1}
             display={"flex"}
@@ -178,7 +143,7 @@ const Clients = () => {
           </Center>
         )}
 
-        {values.clients.length === 0 && !loadingApi && (
+        {clientsData.length === 0 && !loadingApi && (
           <Center
             flex={1}
             display={"flex"}

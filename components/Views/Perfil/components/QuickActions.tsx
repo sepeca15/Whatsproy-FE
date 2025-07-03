@@ -7,11 +7,19 @@ import { useRouter } from "expo-router";
 import { FormattedMessage } from "react-intl";
 import { removeData } from "@/storage/localStorage";
 import { Shadow } from 'react-native-shadow-2';
+import { useDispatch } from "react-redux";
 
 
 
 const QuickActions: React.FC = () => {
   const router = useRouter();
+  const dispatch = useDispatch();
+
+  const handleLogout = async () => {
+    await removeData("token");
+    dispatch({ type: "RESET" }); 
+    router.replace("/(auth)/login");
+  };
 
   const actions = [
     {
@@ -27,10 +35,7 @@ const QuickActions: React.FC = () => {
       label: "profile.logout",
       defaultMessage: "Cerrar sesión",
       route: "/(auth)/login",
-      onPress: async () => {
-        await removeData("token");
-        router.replace("/(auth)/login");
-      },
+      onPress: handleLogout
     },
   ];
 

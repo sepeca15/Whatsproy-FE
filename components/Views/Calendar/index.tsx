@@ -1,521 +1,466 @@
-import React, { useState, useEffect, useRef } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Platform,
-  UIManager,
-  Image,
-} from "react-native";
-import moment from "moment";
+"use client"
 
-import { Agenda } from "react-native-calendars";
-import { ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
-import api from "@/services/api/admin";
-import ItemCalendar from "./components/ItemCalendar";
-import { IInfoItem } from "./types";
-import * as Progress from "react-native-progress";
-import { Colors } from "@/constants/Colors";
-import CustomText from "@/components/CustomText";
-import CreateOrderModal from "@/components/CreateOrderModal";
-import Animated from "react-native-reanimated";
-import { FormattedMessage, useIntl } from "react-intl";
-import { globalStyles } from "@/components/globalStyles";
-import { styles as stylesPending } from "../Pedidos/components/OrdersPending/ordersPendingStyles";
-import { useToastContext } from "@/contexts/ToastContext";
-import { Animated as AnimatedNative, Easing } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { ordenarPedidosPorHora, OrderPerDays } from "@/utils/date";
-import { useUser } from "@/hooks/redux/useUser";
-import { WorkerUser } from "@/services/api/user/user.types";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Box } from "native-base";
-import WorkerSelect from "@/components/WorkerSelect/WorkerSelect";
-import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmAction";
+import { useState, useEffect, useRef, useCallback } from "react"
+import { View, Text, StyleSheet, TouchableOpacity, Platform, UIManager, FlatList, Dimensions } from "react-native"
+import moment from "moment"
+import "moment/locale/es"
+import { ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type"
+import api from "@/services/api/admin"
+import ItemCalendar from "./components/ItemCalendar"
+import * as Progress from "react-native-progress"
+import CreateOrderModal from "@/components/CreateOrderModal"
+import { FormattedMessage, useIntl } from "react-intl"
+import { useToastContext } from "@/contexts/ToastContext"
+import { Animated as AnimatedNative, Easing } from "react-native"
+import { Ionicons } from "@expo/vector-icons"
+import { ordenarPedidosPorHora, type OrderPerDays } from "@/utils/date"
+import { useUser } from "@/hooks/redux/useUser"
+import type { WorkerUser } from "@/services/api/user/user.types"
+import { SafeAreaView } from "react-native-safe-area-context"
+import WorkerSelect from "@/components/WorkerSelect/WorkerSelect"
+import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmAction"
+import DatePickerModal from "./components/DatePickerModal/DatePickerModal"
+import { LinearGradient } from "expo-linear-gradient"
 
-if (
-  Platform.OS === "android" &&
-  UIManager.setLayoutAnimationEnabledExperimental
-) {
-  UIManager.setLayoutAnimationEnabledExperimental(true);
+const primaryColor = "#075e54"
+const secondaryColor = "#128c7e"
+
+const Colors = {
+  light: {
+    text: "#11181C",
+    background: "#fff",
+    primary: primaryColor,
+    secondary: secondaryColor,
+    warning: "#F39C12",
+    border: "#e1e1e1",
+    success: "#2ECC71",
+    error: "#ef4444",
+    textSecondary: "#000",
+    danger: "#E74C3C",
+    icon: "#687076",
+    tabIconDefault: "#687076",
+    tabIconSelected: primaryColor,
+  },
+  dark: {
+    text: "#ECEDEE",
+    background: "#151718",
+    danger: "#E74C3C",
+    primary: primaryColor,
+    success: "#2ECC71",
+    border: "#e1e1e1",
+    textSecondary: "#FFF",
+    error: "#ef4444",
+    secondary: secondaryColor,
+    icon: "#9BA1A6",
+    tabIconDefault: "#9BA1A6",
+    tabIconSelected: primaryColor,
+  },
+}
+
+if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
+  UIManager.setLayoutAnimationEnabledExperimental(true)
 }
 
 export default function CalendarView() {
-  const [orderPerDaysAll, setOrderPerDays] = useState<OrderPerDays>({});
-  const [openAddModal, setOpenAddModal] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(
-    new Date().toISOString().split("T")[0]
-  );
-  const [agendaKey, setAgendaKey] = useState(1);
-  const spinAnim = useRef(new AnimatedNative.Value(0)).current;
-  const [loading, setLoading] = useState(true);
-  const [availableDates, setAvailableDates] = useState<string[]>([]);
-  const { showToast } = useToastContext();
-  const { user } = useUser();
-  const [workers, setWorkers] = useState<WorkerUser[]>([]);
-  const [selectedWorkerId, setSelectedWorkerId] = useState<
-    any | number | undefined
-  >();
-  const [horarios, setHorarios] = useState<any[]>([]);
-  const [selectedMonth, setSelectedMonth] = useState<any>("");
-  const [selectedYear, setSelectedYear] = useState<any>("");
-  const [disabledDates, setDisabledDates] = useState({});
-  const [oredrToDelete, setOrderToDelete] = useState<any>(null);
-  const orderPerDays = ordenarPedidosPorHora(orderPerDaysAll);
+  const [orderPerDaysAll, setOrderPerDays] = useState<OrderPerDays>({})
+  const [openAddModal, setOpenAddModal] = useState(false)
+  const spinAnim = useRef(new AnimatedNative.Value(0)).current
+  const [loading, setLoading] = useState(true)
+  const [availableDates, setAvailableDates] = useState<string[]>([])
+  const { showToast } = useToastContext()
+  const { user } = useUser()
+  const [selectedDate, setSelectedDate] = useState(moment.tz(user.timeZone).format("YYYY-MM-DD"))
 
-  useEffect(() => {
-    setAgendaKey((prev) => prev + 1);
-  }, [selectedDate]);
+  const [workers, setWorkers] = useState<WorkerUser[]>([])
+  const [selectedWorkerId, setSelectedWorkerId] = useState<any | number | undefined>()
+  const [horarios, setHorarios] = useState<any[]>([])
+  const [selectedMonth, setSelectedMonth] = useState<any>("")
+  const [selectedYear, setSelectedYear] = useState<any>("")
+  const [disabledDates, setDisabledDates] = useState<any>({})
+  const [oredrToDelete, setOrderToDelete] = useState<any>(null)
+  const orderPerDays = ordenarPedidosPorHora(orderPerDaysAll)
 
-  const [loadWorkers, setLoadWorkers] = useState(false);
-  const [ordrDeleteModalConfirm, setOrdrDeleteModalConfirm] = useState(false);
-  const [reason, setReason] = useState("");
-  const [loadingDelete, setLoadingDelete] = useState(false);
-
-  const intl = useIntl();
-
-  const [loadingCalendarCupos, setLoadingCalendarCupos] = useState(false);
-
-  const handleLoadWorkers = async () => {
-    try {
-      setLoadWorkers(true);
-      const workers = await api.user.findWorkers(user?.id_empresa);
-      setWorkers(workers.data);
-      if (workers?.data && workers?.data?.length > 0) {
-        setSelectedWorkerId(workers?.data[0]?.id);
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoadWorkers(false);
-    }
-  };
-
-  const handleLoadDisabledDates = async () => {
-    try {
-      setLoadingCalendarCupos(true);
-      const availableDates = await api.order.getAvailableDatesByMonth(
-        selectedYear,
-        selectedMonth,
-        user?.id
-      );
-      console.log("availableDates", selectedYear, selectedMonth, user?.id);
-
-      let disabledDatesCurrentMonth: any = {};
-
-      (availableDates as any[]).forEach((itm) => {
-        if (itm?.cuposDisponibles === 0) {
-          disabledDatesCurrentMonth[itm?.fecha] = {
-            disabled: false,
-            disableTouchEvent: false,
-            marked: false,
-            customStyles: {
-              container: {
-                backgroundColor: "rgba(255, 0, 0, 0.15)",
-                borderRadius: 100,
-              },
-              text: {
-                color: "#ff0000",
-                fontWeight: "bold",
-              },
-            },
-          };
-        }
-      });
-      setDisabledDates(disabledDatesCurrentMonth);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoadingCalendarCupos(false);
-    }
-  };
+  const [loadWorkers, setLoadWorkers] = useState(false)
+  const [ordrDeleteModalConfirm, setOrdrDeleteModalConfirm] = useState(false)
+  const [reason, setReason] = useState("")
+  const [loadingDelete, setLoadingDelete] = useState(false)
+  const intl = useIntl()
+  const [loadingCalendarCupos, setLoadingCalendarCupos] = useState(false)
+  const [showDatePicker, setShowDatePicker] = useState(false)
 
   useEffect(() => {
     if (selectedDate) {
-      const date = moment(selectedDate);
-      setSelectedMonth(date.month() + 1);
-      setSelectedYear(date.year());
+      const date = moment(selectedDate)
+      setSelectedMonth(date.month() + 1)
+      setSelectedYear(date.year())
     }
-  }, [selectedDate]);
+  }, [selectedDate])
 
   useEffect(() => {
     if (selectedYear && selectedMonth) {
-      handleLoadDisabledDates();
+      handleLoadDisabledDates()
     }
-  }, [selectedMonth, selectedYear]);
+  }, [selectedMonth, selectedYear])
+
+  const handleLoadWorkers = async () => {
+    try {
+      setLoadWorkers(true)
+      const workers = await api.user.findWorkers(user?.id_empresa)
+      setWorkers(workers.data)
+      if (workers?.data && workers?.data?.length > 0) {
+        setSelectedWorkerId(workers?.data[0]?.id)
+      }
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setLoadWorkers(false)
+    }
+  }
+
+  const handleLoadDisabledDates = async () => {
+    try {
+      setLoadingCalendarCupos(true)
+      const availableDates = await api.order.getAvailableDatesByMonth(selectedYear, selectedMonth, user?.id)
+      const disabledDatesCurrentMonth: any = {}
+        ; (availableDates as any[]).forEach((itm) => {
+          if (itm?.cuposDisponibles === 0) {
+            disabledDatesCurrentMonth[itm?.fecha] = true
+          }
+        })
+      setDisabledDates(disabledDatesCurrentMonth)
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setLoadingCalendarCupos(false)
+    }
+  }
 
   const handleLoadHorarios = async () => {
     try {
-      setLoading(true);
-      const dataHorarios = await api.user.findHorarios();
-      setHorarios(dataHorarios);
+      setLoading(true)
+      const dataHorarios = await api.user.findHorarios()
+      setHorarios(dataHorarios)
     } catch (error) {
-      console.error(error);
+      console.error(error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const startSpin = () => {
-    spinAnim.setValue(0);
+    spinAnim.setValue(0)
     AnimatedNative.loop(
       AnimatedNative.timing(spinAnim, {
         toValue: 1,
         duration: 1000,
         easing: Easing.linear,
         useNativeDriver: true,
-      })
-    ).start();
-  };
-
-  useEffect(() => {
-    if (user?.id_empresa) {
-      handleLoadWorkers();
-    }
-  }, [user?.id_empresa]);
-
-  useEffect(() => {
-    if (user?.id_empresa) {
-      handleLoadHorarios();
-    }
-  }, [user?.id_empresa]);
+      }),
+    ).start()
+  }
 
   const stopSpin = () => {
     spinAnim.stopAnimation(() => {
-      spinAnim.setValue(0);
-    });
-  };
+      spinAnim.setValue(0)
+    })
+  }
 
   const onRefresh = async () => {
-    startSpin();
-    await onLoadItems(selectedDate);
-    stopSpin();
-  };
+    startSpin()
+    await onLoadItems(selectedDate)
+    stopSpin()
+  }
 
-  const onLoadItems = async (selectedDate: string) => {
-    setLoading(true);
+  const onLoadItems = async (dateString: string) => {
+    setLoading(true)
     try {
-      const data = await api.order.getCalendarOrders(
-        selectedDate,
-        selectedWorkerId
-      );
-      const availableDates = await api.order.getAvailableDates(
-        selectedDate,
-        selectedWorkerId
-      );
-      if (availableDates?.length > 0) {
-        setAvailableDates(availableDates);
+      const data = await api.order.getCalendarOrders(dateString, selectedWorkerId)
+      const availableDatesResponse = await api.order.getAvailableDates(dateString, selectedWorkerId)
+
+      if (availableDatesResponse?.length > 0) {
+        setAvailableDates(availableDatesResponse)
       }
-      setOrderPerDays(data.data);
-      setAgendaKey((prev) => prev + 1);
+      setOrderPerDays(data.data)
     } catch (error: any) {
-      console.log(error.response.data.message);
+      console.log(error.response.data.message)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const confirmOrder = async (orderId: number) => {
     try {
-      const firstDate = Object.keys(orderPerDays)[0];
-
-      const data = await api.order.confirm(orderId);
+      const data = await api.order.confirm(orderId)
       showToast({
         title: "¡Evento confirmado!",
         description: "Su reserva fue confirmado exitosamente.",
         status: "success",
-      });
+      })
       if (data.data) {
         setOrderPerDays((prevState) => {
-          const updatedOrders = prevState[firstDate].map((order) =>
-            order.orderId === orderId ? { ...order, status: true } : order
-          );
-
+          const updatedOrdersForSelectedDate = prevState[selectedDate]?.map((order) =>
+            order.orderId === orderId ? { ...order, status: true } : order,
+          )
           return {
             ...prevState,
-            [firstDate]: [...updatedOrders],
-          };
-        });
-        setAgendaKey((prev) => prev + 1);
+            [selectedDate]: updatedOrdersForSelectedDate || [],
+          }
+        })
       }
     } catch (error: any) {
-      console.log('nooo',error.response.data.message);
+      console.log("nooo", error.response.data.message)
     }
-  };
+  }
 
   const deleteOrder = async (orderId: number) => {
     try {
-      const firstDate = Object.keys(orderPerDays)[0];
-
-      const data = await api.order.remove(orderId);
+      setLoadingDelete(true)
+      const data = await api.order.remove(orderId)
       showToast({
         title: "¡Evento cancelado!",
         description: "Su reserva fue cancelado exitosamente.",
         status: "success",
-      });
+      })
       if (data) {
         setOrderPerDays((prevState) => {
-          const updatedList = prevState[firstDate].filter(
-            (order) => order.orderId !== orderId
-          );
-
+          const updatedListForSelectedDate = prevState[selectedDate]?.filter((order) => order.orderId !== orderId)
           return {
             ...prevState,
-            [firstDate]: [...updatedList],
-          };
-        });
-        setAgendaKey((prev) => prev + 1);
+            [selectedDate]: updatedListForSelectedDate || [],
+          }
+        })
+        setOrdrDeleteModalConfirm(false)
+        setOrderToDelete(null)
+        setReason("")
       }
     } catch (error: any) {
-      console.log(error.response.data.message);
+      console.log(error.response.data.message)
+    } finally {
+      setLoadingDelete(false)
     }
-  };
+  }
+
+  useEffect(() => {
+    if (user?.id_empresa) {
+      handleLoadWorkers()
+      handleLoadHorarios()
+    }
+  }, [user?.id_empresa])
 
   useEffect(() => {
     if (selectedDate && selectedWorkerId) {
-      onLoadItems(selectedDate);
+      onLoadItems(selectedDate)
     }
-  }, [selectedDate, selectedWorkerId]);
+  }, [selectedDate, selectedWorkerId])
+
+  const handleDateChange = useCallback((newDate: Date) => {
+    setSelectedDate(newDate.toISOString().split("T")[0])
+    setShowDatePicker(false)
+  }, [])
+
+  const handlePreviousDay = useCallback(() => {
+    const prevDay = moment(selectedDate).tz(user.timeZone).subtract(1, "day").toISOString().split("T")[0]
+    setSelectedDate(prevDay)
+  }, [selectedDate])
+
+  const handleNextDay = useCallback(() => {
+    const nextDay = moment(selectedDate).tz(user.timeZone).add(1, "day").toISOString().split("T")[0]
+    setSelectedDate(nextDay)
+  }, [selectedDate])
+
+  const isCurrentDayDisabled = disabledDates[selectedDate]
+  const eventsCount = orderPerDays[selectedDate]?.length || 0
+  const confirmedCount = orderPerDays[selectedDate]?.filter((order) => order.status)?.length || 0
 
   return (
-    <View style={styles.container}>
-      <Animated.View style={globalStyles.header}>
-        <View style={styles.headerContent}>
-          <View style={globalStyles.headerLeft}>
-            <CustomText
-              style={globalStyles.businessName}
-              accessibilityLabel="Pedidos"
-            >
-              <FormattedMessage id="calendar" />
-            </CustomText>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <LinearGradient
+          colors={[Colors.light.primary, Colors.light.secondary]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.headerGradient}
+        >
+          <View style={styles.headerContent}>
+            <View style={styles.headerLeft}>
+              <Text style={styles.headerTitle}>
+                <FormattedMessage id="calendar" defaultMessage="Calendario" />
+              </Text>
+              <Text style={styles.headerSubtitle}>Gestiona tus eventos</Text>
+            </View>
+            <TouchableOpacity disabled={loading} onPress={() => onRefresh()} style={styles.refreshButton}>
+              <AnimatedNative.View
+                style={{
+                  transform: [
+                    {
+                      rotate: spinAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: ["0deg", "360deg"],
+                      }),
+                    },
+                  ],
+                }}
+              >
+                <Ionicons name="refresh" size={24} color="white" />
+              </AnimatedNative.View>
+            </TouchableOpacity>
+          </View>
+        </LinearGradient>
+
+        <View style={styles.statsContainer}>
+          <View style={styles.statCard}>
+            <Text style={styles.statNumber}>{eventsCount}</Text>
+            <Text style={styles.statLabel}><FormattedMessage id="calendarEventText"/></Text>
+          </View>
+          <View style={styles.statCard}>
+            <Text style={[styles.statNumber, { color: Colors.light.success }]}>{confirmedCount}</Text>
+            <Text style={styles.statLabel}><FormattedMessage id="calendarConfirmatedText"/></Text>
+          </View>
+          <View style={styles.statCard}>
+            <Text style={[styles.statNumber, { color: Colors.light.warning }]}>{eventsCount - confirmedCount}</Text>
+            <Text style={styles.statLabel}><FormattedMessage id="calendarPendingText"/></Text>
           </View>
         </View>
-      </Animated.View>
 
-      <View style={styles.headerContainer}>
-        <Text style={styles.headerTitle}>
-          {" "}
-          <FormattedMessage
-            id="events.calendar"
-            defaultMessage="Eventos del calendario"
-          />
-        </Text>
-        <View style={styles.circleAvaiableContainer}>
-          <View style={[styles.circleAvaiable, { backgroundColor: "green" }]} />
-          <Text style={styles.headerDescription}>
-            <FormattedMessage id="confirmed" defaultMessage="confirmados" />
-          </Text>
-        </View>
-        <View style={[styles.circleAvaiableContainer]}>
-          <View
-            style={[styles.circleAvaiable, { backgroundColor: "gray" }]}
-          ></View>
-          <Text style={styles.headerDescription}>
-            <FormattedMessage
-              id="not.confirmed"
-              defaultMessage="no comfirmados"
-            />
-          </Text>
-        </View>
-        <View style={[styles.circleAvaiableContainer]}>
-          <View
-            style={[styles.circleAvaiable, { backgroundColor: "rgba(255, 0, 0, 0.15)" }]}
-          ></View>
-          <Text style={styles.headerDescription}>
-            <FormattedMessage
-              id="noPlace"
-              defaultMessage="Sin lugares disponibles"
-            />
-          </Text>
-        </View>
         {!loadWorkers && (
-          <Box my={4} pb={6} flex={1} width={"full"}>
-            <WorkerSelect
-              workers={workers}
-              selectedId={selectedWorkerId}
-              onSelect={setSelectedWorkerId}
-            />
-          </Box>
+          <View style={styles.workerSelectContainer}>
+            <WorkerSelect workers={workers} selectedId={selectedWorkerId} onSelect={setSelectedWorkerId} />
+          </View>
         )}
-        <View style={styles.buttonRefresh}>
-          <TouchableOpacity disabled={loading} onPress={() => onRefresh()}>
-            <AnimatedNative.View
-              style={{
-                transform: [
-                  {
-                    rotate: spinAnim.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: ["0deg", "360deg"],
-                    }),
-                  },
-                ],
-              }}
-            >
-              <Ionicons name="refresh" size={24} color={"white"} />
-            </AnimatedNative.View>
+
+        <View style={styles.dateNavigationContainer}>
+          <TouchableOpacity onPress={handlePreviousDay} style={styles.dateNavButton}>
+            <Ionicons name="chevron-back" size={24} color={Colors.light.primary} />
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.currentDateContainer}>
+            <Text style={styles.currentDateDay}>{moment(selectedDate).format("DD")}</Text>
+            <View style={styles.currentDateInfo}>
+              <Text style={styles.currentDateMonth}>{moment(selectedDate).format("MMM").toUpperCase()}</Text>
+              <Text style={styles.currentDateWeekday}>{moment(selectedDate).format("dddd")}</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={handleNextDay} style={styles.dateNavButton}>
+            <Ionicons name="chevron-forward" size={24} color={Colors.light.primary} />
           </TouchableOpacity>
         </View>
-      </View>
 
-      {
-        <View style={styles.calendarContent}>
-          <Agenda
-            markedDates={disabledDates}
-            markingType="custom"
-            items={orderPerDays}
-            selected={selectedDate}
-            refreshing={loading || loadWorkers || loadingCalendarCupos}
-            displayLoadingIndicator={
-              loadWorkers || loading || loadingCalendarCupos
-            }
-            showOnlySelectedDayItems={true}
-            showClosingKnob={true}
-            onDayPress={(day: any) => {
-              console.log("day", day);
-              setSelectedDate(day.dateString);
-              setSelectedMonth(day?.month.toString());
-              setSelectedYear(day?.year.toString());
-            }}
-            onRefresh={onRefresh}
-            renderKnob={() => (
-              <View style={{ alignItems: "center", padding: 10 }}>
-                <View
-                  style={{
-                    width: 50,
-                    height: 5,
-                    borderRadius: 5,
-                    backgroundColor: "#128c7e",
-                  }}
-                />
-              </View>
-            )}
-            renderItem={(data: IInfoItem) => {
-              return (
+        {isCurrentDayDisabled && (
+          <View style={styles.noSlotsContainer}>
+            <Ionicons name="warning" size={20} color={Colors.light.danger} />
+            <Text style={styles.noSlotsText}>
+              <FormattedMessage
+                id="noSlotsForSelectedDay"
+                defaultMessage="No hay lugares disponibles para esta fecha."
+              />
+            </Text>
+          </View>
+        )}
+
+        {/* Content Area */}
+        <View style={styles.contentContainer}>
+          {loading || loadWorkers || loadingCalendarCupos ? (
+            <View style={styles.loadingContainer}>
+              <Progress.Circle color={Colors.light.primary} indeterminate={true} size={50} />
+              <Text style={styles.loadingText}>Cargando eventos...</Text>
+            </View>
+          ) : orderPerDays[selectedDate] && orderPerDays[selectedDate].length > 0 ? (
+            <FlatList
+              data={orderPerDays[selectedDate]}
+              renderItem={({ item }: { item: any }) => (
                 <ItemCalendar
-                  key={`${data.orderId}-${data.date}`}
+                  key={`${item.orderId}-${item.date}`}
                   confirmOrder={confirmOrder}
                   deleteOrder={(orderId) => {
-                    setOrdrDeleteModalConfirm(true);
-                    setOrderToDelete(orderId);
+                    setOrdrDeleteModalConfirm(true)
+                    setOrderToDelete(orderId)
                   }}
-                  InfoItem={data}
-                  confirmed={data.status}
+                  InfoItem={item}
+                  confirmed={item.status}
                 />
-              );
-            }}
-            renderEmptyData={() => (
-              <View style={styles.emptyDate}>
-                {loading || loadWorkers || loadingCalendarCupos ? (
-                  <Progress.Circle
-                    color={Colors.light.primary}
-                    indeterminate={true}
-                    size={50}
-                  />
-                ) : (
-                  <View
-                    style={{ ...stylesPending.containerImage, marginTop: 10 }}
-                  >
-                    <Image
-                      source={require("../../../assets/images/no-records.png")}
-                      style={{ width: 350, height: 250, objectFit: "contain" }}
-                    />
-                    <CustomText>
-                      <FormattedMessage
-                        id="noOrdersAvailable.index"
-                        defaultMessage="No orders available"
-                      />
-                    </CustomText>
-                  </View>
-                )}
-              </View>
-            )}
-            rowHasChanged={(r1: any, r2: any) =>
-              r1.orderId !== r2.orderId ||
-              r1.date !== r2.date ||
-              r1.productName !== r2.productName ||
-              r1.status !== r2.status
-            }
-            theme={{
-              agendaDayTextColor: "#333",
-              agendaDayNumColor: "#333",
-              agendaTodayColor: "#128c7e",
-              agendaKnobColor: "#128c7e",
-              selectedDayBackgroundColor: "#128c7e",
-              selectedDayTextColor: "#ffffff",
-            }}
-          />
+              )}
+              keyExtractor={(item) => `${item.orderId}-${item.date}`}
+              contentContainerStyle={styles.flatListContent}
+              showsVerticalScrollIndicator={false}
+            />
+          ) : (
+            <View style={styles.emptyStateContainer}>
+              <Ionicons name="calendar-outline" size={80} color="#d1d5db" />
+              <Text style={styles.emptyStateTitle}>No hay eventos</Text>
+              <Text style={styles.emptyStateSubtitle}>No tienes eventos programados para esta fecha</Text>
+            </View>
+          )}
         </View>
-      }
 
-      {openAddModal && selectedDate && (
-        <CreateOrderModal
-          horarios={horarios}
-          selectedWorkerId={selectedWorkerId}
-          currentOrders={
-            orderPerDays[selectedDate] ? orderPerDays[selectedDate] : []
-          }
-          onClose={() => setOpenAddModal(false)}
-          defaultDate={selectedDate}
-          onSuccess={() => {
-            onLoadItems(selectedDate);
-          }}
-          availableDates={availableDates}
-          tipoServicio={ID_TIPOSERVICIO_RESERVA}
-        />
-      )}
-
-      <View style={globalStyles.buttonContainer}>
-        <TouchableOpacity
-          style={globalStyles.addButton}
-          onPress={() => {
-            setOpenAddModal(!openAddModal);
-          }}
-        >
-          <Text style={globalStyles.addButtonText}>+</Text>
+        <TouchableOpacity style={styles.fab} onPress={() => setOpenAddModal(!openAddModal)}>
+          <LinearGradient colors={[Colors.light.primary, Colors.light.secondary]} style={styles.fabGradient}>
+            <Ionicons name="add" size={28} color="white" />
+          </LinearGradient>
         </TouchableOpacity>
-      </View>
 
-      {ordrDeleteModalConfirm && (
-        <ModalConfirmAction
-          loading={loadingDelete}
-          onContinue={() => deleteOrder(oredrToDelete)}
-          title={intl.formatMessage({
-            id: "deleteReservationTitle",
-            defaultMessage: "Delete order",
-          })}
-          message={intl.formatMessage({
-            id: "deleteReservationMessage",
-            defaultMessage: "",
-          })}
-          withReason={true}
-          onClose={() => setOrdrDeleteModalConfirm(false)}
-          reason={reason}
-          setReason={setReason}
-          isOpen={ordrDeleteModalConfirm}
+        {openAddModal && selectedDate && (
+          <CreateOrderModal
+            horarios={horarios}
+            selectedWorkerId={selectedWorkerId}
+            currentOrders={orderPerDays[selectedDate] ? orderPerDays[selectedDate] : []}
+            onClose={() => setOpenAddModal(false)}
+            defaultDate={selectedDate}
+            onSuccess={() => {
+              onLoadItems(selectedDate)
+            }}
+            availableDates={availableDates}
+            tipoServicio={ID_TIPOSERVICIO_RESERVA}
+          />
+        )}
+
+        {ordrDeleteModalConfirm && (
+          <ModalConfirmAction
+            loading={loadingDelete}
+            onContinue={() => deleteOrder(oredrToDelete)}
+            title={intl.formatMessage({
+              id: "deleteReservationTitle",
+              defaultMessage: "Delete order",
+            })}
+            message={intl.formatMessage({
+              id: "deleteReservationMessage",
+              defaultMessage: "",
+            })}
+            withReason={true}
+            onClose={() => {
+              setOrdrDeleteModalConfirm(false)
+              setOrderToDelete(null)
+              setReason("")
+            }}
+            reason={reason}
+            setReason={setReason}
+            isOpen={ordrDeleteModalConfirm}
+          />
+        )}
+
+        <DatePickerModal
+          isVisible={showDatePicker}
+          onConfirm={handleDateChange}
+          onCancel={() => setShowDatePicker(false)}
+          currentDate={new Date(selectedDate)}
         />
-      )}
-    </View>
-  );
+      </View>
+    </SafeAreaView>
+  )
 }
 
 const styles = StyleSheet.create({
-  calendarContent: {
-    width: "100%",
+  safeArea: {
+    flex: 1,
+    backgroundColor: Colors.light.background,
+  },
+  container: {
     flex: 1,
   },
-  header: {
-    padding: 16,
-    paddingTop: 20,
-    paddingBottom: 20,
-    backgroundColor: Colors.light.primary,
-    borderBottomLeftRadius: 15,
-    borderBottomRightRadius: 15,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
+  headerGradient: {
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    paddingTop: Platform.OS === "ios" ? 20 : 40,
   },
   headerContent: {
     flexDirection: "row",
@@ -525,105 +470,178 @@ const styles = StyleSheet.create({
   headerLeft: {
     flex: 1,
   },
-  businessName: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#fff",
-  },
-  container: {
-    flex: 1,
-    height: "100%",
-    maxHeight: "100%",
-    flexDirection: "column",
-  },
-  item: {
-    backgroundColor: "#128c7e8c",
-    borderRadius: 10,
-    color: "white",
-    padding: 10,
-    marginRight: 10,
-    marginTop: 17,
-  },
-  expandedItem: {
-    backgroundColor: "#128c7e8c",
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "white",
-    marginBottom: 5,
-  },
-  time: {
-    fontSize: 14,
-    fontWeight: "semibold",
-    color: "white",
-    marginBottom: 5,
-  },
-  description: {
-    fontSize: 14,
-    color: "white",
-    marginTop: 10,
-  },
-  emptyDate: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 10,
-  },
-  rowTitle: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  buttonRefresh: {
-    position: "absolute",
-    right: 8,
-    top: 16,
-    width: 40,
-    height: 40,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: "100%",
-    backgroundColor: "#128c7e",
-  },
-  row: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 5,
-  },
-  headerContainer: {
-    display: "flex",
-    position: "relative",
-    flexDirection: "column",
-    width: "100%",
-    justifyContent: "center",
-    alignItems: "flex-start",
-    paddingHorizontal: 10,
-    paddingVertical: 15,
-    backgroundColor: "#f2f2f2",
-  },
-  circleAvaiableContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  circleAvaiable: {
-    height: 10,
-    width: 10,
-    borderRadius: 10,
-    marginRight: 5,
-  },
   headerTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#333",
+    fontSize: 28,
+    fontWeight: "800",
+    color: "white",
+    marginBottom: 4,
   },
-  headerDescription: {
+  headerSubtitle: {
+    fontSize: 16,
+    color: "rgba(255, 255, 255, 0.8)",
+    fontWeight: "400",
+  },
+  refreshButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  statsContainer: {
+    flexDirection: "row",
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    gap: 12,
+  },
+  statCard: {
+    flex: 1,
+    backgroundColor: "white",
+    borderRadius: 12,
+    padding: 16,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  statNumber: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: Colors.light.text,
+    marginBottom: 4,
+  },
+  statLabel: {
+    fontSize: 12,
+    color: Colors.light.icon,
+    fontWeight: "500",
+  },
+  workerSelectContainer: {
+    paddingHorizontal: 20,
+    marginBottom: 16,
+  },
+  dateNavigationContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    backgroundColor: "white",
+    marginHorizontal: 20,
+    borderRadius: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    marginBottom: 16,
+  },
+  dateNavButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "#f8fafc",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  currentDateContainer: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 16,
+  },
+  currentDateDay: {
+    fontSize: 36,
+    fontWeight: "800",
+    color: Colors.light.primary,
+  },
+  currentDateInfo: {
+    alignItems: "flex-start",
+  },
+  currentDateMonth: {
     fontSize: 14,
-    color: "#666",
+    fontWeight: "700",
+    color: Colors.light.icon,
+    letterSpacing: 1,
   },
-});
+  currentDateWeekday: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: Colors.light.text,
+    marginTop: 2,
+  },
+  noSlotsContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fef2f2",
+    marginHorizontal: 20,
+    padding: 12,
+    borderRadius: 12,
+    marginBottom: 16,
+    gap: 8,
+  },
+  noSlotsText: {
+    color: Colors.light.danger,
+    fontSize: 14,
+    fontWeight: "500",
+    flex: 1,
+  },
+  contentContainer: {
+    flex: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 16,
+  },
+  loadingText: {
+    fontSize: 16,
+    color: Colors.light.icon,
+    fontWeight: "500",
+  },
+  flatListContent: {
+    paddingBottom: 100,
+  },
+  emptyStateContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 40,
+  },
+  emptyStateTitle: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: Colors.light.text,
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  emptyStateSubtitle: {
+    fontSize: 16,
+    color: Colors.light.icon,
+    textAlign: "center",
+    lineHeight: 24,
+  },
+  fab: {
+    position: "absolute",
+    bottom: 30,
+    right: 20,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  fabGradient: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+})
