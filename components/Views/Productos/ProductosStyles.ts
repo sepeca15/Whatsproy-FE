@@ -355,7 +355,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
   tabButtonText: {
-    fontSize: 14,
+    fontSize: 12,
     textAlign: "center",
   },
   dayTitleContainer: {

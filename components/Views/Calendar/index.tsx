@@ -1,29 +1,39 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useRef, useCallback } from "react"
-import { View, Text, StyleSheet, TouchableOpacity, Platform, UIManager, FlatList, Dimensions } from "react-native"
-import moment from "moment"
-import "moment/locale/es"
-import { ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type"
-import api from "@/services/api/admin"
-import ItemCalendar from "./components/ItemCalendar"
-import * as Progress from "react-native-progress"
-import CreateOrderModal from "@/components/CreateOrderModal"
-import { FormattedMessage, useIntl } from "react-intl"
-import { useToastContext } from "@/contexts/ToastContext"
-import { Animated as AnimatedNative, Easing } from "react-native"
-import { Ionicons } from "@expo/vector-icons"
-import { ordenarPedidosPorHora, type OrderPerDays } from "@/utils/date"
-import { useUser } from "@/hooks/redux/useUser"
-import type { WorkerUser } from "@/services/api/user/user.types"
-import { SafeAreaView } from "react-native-safe-area-context"
-import WorkerSelect from "@/components/WorkerSelect/WorkerSelect"
-import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmAction"
-import DatePickerModal from "./components/DatePickerModal/DatePickerModal"
-import { LinearGradient } from "expo-linear-gradient"
+import { useState, useEffect, useRef, useCallback } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Platform,
+  UIManager,
+  FlatList,
+  Dimensions,
+} from "react-native";
+import moment from "moment";
+import "moment/locale/es";
+import { ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
+import api from "@/services/api/admin";
+import ItemCalendar from "./components/ItemCalendar";
+import * as Progress from "react-native-progress";
+import CreateOrderModal from "@/components/CreateOrderModal";
+import { FormattedMessage, useIntl } from "react-intl";
+import { useToastContext } from "@/contexts/ToastContext";
+import { Animated as AnimatedNative, Easing } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { ordenarPedidosPorHora, type OrderPerDays } from "@/utils/date";
+import { useUser } from "@/hooks/redux/useUser";
+import type { WorkerUser } from "@/services/api/user/user.types";
+import { SafeAreaView } from "react-native-safe-area-context";
+import WorkerSelect from "@/components/WorkerSelect/WorkerSelect";
+import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmAction";
+import DatePickerModal from "./components/DatePickerModal/DatePickerModal";
+import { LinearGradient } from "expo-linear-gradient";
+import AddButton from "@/hooks/add_Button/Add_button";
 
-const primaryColor = "#075e54"
-const secondaryColor = "#128c7e"
+const primaryColor = "#075e54";
+const secondaryColor = "#128c7e";
 
 const Colors = {
   light: {
@@ -55,226 +65,254 @@ const Colors = {
     tabIconDefault: "#9BA1A6",
     tabIconSelected: primaryColor,
   },
-}
+};
 
-if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
-  UIManager.setLayoutAnimationEnabledExperimental(true)
+if (
+  Platform.OS === "android" &&
+  UIManager.setLayoutAnimationEnabledExperimental
+) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
 export default function CalendarView() {
-  const [orderPerDaysAll, setOrderPerDays] = useState<OrderPerDays>({})
-  const [openAddModal, setOpenAddModal] = useState(false)
-  const spinAnim = useRef(new AnimatedNative.Value(0)).current
-  const [loading, setLoading] = useState(true)
-  const [availableDates, setAvailableDates] = useState<string[]>([])
-  const { showToast } = useToastContext()
-  const { user } = useUser()
-  const [selectedDate, setSelectedDate] = useState(moment.tz(user.timeZone).format("YYYY-MM-DD"))
+  const [orderPerDaysAll, setOrderPerDays] = useState<OrderPerDays>({});
+  const [openAddModal, setOpenAddModal] = useState(false);
+  const spinAnim = useRef(new AnimatedNative.Value(0)).current;
+  const [loading, setLoading] = useState(true);
+  const [availableDates, setAvailableDates] = useState<string[]>([]);
+  const { showToast } = useToastContext();
+  const { user } = useUser();
+  const [selectedDate, setSelectedDate] = useState(
+    moment.tz(user.timeZone).format("YYYY-MM-DD")
+  );
 
-  const [workers, setWorkers] = useState<WorkerUser[]>([])
-  const [selectedWorkerId, setSelectedWorkerId] = useState<any | number | undefined>()
-  const [horarios, setHorarios] = useState<any[]>([])
-  const [selectedMonth, setSelectedMonth] = useState<any>("")
-  const [selectedYear, setSelectedYear] = useState<any>("")
-  const [disabledDates, setDisabledDates] = useState<any>({})
-  const [oredrToDelete, setOrderToDelete] = useState<any>(null)
-  const orderPerDays = ordenarPedidosPorHora(orderPerDaysAll)
+  const [workers, setWorkers] = useState<WorkerUser[]>([]);
+  const [selectedWorkerId, setSelectedWorkerId] = useState<
+    any | number | undefined
+  >();
+  const [horarios, setHorarios] = useState<any[]>([]);
+  const [selectedMonth, setSelectedMonth] = useState<any>("");
+  const [selectedYear, setSelectedYear] = useState<any>("");
+  const [disabledDates, setDisabledDates] = useState<any>({});
+  const [oredrToDelete, setOrderToDelete] = useState<any>(null);
+  const orderPerDays = ordenarPedidosPorHora(orderPerDaysAll);
 
-  const [loadWorkers, setLoadWorkers] = useState(false)
-  const [ordrDeleteModalConfirm, setOrdrDeleteModalConfirm] = useState(false)
-  const [reason, setReason] = useState("")
-  const [loadingDelete, setLoadingDelete] = useState(false)
-  const intl = useIntl()
-  const [loadingCalendarCupos, setLoadingCalendarCupos] = useState(false)
-  const [showDatePicker, setShowDatePicker] = useState(false)
+  const [loadWorkers, setLoadWorkers] = useState(false);
+  const [ordrDeleteModalConfirm, setOrdrDeleteModalConfirm] = useState(false);
+  const [reason, setReason] = useState("");
+  const [loadingDelete, setLoadingDelete] = useState(false);
+  const intl = useIntl();
+  const [loadingCalendarCupos, setLoadingCalendarCupos] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   useEffect(() => {
     if (selectedDate) {
-      const date = moment(selectedDate)
-      setSelectedMonth(date.month() + 1)
-      setSelectedYear(date.year())
+      const date = moment(selectedDate);
+      setSelectedMonth(date.month() + 1);
+      setSelectedYear(date.year());
     }
-  }, [selectedDate])
+  }, [selectedDate]);
 
   useEffect(() => {
     if (selectedYear && selectedMonth) {
-      handleLoadDisabledDates()
+      handleLoadDisabledDates();
     }
-  }, [selectedMonth, selectedYear])
+  }, [selectedMonth, selectedYear]);
 
   const handleLoadWorkers = async () => {
     try {
-      setLoadWorkers(true)
-      const workers = await api.user.findWorkers(user?.id_empresa)
-      setWorkers(workers.data)
+      setLoadWorkers(true);
+      const workers = await api.user.findWorkers(user?.id_empresa);
+      setWorkers(workers.data);
       if (workers?.data && workers?.data?.length > 0) {
-        setSelectedWorkerId(workers?.data[0]?.id)
+        setSelectedWorkerId(workers?.data[0]?.id);
       }
     } catch (error) {
-      console.error(error)
+      console.error(error);
     } finally {
-      setLoadWorkers(false)
+      setLoadWorkers(false);
     }
-  }
+  };
 
   const handleLoadDisabledDates = async () => {
     try {
-      setLoadingCalendarCupos(true)
-      const availableDates = await api.order.getAvailableDatesByMonth(selectedYear, selectedMonth, user?.id)
-      const disabledDatesCurrentMonth: any = {}
-        ; (availableDates as any[]).forEach((itm) => {
-          if (itm?.cuposDisponibles === 0) {
-            disabledDatesCurrentMonth[itm?.fecha] = true
-          }
-        })
-      setDisabledDates(disabledDatesCurrentMonth)
+      setLoadingCalendarCupos(true);
+      const availableDates = await api.order.getAvailableDatesByMonth(
+        selectedYear,
+        selectedMonth,
+        user?.id
+      );
+      const disabledDatesCurrentMonth: any = {};
+      (availableDates as any[]).forEach((itm) => {
+        if (itm?.cuposDisponibles === 0) {
+          disabledDatesCurrentMonth[itm?.fecha] = true;
+        }
+      });
+      setDisabledDates(disabledDatesCurrentMonth);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     } finally {
-      setLoadingCalendarCupos(false)
+      setLoadingCalendarCupos(false);
     }
-  }
+  };
 
   const handleLoadHorarios = async () => {
     try {
-      setLoading(true)
-      const dataHorarios = await api.user.findHorarios()
-      setHorarios(dataHorarios)
+      setLoading(true);
+      const dataHorarios = await api.user.findHorarios();
+      setHorarios(dataHorarios);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const startSpin = () => {
-    spinAnim.setValue(0)
+    spinAnim.setValue(0);
     AnimatedNative.loop(
       AnimatedNative.timing(spinAnim, {
         toValue: 1,
         duration: 1000,
         easing: Easing.linear,
         useNativeDriver: true,
-      }),
-    ).start()
-  }
+      })
+    ).start();
+  };
 
   const stopSpin = () => {
     spinAnim.stopAnimation(() => {
-      spinAnim.setValue(0)
-    })
-  }
+      spinAnim.setValue(0);
+    });
+  };
 
   const onRefresh = async () => {
-    startSpin()
-    await onLoadItems(selectedDate)
-    stopSpin()
-  }
+    startSpin();
+    await onLoadItems(selectedDate);
+    stopSpin();
+  };
 
   const onLoadItems = async (dateString: string) => {
-    setLoading(true)
+    setLoading(true);
     try {
-      const data = await api.order.getCalendarOrders(dateString, selectedWorkerId)
-      const availableDatesResponse = await api.order.getAvailableDates(dateString, selectedWorkerId)
+      const data = await api.order.getCalendarOrders(
+        dateString,
+        selectedWorkerId
+      );
+      const availableDatesResponse = await api.order.getAvailableDates(
+        dateString,
+        selectedWorkerId
+      );
 
       if (availableDatesResponse?.length > 0) {
-        setAvailableDates(availableDatesResponse)
+        setAvailableDates(availableDatesResponse);
       }
-      setOrderPerDays(data.data)
+      setOrderPerDays(data.data);
     } catch (error: any) {
-      console.log(error.response.data.message)
+      console.log(error.response.data.message);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const confirmOrder = async (orderId: number) => {
     try {
-      const data = await api.order.confirm(orderId)
+      const data = await api.order.confirm(orderId);
       showToast({
         title: "¡Evento confirmado!",
         description: "Su reserva fue confirmado exitosamente.",
         status: "success",
-      })
+      });
       if (data.data) {
         setOrderPerDays((prevState) => {
-          const updatedOrdersForSelectedDate = prevState[selectedDate]?.map((order) =>
-            order.orderId === orderId ? { ...order, status: true } : order,
-          )
+          const updatedOrdersForSelectedDate = prevState[selectedDate]?.map(
+            (order) =>
+              order.orderId === orderId ? { ...order, status: true } : order
+          );
           return {
             ...prevState,
             [selectedDate]: updatedOrdersForSelectedDate || [],
-          }
-        })
+          };
+        });
       }
     } catch (error: any) {
-      console.log("nooo", error.response.data.message)
+      console.log("nooo", error.response.data.message);
     }
-  }
+  };
 
   const deleteOrder = async (orderId: number) => {
     try {
-      setLoadingDelete(true)
-      const data = await api.order.remove(orderId)
+      setLoadingDelete(true);
+      const data = await api.order.remove(orderId);
       showToast({
         title: "¡Evento cancelado!",
         description: "Su reserva fue cancelado exitosamente.",
         status: "success",
-      })
+      });
       if (data) {
         setOrderPerDays((prevState) => {
-          const updatedListForSelectedDate = prevState[selectedDate]?.filter((order) => order.orderId !== orderId)
+          const updatedListForSelectedDate = prevState[selectedDate]?.filter(
+            (order) => order.orderId !== orderId
+          );
           return {
             ...prevState,
             [selectedDate]: updatedListForSelectedDate || [],
-          }
-        })
-        setOrdrDeleteModalConfirm(false)
-        setOrderToDelete(null)
-        setReason("")
+          };
+        });
+        setOrdrDeleteModalConfirm(false);
+        setOrderToDelete(null);
+        setReason("");
       }
     } catch (error: any) {
-      console.log(error.response.data.message)
+      console.log(error.response.data.message);
     } finally {
-      setLoadingDelete(false)
+      setLoadingDelete(false);
     }
-  }
+  };
 
   useEffect(() => {
     if (user?.id_empresa) {
-      handleLoadWorkers()
-      handleLoadHorarios()
+      handleLoadWorkers();
+      handleLoadHorarios();
     }
-  }, [user?.id_empresa])
+  }, [user?.id_empresa]);
 
   useEffect(() => {
     if (selectedDate && selectedWorkerId) {
-      onLoadItems(selectedDate)
+      onLoadItems(selectedDate);
     }
-  }, [selectedDate, selectedWorkerId])
+  }, [selectedDate, selectedWorkerId]);
 
   const handleDateChange = useCallback((newDate: Date) => {
-    setSelectedDate(newDate.toISOString().split("T")[0])
-    setShowDatePicker(false)
-  }, [])
+    setSelectedDate(newDate.toISOString().split("T")[0]);
+    setShowDatePicker(false);
+  }, []);
 
   const handlePreviousDay = useCallback(() => {
-    const prevDay = moment(selectedDate).tz(user.timeZone).subtract(1, "day").toISOString().split("T")[0]
-    setSelectedDate(prevDay)
-  }, [selectedDate])
+    const prevDay = moment(selectedDate)
+      .tz(user.timeZone)
+      .subtract(1, "day")
+      .toISOString()
+      .split("T")[0];
+    setSelectedDate(prevDay);
+  }, [selectedDate]);
 
   const handleNextDay = useCallback(() => {
-    const nextDay = moment(selectedDate).tz(user.timeZone).add(1, "day").toISOString().split("T")[0]
-    setSelectedDate(nextDay)
-  }, [selectedDate])
+    const nextDay = moment(selectedDate)
+      .tz(user.timeZone)
+      .add(1, "day")
+      .toISOString()
+      .split("T")[0];
+    setSelectedDate(nextDay);
+  }, [selectedDate]);
 
-  const isCurrentDayDisabled = disabledDates[selectedDate]
-  const eventsCount = orderPerDays[selectedDate]?.length || 0
-  const confirmedCount = orderPerDays[selectedDate]?.filter((order) => order.status)?.length || 0
+  const isCurrentDayDisabled = disabledDates[selectedDate];
+  const eventsCount = orderPerDays[selectedDate]?.length || 0;
+  const confirmedCount =
+    orderPerDays[selectedDate]?.filter((order) => order.status)?.length || 0;
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
         <LinearGradient
           colors={[Colors.light.primary, Colors.light.secondary]}
           start={{ x: 0, y: 0 }}
@@ -286,9 +324,15 @@ export default function CalendarView() {
               <Text style={styles.headerTitle}>
                 <FormattedMessage id="calendar" defaultMessage="Calendario" />
               </Text>
-              <Text style={styles.headerSubtitle}>Gestiona tus eventos</Text>
+              <Text style={styles.headerSubtitle}>
+                <FormattedMessage id="manageEvents" />
+              </Text>
             </View>
-            <TouchableOpacity disabled={loading} onPress={() => onRefresh()} style={styles.refreshButton}>
+            <TouchableOpacity
+              disabled={loading}
+              onPress={() => onRefresh()}
+              style={styles.refreshButton}
+            >
               <AnimatedNative.View
                 style={{
                   transform: [
@@ -310,39 +354,76 @@ export default function CalendarView() {
         <View style={styles.statsContainer}>
           <View style={styles.statCard}>
             <Text style={styles.statNumber}>{eventsCount}</Text>
-            <Text style={styles.statLabel}><FormattedMessage id="calendarEventText"/></Text>
+            <Text style={styles.statLabel}>
+              <FormattedMessage id="calendarEventText" />
+            </Text>
           </View>
           <View style={styles.statCard}>
-            <Text style={[styles.statNumber, { color: Colors.light.success }]}>{confirmedCount}</Text>
-            <Text style={styles.statLabel}><FormattedMessage id="calendarConfirmatedText"/></Text>
+            <Text style={[styles.statNumber, { color: Colors.light.success }]}>
+              {confirmedCount}
+            </Text>
+            <Text style={styles.statLabel}>
+              <FormattedMessage id="calendarConfirmatedText" />
+            </Text>
           </View>
           <View style={styles.statCard}>
-            <Text style={[styles.statNumber, { color: Colors.light.warning }]}>{eventsCount - confirmedCount}</Text>
-            <Text style={styles.statLabel}><FormattedMessage id="calendarPendingText"/></Text>
+            <Text style={[styles.statNumber, { color: Colors.light.warning }]}>
+              {eventsCount - confirmedCount}
+            </Text>
+            <Text style={styles.statLabel}>
+              <FormattedMessage id="calendarPendingText" />
+            </Text>
           </View>
         </View>
 
         {!loadWorkers && (
           <View style={styles.workerSelectContainer}>
-            <WorkerSelect workers={workers} selectedId={selectedWorkerId} onSelect={setSelectedWorkerId} />
+            <WorkerSelect
+              workers={workers}
+              selectedId={selectedWorkerId}
+              onSelect={setSelectedWorkerId}
+            />
           </View>
         )}
 
         <View style={styles.dateNavigationContainer}>
-          <TouchableOpacity onPress={handlePreviousDay} style={styles.dateNavButton}>
-            <Ionicons name="chevron-back" size={24} color={Colors.light.primary} />
+          <TouchableOpacity
+            onPress={handlePreviousDay}
+            style={styles.dateNavButton}
+          >
+            <Ionicons
+              name="chevron-back"
+              size={24}
+              color={Colors.light.primary}
+            />
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.currentDateContainer}>
-            <Text style={styles.currentDateDay}>{moment(selectedDate).format("DD")}</Text>
+          <TouchableOpacity
+            onPress={() => setShowDatePicker(true)}
+            style={styles.currentDateContainer}
+          >
+            <Text style={styles.currentDateDay}>
+              {moment(selectedDate).format("DD")}
+            </Text>
             <View style={styles.currentDateInfo}>
-              <Text style={styles.currentDateMonth}>{moment(selectedDate).format("MMM").toUpperCase()}</Text>
-              <Text style={styles.currentDateWeekday}>{moment(selectedDate).format("dddd")}</Text>
+              <Text style={styles.currentDateMonth}>
+                {moment(selectedDate).format("MMM").toUpperCase()}
+              </Text>
+              <Text style={styles.currentDateWeekday}>
+                {moment(selectedDate).format("dddd")}
+              </Text>
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={handleNextDay} style={styles.dateNavButton}>
-            <Ionicons name="chevron-forward" size={24} color={Colors.light.primary} />
+          <TouchableOpacity
+            onPress={handleNextDay}
+            style={styles.dateNavButton}
+          >
+            <Ionicons
+              name="chevron-forward"
+              size={24}
+              color={Colors.light.primary}
+            />
           </TouchableOpacity>
         </View>
 
@@ -362,10 +443,17 @@ export default function CalendarView() {
         <View style={styles.contentContainer}>
           {loading || loadWorkers || loadingCalendarCupos ? (
             <View style={styles.loadingContainer}>
-              <Progress.Circle color={Colors.light.primary} indeterminate={true} size={50} />
-              <Text style={styles.loadingText}>Cargando eventos...</Text>
+              <Progress.Circle
+                color={Colors.light.primary}
+                indeterminate={true}
+                size={50}
+              />
+              <Text style={styles.loadingText}>
+                <FormattedMessage id="loadingEvents" />
+              </Text>
             </View>
-          ) : orderPerDays[selectedDate] && orderPerDays[selectedDate].length > 0 ? (
+          ) : orderPerDays[selectedDate] &&
+            orderPerDays[selectedDate].length > 0 ? (
             <FlatList
               data={orderPerDays[selectedDate]}
               renderItem={({ item }: { item: any }) => (
@@ -373,8 +461,8 @@ export default function CalendarView() {
                   key={`${item.orderId}-${item.date}`}
                   confirmOrder={confirmOrder}
                   deleteOrder={(orderId) => {
-                    setOrdrDeleteModalConfirm(true)
-                    setOrderToDelete(orderId)
+                    setOrdrDeleteModalConfirm(true);
+                    setOrderToDelete(orderId);
                   }}
                   InfoItem={item}
                   confirmed={item.status}
@@ -388,26 +476,26 @@ export default function CalendarView() {
             <View style={styles.emptyStateContainer}>
               <Ionicons name="calendar-outline" size={80} color="#d1d5db" />
               <Text style={styles.emptyStateTitle}>No hay eventos</Text>
-              <Text style={styles.emptyStateSubtitle}>No tienes eventos programados para esta fecha</Text>
+              <Text style={styles.emptyStateSubtitle}>
+                No tienes eventos programados para esta fecha
+              </Text>
             </View>
           )}
         </View>
 
-        <TouchableOpacity style={styles.fab} onPress={() => setOpenAddModal(!openAddModal)}>
-          <LinearGradient colors={[Colors.light.primary, Colors.light.secondary]} style={styles.fabGradient}>
-            <Ionicons name="add" size={28} color="white" />
-          </LinearGradient>
-        </TouchableOpacity>
+        <AddButton onPress={() => setOpenAddModal(!openAddModal)} />
 
         {openAddModal && selectedDate && (
           <CreateOrderModal
             horarios={horarios}
             selectedWorkerId={selectedWorkerId}
-            currentOrders={orderPerDays[selectedDate] ? orderPerDays[selectedDate] : []}
+            currentOrders={
+              orderPerDays[selectedDate] ? orderPerDays[selectedDate] : []
+            }
             onClose={() => setOpenAddModal(false)}
             defaultDate={selectedDate}
             onSuccess={() => {
-              onLoadItems(selectedDate)
+              onLoadItems(selectedDate);
             }}
             availableDates={availableDates}
             tipoServicio={ID_TIPOSERVICIO_RESERVA}
@@ -428,9 +516,9 @@ export default function CalendarView() {
             })}
             withReason={true}
             onClose={() => {
-              setOrdrDeleteModalConfirm(false)
-              setOrderToDelete(null)
-              setReason("")
+              setOrdrDeleteModalConfirm(false);
+              setOrderToDelete(null);
+              setReason("");
             }}
             reason={reason}
             setReason={setReason}
@@ -444,18 +532,14 @@ export default function CalendarView() {
           onCancel={() => setShowDatePicker(false)}
           currentDate={new Date(selectedDate)}
         />
-      </View>
     </SafeAreaView>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: Colors.light.background,
-  },
-  container: {
-    flex: 1,
   },
   headerGradient: {
     paddingHorizontal: 20,
@@ -499,7 +583,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     borderRadius: 12,
-    padding: 16,
+    padding: 12,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -526,7 +610,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingVertical: 12,
     backgroundColor: "white",
     marginHorizontal: 20,
     borderRadius: 16,
@@ -553,7 +637,7 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   currentDateDay: {
-    fontSize: 36,
+    fontSize: 32,
     fontWeight: "800",
     color: Colors.light.primary,
   },
@@ -561,7 +645,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   currentDateMonth: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: "700",
     color: Colors.light.icon,
     letterSpacing: 1,
@@ -590,6 +674,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
+    minHeight: "50%",
   },
   loadingContainer: {
     flex: 1,
@@ -644,4 +729,4 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-})
+});

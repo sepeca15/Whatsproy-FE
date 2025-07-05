@@ -9,6 +9,7 @@ export const findAllProducts = async () => {
 
 export const isEmpresaAvailable = async () => {
   const { status } = await ApiInstances("current").get(`producto`);
+  console.log("status", status)
   return status;
 };
 

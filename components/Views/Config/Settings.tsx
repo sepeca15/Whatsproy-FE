@@ -228,7 +228,8 @@ const Settings = () => {
       href: "/(tabs)/numbers_trusted",
       description: intl.formatMessage({
         id: "trustedNumberSettingsDesc",
-        defaultMessage: "Activa numeros con los cuales no se activará el bot",
+        defaultMessage:
+          "Activa numeros con los cuales no se activará el asistente",
       }),
       icon: (
         <IonIcons size={22} color={"white"} name="phone-portrait-outline" />

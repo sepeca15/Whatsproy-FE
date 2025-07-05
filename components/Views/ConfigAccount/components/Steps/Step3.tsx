@@ -26,7 +26,9 @@ const Step3 = ({ onNext }: { onNext: any }) => {
         } else {
           console.log("Respuesta 500, reintentando...");
         }
-      } catch (error) {}
+      } catch (error) {
+        console.log("error", error)
+      }
     }, 5000);
   };
 

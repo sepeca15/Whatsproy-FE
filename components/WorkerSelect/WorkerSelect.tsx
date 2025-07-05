@@ -41,7 +41,7 @@ const WorkerSelect = ({ workers, selectedId, onSelect }: Props) => {
         borderColor="gray.300"
         borderRadius={12}
         px={4}
-        py={5}
+        py={3}
       >
         <HStack
           alignItems="center"

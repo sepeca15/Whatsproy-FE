@@ -129,7 +129,7 @@ const GraficProddet: React.FC<ProductDetailProps> = ({ product, salesData, categ
           </View>
         </View>
 
-        <View style={styles.chartContainer}>
+        {/* <View style={styles.chartContainer}>
           <View style={styles.chartHeader}>
             <Text style={styles.chartTitle}>
               <FormattedMessage id="sales" />
@@ -205,7 +205,7 @@ const GraficProddet: React.FC<ProductDetailProps> = ({ product, salesData, categ
               </Text>
             </View>
           </View>
-        </View>
+        </View> */}
 
         {/* <View style={styles.statsContainer}>
           <View style={styles.statItem}>

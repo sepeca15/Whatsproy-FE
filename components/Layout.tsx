@@ -111,7 +111,7 @@ const Layout = ({ children }: any) => {
 
   return (
     <View style={styles.mainContainer}>
-      <View style={{ flex: 1, width: "100%" }}>{children}</View>
+      {children}
       <SafeAreaView
         edges={["bottom"]}
         style={[styles.navigationMenu, { paddingBottom: insets.left }]}
@@ -147,7 +147,6 @@ const styles = StyleSheet.create({
     height: 'auto',
     alignItems: "flex-end",
     justifyContent: "flex-end",
-
   },
   LinkContainer: {
     height: 60,

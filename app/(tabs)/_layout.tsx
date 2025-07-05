@@ -15,7 +15,7 @@ import { useIntl } from "react-intl";
 import { getTimeAgo } from "@/hooks/home_functions/useLastOrders";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { View, ActivityIndicator } from "react-native";
-import { useColorScheme } from "react-native";
+import { useColorScheme, Text } from "react-native";
 import { Colors } from "@/constants/Colors";
 import { NoConnectionScreen } from "@/components/NoConectionScreen/NoConecctionScreen";
 import { useNetworkStatus } from "@/hooks/useNetworkStatus";
@@ -25,7 +25,8 @@ const TabLayout: React.FC = () => {
   const { handleAddNewOrderNormal } = useHomeData();
   const { userConfigured, paymentMade, apiConfigured, greenApiConfigured } =
     user;
-  const globalConfig = userConfigured && paymentMade && apiConfigured && greenApiConfigured;
+  const globalConfig =
+    userConfigured && paymentMade && apiConfigured && greenApiConfigured;
   const intl = useIntl();
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? "light"];
@@ -107,9 +108,9 @@ const TabLayout: React.FC = () => {
         <PrivateView>
           {globalConfig ? (
             <Layout>
-              <SafeAreaView style={{ flex: 1 }}>
+              <View style={{ flex: 1 }}>
                 <Slot />
-              </SafeAreaView>
+              </View>
             </Layout>
           ) : (
             <ConfigAccount />

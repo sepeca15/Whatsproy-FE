@@ -117,7 +117,7 @@ const sampleProducts: Product[] = [
     duration: "6 months",
     rating: 4.0,
     reviews: 80,
-    tags: ["pasta", "bacon", "cream"],
+    tags: [],
     description: "Designed to meet your needs.",
     imageUrl:
       "https://cdn.pixabay.com/photo/2014/10/19/20/59/hamburger-494706_640.jpg",
