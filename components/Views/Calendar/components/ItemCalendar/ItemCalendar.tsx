@@ -117,23 +117,25 @@ const ItemCalendar = ({ InfoItem, confirmOrder, deleteOrder, confirmed }: IItemC
     return date.format("DD/MM/YYYY, HH:mm")
   }
 
-  const validateFunction = async () => {
-    if (confirmed) {
-      router.push({
-        pathname: "/(tabs)/orderDetails",
-        params: { orderId: InfoItem.orderId, keyDeleteType: keyDeleteType },
-      })
-    } else {
-      try {
-        setLoading(true)
-        await confirmOrder(InfoItem.orderId)
-      } catch (error) {
-        console.log("error is", error)
-      } finally {
-        setLoading(false)
-      }
+  const confirmOrderFunction = async () => {
+    try {
+      setLoading(true)
+      await confirmOrder(InfoItem.orderId)
+    } catch (error) {
+      console.log("error is", error)
+    } finally {
+      setLoading(false)
     }
   }
+
+  const viewDetailsOrder = () => {
+    router.push({
+      pathname: "/(tabs)/orderDetails",
+      params: { orderId: InfoItem.orderId, keyDeleteType: keyDeleteType },
+    })
+  }
+
+
 
   const productsText = () => {
     let productsText = ""
@@ -151,7 +153,6 @@ const ItemCalendar = ({ InfoItem, confirmOrder, deleteOrder, confirmed }: IItemC
 
   return (
     <View style={styles.cardContainer}>
-      {/* Header Principal */}
       <Pressable style={styles.cardHeader} onPress={toggleExpand}>
         <View style={styles.headerLeft}>
           <View style={styles.statusIndicator}>
@@ -175,14 +176,13 @@ const ItemCalendar = ({ InfoItem, confirmOrder, deleteOrder, confirmed }: IItemC
         </Animated.View>
       </Pressable>
 
-      {/* Contenido Expandible */}
       <Animated.View
         style={[
           styles.expandedContainer,
           {
             height: animationHeight.interpolate({
               inputRange: [0, 1],
-              outputRange: [0, 280], // Altura fija para evitar saltos
+              outputRange: [0, 280],
             }),
           },
         ]}
@@ -195,7 +195,6 @@ const ItemCalendar = ({ InfoItem, confirmOrder, deleteOrder, confirmed }: IItemC
               </View>
             ) : (
               <>
-                {/* Información del Cliente */}
                 <View style={styles.section}>
                   <View style={styles.infoRow}>
                     <Ionicons name="person-outline" size={16} color={Colors.light.icon} />
@@ -233,7 +232,6 @@ const ItemCalendar = ({ InfoItem, confirmOrder, deleteOrder, confirmed }: IItemC
                   </View>
                 </View>
 
-                {/* Total */}
                 <View style={styles.totalSection}>
                   <View style={styles.totalRow}>
                     <Text style={styles.totalLabel}>
@@ -246,46 +244,62 @@ const ItemCalendar = ({ InfoItem, confirmOrder, deleteOrder, confirmed }: IItemC
                   </View>
                 </View>
 
-                {/* Botones de Acción */}
-                <View style={styles.actionSection}>
-                  {!confirmed && (
+                <View style={styles.actionButton}>
+                  <View style={styles.actionSectionRow}>
+                    {!confirmed && (
+                      <Pressable
+                        style={[styles.actionButton, styles.deleteButton]}
+                        onPress={async () => {
+                          try {
+                            setLoadingDelete(true)
+                            await deleteOrder(InfoItem.orderId)
+                          } catch (error) {
+                            console.error(error)
+                          } finally {
+                            setLoadingDelete(false)
+                          }
+                        }}
+                        disabled={loading || loadingDelete}
+                      >
+                        {loadingDelete ? (
+                          <Progress.Circle color={Colors.light.danger} indeterminate={true} size={16} />
+                        ) : (
+                          <Ionicons name="trash-outline" size={16} color={Colors.light.danger} />
+                        )}
+                        <Text style={styles.deleteButtonText}>
+                          <FormattedMessage id="deleteOrder" />
+                        </Text>
+                      </Pressable>
+                    )}
+
                     <Pressable
-                      style={[styles.actionButton, styles.deleteButton]}
-                      onPress={async () => {
-                        try {
-                          setLoadingDelete(true)
-                          await deleteOrder(InfoItem.orderId)
-                        } catch (error) {
-                          console.error(error)
-                        } finally {
-                          setLoadingDelete(false)
-                        }
-                      }}
+                      style={[styles.actionButton, styles.primaryButton]}
+                      onPress={confirmOrderFunction}
                       disabled={loading || loadingDelete}
                     >
-                      {loadingDelete ? (
-                        <Progress.Circle color={Colors.light.danger} indeterminate={true} size={16} />
+                      {loading ? (
+                        <Progress.Circle color="white" indeterminate={true} size={16} />
                       ) : (
-                        <Ionicons name="trash-outline" size={16} color={Colors.light.danger} />
+                        <Ionicons name={"checkmark-circle-outline"} size={16} color="white" />
                       )}
-                      <Text style={styles.deleteButtonText}>
-                        <FormattedMessage id="deleteOrder" />
+                      <Text style={styles.primaryButtonText}>
+                        <FormattedMessage id="confirmOrder" />
                       </Text>
                     </Pressable>
-                  )}
+                  </View>
 
                   <Pressable
                     style={[styles.actionButton, styles.primaryButton]}
-                    onPress={validateFunction}
+                    onPress={viewDetailsOrder}
                     disabled={loading || loadingDelete}
                   >
                     {loading ? (
                       <Progress.Circle color="white" indeterminate={true} size={16} />
                     ) : (
-                      <Ionicons name={confirmed ? "eye-outline" : "checkmark-circle-outline"} size={16} color="white" />
+                      <Ionicons name={"eye-outline"} size={16} color="white" />
                     )}
                     <Text style={styles.primaryButtonText}>
-                      {confirmed ? <FormattedMessage id="viewDetails" /> : <FormattedMessage id="confirmOrder" />}
+                      <FormattedMessage id="viewDetails" />
                     </Text>
                   </Pressable>
                 </View>

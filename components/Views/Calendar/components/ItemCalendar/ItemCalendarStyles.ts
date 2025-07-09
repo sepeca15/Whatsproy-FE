@@ -105,6 +105,10 @@ export const styles = StyleSheet.create({
     color: Colors.light.success,
   },
   actionSection: {
+    flexDirection: "column",
+    gap: 8,
+  },
+  actionSectionRow: {
     flexDirection: "row",
     gap: 8,
   },

@@ -59,15 +59,15 @@ const salesSlice = createSlice({
     initialState,
     reducers: {
         onLoadData: (state, { payload }) => {
-            const { resumeSales ,salesOverview ,salesByCategory ,salesChart} = payload;
+            const { resumeSales, salesOverview, salesByCategory, salesChart } = payload;
 
             state.resumeSales = resumeSales;
-state.salesByCategory = Array.isArray(salesByCategory) ? salesByCategory : [];
-state.salesChart = {
-  labels: salesChart?.labels ?? [],
-  monthlySales: salesChart?.monthlySales ?? [],
-  period: salesChart?.period ?? "mensual",
-};
+            state.salesByCategory = Array.isArray(salesByCategory) ? salesByCategory : [];
+            state.salesChart = {
+                labels: salesChart?.labels ?? [],
+                monthlySales: salesChart?.monthlySales ?? [],
+                period: salesChart?.period ?? "mensual",
+            };
             state.salesOverview = salesOverview
             state.dataLoaded = true
         },
