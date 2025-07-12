@@ -238,7 +238,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 </View>
               )}
               <Image
-                source={{ uri: productBDD.imagen }}
+                source={{ uri: productBDD.imagen ?? "https://ebschool.net/images/default-image.jpg" }}
                 style={enhancedStyles.image as any}
                 onLoad={handleImageLoad}
               />

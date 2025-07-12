@@ -1,14 +1,13 @@
 import { View, VStack } from "native-base";
 import { styles } from "./Step1Styles";
 import InputField from "@/components/InputField";
-import CustomText from "@/components/CustomText";
 import * as ImagePicker from "expo-image-picker";
 import { Image, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import AlertText from "../AlertText";
 import SelectTimeZone from "../SelectTimeZone";
 import * as moment from "moment-timezone";
-import { FormattedMessage, useIntl } from "react-intl";
+import { useIntl } from "react-intl";
 import { useState } from "react";
 import api from "@/services/api/admin";
 import InformativeText from "@/components/InformativeText";

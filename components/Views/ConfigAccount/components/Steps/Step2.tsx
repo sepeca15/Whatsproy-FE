@@ -1,5 +1,3 @@
-"use client";
-
 import type React from "react";
 import { useRef, useEffect, useState } from "react";
 import {
@@ -24,7 +22,7 @@ import Feather from "react-native-vector-icons/Feather";
 import MethodOfPayCard from "../MethodOfpaycard";
 
 const { width } = Dimensions.get("window");
-
+const CARD_WIDTH = 280 + 12
 interface SubscriptionPlansCarouselProps {
   onSuccess?: () => void;
   onNext?: () => void;
@@ -75,6 +73,7 @@ const Step2: React.FC<SubscriptionPlansCarouselProps> = ({
       }
     } catch (error) {
       console.error(error);
+      setCurrentIndex(0)
       showToast({
         title: "Error al cargar planes",
         descripcion: "No se pudieron cargar los planes de suscripción",
@@ -132,6 +131,7 @@ const Step2: React.FC<SubscriptionPlansCarouselProps> = ({
 
   // Manejar compra
   const handlePurchase = async (purchase: RNIap.Purchase) => {
+
     const { purchaseToken, productId } = purchase;
 
     if (!purchaseToken || handledTokensRef.current.has(purchaseToken)) return;
@@ -215,6 +215,8 @@ const Step2: React.FC<SubscriptionPlansCarouselProps> = ({
       descripcion: error?.message || "Ocurrió un error inesperado",
       status: "error",
     });
+    setCurrentIndex(0)
+
   };
 
   const handleSubscribe = async (
@@ -265,7 +267,7 @@ const Step2: React.FC<SubscriptionPlansCarouselProps> = ({
   const goToSlide = (index: number) => {
     setCurrentIndex(index);
     scrollViewRef.current?.scrollTo({
-      x: index * width - 70,
+      x: index * CARD_WIDTH,
       animated: true,
     });
   };
@@ -281,6 +283,8 @@ const Step2: React.FC<SubscriptionPlansCarouselProps> = ({
       goToSlide(currentIndex + 1);
     }
   };
+
+  console.log(currentIndex);
 
   if (loading || (!loading && !plans)) {
     return (
@@ -361,16 +365,13 @@ const Step2: React.FC<SubscriptionPlansCarouselProps> = ({
           {/* Carousel de planes - CORREGIDO */}
           <View style={styles.carouselContainer}>
             <ScrollView
-              ref={scrollViewRef}
               horizontal
               pagingEnabled
-              showsHorizontalScrollIndicator={false}
-              decelerationRate="fast"
-              snapToInterval={width}
-              snapToAlignment="start"
-              contentContainerStyle={styles.scrollContent}
-              bounces={false}
+              snapToInterval={CARD_WIDTH}
+              snapToAlignment="center"
               scrollEnabled={false}
+              showsHorizontalScrollIndicator={false}
+              ref={scrollViewRef}
             >
               {plans?.map((plan: any, index) => (
                 <MethodOfPayCard
@@ -387,6 +388,8 @@ const Step2: React.FC<SubscriptionPlansCarouselProps> = ({
                   style={[styles.navButton, styles.navButtonLeft]}
                   onPress={goToPrevious}
                   disabled={currentIndex === 0}
+                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+
                 >
                   <Feather
                     name="chevron-left"
@@ -399,6 +402,8 @@ const Step2: React.FC<SubscriptionPlansCarouselProps> = ({
                   style={[styles.navButton, styles.navButtonRight]}
                   onPress={goToNext}
                   disabled={currentIndex === plans.length - 1}
+                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+
                 >
                   <Feather
                     name="chevron-right"

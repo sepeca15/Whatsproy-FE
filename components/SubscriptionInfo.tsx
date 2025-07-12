@@ -105,10 +105,8 @@ const SubscriptionInfo = ({
             </HStack>
           )}
 
-          {/* Información Expandida */}
           <Collapse isOpen={isExpanded}>
             <VStack space={2} mt={3} pt={2} borderTopWidth={1} borderTopColor="gray.100">
-              {/* Información de pedidos restantes (visible cuando está expandido) */}
               <HStack space={2} alignItems="center">
                 <Icon as={MaterialIcons} name="info-outline" size="xs" color={getProgressColor()} />
                 <Text fontSize="xs" color={getProgressColor()} fontWeight="medium">
@@ -120,7 +118,6 @@ const SubscriptionInfo = ({
                 </Text>
               </HStack>
 
-              {/* Fecha de expiración */}
               <HStack justifyContent="space-between" alignItems="center">
                 <Text fontSize="xs" color={Colors.light.icon}>
                   <FormattedMessage id="subscription.validUntil" defaultMessage="Válido hasta:" />
@@ -130,7 +127,6 @@ const SubscriptionInfo = ({
                 </Text>
               </HStack>
 
-              {/* Estado de cancelación */}
               {isCancelled && (
                 <Box bg="gray.100" borderRadius="sm" p={2} my={1}>
                   <Text fontSize="xs" color={Colors.light.icon} textAlign="center">

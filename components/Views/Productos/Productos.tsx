@@ -39,6 +39,7 @@ import MenusUpload from "./components/MenusUpload";
 const Productos: React.FC = () => {
   const router = useRouter();
   const [ProductsBD, setProducts] = useState<ProductBDD[]>([]);
+
   const [searchTerm, setSearchTerm] = useState<string>("");
   const fadeAnim = useState(new Animated.Value(0))[0];
   const { locale } = useLocalization();
@@ -48,6 +49,7 @@ const Productos: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'products' | 'dailyMenu' | 'uploadMenu'>('products');
 
   const [allCategories, setAllCategories] = useState<ICategoryData[]>([]);
+
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [selectCategory, setSelectCategory] = useState<number | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -66,7 +68,18 @@ const Productos: React.FC = () => {
       const resp = await api.category.getAll();
 
       if (resp.ok) {
-        setAllCategories(resp.data);
+        setAllCategories([
+          {
+            id: 0,
+            name: "Sin categoría",
+            image: '',
+            description: "Empty category",
+            producto: [],
+            productosCount: 0,
+            createdAt: new Date()
+          },
+          ...resp.data,
+        ]);
         if (resp.data.length > 0) {
           setSelectCategory(resp.data[0].id);
         }
@@ -78,14 +91,19 @@ const Productos: React.FC = () => {
     }
   };
 
-
   const loadProductsFromCategory = async () => {
     try {
       setLoadingProducts(true);
-      if (selectCategory) {
-        const resp = await api.category.getProducts({
-          categoryId: selectCategory,
-        });
+      if (selectCategory !== null) {
+        let resp;
+        if (selectCategory === 0) {
+          resp = await api.category.getProductsWithoutCategores();
+        } else {
+          resp = await api.category.getProducts({
+            categoryId: selectCategory,
+          });
+        }
+
         if (resp.ok) {
           setProducts(resp.data);
         }
@@ -231,7 +249,7 @@ const Productos: React.FC = () => {
           <View style={styles.categoryContainer}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {allCategories.map((category, index) => {
-                const isSelected = selectCategory === category.id;
+                const isSelected = selectCategory === category.id;                
                 return (
                   <TouchableOpacity
                     onPress={() => setSelectCategory(category.id)}
@@ -242,15 +260,19 @@ const Productos: React.FC = () => {
                     ]}
                     activeOpacity={0.7}
                   >
-                    <Image
-                      alt={category.name}
-                      style={styles.categoryImage}
-                      source={{ uri: category.image }}
-                    />
+                    {
+                      category.image !== "" &&
+                      <Image
+                        alt={''}
+                        style={styles.categoryImage}
+                        source={{ uri: category.image }}
+                      />
+                    }
                     <Text
                       style={[
                         styles.categoryText,
                         isSelected && styles.selectedCategoryText,
+                        {textAlign:'center'}
                       ]}
                     >
                       {category.name}

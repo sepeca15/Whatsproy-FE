@@ -1,12 +1,6 @@
-import React from "react";
 import { ScrollView, View, VStack, Text, Box } from "native-base";
-import Animated from "react-native-reanimated";
-import CustomText from "@/components/CustomText";
-import { globalStyles } from "@/components/globalStyles";
 import { FormattedMessage } from "react-intl";
-import { TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
-import { AntDesign } from "@expo/vector-icons";
 import CustomHeader from "@/components/CustomHeader/CustomHeader";
 
 const PrivacyView = () => {
@@ -15,16 +9,16 @@ const PrivacyView = () => {
   return (
     <View flex={1}>
       <CustomHeader
-          title={
-            <FormattedMessage
-              id="privacyPolicy.title"
-              defaultMessage="Politicas de Privacidad"
-            />
-          }
-          onBack={() => router.back()}
-          showBackButton
-        />
- 
+        title={
+          <FormattedMessage
+            id="privacyPolicy.title"
+            defaultMessage="Politicas de Privacidad"
+          />
+        }
+        onBack={() => router.back()}
+        showBackButton
+      />
+
       <ScrollView p={3}>
         <VStack shadow={1} mb={8} pb={12} bg={'white'} p={8} borderRadius={12} space={5}>
           <Box>

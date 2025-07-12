@@ -10,14 +10,26 @@ import { useUser } from "@/hooks/redux/useUser";
 import { FormattedMessage, useIntl } from "react-intl";
 import StepHeader from "./StepHeader";
 import GenericModal from "./components/GenericModal/GenericModal";
+import { removeData } from "@/storage/localStorage";
+import { useDispatch } from "react-redux";
+import { useRouter } from "expo-router";
 
 const ConfigAccount = () => {
-  const { user } = useUser();
+  const dispatch = useDispatch()
+  const router = useRouter()
+  const { user,  } = useUser();
   const { formatMessage } = useIntl();
 
   const totalSteps = 4;
   const [currentStep, setCurrentStep] = React.useState<number>(0);
   const [maxStep, setMaxStep] = React.useState<number>(0);
+
+    const handleLogout = async () => {
+      await removeData("token");
+      dispatch({ type: "RESET" }); 
+      router.replace("/(auth)/login");
+    };
+   
 
   React.useEffect(() => {
     if (user?.id) {
@@ -57,7 +69,7 @@ const ConfigAccount = () => {
   return (
     <GenericModal
       visible={true}
-      onClose={() => false}
+      onClose={() => handleLogout()}
       title={formatMessage({ id: "configAccount" })}
       actions={[]}
     >

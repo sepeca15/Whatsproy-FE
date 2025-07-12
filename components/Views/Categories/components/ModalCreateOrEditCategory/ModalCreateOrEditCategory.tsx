@@ -251,7 +251,7 @@ const ModalCreateOrEditCategory = ({
                 style={[styles.uploadButtonText, { color: colors.primary }]}
               >
                 <FormattedMessage
-                  id="categories.modal.uploadImage"
+                  id={currentImageUri? "categories.modal.changeImage" : "categories.modal.uploadImage"}
                   defaultMessage={
                     currentImageUri ? "Cambiar imagen" : "Subir imagen"
                   }

@@ -1,5 +1,3 @@
-"use client";
-
 import CustomButton from "@/components/CustomButton";
 import CustomText from "@/components/CustomText";
 import InputField from "@/components/InputField";
@@ -10,12 +8,9 @@ import * as React from "react";
 import { TouchableOpacity } from "react-native";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import { FormattedMessage, useIntl } from "react-intl";
-import Animated from "react-native-reanimated";
-import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { styles } from "./GeneralSettingsStyles";
 import { Colors } from "@/constants/Colors";
-import { globalStyles } from "@/components/globalStyles";
 import * as ImagePicker from "expo-image-picker";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useToastContext } from "@/contexts/ToastContext";

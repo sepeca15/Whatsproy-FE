@@ -1,27 +1,20 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Text,
-  TextInput,
   TouchableOpacity,
   Image,
-  ScrollView,
-  KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
 } from "react-native";
 import { Colors } from "../../../../constants/Colors";
-import { Switch, Animated } from "react-native";
-import { Picker } from "@react-native-picker/picker";
-import * as ImagePicker from "expo-image-picker";
+import { Switch } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { styles } from "./EditProductStyle";
 import { useRouter } from "expo-router";
-import { availableCurrencies } from "@/hooks/dataProduct";
 import api from "@/services/api/admin";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useToastContext } from "@/contexts/ToastContext";
 import { useUser } from "@/hooks/redux/useUser";
-import useValidateForm from "../../../../utils/validate_Products/useValidateForm";
 import useImagePicker from "../../../../utils/ImagePicker/useImagePicker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { ICategoryData } from "../../Categories/components/CardCategory/CardCategory";
@@ -95,7 +88,6 @@ const EditProduct = ({
     imageUrl ?? null,
   );
   const [loadingimage, setLoadingimage] = useState(false);
-  const [uri, setUri] = useState("");
   const { showToast } = useToastContext();
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string | null }>({});
@@ -118,9 +110,6 @@ const EditProduct = ({
     }
   }
 
-
-
-
   const { pickImage } = useImagePicker({
     toastErrorMessage: "Error al seleccionar la imagen",
     onImagePicked: async ({ localUri, apiUrl }) => {
@@ -134,7 +123,6 @@ const EditProduct = ({
   const handleImagePick = async () => {
     try {
       setLoadingimage(true);
-      // Await the pickImage function to ensure it completes
       await pickImage(setFormData);
     } catch (error) {
       console.error("Error selecting image:", error);
@@ -143,7 +131,6 @@ const EditProduct = ({
         status: "error",
       });
     } finally {
-      // Ensure loadingimage is set to false when the process completes
       setLoadingimage(false);
     }
   };
@@ -347,7 +334,7 @@ const EditProduct = ({
                 }}
 
                 onSearch={() => { }}
-                error={errors.categoryIds}
+                error={errors.categoryIds ?? ''}
               />
             </View>
           </View>

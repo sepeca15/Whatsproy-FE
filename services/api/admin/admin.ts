@@ -128,6 +128,7 @@ const api = {
     createIntent: stripe.createIntent,
   },
   category: {
+    getProductsWithoutCategores: category.getProductsWithoutCategories,
     create: category.createCategory,
     getAll: category.getAllCategories,
     getProducts: category.getProductFromCategory,

@@ -22,13 +22,11 @@ const AddButton: React.FC<AddButtonProps> = ({ route, onPress }) => {
         onPress={() => {
           if (onPress) {
             onPress();
-          } else {
-            if (route) {
-              router.push(route as any);
-            }
+          } else if (route) {
+            router.push(route as any);
           }
         }}
-        disabled={!route}
+        disabled={!route && !onPress}
       >
         <Ionicons name="add" size={dynamicFontSize * 3} color="#fff" />
       </TouchableOpacity>

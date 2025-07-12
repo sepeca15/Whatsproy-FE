@@ -112,10 +112,6 @@ const GraficProddet: React.FC<ProductDetailProps> = ({ product, salesData, categ
             </Text>
             <Text style={styles.infoValue}>{product.duration}</Text>
           </View>
-          {/* <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}><FormattedMessage id="category" /></Text>
-            <Text style={styles.infoValue}>{product.category}</Text>
-          </View>  */}
           <Text style={styles.descriptionTitle}>
             <FormattedMessage id="description" />
           </Text>
@@ -128,114 +124,6 @@ const GraficProddet: React.FC<ProductDetailProps> = ({ product, salesData, categ
             ))}
           </View>
         </View>
-
-        {/* <View style={styles.chartContainer}>
-          <View style={styles.chartHeader}>
-            <Text style={styles.chartTitle}>
-              <FormattedMessage id="sales" />
-            </Text>
-            <TouchableOpacity onPress={toggleView} style={styles.toggleButton}>
-              <Text style={styles.toggleButtonText}>
-                {currentView === "daily" ? <FormattedMessage id="viewMonthly" /> : <FormattedMessage id="viewDaily" />}
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.chartWrapperContainer}>
-            <View style={styles.chartWrapper}>
-              <BarChart
-                data={data[currentView]}
-                width={screenWidth - 60}
-                height={220}
-                yAxisLabel=""
-                yAxisSuffix=" "
-                chartConfig={chartConfig}
-                verticalLabelRotation={0}
-                showValuesOnTopOfBars={true}
-                fromZero={true}
-                style={styles.chart}
-              />
-            </View>
-          </View>
-          <View style={styles.additionalInfo}>
-            <Text style={styles.additionalInfoTitle}>
-              <FormattedMessage id="performanceMetrics" defaultMessage="Métricas de Rendimiento" />
-            </Text>
-            <View style={styles.additionalInfoRow}>
-              <Text style={styles.additionalInfoLabel}>
-                <FormattedMessage id="bestPerforming" defaultMessage="Mejor rendimiento" />:
-              </Text>
-              <Text style={styles.additionalInfoValue}>
-                {
-                  data[currentView].labels[
-                  data[currentView].datasets[0].data.indexOf(Math.max(...data[currentView].datasets[0].data))
-                  ]
-                }{" "}
-                ({Math.max(...data[currentView].datasets[0].data)}{" "}
-                <FormattedMessage id="units" defaultMessage="unidades" />)
-              </Text>
-            </View>
-            <View style={styles.additionalInfoRow}>
-              <Text style={styles.additionalInfoLabel}>
-                <FormattedMessage id="worstPerforming" defaultMessage="Menor rendimiento" />:
-              </Text>
-              <Text style={styles.additionalInfoValue}>
-                {
-                  data[currentView].labels[
-                  data[currentView].datasets[0].data.indexOf(Math.min(...data[currentView].datasets[0].data))
-                  ]
-                }{" "}
-                ({Math.min(...data[currentView].datasets[0].data)}{" "}
-                <FormattedMessage id="units" defaultMessage="unidades" />)
-              </Text>
-            </View>
-            <View style={styles.additionalInfoRow}>
-              <Text style={styles.additionalInfoLabel}>
-                <FormattedMessage id="growthRate" defaultMessage="Tasa de crecimiento" />:
-              </Text>
-              <Text style={styles.additionalInfoValue}>
-                {(() => {
-                  const values = data[currentView].datasets[0].data
-                  if (values.length < 2) return "N/A"
-                  const firstValue = values[0]
-                  const lastValue = values[values.length - 1]
-                  const growthRate = ((lastValue - firstValue) / firstValue) * 100
-                  return `${growthRate.toFixed(1)}%`
-                })()}
-              </Text>
-            </View>
-          </View>
-        </View> */}
-
-        {/* <View style={styles.statsContainer}>
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>{Math.max(...data[currentView].datasets[0].data)}</Text>
-            <Text style={styles.statLabel}>
-              <FormattedMessage id="peakSales" defaultMessage="Ventas Máximas" />
-            </Text>
-          </View>
-          <View style={styles.divider} />
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>
-              {data[currentView].datasets[0].data.reduce((a: number, b: number) => a + b, 0)}
-            </Text>
-            <Text style={styles.statLabel}>
-              <FormattedMessage id="totalSales" defaultMessage="Ventas Totales" />
-            </Text>
-          </View>
-          <View style={styles.divider} />
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>
-              {(
-                data[currentView].datasets[0].data.reduce((a: number, b: number) => a + b, 0) /
-                data[currentView].labels.length
-              ).toFixed(1)}
-            </Text>
-            <Text style={styles.statLabel}>
-              <FormattedMessage id="avgSales" defaultMessage="Promedio" />
-            </Text>
-          </View>
-        </View> */}
       </View>
     </ScrollView>
   )

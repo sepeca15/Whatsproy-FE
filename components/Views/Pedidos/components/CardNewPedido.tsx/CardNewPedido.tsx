@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { View } from "react-native";
 import { styles } from "./CardNewPedidoStyles";

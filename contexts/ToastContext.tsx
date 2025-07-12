@@ -50,6 +50,8 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
     }
     return "";
   };
+  const isToastVisibleRef = React.useRef(false);
+
 
   const showToast = useCallback(
     ({
@@ -59,6 +61,8 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
       status = "info",
       duration = 2000,
     }: ShowToastParams) => {
+      if (isToastVisibleRef.current) return;
+
       const id =
         Date.now().toString() + Math.random().toString(36).substring(2, 9);
       const newToast: ToastData = {
@@ -73,14 +77,15 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
       };
 
       setToasts((prev) => [...prev, newToast]);
+      isToastVisibleRef.current = true;
 
       setTimeout(() => {
         setToasts((prev) => prev.filter((t) => t.id !== id));
+        isToastVisibleRef.current = false;
       }, duration);
     },
     [intl]
   );
-
   const removeToast = useCallback((id: string) => {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);

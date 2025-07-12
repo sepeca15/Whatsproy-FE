@@ -1,5 +1,3 @@
-"use client";
-
 import CustomButton from "@/components/CustomButton";
 import CustomText from "@/components/CustomText";
 import InputField from "@/components/InputField";
@@ -11,15 +9,13 @@ import {
   VStack,
   Select,
   CheckIcon,
-  useToast,
 } from "native-base";
 import * as React from "react";
 import { TouchableOpacity, Alert } from "react-native";
-import { AntDesign, MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { FormattedMessage, useIntl } from "react-intl";
 import { Colors } from "@/constants/Colors";
-import { globalStyles } from "@/components/globalStyles";
 import { StyleSheet } from "react-native";
 import api from "@/services/api/admin";
 import { useToastContext } from "@/contexts/ToastContext";
@@ -35,7 +31,6 @@ interface IPriceUpdateForm {
 }
 
 const PriceManagementSettings = () => {
-  const { user } = useUser();
   const intl = useIntl();
   const router = useRouter();
   const [loadingApi, setLoadingApi] = React.useState<boolean>(false);

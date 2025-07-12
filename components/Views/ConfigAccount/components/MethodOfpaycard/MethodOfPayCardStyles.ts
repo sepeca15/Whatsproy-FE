@@ -76,6 +76,7 @@ export const styles = StyleSheet.create({
     paddingLeft: 4,
   },
   ContainerAdvantages: {
+    height:275,
     marginTop: 8,
     marginBottom: 24,
   },

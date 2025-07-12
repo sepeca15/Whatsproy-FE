@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect, useRef, useCallback } from "react";
 import {
   View,
@@ -9,7 +7,8 @@ import {
   Platform,
   UIManager,
   FlatList,
-  Dimensions,
+  Modal,
+  ScrollView,
 } from "react-native";
 import moment from "moment";
 import "moment/locale/es";
@@ -67,16 +66,16 @@ const Colors = {
   },
 };
 
-if (
-  Platform.OS === "android" &&
-  UIManager.setLayoutAnimationEnabledExperimental
-) {
+if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
 export default function CalendarView() {
   const [orderPerDaysAll, setOrderPerDays] = useState<OrderPerDays>({});
   const [openAddModal, setOpenAddModal] = useState(false);
+  const [showScheduleModal, setShowScheduleModal] = useState(false); // Nuevo estado para el modal de horarios
+  const [daySchedules, setDaySchedules] = useState<any[]>([]); // Estado para los horarios del día
+  const [loadingSchedules, setLoadingSchedules] = useState(false); // Estado de carga para horarios
   const spinAnim = useRef(new AnimatedNative.Value(0)).current;
   const [loading, setLoading] = useState(true);
   const [availableDates, setAvailableDates] = useState<string[]>([]);
@@ -85,18 +84,14 @@ export default function CalendarView() {
   const [selectedDate, setSelectedDate] = useState(
     moment.tz(user.timeZone).format("YYYY-MM-DD")
   );
-
   const [workers, setWorkers] = useState<WorkerUser[]>([]);
-  const [selectedWorkerId, setSelectedWorkerId] = useState<
-    any | number | undefined
-  >();
+  const [selectedWorkerId, setSelectedWorkerId] = useState<any | number | undefined>();
   const [horarios, setHorarios] = useState<any[]>([]);
   const [selectedMonth, setSelectedMonth] = useState<any>("");
   const [selectedYear, setSelectedYear] = useState<any>("");
   const [disabledDates, setDisabledDates] = useState<any>({});
   const [oredrToDelete, setOrderToDelete] = useState<any>(null);
   const orderPerDays = ordenarPedidosPorHora(orderPerDaysAll);
-
   const [loadWorkers, setLoadWorkers] = useState(false);
   const [ordrDeleteModalConfirm, setOrdrDeleteModalConfirm] = useState(false);
   const [reason, setReason] = useState("");
@@ -104,6 +99,31 @@ export default function CalendarView() {
   const intl = useIntl();
   const [loadingCalendarCupos, setLoadingCalendarCupos] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const toggleOpenModal = () => setOpenAddModal((prev) => !prev);
+
+  // Nueva función para cargar horarios del día
+  const handleLoadDaySchedules = async () => {
+    try {
+      setLoadingSchedules(true);
+
+      const response = await api.order.getNextDateAvailableForSingleDay(selectedDate, selectedWorkerId);
+
+      if(response) {
+        setDaySchedules(response || []);
+        setShowScheduleModal(true);
+      }      
+    } catch (error) {
+      console.error("Error loading day schedules:", error);
+      showToast({
+        title: "Error",
+        description: "No se pudieron cargar los horarios del día",
+        status: "error",
+      });
+    } finally {
+      setLoadingSchedules(false);
+    }
+  };
 
   useEffect(() => {
     if (selectedDate) {
@@ -195,15 +215,11 @@ export default function CalendarView() {
   const onLoadItems = async (dateString: string) => {
     setLoading(true);
     try {
-      const data = await api.order.getCalendarOrders(
-        dateString,
-        selectedWorkerId
-      );
+      const data = await api.order.getCalendarOrders(dateString, selectedWorkerId);
       const availableDatesResponse = await api.order.getAvailableDates(
         dateString,
         selectedWorkerId
       );
-
       if (availableDatesResponse?.length > 0) {
         setAvailableDates(availableDatesResponse);
       }
@@ -225,9 +241,8 @@ export default function CalendarView() {
       });
       if (data.data) {
         setOrderPerDays((prevState) => {
-          const updatedOrdersForSelectedDate = prevState[selectedDate]?.map(
-            (order) =>
-              order.orderId === orderId ? { ...order, status: true } : order
+          const updatedOrdersForSelectedDate = prevState[selectedDate]?.map((order) =>
+            order.orderId === orderId ? { ...order, status: true } : order
           );
           return {
             ...prevState,
@@ -313,21 +328,39 @@ export default function CalendarView() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-        <LinearGradient
-          colors={[Colors.light.primary, Colors.light.secondary]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.headerGradient}
-        >
-          <View style={styles.headerContent}>
-            <View style={styles.headerLeft}>
-              <Text style={styles.headerTitle}>
-                <FormattedMessage id="calendar" defaultMessage="Calendario" />
-              </Text>
-              <Text style={styles.headerSubtitle}>
-                <FormattedMessage id="manageEvents" />
-              </Text>
-            </View>
+      <LinearGradient
+        colors={[Colors.light.primary, Colors.light.secondary]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={styles.headerGradient}
+      >
+        <View style={styles.headerContent}>
+          <View style={styles.headerLeft}>
+            <Text style={styles.headerTitle}>
+              <FormattedMessage id="calendar" defaultMessage="Calendario" />
+            </Text>
+            <Text style={styles.headerSubtitle}>
+              <FormattedMessage id="manageEvents" />
+            </Text>
+          </View>
+          <View style={styles.headerButtons}>
+            {/* Nuevo botón para horarios */}
+            <TouchableOpacity
+              disabled={loading || loadingSchedules}
+              onPress={handleLoadDaySchedules}
+              style={[styles.headerActionButton, { marginRight: 8 }]}
+            >
+              {loadingSchedules ? (
+                <Progress.Circle
+                  color="white"
+                  indeterminate={true}
+                  size={20}
+                />
+              ) : (
+                <Ionicons name="time-outline" size={20} color="white" />
+              )}
+            </TouchableOpacity>
+            
             <TouchableOpacity
               disabled={loading}
               onPress={() => onRefresh()}
@@ -349,189 +382,236 @@ export default function CalendarView() {
               </AnimatedNative.View>
             </TouchableOpacity>
           </View>
-        </LinearGradient>
-
-        <View style={styles.statsContainer}>
-          <View style={styles.statCard}>
-            <Text style={styles.statNumber}>{eventsCount}</Text>
-            <Text style={styles.statLabel}>
-              <FormattedMessage id="calendarEventText" />
-            </Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={[styles.statNumber, { color: Colors.light.success }]}>
-              {confirmedCount}
-            </Text>
-            <Text style={styles.statLabel}>
-              <FormattedMessage id="calendarConfirmatedText" />
-            </Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={[styles.statNumber, { color: Colors.light.warning }]}>
-              {eventsCount - confirmedCount}
-            </Text>
-            <Text style={styles.statLabel}>
-              <FormattedMessage id="calendarPendingText" />
-            </Text>
-          </View>
         </View>
+      </LinearGradient>
 
-        {!loadWorkers && (
-          <View style={styles.workerSelectContainer}>
-            <WorkerSelect
-              workers={workers}
-              selectedId={selectedWorkerId}
-              onSelect={setSelectedWorkerId}
+      <View style={styles.statsContainer}>
+        <View style={styles.statCard}>
+          <Text style={styles.statNumber}>{eventsCount}</Text>
+          <Text style={styles.statLabel}>
+            <FormattedMessage id="calendarEventText" />
+          </Text>
+        </View>
+        <View style={styles.statCard}>
+          <Text style={[styles.statNumber, { color: Colors.light.success }]}>
+            {confirmedCount}
+          </Text>
+          <Text style={styles.statLabel}>
+            <FormattedMessage id="calendarConfirmatedText" />
+          </Text>
+        </View>
+        <View style={styles.statCard}>
+          <Text style={[styles.statNumber, { color: Colors.light.warning }]}>
+            {eventsCount - confirmedCount}
+          </Text>
+          <Text style={styles.statLabel}>
+            <FormattedMessage id="calendarPendingText" />
+          </Text>
+        </View>
+      </View>
+
+      {!loadWorkers && (
+        <View style={styles.workerSelectContainer}>
+          <WorkerSelect
+            workers={workers}
+            selectedId={selectedWorkerId}
+            onSelect={setSelectedWorkerId}
+          />
+        </View>
+      )}
+
+      <View style={styles.dateNavigationContainer}>
+        <TouchableOpacity onPress={handlePreviousDay} style={styles.dateNavButton}>
+          <Ionicons name="chevron-back" size={24} color={Colors.light.primary} />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => setShowDatePicker(true)}
+          style={styles.currentDateContainer}
+        >
+          <Text style={styles.currentDateDay}>
+            {moment(selectedDate).format("DD")}
+          </Text>
+          <View style={styles.currentDateInfo}>
+            <Text style={styles.currentDateMonth}>
+              {moment(selectedDate).format("MMM").toUpperCase()}
+            </Text>
+            <Text style={styles.currentDateWeekday}>
+              {moment(selectedDate).format("dddd")}
+            </Text>
+          </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={handleNextDay} style={styles.dateNavButton}>
+          <Ionicons name="chevron-forward" size={24} color={Colors.light.primary} />
+        </TouchableOpacity>
+      </View>
+
+      {isCurrentDayDisabled && (
+        <View style={styles.noSlotsContainer}>
+          <Ionicons name="warning" size={20} color={Colors.light.danger} />
+          <Text style={styles.noSlotsText}>
+            <FormattedMessage
+              id="noSlotsForSelectedDay"
+              defaultMessage="No hay lugares disponibles para esta fecha."
             />
+          </Text>
+        </View>
+      )}
+
+      {/* Content Area */}
+      <View style={styles.contentContainer}>
+        {loading || loadWorkers || loadingCalendarCupos ? (
+          <View style={styles.loadingContainer}>
+            <Progress.Circle color={Colors.light.primary} indeterminate={true} size={50} />
+            <Text style={styles.loadingText}>
+              <FormattedMessage id="loadingEvents" />
+            </Text>
+          </View>
+        ) : orderPerDays[selectedDate] && orderPerDays[selectedDate].length > 0 ? (
+          <FlatList
+            data={orderPerDays[selectedDate]}
+            renderItem={({ item }: { item: any }) => (
+              <ItemCalendar
+                key={`${item.orderId}-${item.date}`}
+                confirmOrder={confirmOrder}
+                deleteOrder={(orderId) => {
+                  setOrdrDeleteModalConfirm(true);
+                  setOrderToDelete(orderId);
+                }}
+                InfoItem={item}
+                confirmed={item.status}
+              />
+            )}
+            keyExtractor={(item) => `${item.orderId}-${item.date}`}
+            contentContainerStyle={styles.flatListContent}
+            showsVerticalScrollIndicator={false}
+          />
+        ) : (
+          <View style={styles.emptyStateContainer}>
+            <Ionicons name="calendar-outline" size={80} color="#d1d5db" />
+            <Text style={styles.emptyStateTitle}>No hay eventos</Text>
+            <Text style={styles.emptyStateSubtitle}>
+              No tienes eventos programados para esta fecha
+            </Text>
           </View>
         )}
+      </View>
 
-        <View style={styles.dateNavigationContainer}>
-          <TouchableOpacity
-            onPress={handlePreviousDay}
-            style={styles.dateNavButton}
-          >
-            <Ionicons
-              name="chevron-back"
-              size={24}
-              color={Colors.light.primary}
-            />
-          </TouchableOpacity>
+      <AddButton onPress={() => toggleOpenModal()} />
 
-          <TouchableOpacity
-            onPress={() => setShowDatePicker(true)}
-            style={styles.currentDateContainer}
-          >
-            <Text style={styles.currentDateDay}>
-              {moment(selectedDate).format("DD")}
-            </Text>
-            <View style={styles.currentDateInfo}>
-              <Text style={styles.currentDateMonth}>
-                {moment(selectedDate).format("MMM").toUpperCase()}
+      {/* Modal de Horarios del Día */}
+      <Modal
+        visible={showScheduleModal}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowScheduleModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>
+                Horarios Disponibles
               </Text>
-              <Text style={styles.currentDateWeekday}>
-                {moment(selectedDate).format("dddd")}
+              <Text style={styles.modalSubtitle}>
+                {moment(selectedDate).format("dddd, DD [de] MMMM [de] YYYY")}
               </Text>
+              <TouchableOpacity
+                onPress={() => setShowScheduleModal(false)}
+                style={styles.modalCloseButton}
+              >
+                <Ionicons name="close" size={24} color={Colors.light.icon} />
+              </TouchableOpacity>
             </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={handleNextDay}
-            style={styles.dateNavButton}
-          >
-            <Ionicons
-              name="chevron-forward"
-              size={24}
-              color={Colors.light.primary}
-            />
-          </TouchableOpacity>
-        </View>
-
-        {isCurrentDayDisabled && (
-          <View style={styles.noSlotsContainer}>
-            <Ionicons name="warning" size={20} color={Colors.light.danger} />
-            <Text style={styles.noSlotsText}>
-              <FormattedMessage
-                id="noSlotsForSelectedDay"
-                defaultMessage="No hay lugares disponibles para esta fecha."
-              />
-            </Text>
-          </View>
-        )}
-
-        {/* Content Area */}
-        <View style={styles.contentContainer}>
-          {loading || loadWorkers || loadingCalendarCupos ? (
-            <View style={styles.loadingContainer}>
-              <Progress.Circle
-                color={Colors.light.primary}
-                indeterminate={true}
-                size={50}
-              />
-              <Text style={styles.loadingText}>
-                <FormattedMessage id="loadingEvents" />
-              </Text>
-            </View>
-          ) : orderPerDays[selectedDate] &&
-            orderPerDays[selectedDate].length > 0 ? (
-            <FlatList
-              data={orderPerDays[selectedDate]}
-              renderItem={({ item }: { item: any }) => (
-                <ItemCalendar
-                  key={`${item.orderId}-${item.date}`}
-                  confirmOrder={confirmOrder}
-                  deleteOrder={(orderId) => {
-                    setOrdrDeleteModalConfirm(true);
-                    setOrderToDelete(orderId);
-                  }}
-                  InfoItem={item}
-                  confirmed={item.status}
-                />
+            
+            <ScrollView style={styles.modalContent} showsVerticalScrollIndicator={false}>
+              {daySchedules.length > 0 ? (
+                daySchedules.map((schedule, index) => (
+                  <View key={index} style={styles.scheduleItem}>
+                    <View style={styles.scheduleTimeContainer}>
+                      <Ionicons 
+                        name="time-outline" 
+                        size={20} 
+                        color={Colors.light.primary} 
+                      />
+                      <Text style={styles.scheduleTime}>
+                        {moment.tz(schedule,user.timeZone).format("HH:mm")}
+                      </Text>
+                    </View>
+                    <View style={styles.scheduleInfo}>
+                      <Text style={styles.scheduleStatus}>
+                        Disponible
+                      </Text>
+                      <View style={[
+                        styles.scheduleStatusIndicator,
+                        { 
+                          backgroundColor: Colors.light.success 
+                        }
+                      ]} />
+                    </View>
+                  </View>
+                ))
+              ) : (
+                <View style={styles.emptyScheduleContainer}>
+                  <Ionicons name="time-outline" size={60} color="#d1d5db" />
+                  <Text style={styles.emptyScheduleTitle}>
+                    No hay horarios configurados
+                  </Text>
+                  <Text style={styles.emptyScheduleSubtitle}>
+                    No se encontraron horarios para esta fecha
+                  </Text>
+                </View>
               )}
-              keyExtractor={(item) => `${item.orderId}-${item.date}`}
-              contentContainerStyle={styles.flatListContent}
-              showsVerticalScrollIndicator={false}
-            />
-          ) : (
-            <View style={styles.emptyStateContainer}>
-              <Ionicons name="calendar-outline" size={80} color="#d1d5db" />
-              <Text style={styles.emptyStateTitle}>No hay eventos</Text>
-              <Text style={styles.emptyStateSubtitle}>
-                No tienes eventos programados para esta fecha
-              </Text>
-            </View>
-          )}
+            </ScrollView>
+          </View>
         </View>
+      </Modal>
 
-        <AddButton onPress={() => setOpenAddModal(!openAddModal)} />
-
-        {openAddModal && selectedDate && (
-          <CreateOrderModal
-            horarios={horarios}
-            selectedWorkerId={selectedWorkerId}
-            currentOrders={
-              orderPerDays[selectedDate] ? orderPerDays[selectedDate] : []
-            }
-            onClose={() => setOpenAddModal(false)}
-            defaultDate={selectedDate}
-            onSuccess={() => {
-              onLoadItems(selectedDate);
-            }}
-            availableDates={availableDates}
-            tipoServicio={ID_TIPOSERVICIO_RESERVA}
-          />
-        )}
-
-        {ordrDeleteModalConfirm && (
-          <ModalConfirmAction
-            loading={loadingDelete}
-            onContinue={() => deleteOrder(oredrToDelete)}
-            title={intl.formatMessage({
-              id: "deleteReservationTitle",
-              defaultMessage: "Delete order",
-            })}
-            message={intl.formatMessage({
-              id: "deleteReservationMessage",
-              defaultMessage: "",
-            })}
-            withReason={true}
-            onClose={() => {
-              setOrdrDeleteModalConfirm(false);
-              setOrderToDelete(null);
-              setReason("");
-            }}
-            reason={reason}
-            setReason={setReason}
-            isOpen={ordrDeleteModalConfirm}
-          />
-        )}
-
-        <DatePickerModal
-          isVisible={showDatePicker}
-          onConfirm={handleDateChange}
-          onCancel={() => setShowDatePicker(false)}
-          currentDate={new Date(selectedDate)}
+      {openAddModal && selectedDate && (
+        <CreateOrderModal
+          horarios={horarios}
+          selectedWorkerId={selectedWorkerId}
+          currentOrders={orderPerDays[selectedDate] ? orderPerDays[selectedDate] : []}
+          onClose={() => setOpenAddModal(false)}
+          defaultDate={selectedDate}
+          onSuccess={() => {
+            onLoadItems(selectedDate);
+          }}
+          availableDates={availableDates}
+          tipoServicio={ID_TIPOSERVICIO_RESERVA}
         />
+      )}
+
+      {ordrDeleteModalConfirm && (
+        <ModalConfirmAction
+          loading={loadingDelete}
+          onContinue={() => deleteOrder(oredrToDelete)}
+          title={intl.formatMessage({
+            id: "deleteReservationTitle",
+            defaultMessage: "Delete order",
+          })}
+          message={intl.formatMessage({
+            id: "deleteReservationMessage",
+            defaultMessage: "",
+          })}
+          withReason={true}
+          onClose={() => {
+            setOrdrDeleteModalConfirm(false);
+            setOrderToDelete(null);
+            setReason("");
+          }}
+          reason={reason}
+          setReason={setReason}
+          isOpen={ordrDeleteModalConfirm}
+        />
+      )}
+
+      <DatePickerModal
+        isVisible={showDatePicker}
+        onConfirm={handleDateChange}
+        onCancel={() => setShowDatePicker(false)}
+        currentDate={new Date(selectedDate)}
+      />
     </SafeAreaView>
   );
 }
@@ -553,6 +633,18 @@ const styles = StyleSheet.create({
   },
   headerLeft: {
     flex: 1,
+  },
+  headerButtons: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  headerActionButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   headerTitle: {
     fontSize: 28,
@@ -708,6 +800,106 @@ const styles = StyleSheet.create({
     color: Colors.light.icon,
     textAlign: "center",
     lineHeight: 24,
+  },
+  // Estilos del Modal de Horarios
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "flex-end",
+  },
+  modalContainer: {
+    backgroundColor: "white",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    maxHeight: "80%",
+    minHeight: "50%",
+  },
+  modalHeader: {
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.light.border,
+    position: "relative",
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: Colors.light.text,
+    marginBottom: 4,
+  },
+  modalSubtitle: {
+    fontSize: 14,
+    color: Colors.light.icon,
+    fontWeight: "500",
+  },
+  modalCloseButton: {
+    position: "absolute",
+    top: 20,
+    right: 20,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "#f8fafc",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    marginTop:10,
+    flex: 1,
+    paddingHorizontal:20
+  },
+  scheduleItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "#f8fafc",
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: Colors.light.border,
+  },
+  scheduleTimeContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  scheduleTime: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: Colors.light.text,
+  },
+  scheduleInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  scheduleStatus: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: Colors.light.icon,
+  },
+  scheduleStatusIndicator: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  emptyScheduleContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 40,
+  },
+  emptyScheduleTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: Colors.light.text,
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  emptyScheduleSubtitle: {
+    fontSize: 14,
+    color: Colors.light.icon,
+    textAlign: "center",
   },
   fab: {
     position: "absolute",

@@ -30,12 +30,6 @@ const ProfileStats: React.FC<StatsProps> = ({
             {Math.round(completionPercentage)}%
           </Text>
         </HStack>
-        <SafeProgress
-          value={completionPercentage}
-          _filledTrack={{ bg: "#075e54" }}
-          size="md"
-        />
-
         <HStack justifyContent="space-between" mt={2}>
           <VStack alignItems="center">
             <Icon

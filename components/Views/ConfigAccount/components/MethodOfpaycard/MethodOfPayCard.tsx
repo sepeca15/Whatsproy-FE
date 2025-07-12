@@ -130,7 +130,7 @@ const MethodOfPayCard = ({ Plan, selectPlan, planInfo }: IMethodOfPayCard) => {
                 end={{ x: 1, y: 0 }}
                 style={styles.ButtonBuyNow}
               >
-                <Pressable style={styles.buttonPressable} android_ripple={{ color: "rgba(255,255,255,0.2)" }}>
+                <Pressable onPress={() => selectPlan(Plan)} style={styles.buttonPressable} android_ripple={{ color: "rgba(255,255,255,0.2)" }}>
                   <CustomText style={styles.buttonText}>
                     <FormattedMessage id="buyNow" defaultMessage="Comprar ahora" />
                   </CustomText>

@@ -43,7 +43,7 @@ const CardCategory: React.FC<ICardCategory> = ({ data, onPress, handleDeleteCate
           </Pressable>
 
           <View style={styles.imageContainer}>
-            {data.image ? (
+            {data.image !== '' ? (
               <View style={styles.imageWrapper}>
                 <Image
                   source={{ uri: data.image }}

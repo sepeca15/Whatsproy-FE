@@ -1,5 +1,3 @@
-"use client"
-
 import React from "react"
 import { TouchableOpacity, View } from "react-native"
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
