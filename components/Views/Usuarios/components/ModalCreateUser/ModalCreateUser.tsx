@@ -68,7 +68,6 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ visible, onClose, onC
     if (validateForm()) {
       setIsLoading(true)
       try {
-        // Crear el objeto con el nombre completo para la interfaz local
         const userForLocal = {
           nombre: `${formData.nombre} ${formData.apellido}`.trim(),
           correo: formData.correo,

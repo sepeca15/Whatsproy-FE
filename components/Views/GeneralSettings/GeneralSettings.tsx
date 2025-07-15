@@ -277,23 +277,6 @@ const GeneralConfig = () => {
                 <View style={styles.row1}>
                   <CustomText style={styles.textInput}>
                     <FormattedMessage
-                      id="openCloseLabel"
-                      defaultMessage="Abrir/Cerrar local"
-                    />
-                  </CustomText>
-                  <Switch
-                    isChecked={form.abierto}
-                    onToggle={() => handleInputChange("abierto", !form.abierto)}
-                    size="lg"
-                    colorScheme="primary"
-                  />
-                </View>
-              </View>
-
-              <View style={styles.notifReserva}>
-                <View style={styles.row1}>
-                  <CustomText style={styles.textInput}>
-                    <FormattedMessage
                       id="assistentEnabled"
                       defaultMessage="Asistente habilitado"
                     />

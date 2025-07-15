@@ -38,7 +38,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, u
   const [isLoading, setIsLoading] = useState(false)
   const intl = useIntl()
 
-  const { pickImage, imageUri, setImageUri } = useImagePicker({
+  const { pickImage, imageUri, setImageUri, loadingUpload } = useImagePicker({
     toastErrorMessage: intl.formatMessage({
       id: "profile.imagePickerError",
       defaultMessage: "Error al seleccionar la imagen",
@@ -321,7 +321,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, u
             disabled={isLoading}
           >
             <View style={styles.updateButtonContent}>
-              {isLoading ? (
+              {isLoading || loadingUpload ? (
                 <ActivityIndicator size="small" color="white" />
               ) : (
                 <Text style={styles.updateButtonText}>

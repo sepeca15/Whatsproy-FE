@@ -9,7 +9,10 @@ import { selectUser } from "../redux/Slices/userSlice/userSlice";
 type KeysApis = "global" | "current";
 
 const ApiInstances = (key: KeysApis) => {
-  const baseUrl = key === "global" ? "https://app.whatsproy.com/" : undefined;
+  const baseUrl =
+    key === "global"
+      ? (process.env.EXPO_PUBLIC_BACKEND_URL ?? "https://app.whatsproy.com/")
+      : undefined;
 
   const globalApi = axios.create({
     baseURL: baseUrl,
@@ -19,7 +22,11 @@ const ApiInstances = (key: KeysApis) => {
     async (config) => {
       const state = store.getState();
       const user = selectUser(state);
-      config.baseURL = key === "global" ? "https://app.whatsproy.com/" : user?.user.apiUrl;
+      config.baseURL =
+        key === "global"
+          ? (process.env.EXPO_PUBLIC_BACKEND_URL ??
+            "https://app.whatsproy.com/")
+          : user?.user.apiUrl;
       const token = await getData("token");
       if (token) {
         config.headers["Authorization"] = `Bearer ${token}`;
@@ -28,7 +35,7 @@ const ApiInstances = (key: KeysApis) => {
     },
     (error) => {
       return Promise.reject(error);
-    },
+    }
   );
 
   globalApi.interceptors.response.use(
@@ -45,7 +52,7 @@ const ApiInstances = (key: KeysApis) => {
         router.push("/(auth)/login");
       }
       return Promise.reject(error);
-    },
+    }
   );
 
   return globalApi;

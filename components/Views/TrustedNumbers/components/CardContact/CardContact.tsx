@@ -41,7 +41,7 @@ const CardContact: React.FC<CardContactProps> = ({
   };
 
   return (
-    <Animated.View entering={FadeInDown.duration(600).delay(index * 100)}>
+    <View>
       <View style={styles.container}>
         <LinearGradient colors={["#ffffff", "#f8fafc"]} style={styles.gradient}>
           <View style={styles.avatarContainer}>
@@ -130,7 +130,7 @@ const CardContact: React.FC<CardContactProps> = ({
           </View>
         </LinearGradient>
       </View>
-    </Animated.View>
+    </View>
   );
 };
 

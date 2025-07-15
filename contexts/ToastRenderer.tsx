@@ -10,7 +10,7 @@ import {
 import Animated, { SlideOutUp } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 
-const { width: screenWidth } = Dimensions.get("window");
+const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
 const Colors = {
   light: {
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    bottom: 0,
+    height: screenHeight * 0.25, // 25% de la altura de pantalla
     zIndex: 999999,
     paddingHorizontal: 16,
     pointerEvents: "box-none",

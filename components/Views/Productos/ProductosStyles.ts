@@ -348,7 +348,7 @@ export const styles = StyleSheet.create({
   tabButton: {
     flex: 1,
     paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
     marginHorizontal: 4,
     borderRadius: 8,
     alignItems: "center",

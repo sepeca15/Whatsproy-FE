@@ -12,6 +12,7 @@ interface UseImagePickerProps {
 const useImagePicker = ({ toastErrorMessage, onImagePicked }: UseImagePickerProps) => {
   const { showToast } = useToastContext();
   const [imageUri, setImageUri] = useState<string | null>(null);
+  const [loadingUpload, setLoadingUpload] = useState(false);
   const [imageApiUrl, setImageApiUrl] = useState<string | null>(null);
 
   const pickImage = async (setFormData?: Function) => {
@@ -46,6 +47,7 @@ const useImagePicker = ({ toastErrorMessage, onImagePicked }: UseImagePickerProp
 
   const uploadImage = async (asset: any, setFormData?: Function) => {
     try {
+      setLoadingUpload(true);
       const file = {
         uri: asset.uri,
         type: asset.mimeType || "image/png",
@@ -75,10 +77,12 @@ const useImagePicker = ({ toastErrorMessage, onImagePicked }: UseImagePickerProp
       console.error("Error en uploadImage:", error);
       showToast({ title: toastErrorMessage, status: "error" });
       return undefined;
+    } finally {
+      setLoadingUpload(false);
     }
   };
 
-  return { pickImage, setImageUri, imageUri, uploadImage };
+  return { pickImage, setImageUri, imageUri, uploadImage, loadingUpload };
 };
 
 export default useImagePicker;

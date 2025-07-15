@@ -224,23 +224,17 @@ const TrustedNumbers = () => {
   );
 
   const renderContactCard = (number: INumberTrusted, index: number) => (
-    <Animated.View
-      key={`${number.id}-${index}`}
-      entering={FadeInDown.duration(600).delay(index * 100)}
-    >
+    <View key={`${number.id}-${index}`}>
       <CardContact
         clickDeleteAction={() => handleDeleteClick(number.id ?? 0)}
         nombre={number.nombre}
         telefono={number.telefono}
       />
-    </Animated.View>
+    </View>
   );
 
   const renderEmptyState = () => (
-    <Animated.View
-      entering={FadeInDown.duration(600).delay(400)}
-      style={styles.emptyState}
-    >
+    <View style={styles.emptyState}>
       <View style={styles.emptyIconContainer}>
         <LinearGradient
           colors={[Colors.light.primary + "25", Colors.light.primary + "15"]}
@@ -283,14 +277,11 @@ const TrustedNumbers = () => {
           </Text>
         </LinearGradient>
       </TouchableOpacity>
-    </Animated.View>
+    </View>
   );
 
   const renderInfoBanner = () => (
-    <Animated.View
-      entering={FadeInDown.duration(600).delay(200)}
-      style={styles.infoBanner}
-    >
+    <View style={styles.infoBanner}>
       <View style={styles.infoIconContainer}>
         <MaterialIcons
           name="info-outline"
@@ -312,7 +303,7 @@ const TrustedNumbers = () => {
           />
         </Text>
       </View>
-    </Animated.View>
+    </View>
   );
 
   return (
@@ -320,10 +311,7 @@ const TrustedNumbers = () => {
       {renderHeader()}
 
       {loadingAll ? (
-        <Animated.View
-          entering={FadeInDown.duration(400)}
-          style={styles.loadingContainer}
-        >
+        <View style={styles.loadingContainer}>
           <Spinner size="large" color={Colors.light.primary} />
           <Text style={styles.loadingText}>
             <FormattedMessage
@@ -331,7 +319,7 @@ const TrustedNumbers = () => {
               defaultMessage="Cargando números de confianza..."
             />
           </Text>
-        </Animated.View>
+        </View>
       ) : (
         <View style={styles.content}>
           {numbersTrusted.length > 0 ? (
@@ -360,10 +348,7 @@ const TrustedNumbers = () => {
       )}
 
       {!loadingAll && numbersTrusted.length > 0 && (
-        <Animated.View
-          entering={FadeInUp.duration(600).delay(800)}
-          style={styles.fabContainer}
-        >
+        <View style={styles.fabContainer}>
           <TouchableOpacity
             style={styles.fab}
             onPress={toggleStateModal}
@@ -376,7 +361,7 @@ const TrustedNumbers = () => {
               <Ionicons name="add" size={28} color="white" />
             </LinearGradient>
           </TouchableOpacity>
-        </Animated.View>
+        </View>
       )}
 
       {stateModalSelectContacts && (

@@ -46,6 +46,7 @@ const UsersScreen: React.FC = () => {
   const [currentUserData, setCurrentUserData] = useState<IUser | null>(null);
   const [companyId, setCompanyId] = useState<number | null>(null);
   const { showToast } = useToastContext();
+  const { handleAddUserData } = useUser();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const searchAnim = useRef(new Animated.Value(0)).current;
   const fabAnim = useRef(new Animated.Value(0)).current;
@@ -341,7 +342,7 @@ const UsersScreen: React.FC = () => {
         correo: updatedUser.correo,
         activo: updatedUser.activo,
         isAdmin: updatedUser.isAdmin,
-        photo: updatedUser.image,
+        image: updatedUser.image,
       };
 
       const response = await api.user.update(updatedUser.id, updateData);
@@ -389,7 +390,7 @@ const UsersScreen: React.FC = () => {
         nombre: nombre,
         apellido: apellido,
         correo: updatedProfile.correo,
-        photo: updatedProfile.image,
+        image: updatedProfile.image,
       };
 
       const response = await api.user.update(updatedProfile.id, updateData);
@@ -402,6 +403,7 @@ const UsersScreen: React.FC = () => {
             user.id === updatedProfile.id ? updatedProfile : user
           ),
         }));
+        handleAddUserData();
         setShowProfileModal(false);
 
         setTimeout(async () => {

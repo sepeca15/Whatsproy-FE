@@ -147,7 +147,6 @@ const Categories = () => {
         setAllCategories((prev) =>
           prev.filter((cat) => cat.id !== categorySelected.id)
         );
-        setModalDelete(false);
         setCategorySelected(null);
         showToast({
           status: "success",
