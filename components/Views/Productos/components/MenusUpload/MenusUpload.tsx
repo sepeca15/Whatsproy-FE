@@ -178,7 +178,7 @@ const MenusUpload: React.FC = () => {
         const mappedProducts: DetectedProductData[] = resp.data.map(
           (product: any, index: number) => ({
             categoryIds: product.categoryIds || null,
-            currency_id: product.currency_id || 1,
+            currency_id: 0,
             descripcion: product.descripcion || "",
             diaSemana: product.diaSemana || 0,
             disponible:
