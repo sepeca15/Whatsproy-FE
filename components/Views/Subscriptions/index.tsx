@@ -166,10 +166,10 @@ const SubscriptionsView = () => {
         >
           <HStack justifyContent="space-between" alignItems="center">
             <VStack>
-              <Text style={styles.subscriptionTitle}>
+              <Text allowFontScaling={false} style={styles.subscriptionTitle}>
                 <FormattedMessage id="activeSubscription" />
               </Text>
-              <Text style={styles.subscriptionSubtitle}>
+              <Text allowFontScaling={false} style={styles.subscriptionSubtitle}>
                 {productInfo?.title ?? currentPayment.subscription_sku}
               </Text>
             </VStack>
@@ -179,7 +179,7 @@ const SubscriptionsView = () => {
                 variant="solid"
                 rounded="full"
               >
-                <Text style={styles.badgeText}>
+                <Text allowFontScaling={false} style={styles.badgeText}>
                   {isCancelled ? "CANCELADA" : "ACTIVA"}
                 </Text>
               </Badge>
@@ -197,7 +197,7 @@ const SubscriptionsView = () => {
                   color="orange.500"
                   size={4}
                 />
-                <Text style={styles.warningText}>
+                <Text allowFontScaling={false} style={styles.warningText}>
                   <FormattedMessage id="subscriptionExpiring" />
                 </Text>
               </HStack>
@@ -206,16 +206,16 @@ const SubscriptionsView = () => {
 
           {isCancelled && (
             <Box style={styles.cancelledBox}>
-              <Text style={styles.cancelledText}>{cancelationInfo}</Text>
+              <Text allowFontScaling={false} style={styles.cancelledText}>{cancelationInfo}</Text>
             </Box>
           )}
 
           <VStack space={4}>
             <HStack justifyContent="space-between" alignItems="center">
-              <Text style={styles.detailLabel}>
+              <Text allowFontScaling={false} style={styles.detailLabel}>
                 <FormattedMessage id="validUntil" />
               </Text>
-              <Text style={styles.detailValue}>
+              <Text allowFontScaling={false} style={styles.detailValue}>
                 {currentPayment.subscription_date
                   ? moment(currentPayment.subscription_date).format("LL")
                   : "-"}
@@ -226,7 +226,7 @@ const SubscriptionsView = () => {
 
             {benefitsArray.length > 0 && (
               <VStack space={3}>
-                <Text style={styles.benefitsTitle}>
+                <Text allowFontScaling={false} style={styles.benefitsTitle}>
                   <FormattedMessage id="benefits" />
                 </Text>
                 {benefitsArray.map((benefit, idx) => (
@@ -239,7 +239,7 @@ const SubscriptionsView = () => {
                         size={3}
                       />
                     </Box>
-                    <Text style={styles.benefitText}>{benefit.trim()}</Text>
+                    <Text allowFontScaling={false} style={styles.benefitText}>{benefit.trim()}</Text>
                   </HStack>
                 ))}
               </VStack>
@@ -256,7 +256,7 @@ const SubscriptionsView = () => {
                 {isLoading ? (
                   <Spinner color="white" />
                 ) : (
-                  <Text style={styles.buttonText}>
+                  <Text allowFontScaling={false} style={styles.buttonText}>
                     <FormattedMessage id="cancelSubscription" />
                   </Text>
                 )}
@@ -266,7 +266,7 @@ const SubscriptionsView = () => {
                 style={[styles.button, styles.renewButton]}
                 onPress={() => setShouldSubscribe(true)}
               >
-                <Text style={styles.buttonText}>
+                <Text allowFontScaling={false} style={styles.buttonText}>
                   <FormattedMessage id="renewSuscription" />
                 </Text>
               </CustomButton>
@@ -289,10 +289,10 @@ const SubscriptionsView = () => {
           </Box>
 
           <VStack space={3} alignItems="center">
-            <Text style={styles.emptyTitle}>
+            <Text allowFontScaling={false} style={styles.emptyTitle}>
               <FormattedMessage id="noSubscriptions" />
             </Text>
-            <Text style={styles.emptyDescription}>
+            <Text allowFontScaling={false} style={styles.emptyDescription}>
               <FormattedMessage id="noSubscriptionsDesc" />
             </Text>
           </VStack>
@@ -310,7 +310,7 @@ const SubscriptionsView = () => {
           >
             <HStack space={2} alignItems="center">
               <Icon as={Feather} name="zap" color="white" size={4} />
-              <Text style={styles.buttonText}>
+              <Text allowFontScaling={false} style={styles.buttonText}>
                 <FormattedMessage id="subscribe" />
               </Text>
             </HStack>

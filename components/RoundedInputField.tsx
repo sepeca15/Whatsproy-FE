@@ -56,6 +56,7 @@ const RoundedInputField: React.FC<InputFieldProps> = ({
     >
       {icon}
       <Input
+        allowFontScaling={false}
         ref={inputRef}
         autoFocus={false}
         keyboardType={keyboardType}

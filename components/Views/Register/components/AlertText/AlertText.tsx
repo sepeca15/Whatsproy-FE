@@ -16,7 +16,7 @@ const AlertText = ({ text }: IAlertText) => {
         color={"#ce0202"}
         size={20}
       />
-      <Text style={styles.text}>{text}</Text>
+      <Text allowFontScaling={false} style={styles.text}>{text}</Text>
     </VStack>
   );
 };

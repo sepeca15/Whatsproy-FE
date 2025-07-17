@@ -48,7 +48,7 @@ const StepHeader: React.FC<StepHeaderProps> = ({ step, total, color, title }) =>
         </View>
       </Animatable.View>
 
-      <Text
+      <Text allowFontScaling={false}
         style={{
           fontSize: 24,
           fontWeight: "bold",
@@ -61,7 +61,7 @@ const StepHeader: React.FC<StepHeaderProps> = ({ step, total, color, title }) =>
       </Text>
 
 
-      <Text style={{ fontSize: 14, color: color === 'white' ? "white" : "#075e54" }}>
+      <Text allowFontScaling={false} style={{ fontSize: 14, color: color === 'white' ? "white" : "#075e54" }}>
         {intl.formatMessage({ id: "step" })} {step}/{total} — {progress}%
       </Text>
 
@@ -84,7 +84,7 @@ const StepHeader: React.FC<StepHeaderProps> = ({ step, total, color, title }) =>
           }}
         />
       </View>
-      <Text
+      <Text allowFontScaling={false}
         style={{
           fontSize: 14,
           color: color === 'white' ? "white" : "#075e54",

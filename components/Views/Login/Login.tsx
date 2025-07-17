@@ -131,11 +131,11 @@ const LoginScreen: React.FC = () => {
 
           <VStack bg={'white'} roundedTop={30} space={4} w="full" alignItems={'center'} height={'70%'}>
             <View w={'90%'} mt={8} style={{ gap: 12 }}>
-              <Text textAlign={'center'} fontSize={35} fontWeight={'semibold'}>
+              <Text allowFontScaling={false} textAlign={'center'} fontSize={35} fontWeight={'semibold'}>
                 <FormattedMessage id="titleLogin" />
               </Text>
 
-              <Text mb={2} textAlign={'center'} fontSize={20} fontWeight={'semibold'}>
+              <Text allowFontScaling={false} mb={2} textAlign={'center'} fontSize={20} fontWeight={'semibold'}>
                 <FormattedMessage id="loginButton" />
               </Text>
 
@@ -161,7 +161,7 @@ const LoginScreen: React.FC = () => {
                 style={styles.textPrimary}
               >
                 <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
-                  <Text color={'teal.700'}>
+                  <Text allowFontScaling={false} color={'teal.700'}>
                     <FormattedMessage
                       id="forgotPassword"
                       defaultMessage="Forgot your password?"
@@ -176,7 +176,7 @@ const LoginScreen: React.FC = () => {
 
               {/* <CustomButton onPress={handleBiometricAuth} colorSpiner="white" borderRadius={1000}>
                 <FontAwesome5 name="fingerprint" size={20} />
-                <Text ml={2}>Ingresar con huella</Text>
+                <Text allowFontScaling={false} ml={2}>Ingresar con huella</Text>
               </CustomButton> */}
 
               <TouchableOpacity
@@ -184,13 +184,13 @@ const LoginScreen: React.FC = () => {
                 style={styles.textPrimary}
               >
                 <View style={{ flexDirection: "row", justifyContent: "center" }}>
-                  <Text>
+                  <Text allowFontScaling={false}>
                     <FormattedMessage
                       id="noAccount"
                       defaultMessage="Don't have an account?"
                     />
                   </Text>
-                  <Text color={'teal.700'}>
+                  <Text allowFontScaling={false} color={'teal.700'}>
                     <FormattedMessage
                       id="createAccount"
                       defaultMessage=" Create one"

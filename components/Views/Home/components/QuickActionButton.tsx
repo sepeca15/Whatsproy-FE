@@ -11,6 +11,7 @@ import CustomText from "./CustomText";
 import styles from "../HomeStyles";
 import { Shadow } from 'react-native-shadow-2';
 import { useUser } from "@/hooks/redux/useUser";
+import { ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
@@ -26,7 +27,7 @@ const QuickActionButton: React.FC<QuickActionButtonProps> = ({
   onPress,
 }) => {
   const { user } = useUser();
-  const isReserva = user?.id_rol === 1;
+  const isReserva = user?.tipo_servicio === ID_TIPOSERVICIO_RESERVA;
 
   const displayIcon = isReserva
     ? icon === "calendar" || icon === "calendar-outline"

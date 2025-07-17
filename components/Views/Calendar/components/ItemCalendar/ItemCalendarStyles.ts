@@ -120,6 +120,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 12,
     borderRadius: 8,
+    height: 42,
     gap: 6,
   },
   deleteButton: {

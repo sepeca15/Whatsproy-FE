@@ -50,7 +50,7 @@ const SettingCard: React.FC<Props> = ({ item, index, isDark, colors, onNavigate 
         </View>
 
         <View style={styles.textContainer}>
-          <Text style={[styles.title, { color: colors.text }]}>{item.title}</Text>
+          <Text allowFontScaling={false} style={[styles.title, { color: colors.text }]}>{item.title}</Text>
           <CustomText style={[styles.description, { color: isDark ? "#9BA1A6" : "#687076" }]}>
             {item.description}
           </CustomText>

@@ -49,7 +49,7 @@ const AnimatedSelect: React.FC<AnimatedSelectProps> = ({
   return (
     <>
       <TouchableOpacity onPress={openModal} style={styles.selectButton}>
-        <Text style={styles.selectButtonText}>{selectedLabel}</Text>
+        <Text allowFontScaling={false} style={styles.selectButtonText}>{selectedLabel}</Text>
         <Ionicons name="chevron-down" size={16} color="#666" />
       </TouchableOpacity>
 
@@ -60,7 +60,7 @@ const AnimatedSelect: React.FC<AnimatedSelectProps> = ({
               <SafeAreaView style={styles.modalWrapper}>
                 <View style={styles.modalContent}>
                   <View style={styles.modalHeader}>
-                    <Text style={styles.modalTitle}>Seleccionar período</Text>
+                    <Text allowFontScaling={false} style={styles.modalTitle}>Seleccionar período</Text>
                     <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
                       <Ionicons name="close" size={20} color="#666" />
                     </TouchableOpacity>
@@ -76,7 +76,7 @@ const AnimatedSelect: React.FC<AnimatedSelectProps> = ({
                         ]}
                         onPress={() => selectItem(option.value)}
                       >
-                        <Text
+                        <Text allowFontScaling={false}
                           style={[
                             styles.optionText,
                             selectedValue === option.value && styles.selectedOptionText,

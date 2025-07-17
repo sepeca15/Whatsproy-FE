@@ -218,7 +218,7 @@ const AddOrEditDailyMenu: React.FC<AddOrEditDailyMenuProps> = ({
 
   const renderCurrencyDropdown = () => (
     <View style={styles.inputContainer}>
-      <Text style={styles.label}>
+      <Text allowFontScaling={false} style={styles.label}>
         <FormattedMessage id="currency" />
       </Text>
       <SelectField
@@ -239,7 +239,7 @@ const AddOrEditDailyMenu: React.FC<AddOrEditDailyMenuProps> = ({
 
   const renderImageSelector = () => (
     <View style={styles.inputContainer}>
-      <Text style={styles.label}>
+      <Text allowFontScaling={false} style={styles.label}>
         <FormattedMessage id="image" defaultMessage="Imagen" />
       </Text>
       <TouchableOpacity
@@ -254,7 +254,7 @@ const AddOrEditDailyMenu: React.FC<AddOrEditDailyMenuProps> = ({
         ) : (
           <View style={styles.imagePlaceholder as any}>
             <Icon name="camera" size={24} color={Colors.light.icon} />
-            <Text style={styles.imagePlaceholderText}>
+            <Text allowFontScaling={false} style={styles.imagePlaceholderText}>
               <FormattedMessage
                 id="selectImage"
                 defaultMessage="Seleccionar imagen"
@@ -305,10 +305,10 @@ const AddOrEditDailyMenu: React.FC<AddOrEditDailyMenuProps> = ({
         {renderImageSelector()}
 
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>
+          <Text allowFontScaling={false} style={styles.label}>
             <FormattedMessage id="name" defaultMessage="Nombre" /> *
           </Text>
-          <TextInput
+          <Text allowFontScaling={false}Input
             style={styles.textInput}
             value={formData?.nombre}
             onChangeText={(text) => handleInputChange("nombre", text)}
@@ -321,10 +321,10 @@ const AddOrEditDailyMenu: React.FC<AddOrEditDailyMenuProps> = ({
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>
+          <Text allowFontScaling={false} style={styles.label}>
             <FormattedMessage id="description" defaultMessage="Descripción" />
           </Text>
-          <TextInput
+          <Text allowFontScaling={false}Input
             style={[styles.textInput, styles.textArea]}
             value={formData?.descripcion}
             onChangeText={(text) => handleInputChange("descripcion", text)}
@@ -340,10 +340,10 @@ const AddOrEditDailyMenu: React.FC<AddOrEditDailyMenuProps> = ({
 
         <View style={styles.row}>
           <View style={[styles.inputContainer, styles.halfWidth]}>
-            <Text style={styles.label}>
+            <Text allowFontScaling={false} style={styles.label}>
               <FormattedMessage id="price" defaultMessage="Precio" /> *
             </Text>
-            <TextInput
+            <Text allowFontScaling={false}Input
               style={styles.textInput}
               value={`${formData?.precio ?? 0}`}
               onChangeText={(text) =>
@@ -356,14 +356,14 @@ const AddOrEditDailyMenu: React.FC<AddOrEditDailyMenuProps> = ({
           </View>
 
           <View style={[styles.inputContainer, styles.halfWidth]}>
-            <Text style={styles.label}>
+            <Text allowFontScaling={false} style={styles.label}>
               <FormattedMessage
                 id="estimatedDuration"
                 defaultMessage="Duración (min)"
               />{" "}
               (min)
             </Text>
-            <TextInput
+            <Text allowFontScaling={false}Input
               style={styles.textInput}
               value={`${formData?.plazoDuracionEstimadoMinutos ?? 0}`}
               onChangeText={(text) =>

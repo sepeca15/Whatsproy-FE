@@ -1,35 +1,51 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useEffect } from "react"
-import { Text, TouchableOpacity, Image, ScrollView, Platform, ActivityIndicator, Switch } from "react-native"
-import { AntDesign } from "@expo/vector-icons"
-import { Colors } from "../../../../constants/Colors"
-import { styles } from "./AddProductStyle"
-import type ProductoTypes from "../../../../services/api/products/types"
-import api from "@/services/api/admin"
-import { FormattedMessage, useIntl } from "react-intl"
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
-import { useUser } from "@/hooks/redux/useUser"
-import useImagePicker from "../../../../utils/ImagePicker/useImagePicker"
-import { View } from "native-base"
-import MultiSelectInput from "@/components/MultiSelectInput"
-import type { ICategoryData } from "../../Categories/components/CardCategory/CardCategory"
-import InputField from "@/components/InputField"
-import SelectField from "@/hooks/SelectField/SelectField"
-import { useEditProductValidation } from "@/hooks/productValidation/useProductValidation"
-import GenericModal from "../../ConfigAccount/components/GenericModal/GenericModal"
-import { useToastContext } from "@/contexts/ToastContext"
+import type React from "react";
+import { useState, useEffect } from "react";
+import {
+  Text,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+  Platform,
+  ActivityIndicator,
+  Switch,
+} from "react-native";
+import { AntDesign } from "@expo/vector-icons";
+import { Colors } from "../../../../constants/Colors";
+import { styles } from "./AddProductStyle";
+import type ProductoTypes from "../../../../services/api/products/types";
+import api from "@/services/api/admin";
+import { FormattedMessage, useIntl } from "react-intl";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { useUser } from "@/hooks/redux/useUser";
+import useImagePicker from "../../../../utils/ImagePicker/useImagePicker";
+import { View } from "native-base";
+import MultiSelectInput from "@/components/MultiSelectInput";
+import type { ICategoryData } from "../../Categories/components/CardCategory/CardCategory";
+import InputField from "@/components/InputField";
+import SelectField from "@/hooks/SelectField/SelectField";
+import { useEditProductValidation } from "@/hooks/productValidation/useProductValidation";
+import GenericModal from "../../ConfigAccount/components/GenericModal/GenericModal";
+import { useToastContext } from "@/contexts/ToastContext";
+import {
+  ID_TIPOSERVICIO_DELIVERY,
+  ID_TIPOSERVICIO_RESERVA,
+} from "@/services/api/tiposervicio/tiposervicio.type";
 
 interface AddProductModalProps {
-  visible: boolean
-  onClose: () => void
-  onSuccess?: () => void
+  visible: boolean;
+  onClose: () => void;
+  onSuccess?: () => void;
 }
 
-const AddProductModal: React.FC<AddProductModalProps> = ({ visible, onClose, onSuccess }) => {
-  const intl = useIntl()
-  const { showToast } = useToastContext()
+const AddProductModal: React.FC<AddProductModalProps> = ({
+  visible,
+  onClose,
+  onSuccess,
+}) => {
+  const intl = useIntl();
+  const { showToast } = useToastContext();
 
   const [formData, setFormData] = useState<ProductoTypes>({
     nombre: "",
@@ -43,32 +59,32 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ visible, onClose, onS
     currency_id: null,
     envioADomicilio: false,
     retiroEnSucursal: false,
-  })
+  });
 
-  const { user } = useUser()
-  const currencies = user?.currencies || []
-  const [selectedImage, setSelectedImage] = useState<string | null>(null)
-  const [allCategories, setAllCategories] = useState<ICategoryData[]>([])
-  const [loading, setLoading] = useState<boolean>(false)
-  const [errors, setErrors] = useState<{ [key: string]: string | null }>({})
-  const { validateForm } = useEditProductValidation()
+  const { user } = useUser();
+  const currencies = user?.currencies || [];
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [allCategories, setAllCategories] = useState<ICategoryData[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [errors, setErrors] = useState<{ [key: string]: string | null }>({});
+  const { validateForm } = useEditProductValidation();
 
   const { pickImage, setImageUri, imageUri } = useImagePicker({
     toastErrorMessage: "Error al seleccionar la imagen",
     onImagePicked: ({ localUri }) => {
       if (localUri) {
-        setSelectedImage(localUri)
+        setSelectedImage(localUri);
       }
     },
-  })
+  });
 
   // Reset form when modal opens
   useEffect(() => {
     if (visible) {
-      resetForm()
-      loadAllCategories()
+      resetForm();
+      loadAllCategories();
     }
-  }, [visible])
+  }, [visible]);
 
   const resetForm = () => {
     setFormData({
@@ -83,37 +99,39 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ visible, onClose, onS
       currency_id: null,
       envioADomicilio: false,
       retiroEnSucursal: false,
-    })
-    setSelectedImage(null)
-    setErrors({})
-    setImageUri(null)
-  }
+    });
+    setSelectedImage(null);
+    setErrors({});
+    setImageUri(null);
+  };
 
   const loadAllCategories = async () => {
     try {
-      const resp = await api.category.getAll()
+      const resp = await api.category.getAll();
       if (resp.ok) {
-        setAllCategories(resp.data)
+        setAllCategories(resp.data);
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   const handleImagePick = async () => {
-    pickImage(setFormData)
-  }
+    pickImage(setFormData);
+  };
 
   const handleSubmit = async () => {
-    if (!validateForm(formData, selectedImage, setErrors)) return
+    if (!validateForm(formData, selectedImage, setErrors)) return;
 
-    setLoading(true)
+    setLoading(true);
     try {
       const response = await api.products.create({
         ...formData,
         precio: Number.parseFloat(formData.precio.toString()),
-        plazoDuracionEstimadoMinutos: Number.parseFloat(formData.plazoDuracionEstimadoMinutos.toString()),
-      })
+        plazoDuracionEstimadoMinutos: Number.parseFloat(
+          formData.plazoDuracionEstimadoMinutos.toString()
+        ),
+      });
 
       showToast({
         status: "success",
@@ -121,12 +139,15 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ visible, onClose, onS
           id: "productCreatedSuccess",
           defaultMessage: "Producto creado exitosamente",
         }),
-      })
+      });
 
-      onSuccess?.()
-      onClose()
+      onSuccess?.();
+      onClose();
     } catch (error: any) {
-      console.error("Error al crear el producto:", error?.response?.data?.message || error)
+      console.error(
+        "Error al crear el producto:",
+        error?.response?.data?.message || error
+      );
       showToast({
         status: "error",
         title: intl.formatMessage({
@@ -134,18 +155,18 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ visible, onClose, onS
           defaultMessage: "Error al crear el producto",
         }),
         descripcion: error?.response?.data?.message || error?.message,
-      })
+      });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleClose = () => {
     if (!loading) {
-      resetForm()
-      onClose()
+      resetForm();
+      onClose();
     }
-  }
+  };
 
   return (
     <GenericModal
@@ -164,16 +185,29 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ visible, onClose, onS
         extraScrollHeight={Platform.OS === "ios" ? 20 : 50}
         showsVerticalScrollIndicator={false}
       >
-        <ScrollView contentContainerStyle={styles.modalScrollContent} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          contentContainerStyle={styles.modalScrollContent}
+          showsVerticalScrollIndicator={false}
+        >
           {/* Image Upload Section */}
-          <TouchableOpacity style={styles.imageUpload} onPress={handleImagePick} disabled={loading}>
+          <TouchableOpacity
+            style={styles.imageUpload}
+            onPress={handleImagePick}
+            disabled={loading}
+          >
             {selectedImage ? (
-              <Image source={{ uri: selectedImage }} style={styles.uploadedImage} />
+              <Image
+                source={{ uri: selectedImage }}
+                style={styles.uploadedImage}
+              />
             ) : (
               <View style={styles.uploadPlaceholder}>
                 <AntDesign name="camera" size={40} color="gray" />
-                <Text style={styles.uploadText}>
-                  <FormattedMessage id="addImage" defaultMessage="Agregar imagen" />
+                <Text allowFontScaling={false} style={styles.uploadText}>
+                  <FormattedMessage
+                    id="addImage"
+                    defaultMessage="Agregar imagen"
+                  />
                 </Text>
               </View>
             )}
@@ -181,8 +215,11 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ visible, onClose, onS
 
           <View style={styles.formContainer}>
             {/* Product Name */}
-            <Text style={styles.label}>
-              <FormattedMessage id="productName" defaultMessage="Nombre del producto" />
+            <Text allowFontScaling={false} style={styles.label}>
+              <FormattedMessage
+                id="productName"
+                defaultMessage="Nombre del producto"
+              />
             </Text>
             <View style={styles.inputfile}>
               <InputField
@@ -192,9 +229,9 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ visible, onClose, onS
                 })}
                 value={formData.nombre}
                 onChangeText={(text) => {
-                  setFormData({ ...formData, nombre: text })
+                  setFormData({ ...formData, nombre: text });
                   if (text.trim()) {
-                    setErrors((prev) => ({ ...prev, nombre: null }))
+                    setErrors((prev) => ({ ...prev, nombre: null }));
                   }
                 }}
                 error={errors.nombre}
@@ -206,7 +243,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ visible, onClose, onS
             {/* Price and Currency Row */}
             <View style={styles.row}>
               <View style={styles.column}>
-                <Text style={styles.label}>
+                <Text allowFontScaling={false} style={styles.label}>
                   <FormattedMessage id="price" defaultMessage="Precio" />
                 </Text>
                 <View style={styles.inputfile}>
@@ -215,13 +252,13 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ visible, onClose, onS
                     keyboardType="numeric"
                     value={formData.precio ? formData.precio.toString() : ""}
                     onChangeText={(text) => {
-                      const value = Number.parseFloat(text)
+                      const value = Number.parseFloat(text);
                       setFormData({
                         ...formData,
                         precio: isNaN(value) ? 0 : value,
-                      })
+                      });
                       if (!isNaN(value) && value > 0) {
-                        setErrors((prev) => ({ ...prev, precio: null }))
+                        setErrors((prev) => ({ ...prev, precio: null }));
                       }
                     }}
                     error={errors.precio}
@@ -232,20 +269,22 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ visible, onClose, onS
               </View>
 
               <View style={styles.column}>
-                <Text style={styles.label}>
+                <Text allowFontScaling={false} style={styles.label}>
                   <FormattedMessage id="currency" defaultMessage="Moneda" />
                 </Text>
                 <SelectField
                   selectedValue={formData.currency_id}
                   onValueChange={(value) => {
-                    setFormData({ ...formData, currency_id: value })
-                    setErrors((prev) => ({ ...prev, currency_id: null }))
+                    setFormData({ ...formData, currency_id: value });
+                    setErrors((prev) => ({ ...prev, currency_id: null }));
                   }}
                   placeholder="Seleccione una moneda"
-                  options={currencies.map((c: { codigo: string; simbolo: string; id: number }) => ({
-                    label: `${c.codigo} (${c.simbolo})`,
-                    value: c.id,
-                  }))}
+                  options={currencies.map(
+                    (c: { codigo: string; simbolo: string; id: number }) => ({
+                      label: `${c.codigo} (${c.simbolo})`,
+                      value: c.id,
+                    })
+                  )}
                   error={errors.currency_id ?? undefined}
                   disabled={loading}
                 />
@@ -253,25 +292,32 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ visible, onClose, onS
             </View>
 
             {/* Estimated Duration */}
-            <Text style={styles.label}>
-              <FormattedMessage id="estimatedDuration" defaultMessage="Duración estimada (minutos)" />
+            <Text allowFontScaling={false} style={styles.label}>
+              <FormattedMessage
+                id="estimatedDuration"
+                defaultMessage="Duración estimada (minutos)"
+              />
             </Text>
             <View style={styles.inputfile}>
               <InputField
                 placeholder="Ej: 45"
                 keyboardType="numeric"
-                value={formData.plazoDuracionEstimadoMinutos ? formData.plazoDuracionEstimadoMinutos.toString() : ""}
+                value={
+                  formData.plazoDuracionEstimadoMinutos
+                    ? formData.plazoDuracionEstimadoMinutos.toString()
+                    : ""
+                }
                 onChangeText={(text) => {
-                  const value = Number.parseInt(text)
+                  const value = Number.parseInt(text);
                   setFormData({
                     ...formData,
                     plazoDuracionEstimadoMinutos: isNaN(value) ? 0 : value,
-                  })
+                  });
                   if (!isNaN(value) && value > 0) {
                     setErrors((prev) => ({
                       ...prev,
                       plazoDuracionEstimadoMinutos: null,
-                    }))
+                    }));
                   }
                 }}
                 error={errors.plazoDuracionEstimadoMinutos}
@@ -282,7 +328,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ visible, onClose, onS
 
             {/* Categories */}
             <View style={styles.column}>
-              <Text style={styles.label}>
+              <Text allowFontScaling={false} style={styles.label}>
                 <FormattedMessage id="category" defaultMessage="Categoría" />
               </Text>
               <View>
@@ -304,13 +350,13 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ visible, onClose, onS
                     setFormData((prev) => ({
                       ...prev,
                       categoryIds: selectedIds,
-                    }))
+                    }));
 
                     if (selectedIds.length > 0 && errors.categoryIds) {
                       setErrors((prev) => ({
                         ...prev,
                         categoryIds: null,
-                      }))
+                      }));
                     }
                   }}
                   onSearch={() => {}}
@@ -320,7 +366,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ visible, onClose, onS
             </View>
 
             {/* Description */}
-            <Text style={styles.label}>
+            <Text allowFontScaling={false} style={styles.label}>
               <FormattedMessage id="description" defaultMessage="Descripción" />
             </Text>
             <View style={styles.inputfile}>
@@ -332,9 +378,9 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ visible, onClose, onS
                 isTextArea
                 value={formData.descripcion}
                 onChangeText={(text) => {
-                  setFormData({ ...formData, descripcion: text })
+                  setFormData({ ...formData, descripcion: text });
                   if (text.trim()) {
-                    setErrors((prev) => ({ ...prev, descripcion: null }))
+                    setErrors((prev) => ({ ...prev, descripcion: null }));
                   }
                 }}
                 error={errors.descripcion}
@@ -344,92 +390,150 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ visible, onClose, onS
             </View>
 
             {/* Delivery Options */}
-            <Text style={styles.label}>
-              <FormattedMessage id="deliveryOptions" defaultMessage="Opciones de entrega" />
-            </Text>
-            
-            <View style={styles.switchContainer}>
-              <Switch
-                value={formData.envioADomicilio}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, envioADomicilio: value })
-                }
-                trackColor={{ false: "#767577", true: Colors.light.primary }}
-                thumbColor={formData.envioADomicilio ? "#f4f3f4" : "#f4f3f4"}
-                ios_backgroundColor="#3e3e3e"
-                disabled={loading}
-              />
-              <View style={styles.switchIconContainer}>
-                <AntDesign name="car" size={24} color={formData.envioADomicilio ? "#4CAF50" : "#999"} />
-              </View>
-              <View style={{ flex: 1, marginLeft: 10 }}>
-                <Text
-                  style={[
-                    styles.switchText,
-                    { color: formData.envioADomicilio ? "#4CAF50" : "#999", marginLeft: 0 },
-                  ]}
-                >
-                  <FormattedMessage id="homeDelivery" defaultMessage="Envío a domicilio" />
-                </Text>
-                <Text style={{ fontSize: 12, color: "#666", marginTop: 2 }}>
-                  <FormattedMessage 
-                    id="homeDeliveryDescription" 
-                    defaultMessage="El producto puede ser entregado en el domicilio del cliente"
+            {user?.tipo_servicio === ID_TIPOSERVICIO_DELIVERY && (
+              <>
+                <Text allowFontScaling={false} style={styles.label}>
+                  <FormattedMessage
+                    id="deliveryOptions"
+                    defaultMessage="Opciones de entrega"
                   />
                 </Text>
-              </View>
-            </View>
 
-            <View style={styles.switchContainer}>
-              <Switch
-                value={formData.retiroEnSucursal}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, retiroEnSucursal: value })
-                }
-                trackColor={{ false: "#767577", true: Colors.light.primary }}
-                thumbColor={formData.retiroEnSucursal ? "#f4f3f4" : "#f4f3f4"}
-                ios_backgroundColor="#3e3e3e"
-                disabled={loading}
-              />
-              <View style={styles.switchIconContainer}>
-                <AntDesign name="home" size={24} color={formData.retiroEnSucursal ? "#4CAF50" : "#999"} />
-              </View>
-              <View style={{ flex: 1, marginLeft: 10 }}>
-                <Text
-                  style={[
-                    styles.switchText,
-                    { color: formData.retiroEnSucursal ? "#4CAF50" : "#999", marginLeft: 0 },
-                  ]}
-                >
-                  <FormattedMessage id="storePickup" defaultMessage="Retiro en sucursal" />
-                </Text>
-                <Text style={{ fontSize: 12, color: "#666", marginTop: 2 }}>
-                  <FormattedMessage 
-                    id="storePickupDescription" 
-                    defaultMessage="El cliente puede retirar el producto directamente en tu local"
+                <View style={styles.switchContainer}>
+                  <Switch
+                    value={formData.envioADomicilio}
+                    onValueChange={(value) =>
+                      setFormData({ ...formData, envioADomicilio: value })
+                    }
+                    trackColor={{
+                      false: "#767577",
+                      true: Colors.light.primary,
+                    }}
+                    thumbColor={
+                      formData.envioADomicilio ? "#f4f3f4" : "#f4f3f4"
+                    }
+                    ios_backgroundColor="#3e3e3e"
+                    disabled={loading}
                   />
-                </Text>
-              </View>
-            </View>
+                  <View style={styles.switchIconContainer}>
+                    <AntDesign
+                      name="car"
+                      size={24}
+                      color={formData.envioADomicilio ? "#4CAF50" : "#999"}
+                    />
+                  </View>
+                  <View style={{ flex: 1, marginLeft: 10 }}>
+                    <Text
+                      allowFontScaling={false}
+                      style={[
+                        styles.switchText,
+                        {
+                          color: formData.envioADomicilio ? "#4CAF50" : "#999",
+                          marginLeft: 0,
+                        },
+                      ]}
+                    >
+                      <FormattedMessage
+                        id="homeDelivery"
+                        defaultMessage="Envío a domicilio"
+                      />
+                    </Text>
+                    <Text
+                      allowFontScaling={false}
+                      style={{ fontSize: 12, color: "#666", marginTop: 2 }}
+                    >
+                      <FormattedMessage
+                        id="homeDeliveryDescription"
+                        defaultMessage="El producto puede ser entregado en el domicilio del cliente"
+                      />
+                    </Text>
+                  </View>
+                </View>
 
+                <View style={styles.switchContainer}>
+                  <Switch
+                    value={formData.retiroEnSucursal}
+                    onValueChange={(value) =>
+                      setFormData({ ...formData, retiroEnSucursal: value })
+                    }
+                    trackColor={{
+                      false: "#767577",
+                      true: Colors.light.primary,
+                    }}
+                    thumbColor={
+                      formData.retiroEnSucursal ? "#f4f3f4" : "#f4f3f4"
+                    }
+                    ios_backgroundColor="#3e3e3e"
+                    disabled={loading}
+                  />
+                  <View style={styles.switchIconContainer}>
+                    <AntDesign
+                      name="home"
+                      size={24}
+                      color={formData.retiroEnSucursal ? "#4CAF50" : "#999"}
+                    />
+                  </View>
+                  <View style={{ flex: 1, marginLeft: 10 }}>
+                    <Text
+                      allowFontScaling={false}
+                      style={[
+                        styles.switchText,
+                        {
+                          color: formData.retiroEnSucursal ? "#4CAF50" : "#999",
+                          marginLeft: 0,
+                        },
+                      ]}
+                    >
+                      <FormattedMessage
+                        id="storePickup"
+                        defaultMessage="Retiro en sucursal"
+                      />
+                    </Text>
+                    <Text
+                      allowFontScaling={false}
+                      style={{ fontSize: 12, color: "#666", marginTop: 2 }}
+                    >
+                      <FormattedMessage
+                        id="storePickupDescription"
+                        defaultMessage="El cliente puede retirar el producto directamente en tu local"
+                      />
+                    </Text>
+                  </View>
+                </View>
+              </>
+            )}
             {/* Action Buttons */}
             <View style={styles.buttonContainer}>
-              <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={handleClose} disabled={loading}>
-                <Text style={[styles.buttonText, styles.cancelButtonText]}>
+              <TouchableOpacity
+                style={[styles.button, styles.cancelButton]}
+                onPress={handleClose}
+                disabled={loading}
+              >
+                <Text
+                  allowFontScaling={false}
+                  style={[styles.buttonText, styles.cancelButtonText]}
+                >
                   <FormattedMessage id="cancel" defaultMessage="Cancelar" />
                 </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[styles.button, styles.createButton, loading && styles.disabledButton]}
+                style={[
+                  styles.button,
+                  styles.createButton,
+                  loading && styles.disabledButton,
+                ]}
                 onPress={handleSubmit}
                 disabled={loading}
               >
                 {loading ? (
                   <ActivityIndicator color="#fff" />
                 ) : (
-                  <Text style={styles.buttonText}>
-                    <FormattedMessage id="createProduct" defaultMessage="Crear Producto" />
+                  <Text allowFontScaling={false} style={styles.buttonText}>
+                    <FormattedMessage
+                      id="createProduct"
+                      defaultMessage="Crear Producto"
+                    />
                   </Text>
                 )}
               </TouchableOpacity>
@@ -438,7 +542,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ visible, onClose, onS
         </ScrollView>
       </KeyboardAwareScrollView>
     </GenericModal>
-  )
-}
+  );
+};
 
-export default AddProductModal
+export default AddProductModal;

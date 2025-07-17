@@ -39,6 +39,7 @@ export const InputHours = ({
             {label}
           </FormControl.Label>
           <Input
+            allowFontScaling={false}
             isReadOnly
             onPressIn={handleOpenPicker}
             value={value}

@@ -65,12 +65,12 @@ const SubscriptionInfo = ({
           <HStack justifyContent="space-between" alignItems="center" mb={2}>
             <HStack space={2} alignItems="center">
               <Icon as={MaterialIcons} name="stars" size="sm" color={Colors.light.primary} />
-              <Text fontSize="sm" color={Colors.light.text} fontWeight="medium">
+              <Text allowFontScaling={false} fontSize="sm" color={Colors.light.text} fontWeight="medium">
                 {plan}
               </Text>
             </HStack>
             <HStack space={2} alignItems="center">
-              <Text fontSize="sm" color={getProgressColor()} fontWeight="medium">
+              <Text allowFontScaling={false} fontSize="sm" color={getProgressColor()} fontWeight="medium">
                 {currentPedidosMonthActual}/{maxPedidos}
               </Text>
               <Icon
@@ -95,7 +95,7 @@ const SubscriptionInfo = ({
           {!isExpanded && (
             <HStack justifyContent="flex-end" mt={2} alignItems="center">
               <Icon as={MaterialIcons} name="info-outline" size="xs" color={Colors.light.icon} mr={1} />
-              <Text fontSize="xs" color={Colors.light.icon}>
+              <Text allowFontScaling={false} fontSize="xs" color={Colors.light.icon}>
                 <FormattedMessage
                   id="subscription.remaining"
                   defaultMessage="Te quedan {count} pedidos"
@@ -109,7 +109,7 @@ const SubscriptionInfo = ({
             <VStack space={2} mt={3} pt={2} borderTopWidth={1} borderTopColor="gray.100">
               <HStack space={2} alignItems="center">
                 <Icon as={MaterialIcons} name="info-outline" size="xs" color={getProgressColor()} />
-                <Text fontSize="xs" color={getProgressColor()} fontWeight="medium">
+                <Text allowFontScaling={false} fontSize="xs" color={getProgressColor()} fontWeight="medium">
                   <FormattedMessage
                     id="subscription.remaining"
                     defaultMessage="Te quedan {count} pedidos disponibles"
@@ -119,17 +119,17 @@ const SubscriptionInfo = ({
               </HStack>
 
               <HStack justifyContent="space-between" alignItems="center">
-                <Text fontSize="xs" color={Colors.light.icon}>
+                <Text allowFontScaling={false} fontSize="xs" color={Colors.light.icon}>
                   <FormattedMessage id="subscription.validUntil" defaultMessage="Válido hasta:" />
                 </Text>
-                <Text fontSize="xs" fontWeight="medium" color={Colors.light.text}>
+                <Text allowFontScaling={false} fontSize="xs" fontWeight="medium" color={Colors.light.text}>
                   {formattedExpiryDate}
                 </Text>
               </HStack>
 
               {isCancelled && (
                 <Box bg="gray.100" borderRadius="sm" p={2} my={1}>
-                  <Text fontSize="xs" color={Colors.light.icon} textAlign="center">
+                  <Text allowFontScaling={false} fontSize="xs" color={Colors.light.icon} textAlign="center">
                     <FormattedMessage
                       id="subscriptionCancelledUntil"
                       defaultMessage="Cancelada, válida hasta {date}"
@@ -142,19 +142,19 @@ const SubscriptionInfo = ({
               {/* Beneficios (si hay) */}
               {benefits && benefits.length > 0 && (
                 <VStack space={1} mt={1}>
-                  <Text fontSize="xs" fontWeight="medium" color={Colors.light.text}>
+                  <Text allowFontScaling={false} fontSize="xs" fontWeight="medium" color={Colors.light.text}>
                     <FormattedMessage id="benefits" defaultMessage="Beneficios:" />
                   </Text>
                   {benefits.slice(0, 2).map((benefit, idx) => (
                     <HStack key={idx} space={1} alignItems="center">
                       <Icon as={MaterialIcons} name="check" size="xs" color={Colors.light.secondary} />
-                      <Text fontSize="xs" color={Colors.light.icon}>
+                      <Text allowFontScaling={false} fontSize="xs" color={Colors.light.icon}>
                         {benefit.trim()}
                       </Text>
                     </HStack>
                   ))}
                   {benefits.length > 2 && (
-                    <Text fontSize="xs" color={Colors.light.primary} textAlign="right" onPress={onViewDetails}>
+                    <Text allowFontScaling={false} fontSize="xs" color={Colors.light.primary} textAlign="right" onPress={onViewDetails}>
                       <FormattedMessage id="viewMore" defaultMessage="Ver más..." />
                     </Text>
                   )}
@@ -164,7 +164,7 @@ const SubscriptionInfo = ({
               {/* Botón para ver detalles completos */}
               <Pressable onPress={onViewDetails}>
                 <Box bg={`rgba(7, 94, 84, 0.05)`} borderRadius="sm" p={2} mt={2} alignItems="center">
-                  <Text fontSize="xs" color={Colors.light.primary}>
+                  <Text allowFontScaling={false} fontSize="xs" color={Colors.light.primary}>
                     <FormattedMessage id="viewSubscriptionDetails" defaultMessage="Ver detalles completos" />
                   </Text>
                 </Box>

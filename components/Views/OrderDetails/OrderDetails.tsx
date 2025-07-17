@@ -269,7 +269,7 @@ const OrderDetails = () => {
     return (
       <View style={styles.loadingContainer}>
         <Progress.Circle color={Colors.light.primary} indeterminate size={70} borderWidth={3} strokeCap="round" />
-        <Text style={styles.loadingText}>
+        <Text allowFontScaling={false} style={styles.loadingText}>
           <FormattedMessage id="loading" defaultMessage="Cargando..." />
         </Text>
       </View>
@@ -423,7 +423,7 @@ const OrderDetails = () => {
         <TouchableOpacity style={globalStyles.backButton} onPress={() => router.back()}>
           <AntDesign name="arrowleft" size={22} color="white" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>
+        <Text allowFontScaling={false} style={styles.headerTitle}>
           <FormattedMessage id="orderDetails" defaultMessage="Detalles del Pedido" />
         </Text>
         <View style={styles.headerRight}>
@@ -441,14 +441,14 @@ const OrderDetails = () => {
             <View style={styles.reclamoContainer}>
               <View style={styles.reclamoHeader}>
                 <MaterialCommunityIcons name="alert-circle-outline" size={20} color="#92400e" />
-                <Text style={styles.reclamoTitle}>
+                <Text allowFontScaling={false} style={styles.reclamoTitle}>
                   <FormattedMessage id="claimIndicator" defaultMessage="Claim received:" />
                 </Text>
               </View>
 
-              <Text style={styles.reclamoText}>{detailOfOrder.data.reclamo?.texto ?? "-"}</Text>
+              <Text allowFontScaling={false} style={styles.reclamoText}>{detailOfOrder.data.reclamo?.texto ?? "-"}</Text>
 
-              <Text style={styles.reclamoDate}>
+              <Text allowFontScaling={false} style={styles.reclamoDate}>
                 <FormattedMessage
                   id="claimDate"
                   defaultMessage="Date: {date}"
@@ -471,12 +471,12 @@ const OrderDetails = () => {
           <Animated.View style={[styles.sectionCard, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
             <View style={styles.sectionHeader}>
               <MaterialIcons name="warning-amber" size={20} color={Colors.light.warning} />
-              <Text style={styles.sectionTitle}>
+              <Text allowFontScaling={false} style={styles.sectionTitle}>
                 <FormattedMessage id="orderNotConfirmed" defaultMessage="Orden no confirmada" />
               </Text>
             </View>
 
-            <Text style={styles.unconfirmedText}>
+            <Text allowFontScaling={false} style={styles.unconfirmedText}>
               <FormattedMessage
                 id="orderUnconfirmedDescription"
                 defaultMessage="Esta orden aún no ha sido confirmada. ¿Deseás confirmarla o cancelarla?"
@@ -485,13 +485,13 @@ const OrderDetails = () => {
 
             <View style={styles.confirmActions}>
               <TouchableOpacity style={[styles.actionButton1]} onPress={handleConfirmOrder}>
-                <Text style={{ ...styles.actionButtonText, color: "white" }}>
+                <Text allowFontScaling={false} style={{ ...styles.actionButtonText, color: "white" }}>
                   <FormattedMessage id="confirmOrder" defaultMessage="Confirmar" />
                 </Text>
               </TouchableOpacity>
 
               <TouchableOpacity style={[styles.actionButton2]} onPress={handleCancelOrder}>
-                <Text
+                <Text allowFontScaling={false}
                   style={{
                     ...styles.actionButtonText,
                     color: Colors.light.primary,
@@ -511,7 +511,7 @@ const OrderDetails = () => {
               size={20}
               color={Colors.light.primary}
             />
-            <Text style={styles.sectionTitle}>
+            <Text allowFontScaling={false} style={styles.sectionTitle}>
               <FormattedMessage id="deliveryMethod" defaultMessage="Método de envío" />
             </Text>
           </View>
@@ -532,7 +532,7 @@ const OrderDetails = () => {
                 size={24}
                 color={detailOfOrder.data?.isDomicilio ? Colors.light.primary : Colors.light.secondary}
               />
-              <Text
+              <Text allowFontScaling={false}
                 style={[
                   styles.deliveryMethodText,
                   {
@@ -548,7 +548,7 @@ const OrderDetails = () => {
               </Text>
             </View>
 
-            <Text style={styles.deliveryMethodDescription}>
+            <Text allowFontScaling={false} style={styles.deliveryMethodDescription}>
               {detailOfOrder.data?.isDomicilio ? (
                 <FormattedMessage
                   id="homeDeliveryDescription"
@@ -568,22 +568,22 @@ const OrderDetails = () => {
           <Animated.View style={[styles.sectionCard, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
             <View style={styles.sectionHeader}>
               <MaterialIcons name="payment" size={20} color={Colors.light.primary} />
-              <Text style={styles.sectionTitle}>
+              <Text allowFontScaling={false} style={styles.sectionTitle}>
                 <FormattedMessage id="paymentInfo" defaultMessage="Información de pago" />
               </Text>
             </View>
 
             <View style={{ marginTop: 8 }}>
-              <Text style={styles.paymentLabel}>
+              <Text allowFontScaling={false} style={styles.paymentLabel}>
                 <FormattedMessage id="paymentMethod" defaultMessage="Método de pago" />:
               </Text>
-              <Text style={styles.paymentValue}>{detailOfOrder.data.paymentMethod.name}</Text>
+              <Text allowFontScaling={false} style={styles.paymentValue}>{detailOfOrder.data.paymentMethod.name}</Text>
 
-              <Text style={styles.paymentDescription}>{detailOfOrder.data.paymentMethod.description}</Text>
+              <Text allowFontScaling={false} style={styles.paymentDescription}>{detailOfOrder.data.paymentMethod.description}</Text>
 
               {detailOfOrder?.data?.transferUrl && (
                 <View style={styles.transferProofContainer}>
-                  <Text style={styles.transferProofLabel}>
+                  <Text allowFontScaling={false} style={styles.transferProofLabel}>
                     <FormattedMessage id="transferProof" defaultMessage="Captura del comprobante de transferencia:" />
                   </Text>
                   <TouchableOpacity
@@ -615,16 +615,16 @@ const OrderDetails = () => {
         <Animated.View style={[styles.orderSummaryCard, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
           <View style={styles.orderNumberRow}>
             <View>
-              <Text style={styles.orderNumberLabel}>
+              <Text allowFontScaling={false} style={styles.orderNumberLabel}>
                 <FormattedMessage id="orderNumber" defaultMessage="Pedido #" />
               </Text>
-              <Text style={styles.orderNumberValue}>{detailOfOrder.data?.id}</Text>
+              <Text allowFontScaling={false} style={styles.orderNumberValue}>{detailOfOrder.data?.id}</Text>
             </View>
             <View>
-              <Text style={styles.orderDateLabel}>
+              <Text allowFontScaling={false} style={styles.orderDateLabel}>
                 <FormattedMessage id="orderDate" defaultMessage="Fecha" />
               </Text>
-              <Text style={styles.orderDateValue}>
+              <Text allowFontScaling={false} style={styles.orderDateValue}>
                 {moment(detailOfOrder.data?.date).locale("es").format("D MMM YYYY")}
               </Text>
             </View>
@@ -634,16 +634,16 @@ const OrderDetails = () => {
 
           <View style={styles.statusSection}>
             <View style={styles.currentStatusContainer}>
-              <Text style={styles.currentStatusLabel}>
+              <Text allowFontScaling={false} style={styles.currentStatusLabel}>
                 <FormattedMessage id="currentStatus" defaultMessage="Estado actual" />
               </Text>
               {detailOfOrder?.data?.confirm ? (
                 <TouchableOpacity style={styles.statusBadge} onPress={toggleModalStatus}>
-                  <Text style={styles.statusText}>{detailOfOrder.data?.estadoActual.nombre}</Text>
+                  <Text allowFontScaling={false} style={styles.statusText}>{detailOfOrder.data?.estadoActual.nombre}</Text>
                   <MaterialIcons name="keyboard-arrow-down" size={16} color="white" />
                 </TouchableOpacity>
               ) : (
-                <Text>{<FormattedMessage id="unconfirmed" defaultMessage={"Sin confirmar"} />}</Text>
+                <Text allowFontScaling={false}>{<FormattedMessage id="unconfirmed" defaultMessage={"Sin confirmar"} />}</Text>
               )}
             </View>
             {detailOfOrder.data?.cambiosEstado.length ? (
@@ -656,13 +656,13 @@ const OrderDetails = () => {
         <Animated.View style={[styles.sectionCard, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
           <View style={styles.sectionHeader}>
             <AntDesign name="database" size={20} color={Colors.light.primary} />
-            <Text style={styles.sectionTitle}>
+            <Text allowFontScaling={false} style={styles.sectionTitle}>
               <FormattedMessage id="informationAditional" />
             </Text>
           </View>
           <View flexDir="column">
             {Object.keys(detailOfOrder.data?.infoLines || {}).map((key) => (
-              <Text key={key} fontSize={16} my={1}>
+              <Text allowFontScaling={false} key={key} fontSize={16} my={1}>
                 -- {key}: {detailOfOrder.data?.infoLines[key]}
               </Text>
             ))}
@@ -673,7 +673,7 @@ const OrderDetails = () => {
         <Animated.View style={[styles.sectionCard, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
           <View style={styles.sectionHeader}>
             <Octicons name="person" size={20} color={Colors.light.primary} />
-            <Text style={styles.sectionTitle}>
+            <Text allowFontScaling={false} style={styles.sectionTitle}>
               <FormattedMessage id="client" defaultMessage="Cliente" />
             </Text>
           </View>
@@ -693,13 +693,13 @@ const OrderDetails = () => {
                 ) : (
                   <>
                     <View style={styles.clientAvatar}>
-                      <Text style={styles.clientAvatarText}>
+                      <Text allowFontScaling={false} style={styles.clientAvatarText}>
                         {detailOfOrder.data?.client.name.charAt(0).toUpperCase()}
                       </Text>
                     </View>
                     <View style={styles.clientDetails}>
-                      <Text style={styles.clientName}>{detailOfOrder.data?.client.name}</Text>
-                      <Text style={styles.clientPhone}>{detailOfOrder.data?.client.phone}</Text>
+                      <Text allowFontScaling={false} style={styles.clientName}>{detailOfOrder.data?.client.name}</Text>
+                      <Text allowFontScaling={false} style={styles.clientPhone}>{detailOfOrder.data?.client.phone}</Text>
                     </View>
                   </>
                 )}
@@ -712,18 +712,18 @@ const OrderDetails = () => {
         <Animated.View style={[styles.sectionCard, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
           <View style={styles.sectionHeader}>
             <AntDesign name="clockcircleo" size={20} color={Colors.light.primary} />
-            <Text style={styles.sectionTitle}>
+            <Text allowFontScaling={false} style={styles.sectionTitle}>
               <FormattedMessage id="estimatedTime" defaultMessage="Tiempo Estimado" />
             </Text>
           </View>
           {detailOfOrder?.data?.estimateTime && (
             <View style={styles.timeContainer}>
               <MaterialCommunityIcons name="timer-outline" size={36} color={Colors.light.primary} />
-              <Text style={styles.estimateTimeValue}>
+              <Text allowFontScaling={false} style={styles.estimateTimeValue}>
                 {detailOfOrder.data?.estimateTime! >= 60
                   ? Math.floor(detailOfOrder?.data?.estimateTime / 60)
                   : detailOfOrder.data?.estimateTime}{" "}
-                <Text style={styles.estimateTimeUnit}>
+                <Text allowFontScaling={false} style={styles.estimateTimeUnit}>
                   {detailOfOrder.data?.estimateTime! >= 60 ? (
                     <FormattedMessage id="hours" />
                   ) : (
@@ -739,7 +739,7 @@ const OrderDetails = () => {
         <Animated.View style={[styles.sectionCard, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
           <View style={styles.sectionHeader}>
             <MaterialIcons name="shopping-bag" size={20} color={Colors.light.primary} />
-            <Text style={styles.sectionTitle}>
+            <Text allowFontScaling={false} style={styles.sectionTitle}>
               <FormattedMessage id="products" defaultMessage="Productos" />
             </Text>
           </View>
@@ -754,10 +754,10 @@ const OrderDetails = () => {
             ))}
           </View>
           <View style={styles.totalContainer}>
-            <Text style={styles.totalLabel}>
+            <Text allowFontScaling={false} style={styles.totalLabel}>
               <FormattedMessage id="total" defaultMessage="Total" />
             </Text>
-            <Text style={styles.totalValue}>$ {detailOfOrder.data?.total}</Text>
+            <Text allowFontScaling={false} style={styles.totalValue}>$ {detailOfOrder.data?.total}</Text>
           </View>
         </Animated.View>
 
@@ -765,17 +765,17 @@ const OrderDetails = () => {
         <Animated.View style={[styles.sectionCard, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
           <View style={styles.sectionHeader}>
             <MaterialIcons name="notes" size={20} color={Colors.light.primary} />
-            <Text style={styles.sectionTitle}>
+            <Text allowFontScaling={false} style={styles.sectionTitle}>
               <FormattedMessage id="customerSpecifications" defaultMessage="Especificaciones del cliente" />
             </Text>
           </View>
           {generalDetail && (
             <View style={styles.generalNotes}>
-              <Text style={styles.generalNotesLabel}>
+              <Text allowFontScaling={false} style={styles.generalNotesLabel}>
                 <FormattedMessage id="orderNotes" defaultMessage="Notas generales:" />
               </Text>
               <View style={styles.notesContainer}>
-                <Text style={styles.generalNotesText}>{generalDetail}</Text>
+                <Text allowFontScaling={false} style={styles.generalNotesText}>{generalDetail}</Text>
               </View>
             </View>
           )}
@@ -784,9 +784,9 @@ const OrderDetails = () => {
               {detailOfOrder.data!.products.map((product, idx) =>
                 product.detalle ? (
                   <View key={idx} style={styles.productSpecification}>
-                    <Text style={styles.productSpecName}>{product.productoInfo.nombre}:</Text>
+                    <Text allowFontScaling={false} style={styles.productSpecName}>{product.productoInfo.nombre}:</Text>
                     <View style={styles.specificationBubble}>
-                      <Text style={styles.productSpecDetail}>{product.detalle}</Text>
+                      <Text allowFontScaling={false} style={styles.productSpecDetail}>{product.detalle}</Text>
                     </View>
                   </View>
                 ) : null,
@@ -796,7 +796,7 @@ const OrderDetails = () => {
           {!generalDetail && !productDetailsExist && (
             <View style={styles.emptyDetailsContainer}>
               <MaterialIcons name="info-outline" size={24} color={Colors.light.icon} />
-              <Text style={styles.emptyDetailsText}>
+              <Text allowFontScaling={false} style={styles.emptyDetailsText}>
                 <FormattedMessage id="noSpecifications" defaultMessage="Sin especificaciones adicionales" />
               </Text>
             </View>
@@ -810,7 +810,7 @@ const OrderDetails = () => {
               disabled={loading}
               style={styles.printButtonTouchable}
             >
-              <Text style={styles.printButtonText}>
+              <Text allowFontScaling={false} style={styles.printButtonText}>
                 {loading ? <FormattedMessage id="printing" /> : <FormattedMessage id="printComanda" />}
               </Text>
             </TouchableOpacity>
@@ -819,7 +819,7 @@ const OrderDetails = () => {
 
         <TouchableOpacity style={styles.chatButton} onPress={handleViewChat} activeOpacity={0.7}>
           <IonIcons name="chatbubble-outline" size={20} color="white" />
-          <Text style={styles.chatButtonText}>
+          <Text allowFontScaling={false} style={styles.chatButtonText}>
             <FormattedMessage id="goToChat" defaultMessage="Ir al chat" />
           </Text>
         </TouchableOpacity>

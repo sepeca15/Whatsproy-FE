@@ -194,7 +194,7 @@ const EditProduct = ({
       extraScrollHeight={Platform.OS === "ios" ? 20 : 50}
     >
       {/* <ScrollView contentContainerStyle={styles.scrollContent}> */}
-      <Text style={styles.title}>
+      <Text allowFontScaling={false} style={styles.title}>
         <FormattedMessage id="editProduct" />
       </Text>
 
@@ -207,7 +207,7 @@ const EditProduct = ({
         ) : (
           <View style={styles.uploadPlaceholder}>
             <AntDesign name="camera" size={40} color="gray" />
-            <Text style={styles.uploadText}>
+            <Text allowFontScaling={false} style={styles.uploadText}>
               <FormattedMessage id="addImage" />
             </Text>
           </View>
@@ -215,7 +215,7 @@ const EditProduct = ({
       </TouchableOpacity>
 
       <View style={styles.formContainer}>
-        <Text style={styles.label}>
+        <Text allowFontScaling={false} style={styles.label}>
           <FormattedMessage id="productName" />
         </Text>
         <View style={styles.inputfile}>
@@ -238,7 +238,7 @@ const EditProduct = ({
 
         <View style={styles.row}>
           <View style={styles.column}>
-            <Text style={styles.label}>
+            <Text allowFontScaling={false} style={styles.label}>
               <FormattedMessage id="price" />
             </Text>
             <View style={styles.inputfile}>
@@ -263,7 +263,7 @@ const EditProduct = ({
           </View>
 
           <View style={styles.column}>
-            <Text style={styles.label}>
+            <Text allowFontScaling={false} style={styles.label}>
               <FormattedMessage id="currency" />
             </Text>
             <SelectField
@@ -284,7 +284,7 @@ const EditProduct = ({
           </View>
         </View>
 
-        <Text style={styles.label}>
+        <Text allowFontScaling={false} style={styles.label}>
           <FormattedMessage id="estimatedDuration" />
         </Text>
         <View style={styles.inputfile}>
@@ -316,7 +316,7 @@ const EditProduct = ({
 
         {
           <View mb={4} style={styles.column}>
-            <Text style={styles.label}>
+            <Text allowFontScaling={false} style={styles.label}>
               <FormattedMessage id="category" defaultMessage="Categoría" />
             </Text>
             <View>
@@ -354,7 +354,7 @@ const EditProduct = ({
           </View>
         }
 
-        <Text style={styles.label}>
+        <Text allowFontScaling={false} style={styles.label}>
           <FormattedMessage id="description" />
         </Text>
         <View style={styles.inputfile}>
@@ -376,7 +376,7 @@ const EditProduct = ({
           />
         </View>
 
-        <Text style={styles.label}>
+        <Text allowFontScaling={false} style={styles.label}>
           <FormattedMessage id="available" />
         </Text>
         <View style={styles.switchContainer}>
@@ -396,7 +396,7 @@ const EditProduct = ({
               <AntDesign name="closecircle" size={24} color="#F44336" />
             )}
           </View>
-          <Text
+          <Text allowFontScaling={false}
             style={[
               styles.switchText,
               { color: formData.disponible ? "#4CAF50" : "#F44336" },
@@ -410,7 +410,7 @@ const EditProduct = ({
           </Text>
         </View>
 
-        <Text style={styles.label}>
+        <Text allowFontScaling={false} style={styles.label}>
           <FormattedMessage id="deliveryOptions" defaultMessage="Opciones de entrega" />
         </Text>
         
@@ -428,7 +428,7 @@ const EditProduct = ({
             <AntDesign name="car" size={24} color={formData.envioADomicilio ? "#4CAF50" : "#999"} />
           </View>
           <View style={{ flex: 1, marginLeft: 10 }}>
-            <Text
+            <Text allowFontScaling={false}
               style={[
                 styles.switchText,
                 { color: formData.envioADomicilio ? "#4CAF50" : "#999", marginLeft: 0 },
@@ -436,7 +436,7 @@ const EditProduct = ({
             >
               <FormattedMessage id="homeDelivery" defaultMessage="Envío a domicilio" />
             </Text>
-            <Text style={{ fontSize: 12, color: "#666", marginTop: 2 }}>
+            <Text allowFontScaling={false} style={{ fontSize: 12, color: "#666", marginTop: 2 }}>
               <FormattedMessage 
                 id="homeDeliveryDescription" 
                 defaultMessage="El producto puede ser entregado en el domicilio del cliente"
@@ -459,7 +459,7 @@ const EditProduct = ({
             <AntDesign name="home" size={24} color={formData.retiroEnSucursal ? "#4CAF50" : "#999"} />
           </View>
           <View style={{ flex: 1, marginLeft: 10 }}>
-            <Text
+            <Text allowFontScaling={false}
               style={[
                 styles.switchText,
                 { color: formData.retiroEnSucursal ? "#4CAF50" : "#999", marginLeft: 0 },
@@ -467,7 +467,7 @@ const EditProduct = ({
             >
               <FormattedMessage id="storePickup" defaultMessage="Retiro en sucursal" />
             </Text>
-            <Text style={{ fontSize: 12, color: "#666", marginTop: 2 }}>
+            <Text allowFontScaling={false} style={{ fontSize: 12, color: "#666", marginTop: 2 }}>
               <FormattedMessage 
                 id="storePickupDescription" 
                 defaultMessage="El cliente puede retirar el producto directamente en tu local"
@@ -484,7 +484,7 @@ const EditProduct = ({
           {loading || loadingimage ? (
             <ActivityIndicator color="#fff" />
           ) : (
-            <Text style={styles.buttonText}>
+            <Text allowFontScaling={false} style={styles.buttonText}>
               <FormattedMessage id="update" />
             </Text>
           )}

@@ -299,9 +299,12 @@ export default function CalendarView() {
   }, [selectedDate, selectedWorkerId]);
 
   const handleDateChange = useCallback((newDate: Date) => {
-    setSelectedDate(newDate.toISOString().split("T")[0]);
+    const formattedDate = moment(newDate)
+      .tz(user.timeZone)
+      .format("YYYY-MM-DD");
+    setSelectedDate(formattedDate);
     setShowDatePicker(false);
-  }, []);
+  }, [user.timeZone]);
 
   const handlePreviousDay = useCallback(() => {
     const prevDay = moment(selectedDate)
@@ -329,17 +332,17 @@ export default function CalendarView() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <LinearGradient
-        colors={[Colors.light.primary, Colors.light.secondary]}
+        colors={[Colors.light.primary, Colors.light.primary]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={styles.headerGradient}
       >
         <View style={styles.headerContent}>
           <View style={styles.headerLeft}>
-            <Text style={styles.headerTitle}>
+            <Text allowFontScaling={false} style={styles.headerTitle}>
               <FormattedMessage id="calendar" defaultMessage="Calendario" />
             </Text>
-            <Text style={styles.headerSubtitle}>
+            <Text allowFontScaling={false} style={styles.headerSubtitle}>
               <FormattedMessage id="manageEvents" />
             </Text>
           </View>
@@ -387,24 +390,24 @@ export default function CalendarView() {
 
       <View style={styles.statsContainer}>
         <View style={styles.statCard}>
-          <Text style={styles.statNumber}>{eventsCount}</Text>
-          <Text style={styles.statLabel}>
+          <Text allowFontScaling={false} style={styles.statNumber}>{eventsCount}</Text>
+          <Text allowFontScaling={false} style={styles.statLabel}>
             <FormattedMessage id="calendarEventText" />
           </Text>
         </View>
         <View style={styles.statCard}>
-          <Text style={[styles.statNumber, { color: Colors.light.success }]}>
+          <Text allowFontScaling={false} style={[styles.statNumber, { color: Colors.light.success }]}>
             {confirmedCount}
           </Text>
-          <Text style={styles.statLabel}>
+          <Text allowFontScaling={false} style={styles.statLabel}>
             <FormattedMessage id="calendarConfirmatedText" />
           </Text>
         </View>
         <View style={styles.statCard}>
-          <Text style={[styles.statNumber, { color: Colors.light.warning }]}>
+          <Text allowFontScaling={false} style={[styles.statNumber, { color: Colors.light.warning }]}>
             {eventsCount - confirmedCount}
           </Text>
-          <Text style={styles.statLabel}>
+          <Text allowFontScaling={false} style={styles.statLabel}>
             <FormattedMessage id="calendarPendingText" />
           </Text>
         </View>
@@ -429,14 +432,14 @@ export default function CalendarView() {
           onPress={() => setShowDatePicker(true)}
           style={styles.currentDateContainer}
         >
-          <Text style={styles.currentDateDay}>
+          <Text allowFontScaling={false} style={styles.currentDateDay}>
             {moment(selectedDate).format("DD")}
           </Text>
           <View style={styles.currentDateInfo}>
-            <Text style={styles.currentDateMonth}>
+            <Text allowFontScaling={false} style={styles.currentDateMonth}>
               {moment(selectedDate).format("MMM").toUpperCase()}
             </Text>
-            <Text style={styles.currentDateWeekday}>
+            <Text allowFontScaling={false} style={styles.currentDateWeekday}>
               {moment(selectedDate).format("dddd")}
             </Text>
           </View>
@@ -450,7 +453,7 @@ export default function CalendarView() {
       {isCurrentDayDisabled && (
         <View style={styles.noSlotsContainer}>
           <Ionicons name="warning" size={20} color={Colors.light.danger} />
-          <Text style={styles.noSlotsText}>
+          <Text allowFontScaling={false} style={styles.noSlotsText}>
             <FormattedMessage
               id="noSlotsForSelectedDay"
               defaultMessage="No hay lugares disponibles para esta fecha."
@@ -464,7 +467,7 @@ export default function CalendarView() {
         {loading || loadWorkers || loadingCalendarCupos ? (
           <View style={styles.loadingContainer}>
             <Progress.Circle color={Colors.light.primary} indeterminate={true} size={50} />
-            <Text style={styles.loadingText}>
+            <Text allowFontScaling={false} style={styles.loadingText}>
               <FormattedMessage id="loadingEvents" />
             </Text>
           </View>
@@ -490,15 +493,15 @@ export default function CalendarView() {
         ) : (
           <View style={styles.emptyStateContainer}>
             <Ionicons name="calendar-outline" size={80} color="#d1d5db" />
-            <Text style={styles.emptyStateTitle}>No hay eventos</Text>
-            <Text style={styles.emptyStateSubtitle}>
+            <Text allowFontScaling={false} style={styles.emptyStateTitle}>No hay eventos</Text>
+            <Text allowFontScaling={false} style={styles.emptyStateSubtitle}>
               No tienes eventos programados para esta fecha
             </Text>
           </View>
         )}
       </View>
 
-      <AddButton onPress={() => toggleOpenModal()} />
+      <AddButton onPress={() => setOpenAddModal(true)} />
 
       {/* Modal de Horarios del Día */}
       <Modal
@@ -510,10 +513,10 @@ export default function CalendarView() {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>
+              <Text allowFontScaling={false} style={styles.modalTitle}>
                 Horarios Disponibles
               </Text>
-              <Text style={styles.modalSubtitle}>
+              <Text allowFontScaling={false} style={styles.modalSubtitle}>
                 {moment(selectedDate).format("dddd, DD [de] MMMM [de] YYYY")}
               </Text>
               <TouchableOpacity
@@ -534,12 +537,12 @@ export default function CalendarView() {
                         size={20} 
                         color={Colors.light.primary} 
                       />
-                      <Text style={styles.scheduleTime}>
+                      <Text allowFontScaling={false} style={styles.scheduleTime}>
                         {moment.tz(schedule,user.timeZone).format("HH:mm")}
                       </Text>
                     </View>
                     <View style={styles.scheduleInfo}>
-                      <Text style={styles.scheduleStatus}>
+                      <Text allowFontScaling={false} style={styles.scheduleStatus}>
                         Disponible
                       </Text>
                       <View style={[
@@ -554,10 +557,10 @@ export default function CalendarView() {
               ) : (
                 <View style={styles.emptyScheduleContainer}>
                   <Ionicons name="time-outline" size={60} color="#d1d5db" />
-                  <Text style={styles.emptyScheduleTitle}>
+                  <Text allowFontScaling={false} style={styles.emptyScheduleTitle}>
                     No hay horarios configurados
                   </Text>
-                  <Text style={styles.emptyScheduleSubtitle}>
+                  <Text allowFontScaling={false} style={styles.emptyScheduleSubtitle}>
                     No se encontraron horarios para esta fecha
                   </Text>
                 </View>

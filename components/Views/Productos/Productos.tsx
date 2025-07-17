@@ -221,7 +221,7 @@ const Productos: React.FC = () => {
       onPress={() => setActiveTab(tabKey)}
       activeOpacity={0.7}
     >
-      <Text
+      <Text allowFontScaling={false}
         style={[
           styles.tabButtonText,
           {
@@ -273,7 +273,7 @@ const Productos: React.FC = () => {
                         source={{ uri: category.image }}
                       />
                     )}
-                    <Text
+                    <Text allowFontScaling={false}
                       style={[
                         styles.categoryText,
                         isSelected && styles.selectedCategoryText,
@@ -349,13 +349,13 @@ const Productos: React.FC = () => {
                 loop
                 style={styles.emptyStateAnimation}
               />
-              <Text style={styles.emptyStateTitle}>
+              <Text allowFontScaling={false} style={styles.emptyStateTitle}>
                 <FormattedMessage
                   id="noProductsFound"
                   defaultMessage="No hay productos"
                 />
               </Text>
-              <Text style={styles.emptyStateSubtitle}>
+              <Text allowFontScaling={false} style={styles.emptyStateSubtitle}>
                 {searchTerm ? (
                   <FormattedMessage
                     id="noProductsMatchSearch"

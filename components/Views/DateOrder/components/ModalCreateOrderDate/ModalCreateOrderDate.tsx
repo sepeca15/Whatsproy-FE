@@ -212,7 +212,7 @@ const ModalCreateOrderDate = ({
       scrollable={true}
     >
       <View style={styles.container}>
-        <Text style={[styles.description, { color: colors.textSecondary }]}>
+        <Text allowFontScaling={false} style={[styles.description, { color: colors.textSecondary }]}>
           <FormattedMessage
             id="orderData.description"
             defaultMessage="Define los campos personalizados que los clientes deberán completar al realizar una orden"
@@ -221,12 +221,12 @@ const ModalCreateOrderDate = ({
 
         <View style={styles.formContainer}>
           <View style={styles.fieldContainer}>
-            <Text style={[styles.label, { color: colors.text }]}>
+            <Text allowFontScaling={false} style={[styles.label, { color: colors.text }]}>
               <FormattedMessage
                 id="orderData.nameLabel"
                 defaultMessage="Nombre del campo"
               />
-              <Text style={styles.required}> *</Text>
+              <Text allowFontScaling={false} style={styles.required}> *</Text>
             </Text>
             <InputField
               value={form.nombre}
@@ -238,17 +238,17 @@ const ModalCreateOrderDate = ({
               style={[errors.nombre && styles.inputError]}
             />
             {errors.nombre && (
-              <Text style={styles.errorText}>{errors.nombre}</Text>
+              <Text allowFontScaling={false} style={styles.errorText}>{errors.nombre}</Text>
             )}
           </View>
 
           <View style={styles.fieldContainer}>
-            <Text style={[styles.label, { color: colors.text }]}>
+            <Text allowFontScaling={false} style={[styles.label, { color: colors.text }]}>
               <FormattedMessage
                 id="orderData.requiredLabel"
                 defaultMessage="¿Es requerido?"
               />
-              <Text style={styles.required}> *</Text>
+              <Text allowFontScaling={false} style={styles.required}> *</Text>
             </Text>
             <View style={[styles.input, errors.requerido && styles.inputError]}>
               <RNPickerSelect
@@ -286,18 +286,18 @@ const ModalCreateOrderDate = ({
               />
             </View>
             {errors.requerido && (
-              <Text style={styles.errorText}>{errors.requerido}</Text>
+              <Text allowFontScaling={false} style={styles.errorText}>{errors.requerido}</Text>
             )}
           </View>
 
           {/* Type Field */}
           <View style={styles.fieldContainer}>
-            <Text style={[styles.label, { color: colors.text }]}>
+            <Text allowFontScaling={false} style={[styles.label, { color: colors.text }]}>
               <FormattedMessage
                 id="orderData.typeLabel"
                 defaultMessage="Tipo de campo"
               />
-              <Text style={styles.required}> *</Text>
+              <Text allowFontScaling={false} style={styles.required}> *</Text>
             </Text>
             <View style={[styles.input, errors.tipo && styles.inputError]}>
               <RNPickerSelect
@@ -348,7 +348,7 @@ const ModalCreateOrderDate = ({
                 }}
               />
             </View>
-            {errors.tipo && <Text style={styles.errorText}>{errors.tipo}</Text>}
+            {errors.tipo && <Text allowFontScaling={false} style={styles.errorText}>{errors.tipo}</Text>}
           </View>
 
           {/* Preview Section */}
@@ -359,24 +359,24 @@ const ModalCreateOrderDate = ({
                 { backgroundColor: colors.primary + "15" },
               ]}
             >
-              <Text style={[styles.previewLabel, { color: colors.primary }]}>
+              <Text allowFontScaling={false} style={[styles.previewLabel, { color: colors.primary }]}>
                 <FormattedMessage
                   id="orderData.preview"
                   defaultMessage="Vista previa del campo:"
                 />
               </Text>
               <View style={styles.previewContent}>
-                <Text style={styles.previewEmoji}>
+                <Text allowFontScaling={false} style={styles.previewEmoji}>
                   {getFieldTypeIcon(form.tipo)}
                 </Text>
                 <View style={styles.previewTextContainer}>
-                  <Text
+                  <Text allowFontScaling={false}
                     style={[styles.previewFieldName, { color: colors.text }]}
                   >
                     {form.nombre}
-                    {form.requerido && <Text style={styles.required}> *</Text>}
+                    {form.requerido && <Text allowFontScaling={false} style={styles.required}> *</Text>}
                   </Text>
-                  <Text
+                  <Text allowFontScaling={false}
                     style={[
                       styles.previewFieldType,
                       { color: colors.textSecondary },
@@ -410,7 +410,7 @@ const ModalCreateOrderDate = ({
           {loadingApi && (
             <View style={styles.loadingContainer}>
               <Spinner size="sm" color={colors.primary} />
-              <Text
+              <Text allowFontScaling={false}
                 style={[styles.loadingText, { color: colors.textSecondary }]}
               >
                 <FormattedMessage

@@ -126,7 +126,7 @@ const CompaniesView = () => {
             { backgroundColor: value ? "#4caf4fa6" : "#f44336ae" },
           ]}
         >
-          <Text style={{ color: "white", fontWeight: 600, padding: 4 }}>
+          <Text allowFontScaling={false} style={{ color: "white", fontWeight: 600, padding: 4 }}>
             {value === true ? "Sí" : "No"}
           </Text>
         </View>
@@ -139,94 +139,94 @@ const CompaniesView = () => {
 
     return (
       <View style={styles.card}>
-        <Text style={styles.companyName}>{item.nombre}</Text>
+        <Text allowFontScaling={false} style={styles.companyName}>{item.nombre}</Text>
 
         <View style={styles.row}>
-          <Text style={styles.label}>
+          <Text allowFontScaling={false} style={styles.label}>
             <FormattedMessage id="openingTime" />
           </Text>
-          <Text style={styles.value}>{item.hora_apertura || "-"}</Text>
+          <Text allowFontScaling={false} style={styles.value}>{item.hora_apertura || "-"}</Text>
         </View>
 
         <View style={styles.row}>
-          <Text style={styles.label}>
+          <Text allowFontScaling={false} style={styles.label}>
             <FormattedMessage id="closingTime" />
           </Text>
-          <Text style={styles.value}>{item.hora_cierre || "-"}</Text>
+          <Text allowFontScaling={false} style={styles.value}>{item.hora_cierre || "-"}</Text>
         </View>
 
         <View style={styles.row}>
-          <Text style={styles.label}>
+          <Text allowFontScaling={false} style={styles.label}>
             <FormattedMessage id="deploy" />
           </Text>
           {renderBooleanValue(item.deploy)}
         </View>
 
         <View style={styles.row}>
-          <Text style={styles.label}>
+          <Text allowFontScaling={false} style={styles.label}>
             <FormattedMessage id="greenAPI" />
           </Text>
           {renderBooleanValue(item.greenApiConfigured)}
         </View>
 
         <View style={styles.row}>
-          <Text style={styles.label}>
+          <Text allowFontScaling={false} style={styles.label}>
             <FormattedMessage id="address" />
           </Text>
-          <Text style={styles.value}>{item.direccion || "-"}</Text>
+          <Text allowFontScaling={false} style={styles.value}>{item.direccion || "-"}</Text>
         </View>
 
         <View style={styles.row}>
-          <Text style={styles.label}>
+          <Text allowFontScaling={false} style={styles.label}>
             <FormattedMessage id="notifyReservation" />
           </Text>
           {renderBooleanValue(item.notificarReservaHoras)}
         </View>
 
         <View style={styles.row}>
-          <Text style={styles.label}>
+          <Text allowFontScaling={false} style={styles.label}>
             <FormattedMessage id="isOpen" />
           </Text>
           {renderBooleanValue(item.abierto)}
         </View>
 
         <View style={styles.row}>
-          <Text style={styles.label}>
+          <Text allowFontScaling={false} style={styles.label}>
             <FormattedMessage id="dbName" />
           </Text>
-          <Text style={styles.value}>{item.db_name || "-"}</Text>
+          <Text allowFontScaling={false} style={styles.value}>{item.db_name || "-"}</Text>
         </View>
 
         <View style={styles.row}>
-          <Text style={styles.label}>
+          <Text allowFontScaling={false} style={styles.label}>
             <FormattedMessage id="serviceType" />
           </Text>
-          <Text style={styles.value}>{item.tipoServicioId || "-"}</Text>
+          <Text allowFontScaling={false} style={styles.value}>{item.tipoServicioId || "-"}</Text>
         </View>
 
         <View style={styles.row}>
-          <Text style={styles.label}>
+          <Text allowFontScaling={false} style={styles.label}>
             <FormattedMessage id="calendarInterval" />
           </Text>
-          <Text style={styles.value}>
+          <Text allowFontScaling={false} style={styles.value}>
             {item.intervaloTiempoCalendario || "-"}
           </Text>
         </View>
 
         <View style={styles.row}>
-          <Text style={styles.label}>
+          <Text allowFontScaling={false} style={styles.label}>
             <FormattedMessage id="paymentExpire" />
           </Text>
-          <Text style={styles.value}>
+          <Text allowFontScaling={false} style={styles.value}>
             {paymentExpireDate.format("YYYY-MM-DD HH:mm")}
           </Text>
           {daysToExpire <= 3 && daysToExpire >= 0 && (
-            <Text style={styles.expireSoonText}>Expire soon</Text>
+            <Text allowFontScaling={false} style={styles.expireSoonText}>Expire soon</Text>
           )}
         </View>
 
         <View style={styles.row}>
-          <Text style={styles.label}>
+          <Text allowFontScaling={false} style={styles.label}>
             <FormattedMessage id="paymentActive" />
           </Text>
           {renderBooleanValue(item.payment?.isActive)}
@@ -238,7 +238,7 @@ const CompaniesView = () => {
             loading={editing}
             style={styles.deployButton}
           >
-            <Text style={{ color: "white", fontWeight: "600" }}>
+            <Text allowFontScaling={false} style={{ color: "white", fontWeight: "600" }}>
               <FormattedMessage id="edit" defaultMessage="edit" />
             </Text>
           </CustomButton>
@@ -247,7 +247,7 @@ const CompaniesView = () => {
             loading={deploying}
             style={styles.deployButton}
           >
-            <Text style={{ color: "white", fontWeight: "600" }}>
+            <Text allowFontScaling={false} style={{ color: "white", fontWeight: "600" }}>
               <FormattedMessage id="deployNow" defaultMessage="Deploy" />
             </Text>
           </CustomButton>
@@ -312,12 +312,12 @@ const CompaniesView = () => {
           onPress={() => loadCompanies(page - 1)}
           style={[page <= 1 && styles.pageButtonDisabled]}
         >
-          <Text style={styles.pageButtonText}>
+          <Text allowFontScaling={false} style={styles.pageButtonText}>
             <FormattedMessage id="previous" />
           </Text>
         </CustomButton>
 
-        <Text style={styles.pageInfo}>
+        <Text allowFontScaling={false} style={styles.pageInfo}>
           <FormattedMessage
             id="pageInfo"
             values={{ currentPage: page, totalPages }}
@@ -329,7 +329,7 @@ const CompaniesView = () => {
           onPress={() => loadCompanies(page + 1)}
           style={[page >= totalPages && styles.pageButtonDisabled]}
         >
-          <Text style={styles.pageButtonText}>
+          <Text allowFontScaling={false} style={styles.pageButtonText}>
             <FormattedMessage id="next" />
           </Text>
         </CustomButton>

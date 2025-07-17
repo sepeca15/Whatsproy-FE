@@ -247,13 +247,13 @@ const TrustedNumbers = () => {
           />
         </LinearGradient>
       </View>
-      <Text style={styles.emptyTitle}>
+      <Text allowFontScaling={false} style={styles.emptyTitle}>
         <FormattedMessage
           id="trustedNumbers.empty.title"
           defaultMessage="No hay números de confianza"
         />
       </Text>
-      <Text style={styles.emptySubtitle}>
+      <Text allowFontScaling={false} style={styles.emptySubtitle}>
         <FormattedMessage
           id="trustedNumbers.empty.subtitle"
           defaultMessage="Agrega contactos de confianza para facilitar la comunicación"
@@ -269,7 +269,7 @@ const TrustedNumbers = () => {
           style={styles.emptyButtonGradient}
         >
           <Ionicons name="add" size={20} color="white" />
-          <Text style={styles.emptyButtonText}>
+          <Text allowFontScaling={false} style={styles.emptyButtonText}>
             <FormattedMessage
               id="trustedNumbers.empty.button"
               defaultMessage="Agregar primer contacto"
@@ -290,13 +290,13 @@ const TrustedNumbers = () => {
         />
       </View>
       <View style={styles.infoTextContainer}>
-        <Text style={styles.infoTitle}>
+        <Text allowFontScaling={false} style={styles.infoTitle}>
           <FormattedMessage
             id="trustedNumbers.info.title"
             defaultMessage="Números de confianza"
           />
         </Text>
-        <Text style={styles.infoDescription}>
+        <Text allowFontScaling={false} style={styles.infoDescription}>
           <FormattedMessage
             id="trustedNumbers.info.description"
             defaultMessage="Los números de confianza pueden realizar pedidos sin restricciones adicionales"
@@ -313,7 +313,7 @@ const TrustedNumbers = () => {
       {loadingAll ? (
         <View style={styles.loadingContainer}>
           <Spinner size="large" color={Colors.light.primary} />
-          <Text style={styles.loadingText}>
+          <Text allowFontScaling={false} style={styles.loadingText}>
             <FormattedMessage
               id="trustedNumbers.loading"
               defaultMessage="Cargando números de confianza..."

@@ -126,7 +126,7 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ visible, onClose, onC
             <TouchableOpacity onPress={handleClose} style={styles.closeButton} disabled={isLoading}>
               <Ionicons name="close" size={24} color="white" />
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>Nuevo Usuario</Text>
+            <Text allowFontScaling={false} style={styles.headerTitle}>Nuevo Usuario</Text>
             <View style={styles.placeholder} />
           </View>
         </View>
@@ -136,10 +136,10 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ visible, onClose, onC
           <View style={styles.form}>
             {/* Name Input */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Nombre</Text>
+              <Text allowFontScaling={false} style={styles.label}>Nombre</Text>
               <View style={[styles.inputContainer, errors.nombre && styles.inputError]}>
                 <Ionicons name="person-outline" size={20} color={Colors.light.textSecondary} />
-                <TextInput
+                <Text allowFontScaling={false}Input
                   style={styles.input}
                   placeholder="Ingresa el nombre"
                   value={formData.nombre}
@@ -148,15 +148,15 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ visible, onClose, onC
                   editable={!isLoading}
                 />
               </View>
-              {errors.nombre && <Text style={styles.errorText}>{errors.nombre}</Text>}
+              {errors.nombre && <Text allowFontScaling={false} style={styles.errorText}>{errors.nombre}</Text>}
             </View>
 
             {/* Last Name Input */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Apellido</Text>
+              <Text allowFontScaling={false} style={styles.label}>Apellido</Text>
               <View style={[styles.inputContainer, errors.apellido && styles.inputError]}>
                 <Ionicons name="person-outline" size={20} color={Colors.light.textSecondary} />
-                <TextInput
+                <Text allowFontScaling={false}Input
                   style={styles.input}
                   placeholder="Ingresa el apellido"
                   value={formData.apellido}
@@ -165,15 +165,15 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ visible, onClose, onC
                   editable={!isLoading}
                 />
               </View>
-              {errors.apellido && <Text style={styles.errorText}>{errors.apellido}</Text>}
+              {errors.apellido && <Text allowFontScaling={false} style={styles.errorText}>{errors.apellido}</Text>}
             </View>
 
             {/* Email Input */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Email</Text>
+              <Text allowFontScaling={false} style={styles.label}>Email</Text>
               <View style={[styles.inputContainer, errors.correo && styles.inputError]}>
                 <MaterialIcons name="email" size={20} color={Colors.light.textSecondary} />
-                <TextInput
+                <Text allowFontScaling={false}Input
                   style={styles.input}
                   placeholder="usuario@empresa.com"
                   value={formData.correo}
@@ -184,15 +184,15 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ visible, onClose, onC
                   editable={!isLoading}
                 />
               </View>
-              {errors.correo && <Text style={styles.errorText}>{errors.correo}</Text>}
+              {errors.correo && <Text allowFontScaling={false} style={styles.errorText}>{errors.correo}</Text>}
             </View>
 
             {/* Password Input */}
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Contraseña</Text>
+              <Text allowFontScaling={false} style={styles.label}>Contraseña</Text>
               <View style={[styles.inputContainer, errors.password && styles.inputError]}>
                 <Ionicons name="lock-closed-outline" size={20} color={Colors.light.textSecondary} />
-                <TextInput
+                <Text allowFontScaling={false}Input
                   style={styles.input}
                   placeholder="Ingresa la contraseña"
                   value={formData.password}
@@ -202,7 +202,7 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ visible, onClose, onC
                   editable={!isLoading}
                 />
               </View>
-              {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+              {errors.password && <Text allowFontScaling={false} style={styles.errorText}>{errors.password}</Text>}
             </View>
 
             {/* Status Switch */}
@@ -212,8 +212,8 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ visible, onClose, onC
                   <Ionicons name="checkmark-circle" size={24} color={Colors.light.success} />
                 </View>
                 <View style={styles.switchContent}>
-                  <Text style={styles.switchLabel}>Usuario activo</Text>
-                  <Text style={styles.switchDescription}>El usuario puede acceder al sistema</Text>
+                  <Text allowFontScaling={false} style={styles.switchLabel}>Usuario activo</Text>
+                  <Text allowFontScaling={false} style={styles.switchDescription}>El usuario puede acceder al sistema</Text>
                 </View>
                 <Switch
                   value={formData.activo}
@@ -235,8 +235,8 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ visible, onClose, onC
                   <Ionicons name="shield-checkmark" size={24} color={Colors.light.warning} />
                 </View>
                 <View style={styles.switchContent}>
-                  <Text style={styles.switchLabel}>Permisos de administrador</Text>
-                  <Text style={styles.switchDescription}>Puede gestionar otros usuarios</Text>
+                  <Text allowFontScaling={false} style={styles.switchLabel}>Permisos de administrador</Text>
+                  <Text allowFontScaling={false} style={styles.switchDescription}>Puede gestionar otros usuarios</Text>
                 </View>
                 <Switch
                   value={formData.isAdmin}
@@ -261,7 +261,7 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ visible, onClose, onC
             activeOpacity={0.7}
             disabled={isLoading}
           >
-            <Text style={styles.cancelButtonText}>Cancelar</Text>
+            <Text allowFontScaling={false} style={styles.cancelButtonText}>Cancelar</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -274,7 +274,7 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ visible, onClose, onC
               {isLoading ? (
                 <ActivityIndicator size="small" color="white" />
               ) : (
-                <Text style={styles.createButtonText}>Crear Usuario</Text>
+                <Text allowFontScaling={false} style={styles.createButtonText}>Crear Usuario</Text>
               )}
             </View>
           </TouchableOpacity>

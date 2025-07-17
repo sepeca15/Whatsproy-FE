@@ -81,7 +81,7 @@ const SalesChart: React.FC<SalesChartProps> = ({
       <Box bg="white" borderRadius="lg" p={4}>
         <VStack space={2}>
           <HStack justifyContent="space-between" alignItems="center">
-            <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+            <Text allowFontScaling={false} style={{ fontSize: 16, fontWeight: "bold" }}>
               <FormattedMessage
                 id="sales.trend"
                 defaultMessage="Tendencia de ventas - Últimos 6 meses"
@@ -124,7 +124,7 @@ const SalesChart: React.FC<SalesChartProps> = ({
                   width={barWidth + 4}
                 >
                   {hasData && showValue && (
-                    <Text
+                    <Text allowFontScaling={false}
                       style={valueStyle}
                       numberOfLines={1}
                       ellipsizeMode="tail"
@@ -140,7 +140,7 @@ const SalesChart: React.FC<SalesChartProps> = ({
                     borderRadius="md"
                     opacity={hasData ? 1 : 0.5}
                   />
-                  <Text
+                  <Text allowFontScaling={false}
                     style={{
                       fontSize,
                       fontWeight: hasData ? "bold" : "normal",
@@ -160,37 +160,37 @@ const SalesChart: React.FC<SalesChartProps> = ({
 
         <HStack justifyContent="space-between">
           <VStack>
-            <Text style={{ fontSize: 12, color: "#666" }}>
+            <Text allowFontScaling={false} style={{ fontSize: 12, color: "#666" }}>
               <FormattedMessage id="sales.highest" defaultMessage="Venta más alta" />
             </Text>
-            <Text style={{ fontSize: 14, fontWeight: "bold" }}>
+            <Text allowFontScaling={false} style={{ fontSize: 14, fontWeight: "bold" }}>
               {maxSale > 0 ? `$${maxSale.toLocaleString()}` : "N/A"}
             </Text>
-            <Text style={{ fontSize: 12, color: "#075e54" }}>
+            <Text allowFontScaling={false} style={{ fontSize: 12, color: "#075e54" }}>
               {maxSale > 0 ? getPeriodName(maxSaleIndex) : "N/A"}
             </Text>
           </VStack>
 
           <VStack>
-            <Text style={{ fontSize: 12, color: "#666" }}>
+            <Text allowFontScaling={false} style={{ fontSize: 12, color: "#666" }}>
               <FormattedMessage id="sales.average" defaultMessage="Promedio" />
             </Text>
-            <Text style={{ fontSize: 14, fontWeight: "bold" }}>
+            <Text allowFontScaling={false} style={{ fontSize: 14, fontWeight: "bold" }}>
               {avgSale > 0 ? `$${avgSale.toLocaleString()}` : "N/A"}
             </Text>
-            <Text style={{ fontSize: 12, color: "#075e54" }}>
+            <Text allowFontScaling={false} style={{ fontSize: 12, color: "#075e54" }}>
               Mensual
             </Text>
           </VStack>
 
           <VStack>
-            <Text style={{ fontSize: 12, color: "#666" }}>
+            <Text allowFontScaling={false} style={{ fontSize: 12, color: "#666" }}>
               <FormattedMessage id="sales.lowest" defaultMessage="Venta más baja" />
             </Text>
-            <Text style={{ fontSize: 14, fontWeight: "bold" }}>
+            <Text allowFontScaling={false} style={{ fontSize: 14, fontWeight: "bold" }}>
               {minSale > 0 ? `$${minSale.toLocaleString()}` : "N/A"}
             </Text>
-            <Text style={{ fontSize: 12, color: "#075e54" }}>
+            <Text allowFontScaling={false} style={{ fontSize: 12, color: "#075e54" }}>
               {minSale > 0 ? getPeriodName(minSaleIndex) : "N/A"}
             </Text>
           </VStack>

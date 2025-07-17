@@ -209,7 +209,7 @@ export const CierreProvisorio = () => {
           <View style={styles.statusBadgeContainer}>
             <View style={[styles.statusBadge, { backgroundColor: statusInfo.bgColor }]}>
               <MaterialIcons name={statusInfo.icon as any} size={12} color={statusInfo.color} />
-              <Text style={[styles.statusText, { color: statusInfo.color }]}>{statusInfo.label}</Text>
+              <Text allowFontScaling={false} style={[styles.statusText, { color: statusInfo.color }]}>{statusInfo.label}</Text>
             </View>
           </View>
 
@@ -224,10 +224,10 @@ export const CierreProvisorio = () => {
                 </LinearGradient>
               </View>
               <View style={styles.dateInfo}>
-                <Text style={styles.dateLabel}>
+                <Text allowFontScaling={false} style={styles.dateLabel}>
                   <FormattedMessage id="cierre.startDate" defaultMessage="Fecha de inicio" />
                 </Text>
-                <Text style={styles.dateValue}>{inicio.format("D [de] MMMM, HH:mm")}</Text>
+                <Text allowFontScaling={false} style={styles.dateValue}>{inicio.format("D [de] MMMM, HH:mm")}</Text>
               </View>
             </View>
 
@@ -241,10 +241,10 @@ export const CierreProvisorio = () => {
                 </LinearGradient>
               </View>
               <View style={styles.dateInfo}>
-                <Text style={styles.dateLabel}>
+                <Text allowFontScaling={false} style={styles.dateLabel}>
                   <FormattedMessage id="cierre.endDate" defaultMessage="Fecha de fin" />
                 </Text>
-                <Text style={styles.dateValue}>{final.format("D [de] MMMM, HH:mm")}</Text>
+                <Text allowFontScaling={false} style={styles.dateValue}>{final.format("D [de] MMMM, HH:mm")}</Text>
               </View>
             </View>
           </View>
@@ -286,10 +286,10 @@ export const CierreProvisorio = () => {
           <MaterialIcons name="event-busy" size={64} color={Colors.light.primary} />
         </LinearGradient>
       </View>
-      <Text style={styles.emptyTitle}>
+      <Text allowFontScaling={false} style={styles.emptyTitle}>
         <FormattedMessage id="cierre.empty.title" defaultMessage="No hay cierres programados" />
       </Text>
-      <Text style={styles.emptySubtitle}>
+      <Text allowFontScaling={false} style={styles.emptySubtitle}>
         <FormattedMessage
           id="cierre.empty.subtitle"
           defaultMessage="Programa cierres temporales para gestionar los horarios de tu negocio"
@@ -298,7 +298,7 @@ export const CierreProvisorio = () => {
       <TouchableOpacity style={styles.emptyButton} onPress={toggleModal} activeOpacity={0.8}>
         <LinearGradient colors={[Colors.light.primary, Colors.light.primary + "DD"]} style={styles.emptyButtonGradient}>
           <Ionicons name="add" size={20} color="white" />
-          <Text style={styles.emptyButtonText}>
+          <Text allowFontScaling={false} style={styles.emptyButtonText}>
             <FormattedMessage id="cierre.empty.button" defaultMessage="Crear primer cierre" />
           </Text>
         </LinearGradient>
@@ -313,7 +313,7 @@ export const CierreProvisorio = () => {
       {loadingCierres ? (
         <Animated.View entering={FadeInDown.duration(400)} style={styles.loadingContainer}>
             <Spinner size="large" color={Colors.light.primary} />
-            <Text style={styles.loadingText}>
+            <Text allowFontScaling={false} style={styles.loadingText}>
               <FormattedMessage id="cierre.loading" defaultMessage="Cargando cierres..." />
             </Text>
         </Animated.View>

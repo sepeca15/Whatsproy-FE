@@ -42,6 +42,7 @@ const DateTimeInputField = ({
             Fecha
           </FormControl.Label>
           <Input
+            allowFontScaling={false}
             isReadOnly
             onPress={() => handleOpenPicker("date")}
             value={formattedDate}
@@ -59,6 +60,7 @@ const DateTimeInputField = ({
               Hora
             </FormControl.Label>
             <Input
+              allowFontScaling={false}
               isReadOnly
               onPress={() => handleOpenPicker("time")}
               value={formattedTime}

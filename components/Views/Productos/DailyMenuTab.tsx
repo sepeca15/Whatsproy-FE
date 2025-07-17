@@ -536,8 +536,8 @@ const DailyMenuTab = () => {
           {client.nombre.charAt(0).toUpperCase()}
         </Avatar>
         <View style={styles.clientDetails}>
-          <Text style={styles.clientName}>{client.nombre}</Text>
-          <Text style={styles.clientPhone}>{client.telefono}</Text>
+          <Text allowFontScaling={false} style={styles.clientName}>{client.nombre}</Text>
+          <Text allowFontScaling={false} style={styles.clientPhone}>{client.telefono}</Text>
         </View>
       </View>
       <View style={styles.notificationToggle}>
@@ -560,6 +560,7 @@ const DailyMenuTab = () => {
   const renderSearchHeader = () => (
     <View style={styles.searchContainer}>
       <Input
+        allowFontScaling={false}
         placeholder={intl.formatMessage({
           id: "searchClientsByName",
           defaultMessage: "Buscar clientes por nombre...",
@@ -610,7 +611,7 @@ const DailyMenuTab = () => {
             size={20}
             color={isEnabled ? Colors.light.primary : Colors.light.icon}
           />
-          <Text
+          <Text allowFontScaling={false}
             style={[
               styles.notificationTitle,
               !isEnabled && styles.disabledText,
@@ -641,7 +642,7 @@ const DailyMenuTab = () => {
             size={18}
             color={isEnabled ? Colors.light.primary : Colors.light.icon}
           />
-          <Text
+          <Text allowFontScaling={false}
             style={[
               styles.notificationButtonText,
               !isEnabled && styles.disabledText,
@@ -659,7 +660,7 @@ const DailyMenuTab = () => {
           />
         </TouchableOpacity>
         {!isEnabled && (
-          <Text style={styles.disabledHint}>
+          <Text allowFontScaling={false} style={styles.disabledHint}>
             <FormattedMessage
               id="notificationDisabledHint"
               defaultMessage="Las notificaciones del menú diario están deshabilitadas"
@@ -695,11 +696,11 @@ const DailyMenuTab = () => {
             )}
           </View>
           <View style={styles.menuItemInfo}>
-            <Text style={styles.menuItemName}>{item.name}</Text>
-            <Text style={styles.menuItemDescription}>
+            <Text allowFontScaling={false} style={styles.menuItemName}>{item.name}</Text>
+            <Text allowFontScaling={false} style={styles.menuItemDescription}>
               {truncateText(item.description, 45)}
             </Text>
-            <Text style={styles.menuItemPrice}>${item.price.toFixed(2)}</Text>
+            <Text allowFontScaling={false} style={styles.menuItemPrice}>${item.price.toFixed(2)}</Text>
           </View>
           <View style={styles.menuItemActions}>
             <TouchableOpacity
@@ -780,9 +781,9 @@ const DailyMenuTab = () => {
       <View key={`day-${day.dayId}`} style={styles.dayCard}>
         <View style={styles.dayHeader}>
           <View style={styles.dayTitleContainer}>
-            <Text style={styles.dayTitle}>{day.dayName}</Text>
+            <Text allowFontScaling={false} style={styles.dayTitle}>{day.dayName}</Text>
             <View style={styles.scheduleContainer}>
-              <Text
+              <Text allowFontScaling={false}
                 style={[
                   styles.daySchedule,
                   !hasSchedules && styles.noScheduleText,
@@ -813,13 +814,13 @@ const DailyMenuTab = () => {
               size={32}
               color={Colors.light.icon}
             />
-            <Text style={styles.noScheduleTitle}>
+            <Text allowFontScaling={false} style={styles.noScheduleTitle}>
               <FormattedMessage
                 id="schedule.noScheduleForDay"
                 defaultMessage="Sin horarios configurados"
               />
             </Text>
-            <Text style={styles.noScheduleSubtitle}>
+            <Text allowFontScaling={false} style={styles.noScheduleSubtitle}>
               <FormattedMessage
                 id="schedule.addScheduleToEnableMenu"
                 defaultMessage="Agrega un horario para habilitar el menú de este día"
@@ -835,7 +836,7 @@ const DailyMenuTab = () => {
         ) : (
           <View style={styles.emptyDayContainer}>
             <Icon name="cutlery" size={24} color={Colors.light.icon} />
-            <Text style={styles.emptyDayText}>
+            <Text allowFontScaling={false} style={styles.emptyDayText}>
               <FormattedMessage
                 id="noDailyMenuItems"
                 defaultMessage="No hay productos para este día"
@@ -851,7 +852,7 @@ const DailyMenuTab = () => {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Spinner size="lg" color={Colors.light.primary} />
-        <Text style={{ marginTop: 16, color: Colors.light.text }}>
+        <Text allowFontScaling={false} style={{ marginTop: 16, color: Colors.light.text }}>
           <FormattedMessage
             id={loading ? "loadingSchedules" : "loadingDailyMenus"}
             defaultMessage={
@@ -950,7 +951,7 @@ const DailyMenuTab = () => {
         })}
       >
         <View style={styles.modalContent}>
-          <Text style={styles.modalDescription}>
+          <Text allowFontScaling={false} style={styles.modalDescription}>
             <FormattedMessage
               id="notificationModalDescription"
               defaultMessage="Selecciona qué clientes recibirán notificaciones del menú diario"
@@ -962,7 +963,7 @@ const DailyMenuTab = () => {
           {loadingClients && values.clients.length === 0 ? (
             <View style={styles.loadingContainer}>
               <Spinner size="lg" color={Colors.light.primary} />
-              <Text style={styles.loadingText}>
+              <Text allowFontScaling={false} style={styles.loadingText}>
                 <FormattedMessage
                   id="loadingClients"
                   defaultMessage="Cargando clientes..."
@@ -1004,7 +1005,7 @@ const DailyMenuTab = () => {
                     size={48}
                     color={Colors.light.icon}
                   />
-                  <Text style={styles.emptyClientsText}>
+                  <Text allowFontScaling={false} style={styles.emptyClientsText}>
                     <FormattedMessage
                       id="noClientsFound"
                       defaultMessage={
@@ -1015,7 +1016,7 @@ const DailyMenuTab = () => {
                     />
                   </Text>
                   {searchQuery && (
-                    <Text style={styles.emptyClientsSubtext}>
+                    <Text allowFontScaling={false} style={styles.emptyClientsSubtext}>
                       <FormattedMessage
                         id="tryDifferentSearch"
                         defaultMessage="Intenta con un término de búsqueda diferente"

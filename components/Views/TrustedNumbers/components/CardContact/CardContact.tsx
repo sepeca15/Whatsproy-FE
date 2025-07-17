@@ -52,7 +52,7 @@ const CardContact: React.FC<CardContactProps> = ({
               ]}
               style={styles.avatarGradient}
             >
-              <Text style={styles.avatarText}>
+              <Text allowFontScaling={false} style={styles.avatarText}>
                 {getInitials(nombre || "?")}
               </Text>
             </LinearGradient>
@@ -67,7 +67,7 @@ const CardContact: React.FC<CardContactProps> = ({
           </View>
 
           <View style={styles.contactInfo}>
-            <Text style={styles.contactName} numberOfLines={1}>
+            <Text allowFontScaling={false} style={styles.contactName} numberOfLines={1}>
               {nombre || (
                 <FormattedMessage
                   id="trustedNumbers.card.noName"
@@ -81,7 +81,7 @@ const CardContact: React.FC<CardContactProps> = ({
                 size={14}
                 color={Colors.light.textSecondary}
               />
-              <Text style={styles.contactPhone} numberOfLines={1}>
+              <Text allowFontScaling={false} style={styles.contactPhone} numberOfLines={1}>
                 {formatPhoneNumber(telefono)}
               </Text>
             </View>
@@ -92,7 +92,7 @@ const CardContact: React.FC<CardContactProps> = ({
                   size={12}
                   color={Colors.light.success}
                 />
-                <Text style={styles.trustedText}>
+                <Text allowFontScaling={false} style={styles.trustedText}>
                   <FormattedMessage
                     id="trustedNumbers.card.trusted"
                     defaultMessage="Confianza"

@@ -145,7 +145,7 @@ const PaymentMethodsView = () => {
                   size={12} 
                   color={method.enabled ? Colors.light.success : Colors.light.textSecondary} 
                 />
-                <Text style={[styles.statusText, { color: method.enabled ? Colors.light.success : Colors.light.textSecondary }]}>
+                <Text allowFontScaling={false} style={[styles.statusText, { color: method.enabled ? Colors.light.success : Colors.light.textSecondary }]}>
                   <FormattedMessage 
                     id={method.enabled ? "paymentMethods.status.enabled" : "paymentMethods.status.disabled"}
                     defaultMessage={method.enabled ? "Activo" : "Inactivo"}
@@ -165,10 +165,10 @@ const PaymentMethodsView = () => {
               </View>
 
               <View style={styles.methodInfo}>
-                <Text style={styles.methodName} numberOfLines={1}>
+                <Text allowFontScaling={false} style={styles.methodName} numberOfLines={1}>
                   {method.name}
                 </Text>
-                <Text style={styles.methodDescription} numberOfLines={2}>
+                <Text allowFontScaling={false} style={styles.methodDescription} numberOfLines={2}>
                   {method.description || (
                     <FormattedMessage 
                       id="paymentMethods.noDescription" 
@@ -249,10 +249,10 @@ const PaymentMethodsView = () => {
         <MaterialIcons name="info-outline" size={20} color={Colors.light.primary} />
       </View>
       <View style={styles.infoTextContainer}>
-        <Text style={styles.infoTitle}>
+        <Text allowFontScaling={false} style={styles.infoTitle}>
           <FormattedMessage id="paymentMethods.info.title" defaultMessage="Métodos de pago" />
         </Text>
-        <Text style={styles.infoDescription}>
+        <Text allowFontScaling={false} style={styles.infoDescription}>
           <FormattedMessage
             id="paymentMethods.info.description"
             defaultMessage="Configura y gestiona las opciones de pago disponibles para tus clientes"
@@ -272,10 +272,10 @@ const PaymentMethodsView = () => {
           <MaterialIcons name="payment" size={64} color={Colors.light.primary} />
         </LinearGradient>
       </View>
-      <Text style={styles.emptyTitle}>
+      <Text allowFontScaling={false} style={styles.emptyTitle}>
         <FormattedMessage id="paymentMethods.empty.title" defaultMessage="No hay métodos de pago" />
       </Text>
-      <Text style={styles.emptySubtitle}>
+      <Text allowFontScaling={false} style={styles.emptySubtitle}>
         <FormattedMessage
           id="paymentMethods.empty.subtitle"
           defaultMessage="Los métodos de pago se configurarán automáticamente según tu plan"
@@ -326,7 +326,7 @@ const PaymentMethodsView = () => {
       {loading ? (
         <Animated.View entering={FadeInDown.duration(400)} style={styles.loadingContainer}>
             <Spinner size="large" color={Colors.light.primary} />
-            <Text style={styles.loadingText}>
+            <Text allowFontScaling={false} style={styles.loadingText}>
               <FormattedMessage id="paymentMethods.loading" defaultMessage="Cargando métodos de pago..." />
             </Text>
         </Animated.View>
@@ -375,9 +375,9 @@ const PaymentMethodsView = () => {
         >
           <View style={styles.modalContent}>
             <View style={styles.fieldContainer}>
-              <Text style={styles.fieldLabel}>
+              <Text allowFontScaling={false} style={styles.fieldLabel}>
                 <FormattedMessage id="paymentMethods.modal.name" defaultMessage="Nombre" />
-                <Text style={styles.required}> *</Text>
+                <Text allowFontScaling={false} style={styles.required}> *</Text>
               </Text>
               <InputField
                 value={selectedMethod.name}
@@ -392,10 +392,10 @@ const PaymentMethodsView = () => {
 
             <View style={styles.switchContainer}>
               <View style={styles.switchInfo}>
-                <Text style={styles.switchLabel}>
+                <Text allowFontScaling={false} style={styles.switchLabel}>
                   <FormattedMessage id="paymentMethods.modal.enabled" defaultMessage="Habilitado" />
                 </Text>
-                <Text style={styles.switchDescription}>
+                <Text allowFontScaling={false} style={styles.switchDescription}>
                   <FormattedMessage
                     id="paymentMethods.modal.enabledDescription"
                     defaultMessage="Los clientes podrán usar este método de pago"
@@ -412,7 +412,7 @@ const PaymentMethodsView = () => {
             </View>
 
             <View style={styles.fieldContainer}>
-              <Text style={styles.fieldLabel}>
+              <Text allowFontScaling={false} style={styles.fieldLabel}>
                 <FormattedMessage id="paymentMethods.modal.description" defaultMessage="Descripción" />
               </Text>
               <InputField
@@ -430,7 +430,7 @@ const PaymentMethodsView = () => {
             </View>
 
             <View style={styles.fieldContainer}>
-              <Text style={styles.fieldLabel}>
+              <Text allowFontScaling={false} style={styles.fieldLabel}>
                 <FormattedMessage id="paymentMethods.modal.specifications" defaultMessage="Especificaciones" />
               </Text>
               <InputField
@@ -450,7 +450,7 @@ const PaymentMethodsView = () => {
             {updatingMethod && (
               <View style={styles.loadingIndicator}>
                 <Spinner size="sm" color={Colors.light.primary} />
-                <Text style={styles.loadingIndicatorText}>
+                <Text allowFontScaling={false} style={styles.loadingIndicatorText}>
                   <FormattedMessage
                     id="paymentMethods.modal.updating"
                     defaultMessage="Actualizando método de pago..."
@@ -482,7 +482,7 @@ const PaymentMethodsView = () => {
         >
           <View style={styles.viewModalContent}>
             <View style={styles.specificationsContainer}>
-              <Text style={styles.specificationsText}>{viewText}</Text>
+              <Text allowFontScaling={false} style={styles.specificationsText}>{viewText}</Text>
             </View>
           </View>
         </GenericModal>

@@ -69,27 +69,41 @@ const ClientDetails = ({}) => {
                 alignItems={"center"}
                 justifyContent={"center"}
               >
-                <Text fontSize={14} fontWeight={"bold"} color={"white"}>
+                <Text
+                  allowFontScaling={false}
+                  fontSize={14}
+                  fontWeight={"bold"}
+                  color={"white"}
+                >
                   {initials}
                 </Text>
               </View>
               <View display={"flex"} flexDir={"column"}>
-                <Text color="teal.600" bold>
-                  Nombre: <Text color="teal.800">{clientData?.nombre}</Text>
+                <Text allowFontScaling={false} color="teal.600" bold>
+                  <FormattedMessage id="clientName" defaultMessage="Nombre:" />{" "}
+                  <Text allowFontScaling={false} color="teal.800">
+                    {clientData?.nombre}
+                  </Text>
                 </Text>
-                <Text color="teal.600" bold>
-                  Teléfono: <Text color="teal.800">{clientData?.telefono}</Text>
+                <Text allowFontScaling={false} color="teal.600" bold>
+                  <FormattedMessage id="clientPhone" defaultMessage="Teléfono:" />{" "}
+                  <Text allowFontScaling={false} color="teal.800">
+                    {clientData?.telefono}
+                  </Text>
                 </Text>
               </View>
             </View>
           </View>
 
           <VStack mt={4}>
-            <Text>Monto Total: ${clientData?.totalGenerated}</Text>
-            <Text>
-              Promedio: $
+            <Text allowFontScaling={false}>
+              <FormattedMessage id="totalAmount" defaultMessage="Monto Total:" /> ${clientData?.totalGenerated}
+            </Text>
+            <Text allowFontScaling={false}>
+              <FormattedMessage id="averageAmount" defaultMessage="Promedio:" /> $
               {(
-                clientData?.totalGenerated / clientData?.pedido?.length
+                (clientData?.totalGenerated ?? 0) /
+                  (clientData?.pedido?.length ?? 0) || 0
               ).toFixed(2)}
             </Text>
           </VStack>
@@ -97,7 +111,12 @@ const ClientDetails = ({}) => {
         {clientData?.pedido?.map((pedido: any) => {
           return (
             <View my={1} key={pedido?.id}>
-              <CardNewPedido trashIcon={false} pending={false} active={false} orderData={pedido} />
+              <CardNewPedido
+                trashIcon={false}
+                pending={false}
+                active={false}
+                orderData={pedido}
+              />
             </View>
           );
         })}

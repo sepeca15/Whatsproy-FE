@@ -163,7 +163,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
       )}
     >
       <View style={styles.container}>
-        <Text style={styles.description}>
+        <Text allowFontScaling={false} style={styles.description}>
           <FormattedMessage
             id="schedule.scheduleDescription"
             defaultMessage="Define el horario en el que estará disponible el menú diario para este día"
@@ -172,13 +172,14 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
 
         <View style={styles.timeContainer}>
           <View style={styles.timeInputContainer}>
-            <Text style={styles.timeLabel}>
+            <Text allowFontScaling={false} style={styles.timeLabel}>
               <FormattedMessage
                 id="schedule.startTime"
                 defaultMessage="Hora de inicio"
               />
             </Text>
             <Input
+              allowFontScaling={false}
               value={startTime}
               onChangeText={(text) => setStartTime(formatTimeInput(text))}
               placeholder="09:00"
@@ -192,18 +193,19 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
               }}
             />
             {errors.startTime && (
-              <Text style={styles.errorText}>{errors.startTime}</Text>
+              <Text allowFontScaling={false} style={styles.errorText}>{errors.startTime}</Text>
             )}
           </View>
 
           <View style={styles.timeInputContainer}>
-            <Text style={styles.timeLabel}>
+            <Text allowFontScaling={false} style={styles.timeLabel}>
               <FormattedMessage
                 id="schedule.endTime"
                 defaultMessage="Hora de fin"
               />
             </Text>
             <Input
+              allowFontScaling={false}
               value={endTime}
               onChangeText={(text) => setEndTime(formatTimeInput(text))}
               placeholder="17:00"
@@ -217,7 +219,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
               }}
             />
             {errors.endTime && (
-              <Text style={styles.errorText}>{errors.endTime}</Text>
+              <Text allowFontScaling={false} style={styles.errorText}>{errors.endTime}</Text>
             )}
           </View>
         </View>
@@ -229,7 +231,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
             style={styles.cancelButton}
             _text={{ color: Colors.light.text }}
           >
-            <Text style={{ fontWeight: 500 }}>
+            <Text allowFontScaling={false} style={{ fontWeight: 500 }}>
               <FormattedMessage id="common.cancel" defaultMessage="Cancelar" />
             </Text>
           </Button>
@@ -247,7 +249,7 @@ const ScheduleModal: React.FC<ScheduleModalProps> = ({
             {loading ? (
               <Spinner size="sm" color="white" />
             ) : (
-              <Text style={{ color: "white", fontWeight: 500 }}>
+              <Text allowFontScaling={false} style={{ color: "white", fontWeight: 500 }}>
                 <FormattedMessage
                   id={editingSchedule ? "common.update" : "common.save"}
                   defaultMessage={editingSchedule ? "Actualizar" : "Guardar"}

@@ -20,13 +20,13 @@ const ProfileStats: React.FC<StatsProps> = ({
     <Box bg="white" borderRadius="lg" p={4} shadow={2} mb={4}>
       <VStack space={4}>
         <HStack justifyContent="space-between" alignItems="center">
-          <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+          <Text allowFontScaling={false} style={{ fontSize: 16, fontWeight: "bold" }}>
             <FormattedMessage
               id="profile.completion"
               defaultMessage="Perfil completado"
             />
           </Text>
-          <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+          <Text allowFontScaling={false} style={{ fontSize: 16, fontWeight: "bold" }}>
             {Math.round(completionPercentage)}%
           </Text>
         </HStack>
@@ -38,10 +38,10 @@ const ProfileStats: React.FC<StatsProps> = ({
               size="md"
               color="#075e54"
             />
-            <Text style={{ fontSize: 14, marginTop: 4 }}>
+            <Text allowFontScaling={false} style={{ fontSize: 14, marginTop: 4 }}>
               <FormattedMessage id="profile.visits" defaultMessage="Visitas" />
             </Text>
-            <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+            <Text allowFontScaling={false} style={{ fontSize: 16, fontWeight: "bold" }}>
               {totalVisits}
             </Text>
           </VStack>
@@ -53,20 +53,20 @@ const ProfileStats: React.FC<StatsProps> = ({
               size="md"
               color="#128c7e"
             />
-            <Text style={{ fontSize: 14, marginTop: 4 }}>
+            <Text allowFontScaling={false} style={{ fontSize: 14, marginTop: 4 }}>
               <FormattedMessage id="profile.streak" defaultMessage="Racha" />
             </Text>
-            <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+            <Text allowFontScaling={false} style={{ fontSize: 16, fontWeight: "bold" }}>
               {streak} días
             </Text>
           </VStack>
 
           <VStack alignItems="center">
             <Icon as={Ionicons} name="star-outline" size="md" color="#25d366" />
-            <Text style={{ fontSize: 14, marginTop: 4 }}>
+            <Text allowFontScaling={false} style={{ fontSize: 14, marginTop: 4 }}>
               <FormattedMessage id="profile.level" defaultMessage="Nivel" />
             </Text>
-            <Text style={{ fontSize: 16, fontWeight: "bold" }}>Pro</Text>
+            <Text allowFontScaling={false} style={{ fontSize: 16, fontWeight: "bold" }}>Pro</Text>
           </VStack>
         </HStack>
       </VStack>

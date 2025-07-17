@@ -38,7 +38,7 @@ const SmartImage: React.FC<SmartImageProps> = ({ src, style, fallbackText = "Ima
     return (
       <View style={[styles.fallbackContainer, style, { backgroundColor: colors.background }]}>
         <Feather name="image" size={40} color={colors.icon} />
-        <Text style={[styles.fallbackText, { color: colors.text }]}>{fallbackText}</Text>
+        <Text allowFontScaling={false} style={[styles.fallbackText, { color: colors.text }]}>{fallbackText}</Text>
       </View>
     )
   }
@@ -57,7 +57,7 @@ const SmartImage: React.FC<SmartImageProps> = ({ src, style, fallbackText = "Ima
       {loading && (
         <View style={[styles.loadingContainer, style]}>
           <ActivityIndicator size="large" color={colors.primary} />
-          <Text style={[styles.loadingText, { color: colors.text }]}>Cargando imagen...</Text>
+          <Text allowFontScaling={false} style={[styles.loadingText, { color: colors.text }]}>Cargando imagen...</Text>
         </View>
       )}
     </View>

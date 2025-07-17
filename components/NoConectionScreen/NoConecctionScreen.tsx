@@ -39,11 +39,11 @@ export const NoConnectionScreen: React.FC<NoConnectionScreenProps> = ({ onRetry,
           <AntDesign name="disconnect" size={80} color={colors.primary} />
         </View>
 
-        <Text style={[styles.title, { color: colors.text }]}>
+        <Text allowFontScaling={false} style={[styles.title, { color: colors.text }]}>
           {intl.formatMessage({ id: "noConnection.title" })}
         </Text>
 
-        <Text style={[styles.description, { color: colors.textSecondary }]}>{getDescriptionText()}</Text>
+        <Text allowFontScaling={false} style={[styles.description, { color: colors.textSecondary }]}>{getDescriptionText()}</Text>
 
         <TouchableOpacity
           style={[styles.retryButton, { backgroundColor: colors.primary }]}
@@ -51,7 +51,7 @@ export const NoConnectionScreen: React.FC<NoConnectionScreenProps> = ({ onRetry,
           activeOpacity={0.8}
         >
           <AntDesign name="reload1" size={20} color="#fff" style={styles.retryIcon} />
-          <Text style={styles.retryText}>{intl.formatMessage({ id: "noConnection.retryButton" })}</Text>
+          <Text allowFontScaling={false} style={styles.retryText}>{intl.formatMessage({ id: "noConnection.retryButton" })}</Text>
         </TouchableOpacity>
 
         <View style={styles.decorativeIcons}>

@@ -17,6 +17,7 @@ import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmActi
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import CustomHeader from "@/components/CustomHeader/CustomHeader";
+import AddButton from "@/hooks/add_Button/Add_button";
 
 interface OrderDataItem {
   id: number;
@@ -212,7 +213,7 @@ const DateOrder: React.FC = () => {
       {loading ? (
         <View style={styles.loadingCard}>
           <ActivityIndicator size="large" color={Colors.light.primary} />
-          <Text style={styles.loadingText}>
+          <Text allowFontScaling={false} style={styles.loadingText}>
             <FormattedMessage
               id="orderData.loading"
               defaultMessage="Cargando campos..."
@@ -231,13 +232,13 @@ const DateOrder: React.FC = () => {
               />
             </View>
             <View style={styles.infoTextContainer}>
-              <Text style={styles.infoTitle}>
+              <Text allowFontScaling={false} style={styles.infoTitle}>
                 <FormattedMessage
                   id="orderData.info.title"
                   defaultMessage="Campos de información"
                 />
               </Text>
-              <Text style={styles.infoDescription}>
+              <Text allowFontScaling={false} style={styles.infoDescription}>
                 <FormattedMessage
                   id="orderData.info.description"
                   defaultMessage="Define qué información adicional necesitas de tus clientes al realizar pedidos"
@@ -265,25 +266,26 @@ const DateOrder: React.FC = () => {
                     />
                   </LinearGradient>
                 </View>
-                <Text style={styles.emptyTitle}>
+                <Text allowFontScaling={false} style={styles.emptyTitle}>
                   <FormattedMessage
                     id="orderData.empty.title"
                     defaultMessage="No hay campos configurados"
                   />
                 </Text>
-                <Text style={styles.emptySubtitle}>
+                <Text allowFontScaling={false} style={styles.emptySubtitle}>
                   <FormattedMessage
                     id="orderData.empty.subtitle"
                     defaultMessage="Comienza agregando tu primer campo personalizado para recopilar información específica"
                   />
                 </Text>
+
                 <TouchableOpacity
                   style={styles.emptyButton}
                   onPress={() => onOpenModal()}
                   activeOpacity={0.8}
                 >
                   <Ionicons name="add" size={20} color="white" />
-                  <Text style={styles.emptyButtonText}>
+                  <Text allowFontScaling={false} style={styles.emptyButtonText}>
                     <FormattedMessage
                       id="orderData.empty.button"
                       defaultMessage="Crear primer campo"
@@ -295,14 +297,20 @@ const DateOrder: React.FC = () => {
               <>
                 {/* Fields Header */}
                 <View style={styles.fieldsHeader}>
-                  <Text style={styles.fieldsHeaderTitle}>
+                  <Text
+                    allowFontScaling={false}
+                    style={styles.fieldsHeaderTitle}
+                  >
                     <FormattedMessage
                       id="orderData.fields.title"
                       defaultMessage="Campos configurados"
                     />
                   </Text>
                   <View style={styles.fieldsHeaderBadge}>
-                    <Text style={styles.fieldsHeaderBadgeText}>
+                    <Text
+                      allowFontScaling={false}
+                      style={styles.fieldsHeaderBadgeText}
+                    >
                       {orderDate.length}
                     </Text>
                   </View>
@@ -329,8 +337,16 @@ const DateOrder: React.FC = () => {
                           />
                         </View>
                         <View style={styles.fieldInfo}>
-                          <Text style={styles.fieldName}>{item.nombre}</Text>
-                          <Text style={styles.fieldType}>
+                          <Text
+                            allowFontScaling={false}
+                            style={styles.fieldName}
+                          >
+                            {item.nombre}
+                          </Text>
+                          <Text
+                            allowFontScaling={false}
+                            style={styles.fieldType}
+                          >
                             <FormattedMessage
                               id={`orderData.fieldType.${item.tipo}`}
                               defaultMessage={item.tipo}
@@ -372,7 +388,10 @@ const DateOrder: React.FC = () => {
                             size={12}
                             color={Colors.light.warning}
                           />
-                          <Text style={styles.requiredBadgeText}>
+                          <Text
+                            allowFontScaling={false}
+                            style={styles.requiredBadgeText}
+                          >
                             <FormattedMessage
                               id="orderData.badge.required"
                               defaultMessage="Requerido"
@@ -387,7 +406,10 @@ const DateOrder: React.FC = () => {
                             size={12}
                             color={Colors.light.success}
                           />
-                          <Text style={styles.defaultBadgeText}>
+                          <Text
+                            allowFontScaling={false}
+                            style={styles.defaultBadgeText}
+                          >
                             <FormattedMessage
                               id="orderData.badge.default"
                               defaultMessage="Por defecto"
@@ -405,20 +427,7 @@ const DateOrder: React.FC = () => {
       )}
 
       {!loading && orderDate.length > 0 && (
-        <View style={styles.fabContainer}>
-          <TouchableOpacity
-            style={styles.fab}
-            onPress={() => onOpenModal()}
-            activeOpacity={0.8}
-          >
-            <LinearGradient
-              colors={[Colors.light.primary, Colors.light.primary + "CC"]}
-              style={styles.fabGradient}
-            >
-              <Ionicons name="add" size={28} color="white" />
-            </LinearGradient>
-          </TouchableOpacity>
-        </View>
+        <AddButton onPress={() => onOpenModal()} />
       )}
 
       {stateModal && (

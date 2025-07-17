@@ -90,12 +90,12 @@ const VisualGuideModal: React.FC<VisualGuideModalProps> = ({ visible, guide, onC
           </TouchableOpacity>
 
           <View style={styles.headerContent}>
-            <Text style={styles.headerTitle}>{guide.title}</Text>
-            <Text style={styles.headerSubtitle}>{guide.category}</Text>
+            <Text allowFontScaling={false} style={styles.headerTitle}>{guide.title}</Text>
+            <Text allowFontScaling={false} style={styles.headerSubtitle}>{guide.category}</Text>
           </View>
 
           <View style={styles.pageIndicator}>
-            <Text style={styles.pageIndicatorText}>
+            <Text allowFontScaling={false} style={styles.pageIndicatorText}>
               {currentIndex + 1} / {guide.images.length}
             </Text>
           </View>
@@ -160,23 +160,23 @@ const VisualGuideModal: React.FC<VisualGuideModalProps> = ({ visible, guide, onC
             style={[styles.contentCard, { backgroundColor: isDark ? "#1e1e1e" : "#fff" }]}
           >
             {/* Image Title */}
-            <Text style={[styles.imageTitle, { color: colors.text }]}>{guide.images[currentIndex].title}</Text>
+            <Text allowFontScaling={false} style={[styles.imageTitle, { color: colors.text }]}>{guide.images[currentIndex].title}</Text>
 
             {/* Image Description */}
-            <Text style={[styles.imageDescription, { color: isDark ? "#e0e0e0" : "#666" }]}>
+            <Text allowFontScaling={false} style={[styles.imageDescription, { color: isDark ? "#e0e0e0" : "#666" }]}>
               {guide.images[currentIndex].description}
             </Text>
 
             {/* Step-by-step Instructions */}
             <View style={styles.instructionsContainer}>
-              <Text style={[styles.instructionsTitle, { color: colors.text }]}>Pasos a seguir:</Text>
+              <Text allowFontScaling={false} style={[styles.instructionsTitle, { color: colors.text }]}>Pasos a seguir:</Text>
 
               {guide.images[currentIndex].instructions.map((instruction, index) => (
                 <View key={index} style={styles.instructionItem}>
                   <View style={[styles.stepNumber, { backgroundColor: colors.primary }]}>
-                    <Text style={styles.stepNumberText}>{index + 1}</Text>
+                    <Text allowFontScaling={false} style={styles.stepNumberText}>{index + 1}</Text>
                   </View>
-                  <Text style={[styles.instructionText, { color: colors.text }]}>{instruction}</Text>
+                  <Text allowFontScaling={false} style={[styles.instructionText, { color: colors.text }]}>{instruction}</Text>
                 </View>
               ))}
             </View>
@@ -185,7 +185,7 @@ const VisualGuideModal: React.FC<VisualGuideModalProps> = ({ visible, guide, onC
           {/* Thumbnail Navigation */}
           {guide.images.length > 1 && (
             <View style={styles.thumbnailContainer}>
-              <Text style={[styles.thumbnailTitle, { color: colors.text }]}>Navegar por la guía:</Text>
+              <Text allowFontScaling={false} style={[styles.thumbnailTitle, { color: colors.text }]}>Navegar por la guía:</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.thumbnailScroll}>
                 {guide.images.map((image, index) => (
                   <TouchableOpacity
@@ -200,7 +200,7 @@ const VisualGuideModal: React.FC<VisualGuideModalProps> = ({ visible, guide, onC
                     onPress={() => goToSlide(index)}
                   >
                     <SmartImage src={image.src} style={styles.thumbnailImage} fallbackText="" title={image.title} />
-                    <Text
+                    <Text allowFontScaling={false}
                       style={[styles.thumbnailText, { color: index === currentIndex ? colors.primary : colors.text }]}
                       numberOfLines={2}
                     >

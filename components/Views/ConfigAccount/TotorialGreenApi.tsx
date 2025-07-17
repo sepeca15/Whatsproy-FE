@@ -80,10 +80,10 @@ const TutorialGreenApi = ({ open, setOpen }: any) => {
                     />
                   </View>
 
-                  <Text fontSize={20} fontWeight="bold" mt={2} mb={2}>
+                  <Text allowFontScaling={false} fontSize={20} fontWeight="bold" mt={2} mb={2}>
                     {item.title}
                   </Text>
-                  <Text fontSize={14} textAlign="center">
+                  <Text allowFontScaling={false} fontSize={14} textAlign="center">
                     {item.text}
                   </Text>
                 </View>
@@ -91,7 +91,7 @@ const TutorialGreenApi = ({ open, setOpen }: any) => {
             </Swiper>
 
             <View style={styles.backButtonContainer}>
-              <Text onPress={() => setOpen(false)} style={styles.closeText}>
+              <Text allowFontScaling={false} onPress={() => setOpen(false)} style={styles.closeText}>
                 <FormattedMessage id="tryAgain" />
               </Text>
             </View>

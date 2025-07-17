@@ -289,7 +289,7 @@ const Step2: React.FC<SubscriptionPlansCarouselProps> = ({
   if (loading || (!loading && !plans)) {
     return (
       <View style={styles.loadingContainer}>
-        <Text color="white" fontWeight="bold" fontSize={18} textAlign="center">
+        <Text allowFontScaling={false} color="white" fontWeight="bold" fontSize={18} textAlign="center">
           <FormattedMessage
             id="loadingPlans"
             defaultMessage="Cargando planes..."
@@ -312,7 +312,7 @@ const Step2: React.FC<SubscriptionPlansCarouselProps> = ({
           colors={["#FFF3CD", "#FCF4A3"]}
           style={styles.warningContainer}
         >
-          <Text color="yellow.800" fontWeight="semibold" textAlign="center">
+          <Text allowFontScaling={false} color="yellow.800" fontWeight="semibold" textAlign="center">
             ⚠️{" "}
             <FormattedMessage
               id="subscriptionExpired"
@@ -328,7 +328,7 @@ const Step2: React.FC<SubscriptionPlansCarouselProps> = ({
             colors={["#667eea", "#764ba2"]}
             style={styles.processingGradient}
           >
-            <Text
+            <Text allowFontScaling={false}
               color="white"
               fontWeight="bold"
               fontSize={18}
@@ -339,7 +339,7 @@ const Step2: React.FC<SubscriptionPlansCarouselProps> = ({
                 defaultMessage="Procesando pago..."
               />
             </Text>
-            <Text
+            <Text allowFontScaling={false}
               color="rgba(255,255,255,0.8)"
               paddingX={15}
               textAlign="center"
@@ -445,11 +445,11 @@ const Step2: React.FC<SubscriptionPlansCarouselProps> = ({
                 { backgroundColor: isDark ? "#2a2a2a" : "#f8f9fa" },
               ]}
             >
-              <Text style={[styles.planInfoTitle, { color: colors.text }]}>
+              <Text allowFontScaling={false} style={[styles.planInfoTitle, { color: colors.text }]}>
                 {(plans as any)[currentIndex].planInfo?.nombre ||
                   plans[currentIndex]?.title}
               </Text>
-              <Text
+              <Text allowFontScaling={false}
                 style={[
                   styles.planInfoDescription,
                   { color: colors.textSecondary },

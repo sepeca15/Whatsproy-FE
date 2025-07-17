@@ -11,7 +11,7 @@ const CustomText: React.FC<CustomTextProps> = ({
   ...props
 }) => {
   return (
-    <Text style={[{ fontFamily: "System" }, style]} {...props}>
+    <Text allowFontScaling={false} style={[{ fontFamily: "System" }, style]} {...props}>
       {children}
     </Text>
   );

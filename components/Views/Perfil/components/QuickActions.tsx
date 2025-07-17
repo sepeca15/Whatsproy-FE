@@ -48,7 +48,7 @@ const QuickActions: React.FC = () => {
       style={{ width: '100%', marginBottom: 12 }}
     >
       <Box bg="white" borderRadius="lg" p={4} >
-        <Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 10 }}>
+        <Text allowFontScaling={false} style={{ fontSize: 16, fontWeight: "bold", marginBottom: 10 }}>
           <FormattedMessage
             id="profile.quickActions"
             defaultMessage="Acciones rápidas"
@@ -90,7 +90,7 @@ const QuickActions: React.FC = () => {
                   color="#075e54"
                   mr={2}
                 />
-                <Text style={{ fontSize: 14 }}>
+                <Text allowFontScaling={false} style={{ fontSize: 14 }}>
                   <FormattedMessage
                     id={action.label}
                     defaultMessage={action.defaultMessage}

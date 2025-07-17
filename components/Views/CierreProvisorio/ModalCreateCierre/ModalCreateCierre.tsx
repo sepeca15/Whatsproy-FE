@@ -110,7 +110,7 @@ const ModalCreateCierre = ({
       scrollable={true}
     >
       <View style={styles.container}>
-        <Text style={[styles.description, { color: colors.textSecondary }]}>
+        <Text allowFontScaling={false} style={[styles.description, { color: colors.textSecondary }]}>
           <FormattedMessage
             id="cierre.modal.description"
             defaultMessage="Define el período durante el cual tu negocio estará temporalmente cerrado"
@@ -121,12 +121,12 @@ const ModalCreateCierre = ({
           <View style={styles.fieldContainer}>
             <View style={styles.labelContainer}>
               <MaterialIcons name="event" size={20} color={colors.success} />
-              <Text style={[styles.label, { color: colors.text }]}>
+              <Text allowFontScaling={false} style={[styles.label, { color: colors.text }]}>
                 <FormattedMessage
                   id="cierre.modal.startDate"
                   defaultMessage="Fecha y hora de inicio"
                 />
-                <Text style={styles.required}> *</Text>
+                <Text allowFontScaling={false} style={styles.required}> *</Text>
               </Text>
             </View>
             <View
@@ -143,7 +143,7 @@ const ModalCreateCierre = ({
               />
             </View>
             {errors.inicio && (
-              <Text style={styles.errorText}>{errors.inicio}</Text>
+              <Text allowFontScaling={false} style={styles.errorText}>{errors.inicio}</Text>
             )}
           </View>
 
@@ -154,12 +154,12 @@ const ModalCreateCierre = ({
                 size={20}
                 color={colors.danger}
               />
-              <Text style={[styles.label, { color: colors.text }]}>
+              <Text allowFontScaling={false} style={[styles.label, { color: colors.text }]}>
                 <FormattedMessage
                   id="cierre.modal.endDate"
                   defaultMessage="Fecha y hora de fin"
                 />
-                <Text style={styles.required}> *</Text>
+                <Text allowFontScaling={false} style={styles.required}> *</Text>
               </Text>
             </View>
             <View
@@ -175,7 +175,7 @@ const ModalCreateCierre = ({
                 setDate={(val: any) => handleChange("fin", val)}
               />
             </View>
-            {errors.fin && <Text style={styles.errorText}>{errors.fin}</Text>}
+            {errors.fin && <Text allowFontScaling={false} style={styles.errorText}>{errors.fin}</Text>}
           </View>
         </View>
 
@@ -191,7 +191,7 @@ const ModalCreateCierre = ({
               size={20}
               color={colors.danger}
             />
-            <Text style={[styles.generalErrorText, { color: colors.danger }]}>
+            <Text allowFontScaling={false} style={[styles.generalErrorText, { color: colors.danger }]}>
               {errors.general}
             </Text>
           </View>
@@ -205,13 +205,13 @@ const ModalCreateCierre = ({
         >
           <MaterialIcons name="info-outline" size={20} color={colors.primary} />
           <View style={styles.infoTextContainer}>
-            <Text style={[styles.infoTitle, { color: colors.primary }]}>
+            <Text allowFontScaling={false} style={[styles.infoTitle, { color: colors.primary }]}>
               <FormattedMessage
                 id="cierre.modal.info.title"
                 defaultMessage="Información importante"
               />
             </Text>
-            <Text style={[styles.infoDescription, { color: colors.primary }]}>
+            <Text allowFontScaling={false} style={[styles.infoDescription, { color: colors.primary }]}>
               <FormattedMessage
                 id="cierre.modal.info.description"
                 defaultMessage="Durante este período, tu negocio aparecerá como cerrado y no se podrán realizar pedidos"
@@ -223,7 +223,7 @@ const ModalCreateCierre = ({
         {loading && (
           <View style={styles.loadingContainer}>
             <Spinner size="sm" color={colors.primary} />
-            <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
+            <Text allowFontScaling={false} style={[styles.loadingText, { color: colors.textSecondary }]}>
               <FormattedMessage
                 id="cierre.modal.creating"
                 defaultMessage="Creando cierre provisional..."

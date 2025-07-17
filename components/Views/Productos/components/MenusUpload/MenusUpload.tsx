@@ -361,13 +361,13 @@ const MenusUpload: React.FC = () => {
 
   const renderEmptyState = () => (
     <Animatable.View animation="fadeIn" style={styles.emptyStateContainer}>
-      <Text style={styles.emptyStateTitle}>
+      <Text allowFontScaling={false} style={styles.emptyStateTitle}>
         <FormattedMessage
           id="noMenusYet"
           defaultMessage="No tienes menús aún"
         />
       </Text>
-      <Text style={styles.emptyStateSubtitle}>
+      <Text allowFontScaling={false} style={styles.emptyStateSubtitle}>
         <FormattedMessage
           id="addFirstMenuDescription"
           defaultMessage="Agrega tu primer menú tomando una foto o seleccionando una imagen"
@@ -381,7 +381,7 @@ const MenusUpload: React.FC = () => {
           disabled={uploadingImage || processingImage}
         >
           <Icon name="camera" size={20} color="#fff" />
-          <Text style={styles.addMenuButtonText}>
+          <Text allowFontScaling={false} style={styles.addMenuButtonText}>
             <FormattedMessage id="takePhoto" defaultMessage="Tomar Foto" />
           </Text>
         </TouchableOpacity>
@@ -392,7 +392,7 @@ const MenusUpload: React.FC = () => {
           disabled={uploadingImage || processingImage}
         >
           <Icon name="photo" size={20} color="#fff" />
-          <Text style={styles.addMenuButtonText}>
+          <Text allowFontScaling={false} style={styles.addMenuButtonText}>
             <FormattedMessage id="selectFromGallery" defaultMessage="Galería" />
           </Text>
         </TouchableOpacity>
@@ -401,7 +401,7 @@ const MenusUpload: React.FC = () => {
       {(uploadingImage || processingImage) && (
         <View style={styles.uploadingContainer}>
           <ActivityIndicator size="large" color={Colors.light.primary} />
-          <Text style={styles.uploadingText}>
+          <Text allowFontScaling={false} style={styles.uploadingText}>
             {uploadingImage ? (
               <FormattedMessage
                 id="uploadingImage"
@@ -440,8 +440,8 @@ const MenusUpload: React.FC = () => {
       </View>
 
       <View style={styles.menuContent}>
-        <Text style={styles.menuTitle}>{menu.nombre}</Text>
-        <Text style={styles.menuDate}>
+        <Text allowFontScaling={false} style={styles.menuTitle}>{menu.nombre}</Text>
+        <Text allowFontScaling={false} style={styles.menuDate}>
           {new Date(menu.createdAt).toLocaleDateString(intl.locale, {
             weekday: "long",
             year: "numeric",
@@ -471,7 +471,7 @@ const MenusUpload: React.FC = () => {
         >
           <Icon name="arrow-left" size={20} color={Colors.light.text} />
         </TouchableOpacity>
-        <Text style={styles.confirmationTitle}>
+        <Text allowFontScaling={false} style={styles.confirmationTitle}>
           <FormattedMessage
             id="confirmDetectedProducts"
             defaultMessage="Confirmar Productos"
@@ -487,7 +487,7 @@ const MenusUpload: React.FC = () => {
             style={styles.uploadedImage}
           />
           <View style={styles.imageOverlay}>
-            <Text style={styles.detectionSummary}>
+            <Text allowFontScaling={false} style={styles.detectionSummary}>
               <FormattedMessage
                 id="productsDetectedSummary"
                 defaultMessage="{detected} productos detectados"
@@ -499,10 +499,10 @@ const MenusUpload: React.FC = () => {
       )}
 
       <View style={styles.menuNameContainer}>
-        <Text style={styles.menuNameLabel}>
+        <Text allowFontScaling={false} style={styles.menuNameLabel}>
           <FormattedMessage id="menuName" defaultMessage="Nombre del menú" />
         </Text>
-        <TextInput
+        <Text allowFontScaling={false}Input
           style={styles.menuNameInput}
           value={menuName}
           onChangeText={setMenuName}
@@ -514,7 +514,7 @@ const MenusUpload: React.FC = () => {
       </View>
 
       <View style={styles.bulkActionsContainer}>
-        <Text style={styles.sectionTitle}>
+        <Text allowFontScaling={false} style={styles.sectionTitle}>
           <FormattedMessage
             id="detectedProducts"
             defaultMessage="Productos Detectados"
@@ -525,7 +525,7 @@ const MenusUpload: React.FC = () => {
             style={styles.bulkActionButton}
             onPress={selectAllProducts}
           >
-            <Text style={styles.bulkActionText}>
+            <Text allowFontScaling={false} style={styles.bulkActionText}>
               <FormattedMessage
                 id="selectAll"
                 defaultMessage="Seleccionar todos"
@@ -536,7 +536,7 @@ const MenusUpload: React.FC = () => {
             style={styles.bulkActionButton}
             onPress={selectNoProducts}
           >
-            <Text style={styles.bulkActionText}>
+            <Text allowFontScaling={false} style={styles.bulkActionText}>
               <FormattedMessage
                 id="selectNone"
                 defaultMessage="Deseleccionar todos"
@@ -558,7 +558,7 @@ const MenusUpload: React.FC = () => {
 
       <View style={styles.bottomActions}>
         <View style={styles.summaryContainer}>
-          <Text style={styles.summaryText}>
+          <Text allowFontScaling={false} style={styles.summaryText}>
             <FormattedMessage
               id="confirmedProductsCount"
               defaultMessage="{confirmed} de {total} productos confirmados"
@@ -576,7 +576,7 @@ const MenusUpload: React.FC = () => {
             onPress={handleCancelConfirmation}
             disabled={uploadingImage}
           >
-            <Text style={styles.cancelButtonText}>
+            <Text allowFontScaling={false} style={styles.cancelButtonText}>
               <FormattedMessage id="cancel" defaultMessage="Cancelar" />
             </Text>
           </TouchableOpacity>
@@ -590,7 +590,7 @@ const MenusUpload: React.FC = () => {
             onPress={handleConfirmProducts}
             disabled={selectedProducts.size === 0 || uploadingImage}
           >
-            <Text style={styles.confirmButtonText}>
+            <Text allowFontScaling={false} style={styles.confirmButtonText}>
               {uploadingImage ? (
                 <FormattedMessage
                   id="processing"
@@ -610,7 +610,7 @@ const MenusUpload: React.FC = () => {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={Colors.light.primary} />
-        <Text style={styles.loadingText}>
+        <Text allowFontScaling={false} style={styles.loadingText}>
           <FormattedMessage
             id="loadingMenus"
             defaultMessage="Cargando menús..."
@@ -636,7 +636,7 @@ const MenusUpload: React.FC = () => {
             />
           </View>
           <View style={styles.header}>
-            <Text style={styles.headerTitle}>
+            <Text allowFontScaling={false} style={styles.headerTitle}>
               <FormattedMessage
                 id="dailyMenus"
                 defaultMessage="Menús Diarios"
@@ -662,7 +662,7 @@ const MenusUpload: React.FC = () => {
             <View style={styles.uploadingOverlay}>
               <View style={styles.uploadingContainer}>
                 <ActivityIndicator size="large" color={Colors.light.primary} />
-                <Text style={styles.uploadingText}>
+                <Text allowFontScaling={false} style={styles.uploadingText}>
                   {uploadingImage ? (
                     <FormattedMessage
                       id="uploadingImage"
@@ -675,7 +675,7 @@ const MenusUpload: React.FC = () => {
                     />
                   )}
                 </Text>
-                <Text style={styles.uploadingText}>
+                <Text allowFontScaling={false} style={styles.uploadingText}>
                   <FormattedMessage id="puedeTardar" />
                 </Text>
               </View>

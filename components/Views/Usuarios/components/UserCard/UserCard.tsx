@@ -62,7 +62,7 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, currentUser
       <TouchableOpacity activeOpacity={0.9} onPress={animatePress} style={styles.cardContent}>
         {isCurrentUser && (
           <View style={styles.currentUserBadge}>
-            <Text style={styles.currentUserText}>
+            <Text allowFontScaling={false} style={styles.currentUserText}>
               <FormattedMessage id="users.you" defaultMessage="Tú" />
             </Text>
           </View>
@@ -74,7 +74,7 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, currentUser
               <Image source={{ uri: user.image }} style={styles.avatar} resizeMode="cover" key={user.image} />
             ) : (
               <View style={styles.avatarBackground}>
-                <Text style={styles.avatarText}>{getInitials(user.nombre)}</Text>
+                <Text allowFontScaling={false} style={styles.avatarText}>{getInitials(user.nombre)}</Text>
               </View>
             )}
 
@@ -89,12 +89,12 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, currentUser
           </View>
 
           <View style={styles.userInfo}>
-            <Text style={styles.userName} numberOfLines={1}>
+            <Text allowFontScaling={false} style={styles.userName} numberOfLines={1}>
               {user.nombre}
             </Text>
             <View style={styles.emailContainer}>
               <MaterialIcons name="email" size={14} color={Colors.light.textSecondary} />
-              <Text style={styles.userEmail} numberOfLines={1}>
+              <Text allowFontScaling={false} style={styles.userEmail} numberOfLines={1}>
                 {user.correo}
               </Text>
             </View>
@@ -118,7 +118,7 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, currentUser
                 },
               ]}
             />
-            <Text
+            <Text allowFontScaling={false}
               style={[
                 styles.statusText,
                 {
@@ -136,7 +136,7 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, currentUser
           {user.isAdmin && (
             <View style={styles.adminBadge}>
               <Ionicons name="shield-checkmark" size={12} color={Colors.light.warning} />
-              <Text style={styles.adminText}>
+              <Text allowFontScaling={false} style={styles.adminText}>
                 <FormattedMessage id="users.role.admin" defaultMessage="Admin" />
               </Text>
             </View>
@@ -147,13 +147,13 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, currentUser
           <View style={styles.actionsContainer}>
             <TouchableOpacity style={styles.editButton} onPress={() => onEdit(user)} activeOpacity={0.7}>
               <Feather name="edit-2" size={16} color={Colors.light.primary} />
-              <Text style={styles.editButtonText}>
+              <Text allowFontScaling={false} style={styles.editButtonText}>
                 <FormattedMessage id="users.actions.edit" defaultMessage="Editar" />
               </Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.deleteButton} onPress={() => onDelete(user.id)} activeOpacity={0.7}>
               <MaterialIcons name="delete-outline" size={16} color="white" />
-              <Text style={styles.deleteButtonText}>
+              <Text allowFontScaling={false} style={styles.deleteButtonText}>
                 <FormattedMessage id="users.actions.delete" defaultMessage="Eliminar" />
               </Text>
             </TouchableOpacity>
@@ -163,7 +163,7 @@ const UserCard: React.FC<UserCardProps> = ({ user, onEdit, onDelete, currentUser
         {isCurrentUser && (
           <View style={styles.currentUserIndicator}>
             <Ionicons name="person" size={16} color={Colors.light.primary} />
-            <Text style={styles.currentUserIndicatorText}>
+            <Text allowFontScaling={false} style={styles.currentUserIndicatorText}>
               <FormattedMessage id="users.yourProfile" defaultMessage="Tu perfil" />
             </Text>
           </View>

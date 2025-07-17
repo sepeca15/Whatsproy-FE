@@ -103,7 +103,7 @@ const PedidosEIngresos: React.FC = () => {
                       ) : (
                         <Feather name="activity" size={16} />
                       )}
-                      <Text style={styles.text}>
+                      <Text allowFontScaling={false} style={styles.text}>
                         {key === "pending" ? (
                           <FormattedMessage
                             id="pending"

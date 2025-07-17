@@ -25,7 +25,7 @@ const StatusTimeline: React.FC<StatusTimelineProps> = ({ statusChanges }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.timelineTitle}>Historial de estados</Text>
+      <Text allowFontScaling={false} style={styles.timelineTitle}>Historial de estados</Text>
 
       {sortedChanges.map((change, index) => (
         <View key={index} style={styles.timelineItem}>
@@ -35,8 +35,8 @@ const StatusTimeline: React.FC<StatusTimelineProps> = ({ statusChanges }) => {
           </View>
 
           <View style={styles.timelineContent}>
-            <Text style={styles.statusName}>{change.estado.nombre}</Text>
-            <Text style={styles.statusDate}>{moment(change.createdAt).locale("es").format("D MMM, HH:mm")}</Text>
+            <Text allowFontScaling={false} style={styles.statusName}>{change.estado.nombre}</Text>
+            <Text allowFontScaling={false} style={styles.statusDate}>{moment(change.createdAt).locale("es").format("D MMM, HH:mm")}</Text>
           </View>
         </View>
       ))}

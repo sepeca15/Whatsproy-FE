@@ -216,7 +216,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       >
         {!localDisponible && (
           <View style={enhancedStyles.disabledBadge}>
-            <Text style={enhancedStyles.disabledText}>
+            <Text allowFontScaling={false} style={enhancedStyles.disabledText}>
               <FormattedMessage
                 id="notAvailable"
                 defaultMessage="No disponible"
@@ -264,7 +264,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
             <View style={enhancedStyles.content}>
               <View style={enhancedStyles.header}>
-                <Text style={enhancedStyles.title} numberOfLines={2}>
+                <Text allowFontScaling={false} style={enhancedStyles.title} numberOfLines={2}>
                   {productBDD.nombre}
                 </Text>
                 <TouchableOpacity
@@ -278,16 +278,16 @@ const ProductCard: React.FC<ProductCardProps> = ({
               </View>
 
               <View style={enhancedStyles.priceContainer}>
-                <Text style={enhancedStyles.price}>
+                <Text allowFontScaling={false} style={enhancedStyles.price}>
                   {currenctCurrency.simbolo}
                   {Number(productBDD.precio).toFixed(2)}
                 </Text>
-                <Text style={enhancedStyles.currency}>
+                <Text allowFontScaling={false} style={enhancedStyles.currency}>
                   {currenctCurrency.codigo}
                 </Text>
               </View>
 
-              <Text style={enhancedStyles.description} numberOfLines={2}>
+              <Text allowFontScaling={false} style={enhancedStyles.description} numberOfLines={2}>
                 {productBDD.descripcion}
               </Text>
             </View>
@@ -307,7 +307,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           >
             <View style={enhancedStyles.modalContainer as any}>
               <View style={enhancedStyles.modalHeader}>
-                <Text style={enhancedStyles.modalTitle}>
+                <Text allowFontScaling={false} style={enhancedStyles.modalTitle}>
                   {<FormattedMessage id="options" />}
                 </Text>
               </View>
@@ -326,7 +326,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   >
                     <Icon name="eye" size={18} color="#0ea5e9" />
                   </View>
-                  <Text style={enhancedStyles.modalOptionText}>
+                  <Text allowFontScaling={false} style={enhancedStyles.modalOptionText}>
                     <FormattedMessage
                       id="viewModal"
                       defaultMessage="Ver detalles"
@@ -348,7 +348,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   >
                     <Icon name="edit" size={18} color="#22c55e" />
                   </View>
-                  <Text style={enhancedStyles.modalOptionText}>
+                  <Text allowFontScaling={false} style={enhancedStyles.modalOptionText}>
                     <FormattedMessage id="edit" defaultMessage="Editar" />
                   </Text>
                   <Icon name="chevron-right" size={16} color="#9ca3af" />
@@ -367,7 +367,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   >
                     <Icon name="archive" size={18} color="#f59e0b" />
                   </View>
-                  <Text style={enhancedStyles.modalOptionText}>
+                  <Text allowFontScaling={false} style={enhancedStyles.modalOptionText}>
                     {localDisponible ? (
                       <FormattedMessage
                         id="disable"
@@ -396,7 +396,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   >
                     <Icon name="trash-2" size={18} color="#ef4444" />
                   </View>
-                  <Text style={enhancedStyles.modalOptionText}>
+                  <Text allowFontScaling={false} style={enhancedStyles.modalOptionText}>
                     <FormattedMessage id="delete" defaultMessage="Eliminar" />
                   </Text>
                   <Icon name="chevron-right" size={16} color="#9ca3af" />

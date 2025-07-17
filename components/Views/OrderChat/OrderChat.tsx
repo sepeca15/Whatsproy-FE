@@ -145,10 +145,10 @@ const OrderChat: React.FC = () => {
         </Avatar>
 
         <VStack>
-          <Text bold fontSize="md" color="white">
+          <Text allowFontScaling={false} bold fontSize="md" color="white">
             {chatInfo.clientName}
           </Text>
-          <Text fontSize="xs" color="white" opacity={0.8}>
+          <Text allowFontScaling={false} fontSize="xs" color="white" opacity={0.8}>
             {chatInfo.orderNumber}
           </Text>
         </VStack>
@@ -157,7 +157,7 @@ const OrderChat: React.FC = () => {
       {loading ? (
         <View flex={1} justifyContent="center" alignItems="center">
           <Spinner size="lg" color={primary} />
-          <Text mt={2} color={subtextColor}>
+          <Text allowFontScaling={false} mt={2} color={subtextColor}>
             Cargando historial...
           </Text>
         </View>
@@ -170,7 +170,7 @@ const OrderChat: React.FC = () => {
                 <VStack key={date} space={3} mb={6}>
                   <HStack space={2} justifyContent="center" alignItems="center" my={2}>
                     <Divider flex={1} bg={dividerColor} />
-                    <Text fontSize="xs" color={subtextColor} bg={background} px={2}>
+                    <Text allowFontScaling={false} fontSize="xs" color={subtextColor} bg={background} px={2}>
                       {formatDate(dateMessages[0].createdAt)}
                     </Text>
                     <Divider flex={1} bg={dividerColor} />
@@ -189,8 +189,8 @@ const OrderChat: React.FC = () => {
                       borderTopRightRadius={msg.isClient ? 4 : 12}
                       borderTopLeftRadius={msg.isClient ? 12 : 4}
                     >
-                      <Text color={msg.isClient ? "white" : text}>{msg.mensaje}</Text>
-                      <Text
+                      <Text allowFontScaling={false} color={msg.isClient ? "white" : text}>{msg.mensaje}</Text>
+                      <Text allowFontScaling={false}
                         fontSize="2xs"
                         color={msg.isClient ? "white" : subtextColor}
                         opacity={msg.isClient ? 0.8 : 1}
@@ -205,14 +205,14 @@ const OrderChat: React.FC = () => {
               ))
           ) : (
             <Box flex={1} justifyContent="center" alignItems="center" mt={10}>
-              <Text color={subtextColor}>No hay mensajes en este chat</Text>
+              <Text allowFontScaling={false} color={subtextColor}>No hay mensajes en este chat</Text>
             </Box>
           )}
         </ScrollView>
       )}
 
       <Box bg={footerBgColor} p={3} borderTopWidth={1} borderTopColor={dividerColor}>
-        <Text fontSize="xs" color={subtextColor} textAlign="center">
+        <Text allowFontScaling={false} fontSize="xs" color={subtextColor} textAlign="center">
           <FormattedMessage id="orderChat.footerText" defaultMessage="Powered by Your Company" />
         </Text>
       </Box>

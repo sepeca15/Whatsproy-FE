@@ -66,7 +66,7 @@ const CardCategory: React.FC<ICardCategory> = ({ data, onPress, handleDeleteCate
           </View>
 
           <View style={styles.infoContainer}>
-            <Text style={styles.categoryName} numberOfLines={2}>
+            <Text allowFontScaling={false} style={styles.categoryName} numberOfLines={2}>
               {data.name || <FormattedMessage id="categories.card.noName" defaultMessage="Sin nombre" />}
             </Text>
 
@@ -74,7 +74,7 @@ const CardCategory: React.FC<ICardCategory> = ({ data, onPress, handleDeleteCate
               <View style={styles.productCountContainer}>
                 <View style={styles.productCountBadge}>
                   <Ionicons name="cube-outline" size={10} color={Colors.light.primary} />
-                  <Text style={styles.productCount}>
+                  <Text allowFontScaling={false} style={styles.productCount}>
                     {data.productosCount}{" "}
                     <FormattedMessage
                       id={data.productosCount === 1 ? "categories.card.product" : "categories.card.products"}
@@ -86,7 +86,7 @@ const CardCategory: React.FC<ICardCategory> = ({ data, onPress, handleDeleteCate
             )}
 
             {data.description && (
-              <Text style={styles.categoryDescription} numberOfLines={1}>
+              <Text allowFontScaling={false} style={styles.categoryDescription} numberOfLines={1}>
                 {data.description}
               </Text>
             )}

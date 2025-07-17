@@ -42,7 +42,7 @@ const ProductPreviewCard: React.FC<ProductPreviewProps> = ({ product, isSelected
         </TouchableOpacity>
 
         <View style={styles.productInfo}>
-          <TextInput
+          <Text allowFontScaling={false}Input
             style={[styles.productName, !isSelected && styles.productNameDisabled]}
             value={product.nombre}
             onChangeText={(text) => onChange("nombre", text)}
@@ -54,7 +54,7 @@ const ProductPreviewCard: React.FC<ProductPreviewProps> = ({ product, isSelected
             {product.isMenuDiario && (
               <View style={styles.menuBadge}>
                 <Icon name="calendar" size={10} color={Colors.light.primary} />
-                <Text style={styles.menuBadgeText}>
+                <Text allowFontScaling={false} style={styles.menuBadgeText}>
                   <FormattedMessage id="dailyMenu" defaultMessage="Menú Diario" />
                 </Text>
               </View>
@@ -66,10 +66,10 @@ const ProductPreviewCard: React.FC<ProductPreviewProps> = ({ product, isSelected
       {isSelected && (
         <View style={styles.productDetails}>
           <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>
+            <Text allowFontScaling={false} style={styles.detailLabel}>
               <FormattedMessage id="description" defaultMessage="Descripción" />
             </Text>
-            <TextInput
+            <Text allowFontScaling={false}Input
               style={styles.detailInput}
               value={product.descripcion}
               onChangeText={(text) => onChange("descripcion", text)}
@@ -83,10 +83,10 @@ const ProductPreviewCard: React.FC<ProductPreviewProps> = ({ product, isSelected
 
           <View style={styles.detailRowHorizontal}>
             <View style={styles.halfWidth}>
-              <Text style={styles.detailLabel}>
+              <Text allowFontScaling={false} style={styles.detailLabel}>
                 <FormattedMessage id="price" defaultMessage="Precio" />
               </Text>
-              <TextInput
+              <Text allowFontScaling={false}Input
                 style={styles.priceInput}
                 value={product.precio?.toString() || ""}
                 onChangeText={(text) => onChange("precio", Number.parseFloat(text) || 0)}
@@ -96,31 +96,31 @@ const ProductPreviewCard: React.FC<ProductPreviewProps> = ({ product, isSelected
             </View>
 
             <View style={styles.halfWidth}>
-              <Text style={styles.detailLabel}>
+              <Text allowFontScaling={false} style={styles.detailLabel}>
                 <FormattedMessage id="preparationTime" defaultMessage="Tiempo de preparación" />
               </Text>
               <View style={styles.timeInputContainer}>
-                <TextInput
+                <Text allowFontScaling={false}Input
                   style={styles.timeInput}
                   value={product.plazoDuracionEstimadoMinutos?.toString() || ""}
                   onChangeText={(text) => onChange("plazoDuracionEstimadoMinutos", Number.parseInt(text) || 0)}
                   placeholder="20"
                   keyboardType="numeric"
                 />
-                <Text style={styles.timeUnit}>min</Text>
+                <Text allowFontScaling={false} style={styles.timeUnit}>min</Text>
               </View>
             </View>
           </View>
 
           <View style={styles.configSection}>
-            <Text style={styles.configSectionTitle}>
+            <Text allowFontScaling={false} style={styles.configSectionTitle}>
               <FormattedMessage id="additionalSettings" defaultMessage="Configuraciones adicionales" />
             </Text>
 
             <View style={styles.switchRow}>
               <View style={styles.switchInfo}>
                 <Icon name="eye" size={16} color={Colors.light.text} />
-                <Text style={styles.switchLabel}>
+                <Text allowFontScaling={false} style={styles.switchLabel}>
                   <FormattedMessage id="available" defaultMessage="Disponible" />
                 </Text>
               </View>
@@ -135,7 +135,7 @@ const ProductPreviewCard: React.FC<ProductPreviewProps> = ({ product, isSelected
             <View style={styles.switchRow}>
               <View style={styles.switchInfo}>
                 <Icon name="calendar" size={16} color={Colors.light.text} />
-                <Text style={styles.switchLabel}>
+                <Text allowFontScaling={false} style={styles.switchLabel}>
                   <FormattedMessage id="isDailyMenu" defaultMessage="Es menú diario" />
                 </Text>
               </View>
@@ -151,7 +151,7 @@ const ProductPreviewCard: React.FC<ProductPreviewProps> = ({ product, isSelected
               <View style={styles.switchRow}>
                 <View style={styles.switchInfo}>
                   <Icon name="shopping-cart" size={16} color={Colors.light.text} />
-                  <Text style={styles.switchLabel}>
+                  <Text allowFontScaling={false} style={styles.switchLabel}>
                     <FormattedMessage id="allowDailyMenuOrder" defaultMessage="Permitir orden en menú diario" />
                   </Text>
                 </View>
@@ -166,7 +166,7 @@ const ProductPreviewCard: React.FC<ProductPreviewProps> = ({ product, isSelected
 
             {product.isMenuDiario && (
               <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>
+                <Text allowFontScaling={false} style={styles.detailLabel}>
                   <FormattedMessage id="dayOfWeek" defaultMessage="Día de la semana" />
                 </Text>
                 <View style={styles.daySelector}>
@@ -184,7 +184,7 @@ const ProductPreviewCard: React.FC<ProductPreviewProps> = ({ product, isSelected
                       style={[styles.dayButton, product.diaSemana === day.value && styles.dayButtonSelected]}
                       onPress={() => onChange("diaSemana", day.value)}
                     >
-                      <Text
+                      <Text allowFontScaling={false}
                         style={[styles.dayButtonText, product.diaSemana === day.value && styles.dayButtonTextSelected]}
                       >
                         {day.label}

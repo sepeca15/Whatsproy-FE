@@ -52,13 +52,13 @@ const WorkerSelect = ({ workers, selectedId, onSelect }: Props) => {
             {selectedWorker ? (
               <>
                 <Avatar width={7} height={7} source={{ uri: selectedWorker.image }} />
-                <Text fontWeight={"medium"} marginTop={0.5} color={"gray.500"}>
+                <Text allowFontScaling={false} fontWeight={"medium"} marginTop={0.5} color={"gray.500"}>
                   {selectedWorker.nombre} {selectedWorker.apellido}  {user?.id === selectedWorker?.id ? <>(<FormattedMessage id="me" />)</> : ""}
                 </Text>
               </>
             ) : (
                <>
-              <Text color="gray.500"><FormattedMessage id="selectWorker" /></Text>
+              <Text allowFontScaling={false} color="gray.500"><FormattedMessage id="selectWorker" /></Text>
               </>
             )}
           </HStack>
@@ -84,7 +84,7 @@ const WorkerSelect = ({ workers, selectedId, onSelect }: Props) => {
               >
                 <HStack alignItems="center" space={3} px={4} py={3} w="100%">
                   <Avatar size="sm" source={{ uri: worker.image }} />
-                  <Text>
+                  <Text allowFontScaling={false}>
                     {worker.nombre} {worker.apellido} {user?.id === worker?.id ? <>(<FormattedMessage id="me" />)</> : ""}
                   </Text>
                 </HStack>

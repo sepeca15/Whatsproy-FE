@@ -250,7 +250,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
         >
           <View style={styles.optionContent}>
             <View style={styles.optionTextContainer}>
-              <Text
+              <Text allowFontScaling={false}
                 style={[
                   styles.optionLabel,
                   isSelected && styles.selectedOptionLabel,
@@ -259,7 +259,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
                 {item.label}
               </Text>
               {item.subText && (
-                <Text style={styles.optionSubText}>{item.subText}</Text>
+                <Text allowFontScaling={false} style={styles.optionSubText}>{item.subText}</Text>
               )}
             </View>
             <View
@@ -292,7 +292,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
               rounded="full"
             >
               <View style={styles.badgeContent}>
-                <Text style={styles.badgeText}>
+                <Text allowFontScaling={false} style={styles.badgeText}>
                   {displayText}
                   {option?.subText}
                 </Text>
@@ -315,6 +315,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
     () => (
       <View style={styles.searchContainer}>
         <Input
+          allowFontScaling={false}
           borderColor={"gray.400"}
           placeholder={intl.formatMessage(
             { id: "searchPlaceholder", defaultMessage: "Buscar {label}..." },
@@ -356,14 +357,14 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
     () => (
       <View style={styles.emptyState}>
         <MaterialIcons name="search-off" size={48} color={Colors.light.icon} />
-        <Text style={styles.emptyStateText}>
+        <Text allowFontScaling={false} style={styles.emptyStateText}>
           {intl.formatMessage({
             id: "noResultsFound",
             defaultMessage: "No se encontraron resultados",
           })}
         </Text>
         {searchQuery && (
-          <Text style={styles.emptyStateSubtext}>
+          <Text allowFontScaling={false} style={styles.emptyStateSubtext}>
             {intl.formatMessage({
               id: "tryDifferentSearch",
               defaultMessage: "Intenta con un término diferente",
@@ -476,7 +477,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
                 onPress={handleAddModalClose}
                 disabled={isCreating}
               >
-                <Text style={styles.cancelButtonText}>
+                <Text allowFontScaling={false} style={styles.cancelButtonText}>
                   {intl.formatMessage({
                     id: "cancel",
                     defaultMessage: "Cancelar",
@@ -492,7 +493,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
                 {isCreating ? (
                   <Spinner color="white" size="sm" />
                 ) : (
-                  <Text style={styles.createButtonText}>
+                  <Text allowFontScaling={false} style={styles.createButtonText}>
                     {intl.formatMessage({
                       id: "create",
                       defaultMessage: "Crear",

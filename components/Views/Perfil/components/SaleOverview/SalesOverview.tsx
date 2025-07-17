@@ -45,14 +45,14 @@ const SalesOverview: React.FC<SalesOverviewProps> = ({
         borderColor: "rgba(255, 255, 255, 0.1)",
       }} >
         <HStack justifyContent="space-between" alignItems="center" mb={3}>
-          <Text style={styles.title}>
+          <Text allowFontScaling={false} style={styles.title}>
             <FormattedMessage
               id="sales.overview"
               defaultMessage="Resumen de ventas"
             />
           </Text>
           <Box bg={`rgba(7, 94, 84, 0.1)`} px={2} py={1} borderRadius="full">
-            <Text style={styles.periodText}>
+            <Text allowFontScaling={false} style={styles.periodText}>
               <FormattedMessage
                 id={`sales.period.${period}`}
                 defaultMessage={period}
@@ -63,14 +63,14 @@ const SalesOverview: React.FC<SalesOverviewProps> = ({
 
         <VStack space={1}>
           <Box>
-            <Text style={styles.label}>
+            <Text allowFontScaling={false} style={styles.label}>
               <FormattedMessage
                 id="sales.total"
                 defaultMessage="Ventas totales"
               />
             </Text>
             <HStack alignItems="baseline" space={2}>
-              <Text style={styles.totalSales}>
+              <Text allowFontScaling={false} style={styles.totalSales}>
                 {currency}
                 {formatNumber(totalSales)}
               </Text>
@@ -81,7 +81,7 @@ const SalesOverview: React.FC<SalesOverviewProps> = ({
                   size="xs"
                   color={isPositive ? "#128c7e" : "red.500"}
                 />
-                <Text
+                <Text allowFontScaling={false}
                   style={[
                     styles.percentage,
                     { color: isPositive ? "#128c7e" : "#ef4444" },
@@ -97,26 +97,26 @@ const SalesOverview: React.FC<SalesOverviewProps> = ({
 
           <HStack justifyContent="space-between">
             <VStack>
-              <Text style={styles.label}>
+              <Text allowFontScaling={false} style={styles.label}>
                 <FormattedMessage
                   id="sales.average"
                   defaultMessage="Venta promedio"
                 />
               </Text>
-              <Text style={styles.amount}>
+              <Text allowFontScaling={false} style={styles.amount}>
                 {currency}
                 {formatNumber(averageSale)}
               </Text>
             </VStack>
 
             <VStack>
-              <Text style={styles.label}>
+              <Text allowFontScaling={false} style={styles.label}>
                 <FormattedMessage
                   id="sales.previous"
                   defaultMessage="Periodo anterior"
                 />
               </Text>
-              <Text style={styles.amount}>
+              <Text allowFontScaling={false} style={styles.amount}>
                 {currency}
                 {formatNumber(previous)}
               </Text>

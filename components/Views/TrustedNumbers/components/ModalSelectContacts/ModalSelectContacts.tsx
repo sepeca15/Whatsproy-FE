@@ -124,15 +124,15 @@ const ModalSelectContact = ({ isOpen, onClose, onImportContacts, loadingApi, tru
 
             <View style={styles.avatarContainer}>
               <LinearGradient colors={[colors.primary + "25", colors.primary + "15"]} style={styles.avatarGradient}>
-                <Text style={[styles.avatarText, { color: colors.primary }]}>{getInitials(name)}</Text>
+                <Text allowFontScaling={false} style={[styles.avatarText, { color: colors.primary }]}>{getInitials(name)}</Text>
               </LinearGradient>
             </View>
 
             <View style={styles.contactInfo}>
-              <Text style={[styles.contactName, { color: colors.text }]} numberOfLines={1}>
+              <Text allowFontScaling={false} style={[styles.contactName, { color: colors.text }]} numberOfLines={1}>
                 {name}
               </Text>
-              <Text style={[styles.contactPhone, { color: colors.textSecondary }]} numberOfLines={1}>
+              <Text allowFontScaling={false} style={[styles.contactPhone, { color: colors.textSecondary }]} numberOfLines={1}>
                 {phoneNumber}
               </Text>
             </View>
@@ -209,7 +209,7 @@ const ModalSelectContact = ({ isOpen, onClose, onImportContacts, loadingApi, tru
       return (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={colors.primary} />
-          <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
+          <Text allowFontScaling={false} style={[styles.loadingText, { color: colors.textSecondary }]}>
             <FormattedMessage id="trustedNumbers.modal.loadingContacts" defaultMessage="Cargando contactos..." />
           </Text>
         </View>
@@ -222,13 +222,13 @@ const ModalSelectContact = ({ isOpen, onClose, onImportContacts, loadingApi, tru
           <View style={styles.permissionIconContainer}>
             <MaterialIcons name="contacts" size={48} color={colors.textSecondary} />
           </View>
-          <Text style={[styles.permissionTitle, { color: colors.text }]}>
+          <Text allowFontScaling={false} style={[styles.permissionTitle, { color: colors.text }]}>
             <FormattedMessage
               id="trustedNumbers.modal.permissionDenied.title"
               defaultMessage="Permisos de contactos requeridos"
             />
           </Text>
-          <Text style={[styles.permissionDescription, { color: colors.textSecondary }]}>
+          <Text allowFontScaling={false} style={[styles.permissionDescription, { color: colors.textSecondary }]}>
             <FormattedMessage
               id="trustedNumbers.modal.permissionDenied.description"
               defaultMessage="Para importar contactos, necesitamos acceso a tu lista de contactos"
@@ -237,7 +237,7 @@ const ModalSelectContact = ({ isOpen, onClose, onImportContacts, loadingApi, tru
           <TouchableOpacity style={styles.retryButton} onPress={importContacts} activeOpacity={0.8}>
             <LinearGradient colors={[colors.primary, colors.primary + "DD"]} style={styles.retryButtonGradient}>
               <MaterialIcons name="refresh" size={20} color="white" />
-              <Text style={styles.retryButtonText}>
+              <Text allowFontScaling={false} style={styles.retryButtonText}>
                 <FormattedMessage id="trustedNumbers.modal.retry" defaultMessage="Intentar de nuevo" />
               </Text>
             </LinearGradient>
@@ -250,7 +250,7 @@ const ModalSelectContact = ({ isOpen, onClose, onImportContacts, loadingApi, tru
       return (
         <View style={styles.emptyContainer}>
           <MaterialIcons name="contact-phone" size={48} color={colors.textSecondary} />
-          <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
+          <Text allowFontScaling={false} style={[styles.emptyText, { color: colors.textSecondary }]}>
             <FormattedMessage id="trustedNumbers.modal.noContacts" defaultMessage="No se encontraron contactos" />
           </Text>
         </View>
@@ -277,7 +277,7 @@ const ModalSelectContact = ({ isOpen, onClose, onImportContacts, loadingApi, tru
         {contactsSelected.size > 0 && (
           <View style={[styles.selectionSummary, { backgroundColor: colors.primary + "15" }]}>
             <MaterialIcons name="check-circle" size={16} color={colors.primary} />
-            <Text style={[styles.selectionText, { color: colors.primary }]}>
+            <Text allowFontScaling={false} style={[styles.selectionText, { color: colors.primary }]}>
               <FormattedMessage
                 id="trustedNumbers.modal.selectedCount"
                 defaultMessage="{count} contactos seleccionados"
@@ -299,7 +299,7 @@ const ModalSelectContact = ({ isOpen, onClose, onImportContacts, loadingApi, tru
           ListEmptyComponent={() => (
             <View style={styles.emptySearchContainer}>
               <MaterialIcons name="search-off" size={32} color={colors.textSecondary} />
-              <Text style={[styles.emptySearchText, { color: colors.textSecondary }]}>
+              <Text allowFontScaling={false} style={[styles.emptySearchText, { color: colors.textSecondary }]}>
                 <FormattedMessage
                   id="trustedNumbers.modal.noSearchResults"
                   defaultMessage="No se encontraron contactos con ese criterio"

@@ -7,6 +7,7 @@ import CustomText from "./CustomText"
 import styles from "../HomeStyles"
 import { Shadow } from "react-native-shadow-2"
 import { useUser } from "@/hooks/redux/useUser"
+import { ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type"
 
 type MetricCardProps = {
   icon: string
@@ -58,7 +59,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
 }) => {
   // Obtener rol de usuario para condicionar iconos y títulos
   const { user } = useUser()
-  const isReserva = user?.id_rol === 1
+  const isReserva = user?.tipo_servicio === ID_TIPOSERVICIO_RESERVA;
 
   // Ajustar icono: si es rol reserva y el icono es de carrito, usar calendario
   const displayIcon = isReserva && icon === "cart-outline" ? "calendar-outline" : icon

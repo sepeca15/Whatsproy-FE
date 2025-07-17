@@ -74,7 +74,7 @@ const Clients = () => {
         </View>
       </Animated.View>
       <Box flex={1} m={2}>
-        <Text px={1} pt={3} color="teal.600">
+        <Text allowFontScaling={false} px={1} pt={3} color="teal.600">
           <FormattedMessage id="clients.subtitle" />
         </Text>
         <VStack px={1} my={4} space={3}>
@@ -150,7 +150,7 @@ const Clients = () => {
             flexDir={"row"}
             alignItems={"center"}
           >
-            <Text textAlign="center" color="teal.600">
+            <Text allowFontScaling={false} textAlign="center" color="teal.600">
               <FormattedMessage id="clients.noResults" />
             </Text>
           </Center>

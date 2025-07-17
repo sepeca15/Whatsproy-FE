@@ -44,6 +44,7 @@ const InputField: React.FC<InputFieldProps> = ({
       {label && <FormControl.Label>{label}</FormControl.Label>}
       {isTime ? (
         <MaskInput
+          allowFontScaling={false}
           onChangeText={onChangeText}
           keyboardType="numeric"
           placeholder="HH:MM"
@@ -60,6 +61,7 @@ const InputField: React.FC<InputFieldProps> = ({
         />
       ) : isTextArea ? (
         <TextArea
+          allowFontScaling={false}
           InputLeftElement={icon}
           keyboardType={keyboardType}
           autoCompleteType={""}
@@ -73,6 +75,7 @@ const InputField: React.FC<InputFieldProps> = ({
         />
       ) : (
         <Input
+          allowFontScaling={false}
           borderRadius={8}
           ref={inputRef}
           autoFocus={false}

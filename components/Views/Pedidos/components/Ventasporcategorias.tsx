@@ -24,7 +24,7 @@ const Ventasporcategorias: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>
+      <Text allowFontScaling={false} style={styles.title}>
         <FormattedMessage
           id="orderDistribution"
           defaultMessage="Order Distribution"
@@ -33,20 +33,20 @@ const Ventasporcategorias: React.FC = () => {
       <View style={styles.legend}>
         <View style={styles.legendItem}>
           <View style={[styles.legendColor, { backgroundColor: "#600080" }]} />
-          <Text>
+          <Text allowFontScaling={false}>
             <FormattedMessage id="completed" defaultMessage="Completed" /> (50%)
           </Text>
         </View>
         <View style={styles.legendItem}>
           <View style={[styles.legendColor, { backgroundColor: "#9900cc" }]} />
-          <Text>
+          <Text allowFontScaling={false}>
             <FormattedMessage id="inProcess" defaultMessage="In Process" />{" "}
             (30%)
           </Text>
         </View>
         <View style={styles.legendItem}>
           <View style={[styles.legendColor, { backgroundColor: "#c61aff" }]} />
-          <Text>
+          <Text allowFontScaling={false}>
             <FormattedMessage id="cancelled" defaultMessage="Cancelled" /> (20%)
           </Text>
         </View>

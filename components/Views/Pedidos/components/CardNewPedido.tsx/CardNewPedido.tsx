@@ -11,6 +11,8 @@ import moment from "moment";
 import { Feather } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 import { StyleSheet } from "react-native";
+import { ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
+import { useUser } from "@/hooks/redux/useUser";
 
 interface IOrderData {
   clientName: string;
@@ -23,6 +25,7 @@ interface IOrderData {
   orderId: number;
   createdAt?: string;
   isDomicilio?: boolean;
+  fecha?: string;
   reclamo?: {
     createdAt: string;
     texto: string;
@@ -46,6 +49,10 @@ const CardNewPedido = ({
     deleteState: false,
     confirmState: false,
   });
+  const { user } = useUser();
+  const isReserva = user?.tipo_servicio === ID_TIPOSERVICIO_RESERVA;
+
+  console.log("orderData", orderData);
 
   const router = useRouter();
   const [statusModalDelete, setStateModalDelete] = useState<boolean>(false);
@@ -123,33 +130,63 @@ const CardNewPedido = ({
       </View>
 
       <View style={formalStyles.deliverySection}>
-        <View style={formalStyles.deliveryInfo}>
-          <View style={formalStyles.deliveryIconContainer}>
-            {isDomicilio ? (
-              <Feather name="truck" size={14} color={Colors.light.secondary} />
-            ) : (
-              <Feather name="map-pin" size={14} color={Colors.light.warning} />
-            )}
-          </View>
-          <View style={formalStyles.deliveryTextContainer}>
-            <CustomText style={formalStyles.deliveryTypeText}>
-              {isDomicilio ? (
+        {isReserva ? (
+          <View style={formalStyles.deliveryInfo}>
+            <View style={formalStyles.deliveryIconContainer}>
+              <Feather name="calendar" size={14} color={Colors.light.primary} />
+            </View>
+            <View style={formalStyles.deliveryTextContainer}>
+              <CustomText style={formalStyles.deliveryTypeText}>
                 <FormattedMessage
-                  id="homeDelivery"
-                  defaultMessage="Envío a domicilio"
+                  id="reservationDate"
+                  defaultMessage="Fecha de Reserva:"
+                />
+              </CustomText>
+              <CustomText style={formalStyles.addressText} numberOfLines={1}>
+                {moment(orderData.fecha)
+                  .add("3", "hours")
+                  .locale("es")
+                  .format("D MMM YYYY HH:mm")}
+              </CustomText>
+            </View>
+          </View>
+        ) : (
+          <View style={formalStyles.deliveryInfo}>
+            <View style={formalStyles.deliveryIconContainer}>
+              {isDomicilio ? (
+                <Feather
+                  name="truck"
+                  size={14}
+                  color={Colors.light.secondary}
                 />
               ) : (
-                <FormattedMessage
-                  id="storePickup"
-                  defaultMessage="Retiro en sucursal"
+                <Feather
+                  name="map-pin"
+                  size={14}
+                  color={Colors.light.warning}
                 />
               )}
-            </CustomText>
-            <CustomText style={formalStyles.addressText} numberOfLines={1}>
-              {direccion}
-            </CustomText>
+            </View>
+            <View style={formalStyles.deliveryTextContainer}>
+              <CustomText style={formalStyles.deliveryTypeText}>
+                {isDomicilio ? (
+                  <FormattedMessage
+                    id="homeDelivery"
+                    defaultMessage="Envío a domicilio"
+                  />
+                ) : (
+                  <FormattedMessage
+                    id="storePickup"
+                    defaultMessage="Retiro en sucursal"
+                  />
+                )}
+              </CustomText>
+              <CustomText style={formalStyles.addressText} numberOfLines={1}>
+                {direccion}
+              </CustomText>
+            </View>
           </View>
-        </View>
+        )}
 
         <View style={formalStyles.totalSection}>
           <CustomText style={formalStyles.totalLabel}>

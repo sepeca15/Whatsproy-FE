@@ -41,24 +41,24 @@ const ProductOrderCard = ({ data, cantidad, precio }: IProductOrderCard) => {
         </View>
 
         <View style={styles.infoContainer}>
-          <Text style={styles.productName} numberOfLines={expanded ? undefined : 1}>
+          <Text allowFontScaling={false} style={styles.productName} numberOfLines={expanded ? undefined : 1}>
             {data.nombre}
           </Text>
 
           <View style={styles.priceRow}>
-            <Text style={styles.unitPrice}>
-              ${precio} <Text style={styles.unitLabel}>/ unidad</Text>
+            <Text allowFontScaling={false} style={styles.unitPrice}>
+              ${precio} <Text allowFontScaling={false} style={styles.unitLabel}>/ unidad</Text>
             </Text>
-            <Text style={styles.quantity}>x{cantidad}</Text>
+            <Text allowFontScaling={false} style={styles.quantity}>x{cantidad}</Text>
           </View>
 
-          {expanded && data.descripcion && <Text style={styles.description}>{data.descripcion}</Text>}
+          {expanded && data.descripcion && <Text allowFontScaling={false} style={styles.description}>{data.descripcion}</Text>}
         </View>
       </View>
 
       <View style={styles.footer}>
         <TouchableOpacity style={styles.expandButton} onPress={toggleExpand}>
-          <Text style={styles.expandButtonText}>
+          <Text allowFontScaling={false} style={styles.expandButtonText}>
             {expanded ? (
               <FormattedMessage id="showLess" defaultMessage="Mostrar menos" />
             ) : (
@@ -72,7 +72,7 @@ const ProductOrderCard = ({ data, cantidad, precio }: IProductOrderCard) => {
           />
         </TouchableOpacity>
 
-        <Text style={styles.totalPrice}>${(cantidad * data.precio).toFixed(2)}</Text>
+        <Text allowFontScaling={false} style={styles.totalPrice}>${(cantidad * data.precio).toFixed(2)}</Text>
       </View>
     </View>
   )

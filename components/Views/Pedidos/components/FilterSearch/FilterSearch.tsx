@@ -174,7 +174,7 @@ const FilterSearch = () => {
             bg={"white"}
           >
             <Ionicons name="time-outline" size={18} />
-            <Text fontSize={14} color={"gray.400"}>
+            <Text allowFontScaling={false} fontSize={14} color={"gray.400"}>
               {valueSearch !== "" ? (
                 valueSearch
               ) : (
@@ -253,7 +253,7 @@ const FilterSearch = () => {
               style={{ width: 350, height: 250, objectFit: "contain" }}
               alt="search icon"
             />
-            <Text fontSize={20} fontWeight={"medium"}>
+            <Text allowFontScaling={false} fontSize={20} fontWeight={"medium"}>
               {<FormattedMessage id="searchOrder" />}
             </Text>
           </View>
@@ -301,7 +301,7 @@ const FilterSearch = () => {
                   style={{ width: 350, height: 250, objectFit: "contain" }}
                   alt="no results "
                 />
-                <Text fontSize={20} fontWeight={"medium"}>
+                <Text allowFontScaling={false} fontSize={20} fontWeight={"medium"}>
                   {<FormattedMessage id="noResultsFound" />}
                 </Text>
               </View>

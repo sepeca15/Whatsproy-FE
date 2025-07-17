@@ -91,8 +91,8 @@ const Perfil: React.FC = () => {
               </View>
             </TouchableOpacity>
             <VStack marginLeft={3}>
-              <Text style={styles.name}>{user?.nombre || "Usuario"}</Text>
-              <Text style={styles.plan}>
+              <Text allowFontScaling={false} style={styles.name}>{user?.nombre || "Usuario"}</Text>
+              <Text allowFontScaling={false} style={styles.plan}>
                 <FormattedMessage id="plan" defaultMessage="Plan" />:{" "}
                 {currentPlan?.nombre ?? "-"}
               </Text>

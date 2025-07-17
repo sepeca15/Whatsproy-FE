@@ -177,7 +177,7 @@ const ModalCreateOrEditCategory = ({
       scrollable={true}
     >
       <View style={styles.container}>
-        <Text style={[styles.description, { color: colors.textSecondary }]}>
+        <Text allowFontScaling={false} style={[styles.description, { color: colors.textSecondary }]}>
           <FormattedMessage
             id="categories.modal.description"
             defaultMessage="Las categorías te ayudan a organizar tus productos y facilitan la navegación para tus clientes"
@@ -185,12 +185,12 @@ const ModalCreateOrEditCategory = ({
         </Text>
 
         <View style={styles.imageSection}>
-          <Text style={[styles.label, { color: colors.text, textAlign: "center" }]}>
+          <Text allowFontScaling={false} style={[styles.label, { color: colors.text, textAlign: "center" }]}>
             <FormattedMessage
               id="categories.modal.imageLabel"
               defaultMessage="Imagen de la categoría"
             />
-            <Text style={styles.required}> *</Text>
+            <Text allowFontScaling={false} style={styles.required}> *</Text>
           </Text>
 
           <View style={styles.imageContainer}>
@@ -247,7 +247,7 @@ const ModalCreateOrEditCategory = ({
                 size={20}
                 color={colors.primary}
               />
-              <Text
+              <Text allowFontScaling={false}
                 style={[styles.uploadButtonText, { color: colors.primary }]}
               >
                 <FormattedMessage
@@ -260,19 +260,19 @@ const ModalCreateOrEditCategory = ({
             </TouchableOpacity>
 
             {errors.image && (
-              <Text style={styles.errorText}>{errors.image}</Text>
+              <Text allowFontScaling={false} style={styles.errorText}>{errors.image}</Text>
             )}
           </View>
         </View>
 
         <View style={styles.formContainer}>
           <View style={styles.fieldContainer}>
-            <Text style={[styles.label, { color: colors.text }]}>
+            <Text allowFontScaling={false} style={[styles.label, { color: colors.text }]}>
               <FormattedMessage
                 id="categories.modal.nameLabel"
                 defaultMessage="Nombre de la categoría"
               />
-              <Text style={styles.required}> *</Text>
+              <Text allowFontScaling={false} style={styles.required}> *</Text>
             </Text>
             <InputField
               value={formData.name || ""}
@@ -284,16 +284,16 @@ const ModalCreateOrEditCategory = ({
               style={[errors.name && styles.inputError]}
               editable={!loadingApi}
             />
-            {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
+            {errors.name && <Text allowFontScaling={false} style={styles.errorText}>{errors.name}</Text>}
           </View>
 
           <View style={styles.fieldContainer}>
-            <Text style={[styles.label, { color: colors.text }]}>
+            <Text allowFontScaling={false} style={[styles.label, { color: colors.text }]}>
               <FormattedMessage
                 id="categories.modal.descriptionLabel"
                 defaultMessage="Descripción"
               />
-              <Text style={styles.required}> *</Text>
+              <Text allowFontScaling={false} style={styles.required}> *</Text>
             </Text>
             <InputField
               value={formData.description || ""}
@@ -308,7 +308,7 @@ const ModalCreateOrEditCategory = ({
               editable={!loadingApi}
             />
             {errors.description && (
-              <Text style={styles.errorText}>{errors.description}</Text>
+              <Text allowFontScaling={false} style={styles.errorText}>{errors.description}</Text>
             )}
           </View>
         </View>
@@ -320,7 +320,7 @@ const ModalCreateOrEditCategory = ({
               { backgroundColor: colors.primary + "15" },
             ]}
           >
-            <Text style={[styles.previewLabel, { color: colors.primary }]}>
+            <Text allowFontScaling={false} style={[styles.previewLabel, { color: colors.primary }]}>
               <FormattedMessage
                 id="categories.modal.preview"
                 defaultMessage="Vista previa:"
@@ -333,10 +333,10 @@ const ModalCreateOrEditCategory = ({
                 style={styles.previewImage}
               />
               <View style={styles.previewTextContainer}>
-                <Text style={[styles.previewName, { color: colors.text }]}>
+                <Text allowFontScaling={false} style={[styles.previewName, { color: colors.text }]}>
                   {formData.name}
                 </Text>
-                <Text
+                <Text allowFontScaling={false}
                   style={[
                     styles.previewDescription,
                     { color: colors.textSecondary },
@@ -352,7 +352,7 @@ const ModalCreateOrEditCategory = ({
         {loadingApi && (
           <View style={styles.loadingContainer}>
             <Spinner size="sm" color={colors.primary} />
-            <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
+            <Text allowFontScaling={false} style={[styles.loadingText, { color: colors.textSecondary }]}>
               <FormattedMessage
                 id={
                   categorySelected

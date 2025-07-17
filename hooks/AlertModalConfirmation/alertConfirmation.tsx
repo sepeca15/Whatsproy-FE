@@ -57,8 +57,8 @@ const AlertConfirmationModal: React.FC<AlertConfirmationModalProps> = ({
 
             {/* Contenido */}
             <View style={styles.content}>
-              <Text style={styles.title}>{title}</Text>
-              <Text style={styles.message}>{message}</Text>
+              <Text allowFontScaling={false} style={styles.title}>{title}</Text>
+              <Text allowFontScaling={false} style={styles.message}>{message}</Text>
             </View>
 
             {/* Footer con botones */}
@@ -69,7 +69,7 @@ const AlertConfirmationModal: React.FC<AlertConfirmationModalProps> = ({
                 disabled={processing}
                 activeOpacity={0.7}
               >
-                <Text style={styles.cancelButtonText}>{cancelText}</Text>
+                <Text allowFontScaling={false} style={styles.cancelButtonText}>{cancelText}</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -84,7 +84,7 @@ const AlertConfirmationModal: React.FC<AlertConfirmationModalProps> = ({
                       <Ionicons name="hourglass-outline" size={16} color="#ffffff" />
                     </View>
                   )}
-                  <Text style={styles.confirmButtonText}>{processing ? "Procesando..." : confirmText}</Text>
+                  <Text allowFontScaling={false} style={styles.confirmButtonText}>{processing ? "Procesando..." : confirmText}</Text>
                 </View>
               </TouchableOpacity>
             </View>

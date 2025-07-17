@@ -259,7 +259,7 @@ const Settings = () => {
         style={[styles.header, { backgroundColor: colors.primary }]}
       >
         <View style={styles.headerContent}>
-          <Text style={styles.headerTitle}>
+          <Text allowFontScaling={false} style={styles.headerTitle}>
             <FormattedMessage id="settings" />
           </Text>
         </View>

@@ -60,7 +60,7 @@ const SelectTimeZone = ({
   return (
     <View>
       <TouchableOpacity onPress={handleModal} style={styles.container}>
-        <Text style={styles.buttonText}>
+        <Text allowFontScaling={false} style={styles.buttonText}>
           {timeZoneSelected
             ? timeZoneSelected
             : intl.formatMessage({
@@ -102,12 +102,12 @@ const SelectTimeZone = ({
                     },
                   ]}
                 >
-                  <Text>{item}</Text>
+                  <Text allowFontScaling={false}>{item}</Text>
                 </TouchableOpacity>
               )}
               ListEmptyComponent={
                 valueSearch ? (
-                  <Text>
+                  <Text allowFontScaling={false}>
                     {intl.formatMessage({
                       id: "noResultsFound",
                       defaultMessage: "No results found",

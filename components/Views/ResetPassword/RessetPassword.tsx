@@ -91,7 +91,7 @@ export const ResetPassword = () => {
                 </Center>
                 <ScrollView bg={'white'} roundedTop={30} flex={0.6} >
                     <Box mt={8} display={'flex'} flexDir={'column'} style={{ gap: 0 }} px={4} w="100%" >
-                        <Text textAlign={'center'} fontWeight={'bold'} fontSize={30} mb={4} > <FormattedMessage id="sendLinkTitle" /></Text>
+                        <Text allowFontScaling={false} textAlign={'center'} fontWeight={'bold'} fontSize={30} mb={4} > <FormattedMessage id="sendLinkTitle" /></Text>
                         < InputField
                             label={intl.formatMessage({
                                 id: "resetPasswordinput1",
@@ -117,7 +117,7 @@ export const ResetPassword = () => {
                             onChangeText={(text: string) => changeValue('password2', text)}
                         />
                         <Button mt={8} bg={Colors.light.secondary} onPress={handleResetPassword} isLoading={loadingApi} >
-                            <Text color={'white'}>
+                            <Text allowFontScaling={false} color={'white'}>
                                 <FormattedMessage id="resetPasswordButtonSend" />
                             </Text>
                         </Button>

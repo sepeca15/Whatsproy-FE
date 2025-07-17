@@ -4,7 +4,6 @@ import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
-import Animated, { FadeInUp } from "react-native-reanimated";
 import { useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import { styles } from "./CustomHeaderStyles";
@@ -28,7 +27,7 @@ const CustomHeader: React.FC<GradientHeaderProps> = ({
   showBackButton = true,
   rightComponent,
   bottomComponent,
-  gradientColors = [Colors.light.primary, Colors.light.primary + "E6"],
+  gradientColors = [Colors.light.primary, Colors.light.primary],
   animationDuration = 0,
   style,
 }) => {
@@ -48,9 +47,7 @@ const CustomHeader: React.FC<GradientHeaderProps> = ({
       style={[styles.headerGradient, style]}
     >
       <View style={{ flexDirection: "column", width: "100%", gap: 5 }}>
-        <View
-          style={styles.headerContent}
-        >
+        <View style={styles.headerContent}>
           {showBackButton && (
             <TouchableOpacity
               style={styles.backButton}
@@ -67,8 +64,14 @@ const CustomHeader: React.FC<GradientHeaderProps> = ({
               !showBackButton && styles.headerTextContainerNoBack,
             ]}
           >
-            <Text style={styles.headerTitle}>{title}</Text>
-            {subtitle && <Text style={styles.headerSubtitle}>{subtitle}</Text>}
+            <Text allowFontScaling={false} style={styles.headerTitle}>
+              {title}
+            </Text>
+            {subtitle && (
+              <Text allowFontScaling={false} style={styles.headerSubtitle}>
+                {subtitle}
+              </Text>
+            )}
           </View>
 
           {rightComponent && (

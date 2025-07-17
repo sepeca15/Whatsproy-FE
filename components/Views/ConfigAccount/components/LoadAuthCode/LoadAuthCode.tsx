@@ -44,7 +44,7 @@ const LoadAuthCode = ({ AuthCode, handleUpdateData }: ILoadAuthCode) => {
   return AuthCode ? (
     <View>
       <View>
-        <Text style={{ textAlign: "center" }}>
+        <Text allowFontScaling={false} style={{ textAlign: "center" }}>
           <FormattedMessage id="openWhatsApp" />
         </Text>
       </View>
@@ -56,7 +56,7 @@ const LoadAuthCode = ({ AuthCode, handleUpdateData }: ILoadAuthCode) => {
         <FormattedMessage id="enterPhoneNumber" />
       </CustomText>
       <View>
-        <TextInput
+        <Text allowFontScaling={false}Input
           style={{
             ...styles.input,
             borderRadius: 8,

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -9,8 +9,11 @@ import {
 } from "react-native";
 import Animated, { SlideOutUp } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
+import RootSiblings from "react-native-root-siblings";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
+
+const USE_ROOT_SIBLINGS = false;
 
 const Colors = {
   light: {
@@ -54,7 +57,113 @@ const getStatusConfig = (status: "success" | "error" | "info" | "warning") => {
   }
 };
 
-export const ToastRenderer = ({
+export const testRootSiblings = () => {
+  console.log("Testing RootSiblings...");
+  const testElement = (
+    <View
+      style={{
+        position: "absolute",
+        top: 100,
+        left: 20,
+        right: 20,
+        backgroundColor: "red",
+        padding: 20,
+        borderRadius: 10,
+        zIndex: 999999,
+      }}
+    >
+      <Text
+        allowFontScaling={false}
+        style={{ color: "white", textAlign: "center" }}
+      >
+        TEST TOAST - RootSiblings funciona!
+      </Text>
+    </View>
+  );
+
+  const sibling = new RootSiblings(testElement);
+
+  setTimeout(() => {
+    sibling.destroy();
+  }, 3000);
+};
+
+const ToastItem = ({
+  toast,
+  index,
+  removeToast,
+  insets,
+}: {
+  toast: any;
+  index: number;
+  removeToast: (id: string) => void;
+  insets: { top: number };
+}) => {
+  console.log("ToastItem rendering:", toast.id, toast.title, "index:", index);
+  const config = getStatusConfig(toast.status);
+
+  return (
+    <View
+      style={[
+        styles.rootContainer,
+        { paddingTop: insets.top + 20 + index * 82 },
+      ]}
+      pointerEvents="box-none"
+    >
+      <Animated.View
+        exiting={SlideOutUp.springify().damping(15).stiffness(100)}
+        style={[styles.toastContainer, { zIndex: 999999 - index }]}
+      >
+        <View
+          style={[
+            styles.toastBox,
+            {
+              backgroundColor: config.backgroundColor,
+              borderLeftColor: config.borderColor,
+            },
+          ]}
+        >
+          <View style={styles.contentContainer}>
+            <View style={styles.iconContainer}>
+              <Ionicons
+                name={config.icon as any}
+                size={22}
+                color={config.iconColor}
+              />
+            </View>
+            <View style={styles.textContainer}>
+              <Text
+                allowFontScaling={false}
+                style={[styles.title]}
+                numberOfLines={2}
+              >
+                {toast.title}
+              </Text>
+              {toast.descripcion && (
+                <Text
+                  allowFontScaling={false}
+                  style={styles.description}
+                  numberOfLines={3}
+                >
+                  {toast.descripcion}
+                </Text>
+              )}
+            </View>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => removeToast(toast.id)}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="close" size={18} color="#9ca3af" />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Animated.View>
+    </View>
+  );
+};
+
+const ModalToastRenderer = ({
   toasts,
   removeToast,
   insets,
@@ -68,10 +177,7 @@ export const ToastRenderer = ({
   return (
     <Modal transparent animationType="none" visible>
       <View
-        style={[
-          styles.modalContainer,
-          { paddingTop: insets.top + 20 },
-        ]}
+        style={[styles.modalContainer, { paddingTop: insets.top + 20 }]}
         pointerEvents="box-none"
       >
         {toasts.map((toast, index) => {
@@ -103,11 +209,19 @@ export const ToastRenderer = ({
                     />
                   </View>
                   <View style={styles.textContainer}>
-                    <Text style={[styles.title]} numberOfLines={2}>
+                    <Text
+                      allowFontScaling={false}
+                      style={[styles.title]}
+                      numberOfLines={2}
+                    >
                       {toast.title}
                     </Text>
                     {toast.descripcion && (
-                      <Text style={styles.description} numberOfLines={3}>
+                      <Text
+                        allowFontScaling={false}
+                        style={styles.description}
+                        numberOfLines={3}
+                      >
                         {toast.descripcion}
                       </Text>
                     )}
@@ -129,13 +243,117 @@ export const ToastRenderer = ({
   );
 };
 
+const RootSiblingsToastRenderer = ({
+  toasts,
+  removeToast,
+  insets,
+}: {
+  toasts: any[];
+  removeToast: (id: string) => void;
+  insets: { top: number };
+}) => {
+  const toastSiblingsRef = useRef<Map<string, RootSiblings>>(new Map());
+
+  useEffect(() => {
+    console.log(
+      "ToastRenderer useEffect triggered with toasts:",
+      toasts.length
+    );
+
+    const currentSiblings = toastSiblingsRef.current;
+
+    currentSiblings.forEach((sibling, toastId) => {
+      if (!toasts.find((toast) => toast.id === toastId)) {
+        console.log("Removing toast:", toastId);
+        sibling.destroy();
+        currentSiblings.delete(toastId);
+      }
+    });
+
+    toasts.forEach((toast, index) => {
+      if (!currentSiblings.has(toast.id)) {
+        console.log("Creating new toast:", toast.id, toast.title);
+        const sibling = new RootSiblings(
+          (
+            <ToastItem
+              toast={toast}
+              index={index}
+              removeToast={removeToast}
+              insets={insets}
+            />
+          )
+        );
+        currentSiblings.set(toast.id, sibling);
+      } else {
+        console.log("Updating existing toast:", toast.id);
+        const existingSibling = currentSiblings.get(toast.id);
+        if (existingSibling) {
+          existingSibling.update(
+            <ToastItem
+              toast={toast}
+              index={index}
+              removeToast={removeToast}
+              insets={insets}
+            />
+          );
+        }
+      }
+    });
+
+    return () => {
+      console.log("ToastRenderer cleanup");
+      currentSiblings.forEach((sibling) => sibling.destroy());
+      currentSiblings.clear();
+    };
+  }, [toasts, removeToast, insets]);
+
+  return null;
+};
+
+export const ToastRenderer = ({
+  toasts,
+  removeToast,
+  insets,
+}: {
+  toasts: any[];
+  removeToast: (id: string) => void;
+  insets: { top: number };
+}) => {
+  if (USE_ROOT_SIBLINGS) {
+    return (
+      <RootSiblingsToastRenderer
+        toasts={toasts}
+        removeToast={removeToast}
+        insets={insets}
+      />
+    );
+  } else {
+    return (
+      <ModalToastRenderer
+        toasts={toasts}
+        removeToast={removeToast}
+        insets={insets}
+      />
+    );
+  }
+};
+
 const styles = StyleSheet.create({
+  rootContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 999999,
+    paddingHorizontal: 16,
+    pointerEvents: "box-none",
+  },
   modalContainer: {
     position: "absolute",
     top: 0,
     left: 0,
     right: 0,
-    height: screenHeight * 0.25, // 25% de la altura de pantalla
+    height: screenHeight * 0.25,
     zIndex: 999999,
     paddingHorizontal: 16,
     pointerEvents: "box-none",

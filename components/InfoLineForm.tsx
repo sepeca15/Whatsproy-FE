@@ -46,7 +46,7 @@ const InfoLineForm: React.FC<Props> = ({
             isRequired={infoLine.requerido}
           >
             <FormControl.Label>
-              <Text>{infoLine.nombre}</Text>
+              <Text allowFontScaling={false}>{infoLine.nombre}</Text>
             </FormControl.Label>
 
             {infoLine.tipo === TipoInfoLine.boolean && (

@@ -445,7 +445,7 @@ const UsersScreen: React.FC = () => {
           />
         </View>
       </View>
-      <Text style={styles.emptyTitle}>
+      <Text allowFontScaling={false} style={styles.emptyTitle}>
         {searchQuery
           ? intl.formatMessage({
               id: "users.noUsersFound",
@@ -456,7 +456,7 @@ const UsersScreen: React.FC = () => {
               defaultMessage: "No hay usuarios",
             })}
       </Text>
-      <Text style={styles.emptySubtitle}>
+      <Text allowFontScaling={false} style={styles.emptySubtitle}>
         {searchQuery
           ? intl.formatMessage({
               id: "users.tryDifferentSearch",
@@ -478,7 +478,7 @@ const UsersScreen: React.FC = () => {
         >
           <View style={styles.emptyActionContent}>
             <Ionicons name="add" size={20} color="white" />
-            <Text style={styles.emptyActionText}>
+            <Text allowFontScaling={false} style={styles.emptyActionText}>
               <FormattedMessage
                 id="users.createUser"
                 defaultMessage="Crear Usuario"
@@ -577,7 +577,7 @@ const UsersScreen: React.FC = () => {
               color="rgba(255,255,255,0.7)"
               style={styles.searchIcon}
             />
-            <TextInput
+            <Text allowFontScaling={false}Input
               style={styles.searchInput}
               placeholder={intl.formatMessage({
                 id: "users.searchPlaceholder",
@@ -613,7 +613,7 @@ const UsersScreen: React.FC = () => {
             <Ionicons name="arrow-back" size={24} color="white" />
           </TouchableOpacity>
           <View style={styles.headerCenter}>
-            <Text style={styles.headerTitle}>
+            <Text allowFontScaling={false} style={styles.headerTitle}>
               <FormattedMessage id="users.title" defaultMessage="Usuarios" />
             </Text>
           </View>
@@ -653,7 +653,7 @@ const UsersScreen: React.FC = () => {
               color="rgba(255,255,255,0.7)"
               style={styles.searchIcon}
             />
-            <TextInput
+            <Text allowFontScaling={false}Input
               style={styles.searchInput}
               placeholder={intl.formatMessage({
                 id: "users.searchPlaceholder",
@@ -685,7 +685,7 @@ const UsersScreen: React.FC = () => {
             size={60}
             color={Colors.light.secondary || Colors.light.success || "#fff"}
           />
-          <Text style={styles.loadingText}>
+          <Text allowFontScaling={false} style={styles.loadingText}>
             <FormattedMessage
               id="users.loading"
               defaultMessage="Cargando usuarios..."

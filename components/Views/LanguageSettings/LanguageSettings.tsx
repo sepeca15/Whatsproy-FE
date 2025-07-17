@@ -204,12 +204,12 @@ const handleAutoDetectToggle = async () => {
               { opacity: autoDetectEnabled ? 0.6 : 1 },
             ]}
           >
-            <Text style={styles.flagEmoji}>{item.flag}</Text>
+            <Text allowFontScaling={false} style={styles.flagEmoji}>{item.flag}</Text>
             <View style={styles.languageInfo}>
-              <Text style={[styles.languageName, { color: colors.text }]}>
+              <Text allowFontScaling={false} style={[styles.languageName, { color: colors.text }]}>
                 {item.nativeName}
               </Text>
-              <Text style={[styles.languageRegion, { color: colors.icon }]}>
+              <Text allowFontScaling={false} style={[styles.languageRegion, { color: colors.icon }]}>
                 {item.name} • {item.region}
               </Text>
             </View>
@@ -247,7 +247,7 @@ const handleAutoDetectToggle = async () => {
           >
             <AntDesign name="arrowleft" size={24} color="white" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>
+          <Text allowFontScaling={false} style={styles.headerTitle}>
             <FormattedMessage
               id="languageSettings"
               defaultMessage="Configuración de Idioma"
@@ -280,7 +280,7 @@ const handleAutoDetectToggle = async () => {
                   color={colors.primary}
                 />
                 <View style={styles.currentLanguageInfo}>
-                  <Text
+                  <Text allowFontScaling={false}
                     style={[
                       styles.currentLanguageTitle,
                       { color: colors.text },
@@ -291,7 +291,7 @@ const handleAutoDetectToggle = async () => {
                       defaultMessage="Idioma Actual"
                     />
                   </Text>
-                  <Text
+                  <Text allowFontScaling={false}
                     style={[
                       styles.currentLanguageValue,
                       { color: colors.primary },
@@ -322,7 +322,7 @@ const handleAutoDetectToggle = async () => {
                     color={colors.secondary}
                   />
                   <View style={styles.autoDetectText}>
-                    <Text
+                    <Text allowFontScaling={false}
                       style={[styles.autoDetectTitle, { color: colors.text }]}
                     >
                       <FormattedMessage
@@ -330,7 +330,7 @@ const handleAutoDetectToggle = async () => {
                         defaultMessage="Detección Automática"
                       />
                     </Text>
-                    <Text
+                    <Text allowFontScaling={false}
                       style={[
                         styles.autoDetectDescription,
                         { color: colors.icon },
@@ -371,7 +371,7 @@ const handleAutoDetectToggle = async () => {
             {/* Section Title */}
             <Animatable.View animation="fadeInUp" duration={800} delay={200} style={{ marginBottom: 20 }}>
              
-              <Text style={[styles.sectionTitle, { color: colors.text, marginBottom: 5 }]}>
+              <Text allowFontScaling={false} style={[styles.sectionTitle, { color: colors.text, marginBottom: 5 }]}>
                 {autoDetectEnabled ? (
                   <FormattedMessage
                     id="autoDetectActive"

@@ -175,7 +175,10 @@ export const ModalCreateOrEditStatus = ({
       scrollable={true}
     >
       <View style={styles.container}>
-        <Text style={[styles.description, { color: colors.textSecondary }]}>
+        <Text
+          allowFontScaling={false}
+          style={[styles.description, { color: colors.textSecondary }]}
+        >
           <FormattedMessage
             id="status.description"
             defaultMessage="Los estados permiten hacer seguimiento del progreso de las órdenes"
@@ -185,14 +188,21 @@ export const ModalCreateOrEditStatus = ({
         <View style={styles.formContainer}>
           <View style={styles.rowContainer}>
             <View style={styles.nameContainer}>
-              <Text style={[styles.label, { color: colors.text }]}>
+              <Text
+                allowFontScaling={false}
+                style={[styles.label, { color: colors.text }]}
+              >
                 <FormattedMessage
                   id="status.nameLabel"
                   defaultMessage="Nombre"
                 />
-                <Text style={styles.required}> *</Text>
+                <Text allowFontScaling={false} style={styles.required}>
+                  {" "}
+                  *
+                </Text>
               </Text>
               <Input
+                allowFontScaling={false}
                 borderRadius={12}
                 backgroundColor={"white"}
                 placeholder={intl.formatMessage({
@@ -208,19 +218,28 @@ export const ModalCreateOrEditStatus = ({
                 }}
               />
               {error.nombre && (
-                <Text style={styles.errorText}>{error.nombre}</Text>
+                <Text allowFontScaling={false} style={styles.errorText}>
+                  {error.nombre}
+                </Text>
               )}
             </View>
 
             <View style={styles.orderContainer}>
-              <Text style={[styles.label, { color: colors.text }]}>
+              <Text
+                allowFontScaling={false}
+                style={[styles.label, { color: colors.text }]}
+              >
                 <FormattedMessage
                   id="status.orderLabel"
                   defaultMessage="Orden"
                 />
-                <Text style={styles.required}> *</Text>
+                <Text allowFontScaling={false} style={styles.required}>
+                  {" "}
+                  *
+                </Text>
               </Text>
               <Input
+                allowFontScaling={false}
                 borderRadius={12}
                 backgroundColor={"white"}
                 placeholder="1"
@@ -236,18 +255,24 @@ export const ModalCreateOrEditStatus = ({
                 }}
               />
               {error.order && (
-                <Text style={styles.errorText}>{error.order}</Text>
+                <Text allowFontScaling={false} style={styles.errorText}>
+                  {error.order}
+                </Text>
               )}
             </View>
           </View>
           <View style={styles.fieldContainer}>
-            <Text style={[styles.label, { color: colors.text }]}>
+            <Text
+              allowFontScaling={false}
+              style={[styles.label, { color: colors.text }]}
+            >
               <FormattedMessage
                 id="status.messageLabel"
                 defaultMessage="Mensaje"
               />
             </Text>
             <Input
+              allowFontScaling={false}
               backgroundColor={"white"}
               borderRadius={12}
               placeholder={intl.formatMessage({
@@ -271,7 +296,10 @@ export const ModalCreateOrEditStatus = ({
               { backgroundColor: colors.primary + "15" },
             ]}
           >
-            <Text style={[styles.noteText, { color: colors.primary }]}>
+            <Text
+              allowFontScaling={false}
+              style={[styles.noteText, { color: colors.primary }]}
+            >
               <FormattedMessage
                 id="status.messageNote"
                 defaultMessage="Este mensaje se enviará al usuario cuando el estado cambie"
@@ -284,13 +312,17 @@ export const ModalCreateOrEditStatus = ({
               style={[styles.switchRow, { borderBottomColor: colors.border }]}
             >
               <View style={styles.switchInfo}>
-                <Text style={[styles.switchLabel, { color: colors.text }]}>
+                <Text
+                  allowFontScaling={false}
+                  style={[styles.switchLabel, { color: colors.text }]}
+                >
                   <FormattedMessage
                     id="status.isFinalLabel"
                     defaultMessage="Es finalizador"
                   />
                 </Text>
                 <Text
+                  allowFontScaling={false}
                   style={[
                     styles.switchDescription,
                     { color: colors.textSecondary },
@@ -311,16 +343,16 @@ export const ModalCreateOrEditStatus = ({
                 colorScheme="primary"
               />
             </View>
-
+            {/* 
             <View style={styles.switchRow}>
               <View style={styles.switchInfo}>
-                <Text style={[styles.switchLabel, { color: colors.text }]}>
+                <Text allowFontScaling={false} style={[styles.switchLabel, { color: colors.text }]}>
                   <FormattedMessage
                     id="status.isDefaultLabel"
                     defaultMessage="Estado por defecto"
                   />
                 </Text>
-                <Text
+                <Text allowFontScaling={false}
                   style={[
                     styles.switchDescription,
                     { color: colors.textSecondary },
@@ -338,7 +370,7 @@ export const ModalCreateOrEditStatus = ({
                 size="md"
                 colorScheme="primary"
               />
-            </View>
+            </View> */}
           </View>
 
           {error.generalError && (
@@ -348,7 +380,10 @@ export const ModalCreateOrEditStatus = ({
                 { backgroundColor: colors.danger + "15" },
               ]}
             >
-              <Text style={[styles.generalErrorText, { color: colors.danger }]}>
+              <Text
+                allowFontScaling={false}
+                style={[styles.generalErrorText, { color: colors.danger }]}
+              >
                 {error.generalError}
               </Text>
             </View>
@@ -358,6 +393,7 @@ export const ModalCreateOrEditStatus = ({
             <View style={styles.loadingContainer}>
               <Spinner size="sm" color={colors.primary} />
               <Text
+                allowFontScaling={false}
                 style={[styles.loadingText, { color: colors.textSecondary }]}
               >
                 <FormattedMessage

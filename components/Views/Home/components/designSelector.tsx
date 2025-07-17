@@ -13,27 +13,27 @@
 
 //   return (
 //     <View style={styles.container}>
-//       <Text style={styles.header}>Elige un diseño para la página de inicio</Text>
+//       <Text allowFontScaling={false} style={styles.header}>Elige un diseño para la página de inicio</Text>
       
 //       <TouchableOpacity
 //         onPress={() => handleLayoutChange("classic")}
 //         style={styles.layoutButton}
 //       >
-//         <Text style={styles.layoutText}>Diseño Clásico</Text>
+//         <Text allowFontScaling={false} style={styles.layoutText}>Diseño Clásico</Text>
 //       </TouchableOpacity>
       
 //       <TouchableOpacity
 //         onPress={() => handleLayoutChange("modern")}
 //         style={styles.layoutButton}
 //       >
-//         <Text style={styles.layoutText}>Diseño Moderno</Text>
+//         <Text allowFontScaling={false} style={styles.layoutText}>Diseño Moderno</Text>
 //       </TouchableOpacity>
       
 //       <TouchableOpacity
 //         onPress={() => handleLayoutChange("minimal")}
 //         style={styles.layoutButton}
 //       >
-//         <Text style={styles.layoutText}>Diseño Minimalista</Text>
+//         <Text allowFontScaling={false} style={styles.layoutText}>Diseño Minimalista</Text>
 //       </TouchableOpacity>
 //     </View>
 //   );

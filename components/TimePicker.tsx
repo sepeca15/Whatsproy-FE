@@ -154,7 +154,7 @@ const isOccupied = (time: moment.Moment) =>
               size="sm"
               color="coolGray.600"
             />
-            <Text ml={3} flex={1} color="coolGray.800">
+            <Text allowFontScaling={false} ml={3} flex={1} color="coolGray.800">
               {getFormattedValue() ||
                 `Seleccionar ${type === "date"
                   ? "fecha"
@@ -183,7 +183,7 @@ const isOccupied = (time: moment.Moment) =>
               backgroundColor={"#2C2C2C"}
               borderRadius="md"
             >
-              <Text fontSize={14} color={"white"} fontWeight={500}>
+              <Text allowFontScaling={false} fontSize={14} color={"white"} fontWeight={500}>
                 {formatMessage({ id: "cancel" })}
               </Text>
             </Button>,
@@ -221,7 +221,7 @@ const isOccupied = (time: moment.Moment) =>
                         alignItems="center"
                         justifyContent="space-between"
                       >
-                        <Text
+                        <Text allowFontScaling={false}
                           fontSize="md"
                           color={occupied ? "gray.500" : "black"}
                           fontWeight="medium"

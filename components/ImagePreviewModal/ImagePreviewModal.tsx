@@ -31,7 +31,7 @@ const ImagePreviewModal: React.FC<ImagePreviewModalProps> = ({ visible, imageUri
               <Icon name="times" size={24} color="#fff" />
             </TouchableOpacity>
             {title && (
-              <Text style={styles.modalTitle} numberOfLines={1}>
+              <Text allowFontScaling={false} style={styles.modalTitle} numberOfLines={1}>
                 {title}
               </Text>
             )}
@@ -44,7 +44,7 @@ const ImagePreviewModal: React.FC<ImagePreviewModalProps> = ({ visible, imageUri
 
           <View style={styles.modalFooter}>
             <TouchableOpacity style={styles.closeButtonBottom} onPress={onClose}>
-              <Text style={styles.closeButtonText}>
+              <Text allowFontScaling={false} style={styles.closeButtonText}>
                 <FormattedMessage id="close" defaultMessage="Cerrar" />
               </Text>
             </TouchableOpacity>

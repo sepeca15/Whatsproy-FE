@@ -78,7 +78,7 @@ const PedidosRealizados: React.FC = () => {
       >
         {Array.from({ length: steps + 1 }).map((_, index) => (
           <View key={index} style={Styles.scaleStep}>
-            <Text style={Styles.scaleText}>
+            <Text allowFontScaling={false} style={Styles.scaleText}>
               {Math.round(stepValue * (steps - index))}
             </Text>
           </View>
@@ -90,7 +90,7 @@ const PedidosRealizados: React.FC = () => {
   return (
     <Animated.View style={[Styles.chartContainer, { opacity: fadeAnim }]}>
       <View style={Styles.titleContainer}>
-        <Text style={Styles.chartTitle}>
+        <Text allowFontScaling={false} style={Styles.chartTitle}>
           <FormattedMessage
             id="completedOrders"
             defaultMessage="Completed Orders"
@@ -138,10 +138,10 @@ const PedidosRealizados: React.FC = () => {
                   ]}
                 />
               </View>
-              <Text style={Styles.monthLabel}>{months[index]}</Text>
+              <Text allowFontScaling={false} style={Styles.monthLabel}>{months[index]}</Text>
               {hoveredBar === index && (
                 <View style={Styles.tooltip}>
-                  <Text style={Styles.tooltipText}>{value}</Text>
+                  <Text allowFontScaling={false} style={Styles.tooltipText}>{value}</Text>
                 </View>
               )}
             </Pressable>

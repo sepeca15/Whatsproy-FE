@@ -107,7 +107,7 @@ const TendenciaVentasCircular: React.FC = () => {
 
   return (
     <GestureHandlerRootView style={Styles.container}>
-      <Text style={Styles.title}>
+      <Text allowFontScaling={false} style={Styles.title}>
         <FormattedMessage
           id="salesTrendByCategory"
           defaultMessage="Sales Trend by Category"
@@ -156,7 +156,7 @@ const TendenciaVentasCircular: React.FC = () => {
             <View
               style={[Styles.legendColor, { backgroundColor: colors[index] }]}
             />
-            <Text
+            <Text allowFontScaling={false}
               style={[
                 Styles.legendText,
                 selectedCategory === category && Styles.selectedLegendText,
@@ -169,8 +169,8 @@ const TendenciaVentasCircular: React.FC = () => {
       </View>
       {selectedSegment && (
         <View style={Styles.tooltip}>
-          <Text style={Styles.tooltipText}>{selectedSegment.label}</Text>
-          <Text style={Styles.tooltipText}>
+          <Text allowFontScaling={false} style={Styles.tooltipText}>{selectedSegment.label}</Text>
+          <Text allowFontScaling={false} style={Styles.tooltipText}>
             <FormattedMessage id="value" defaultMessage="Value" />:{" "}
             {selectedSegment.value}
           </Text>

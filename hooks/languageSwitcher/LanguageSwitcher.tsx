@@ -11,7 +11,7 @@ const LanguageSwitcher = () => {
 
   return (
     <HStack space={3} alignItems="center">
-      <Text bold>Idioma:</Text>
+      <Text allowFontScaling={false} bold>Idioma:</Text>
       <Button size="sm" variant="outline" onPress={toggleLanguage}>
         {locale === "en" ? "Español" : "English"}
       </Button>

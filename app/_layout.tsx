@@ -11,6 +11,7 @@ import { LocalizationProvider } from "./LocalizationContext";
 import { StatusBar, Linking } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
+import { Text, TextInput } from "react-native";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -24,6 +25,13 @@ export default function RootLayout() {
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
+
+  if ((Text as any).defaultProps == null) (Text as any).defaultProps = {};
+  (Text as any).defaultProps.allowFontScaling = false;
+
+  if ((TextInput as any).defaultProps == null)
+    (TextInput as any).defaultProps = {};
+  (TextInput as any).defaultProps.allowFontScaling = false;
 
   useEffect(() => {
     if (loaded) SplashScreen.hideAsync();

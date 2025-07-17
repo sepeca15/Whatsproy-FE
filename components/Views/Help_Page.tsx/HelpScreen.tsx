@@ -639,7 +639,7 @@ const HelpScreen = () => {
       <Animatable.View animation="fadeInDown" duration={800} style={styles.searchContainer}>
         <View style={styles.searchInputContainer}>
           <Feather name="search" size={20} color={colors.icon} style={styles.searchIcon} />
-          <TextInput
+          <Text allowFontScaling={false}Input
             style={[styles.searchInput, { color: colors.text }]}
             placeholder={intl.formatMessage({
               id: "searchHelp",
@@ -664,7 +664,7 @@ const HelpScreen = () => {
       >
         {/* FAQ Section */}
         <Animatable.View animation="fadeInUp" duration={800} delay={100}>
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>
+          <Text allowFontScaling={false} style={[styles.sectionTitle, { color: colors.text }]}>
             <FormattedMessage id="frequentQuestions" defaultMessage="Preguntas Frecuentes" />
           </Text>
 
@@ -685,7 +685,7 @@ const HelpScreen = () => {
                   <View style={[styles.categoryIconContainer, { backgroundColor: colors.primary }]}>
                     {category.icon}
                   </View>
-                  <Text style={[styles.categoryTitle, { color: colors.text }]}>{category.title}</Text>
+                  <Text allowFontScaling={false} style={[styles.categoryTitle, { color: colors.text }]}>{category.title}</Text>
                   <Feather
                     name={expandedCategory === category.id ? "chevron-up" : "chevron-down"}
                     size={20}
@@ -703,7 +703,7 @@ const HelpScreen = () => {
                           activeOpacity={0.7}
                         >
                           <View style={styles.questionHeader}>
-                            <Text style={[styles.questionText, { color: colors.text }]}>{question.question}</Text>
+                            <Text allowFontScaling={false} style={[styles.questionText, { color: colors.text }]}>{question.question}</Text>
                             <Feather
                               name={expandedQuestion === question.id ? "minus" : "plus"}
                               size={18}
@@ -713,7 +713,7 @@ const HelpScreen = () => {
 
                           {expandedQuestion === question.id && (
                             <Animatable.View animation="fadeIn" duration={300} style={styles.answerContainer}>
-                              <Text style={[styles.answerText, { color: isDark ? "#e0e0e0" : "#555" }]}>
+                              <Text allowFontScaling={false} style={[styles.answerText, { color: isDark ? "#e0e0e0" : "#555" }]}>
                                 {question.answer}
                               </Text>
                             </Animatable.View>
@@ -732,7 +732,7 @@ const HelpScreen = () => {
               style={[styles.emptyResultContainer, { backgroundColor: isDark ? "#1e1e1e" : "#fff" }]}
             >
               <Feather name="search" size={40} color={colors.icon} style={styles.emptyIcon} />
-              <Text style={[styles.emptyText, { color: colors.text }]}>
+              <Text allowFontScaling={false} style={[styles.emptyText, { color: colors.text }]}>
                 <FormattedMessage
                   id="noQuestionsFound"
                   defaultMessage="No se encontraron preguntas que coincidan con tu búsqueda"
@@ -744,7 +744,7 @@ const HelpScreen = () => {
 
         {/* Screenshots Section */}
         <Animatable.View animation="fadeInUp" duration={800} delay={300}>
-          <Text style={[styles.sectionTitle, { color: colors.text, marginTop: 20 }]}>
+          <Text allowFontScaling={false} style={[styles.sectionTitle, { color: colors.text, marginTop: 20 }]}>
             <FormattedMessage id="visualGuides" defaultMessage="Guías Visuales" />
           </Text>
 
@@ -769,20 +769,20 @@ const HelpScreen = () => {
                       resizeMode="cover"
                       />
                       <Feather name="play-circle" size={30} color={colors.primary} />
-                      <Text style={[styles.placeholderText, { color: colors.primary }]}>
+                      <Text allowFontScaling={false} style={[styles.placeholderText, { color: colors.primary }]}>
                       <FormattedMessage id="tapToViewGuide" defaultMessage="Toca para ver la guía" />
                       </Text>
                     </View>
                     <View style={styles.screenshotInfo}>
                       <View style={[styles.categoryBadge, { borderColor: colors.secondary }]}>
-                        <Text style={[styles.categoryBadgeText, { color: colors.secondary }]}>{guide.category}</Text>
+                        <Text allowFontScaling={false} style={[styles.categoryBadgeText, { color: colors.secondary }]}>{guide.category}</Text>
                       </View>
-                      <Text style={[styles.screenshotTitle, { color: colors.text }]}>{guide.title}</Text>
-                      <Text style={[styles.screenshotDescription, { color: isDark ? "#e0e0e0" : "#555" }]}>
+                      <Text allowFontScaling={false} style={[styles.screenshotTitle, { color: colors.text }]}>{guide.title}</Text>
+                      <Text allowFontScaling={false} style={[styles.screenshotDescription, { color: isDark ? "#e0e0e0" : "#555" }]}>
                         {guide.description}
                       </Text>
                       <View style={styles.guideStats}>
-                        <Text style={[styles.guideStatsText, { color: colors.icon }]}>
+                        <Text allowFontScaling={false} style={[styles.guideStatsText, { color: colors.icon }]}>
                           {guide.images.length}{" "}
                           {guide.images.length === 1
                             ? intl.formatMessage({ id: "step", defaultMessage: "paso" })
@@ -802,7 +802,7 @@ const HelpScreen = () => {
                 style={[styles.emptyResultContainer, { backgroundColor: isDark ? "#1e1e1e" : "#fff" }]}
               >
                 <Feather name="image" size={40} color={colors.icon} style={styles.emptyIcon} />
-                <Text style={[styles.emptyText, { color: colors.text }]}>
+                <Text allowFontScaling={false} style={[styles.emptyText, { color: colors.text }]}>
                   <FormattedMessage
                     id="noScreenshotsFound"
                     defaultMessage="No se encontraron guías que coincidan con tu búsqueda"
@@ -820,14 +820,14 @@ const HelpScreen = () => {
           delay={400}
           style={[styles.contactContainer, { backgroundColor: isDark ? "#1e1e1e" : "#fff" }]}
         >
-          <Text style={[styles.contactTitle, { color: colors.text }]}>
+          <Text allowFontScaling={false} style={[styles.contactTitle, { color: colors.text }]}>
             <FormattedMessage id="needMoreHelp" defaultMessage="¿No encuentras lo que buscas?" />
           </Text>
-          <Text style={[styles.contactDescription, { color: isDark ? "#e0e0e0" : "#555" }]}>
+          <Text allowFontScaling={false} style={[styles.contactDescription, { color: isDark ? "#e0e0e0" : "#555" }]}>
             <FormattedMessage id="contactSupport" defaultMessage="Contáctanos para obtener ayuda personalizada" />
           </Text>
           <TouchableOpacity style={[styles.contactButton, { backgroundColor: colors.primary }]} activeOpacity={0.8}>
-            <Text style={styles.contactButtonText}>
+            <Text allowFontScaling={false} style={styles.contactButtonText}>
               <FormattedMessage id="contactSupportButton" defaultMessage="Contactar Soporte" />
             </Text>
           </TouchableOpacity>

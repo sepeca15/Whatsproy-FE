@@ -48,7 +48,7 @@ const RecentActivity: React.FC = () => {
 
   return (
     <Box bg="white" borderRadius="lg" p={4} shadow={2} mb={4}>
-      <Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 10 }}>
+      <Text allowFontScaling={false} style={{ fontSize: 16, fontWeight: "bold", marginBottom: 10 }}>
         <FormattedMessage
           id="profile.recentActivity"
           defaultMessage="Actividad reciente"
@@ -67,14 +67,14 @@ const RecentActivity: React.FC = () => {
               />
             </Box>
             <VStack flex={1}>
-              <Text style={{ fontSize: 14, fontWeight: "bold" }}>
+              <Text allowFontScaling={false} style={{ fontSize: 14, fontWeight: "bold" }}>
                 {activity.title}
               </Text>
-              <Text style={{ fontSize: 12, color: "#666" }}>
+              <Text allowFontScaling={false} style={{ fontSize: 12, color: "#666" }}>
                 {activity.description}
               </Text>
             </VStack>
-            <Text style={{ fontSize: 12, color: "#999" }}>{activity.date}</Text>
+            <Text allowFontScaling={false} style={{ fontSize: 12, color: "#999" }}>{activity.date}</Text>
           </HStack>
         ))}
       </VStack>

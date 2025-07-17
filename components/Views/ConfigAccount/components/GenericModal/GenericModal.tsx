@@ -146,9 +146,9 @@ const GenericModal: React.FC<DynamicModalProps> = ({
                 <View style={styles.headerIcon}>{headerIcon}</View>
               )}
               <View style={styles.headerText}>
-                {title && <Text style={styles.headerTitle}>{title}</Text>}
+                {title && <Text allowFontScaling={false} style={styles.headerTitle}>{title}</Text>}
                 {subtitle && (
-                  <Text style={styles.headerSubtitle}>{subtitle}</Text>
+                  <Text allowFontScaling={false} style={styles.headerSubtitle}>{subtitle}</Text>
                 )}
               </View>
             </View>
@@ -205,7 +205,7 @@ const GenericModal: React.FC<DynamicModalProps> = ({
                             color={action.style === "secondary" ? "black": "#fff"}
                           />
                         )}
-                        <Text
+                        <Text allowFontScaling={false}
                           style={[
                             getActionButtonTextStyle(action.style),
                             action.disabled && styles.disabledButtonText,

@@ -137,7 +137,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, u
             <TouchableOpacity onPress={handleClose} style={styles.closeButton} disabled={isLoading}>
               <Ionicons name="close" size={24} color="white" />
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>
+            <Text allowFontScaling={false} style={styles.headerTitle}>
               <FormattedMessage id="profile.title" defaultMessage="Mi Perfil" />
             </Text>
             <View style={styles.placeholder} />
@@ -149,20 +149,20 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, u
             <View style={styles.profileBanner}>
               <Ionicons name="person-circle" size={24} color={Colors.light.primary} />
               <View style={styles.bannerContent}>
-                <Text style={styles.bannerTitle}>
+                <Text allowFontScaling={false} style={styles.bannerTitle}>
                   <FormattedMessage
                     id="profile.banner.title"
                     defaultMessage="Editar mi información personal"
                   />
                 </Text>
-                <Text style={styles.bannerSubtitle}>
+                <Text allowFontScaling={false} style={styles.bannerSubtitle}>
                   <FormattedMessage id="profile.banner.subtitle" defaultMessage="Actualiza tu perfil y foto" />
                 </Text>
               </View>
             </View>
 
             <View style={styles.photoSection}>
-              <Text style={styles.label}>
+              <Text allowFontScaling={false} style={styles.label}>
                 <FormattedMessage id="profile.photo.label" defaultMessage="Foto de perfil" />
               </Text>
               <View style={styles.photoContainer}>
@@ -171,7 +171,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, u
                     <Image source={{ uri: currentImageUri }} style={styles.profilePhoto} resizeMode="cover" />
                   ) : (
                     <View style={styles.defaultAvatar}>
-                      <Text style={styles.avatarText}>{getInitials(formData.nombre || user.nombre)}</Text>
+                      <Text allowFontScaling={false} style={styles.avatarText}>{getInitials(formData.nombre || user.nombre)}</Text>
                     </View>
                   )}
                   <TouchableOpacity
@@ -191,7 +191,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, u
                     disabled={isLoading}
                   >
                     <Ionicons name="image-outline" size={16} color={Colors.light.primary} />
-                    <Text style={styles.changePhotoText}>
+                    <Text allowFontScaling={false} style={styles.changePhotoText}>
                       <FormattedMessage id="profile.photo.change" defaultMessage="Cambiar foto" />
                     </Text>
                   </TouchableOpacity>
@@ -206,7 +206,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, u
                       disabled={isLoading}
                     >
                       <Ionicons name="trash-outline" size={16} color={Colors.light.danger} />
-                      <Text style={styles.removePhotoText}>
+                      <Text allowFontScaling={false} style={styles.removePhotoText}>
                         <FormattedMessage id="profile.photo.remove" defaultMessage="Eliminar" />
                       </Text>
                     </TouchableOpacity>
@@ -216,12 +216,12 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, u
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>
+              <Text allowFontScaling={false} style={styles.label}>
                 <FormattedMessage id="profile.name.label" defaultMessage="Nombre completo" />
               </Text>
               <View style={[styles.inputContainer, errors.nombre && styles.inputError]}>
                 <Ionicons name="person-outline" size={20} color={Colors.light.textSecondary} />
-                <TextInput
+                <Text allowFontScaling={false}Input
                   style={styles.input}
                   placeholder={intl.formatMessage({
                     id: "profile.name.placeholder",
@@ -233,16 +233,16 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, u
                   editable={!isLoading}
                 />
               </View>
-              {errors.nombre && <Text style={styles.errorText}>{errors.nombre}</Text>}
+              {errors.nombre && <Text allowFontScaling={false} style={styles.errorText}>{errors.nombre}</Text>}
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>
+              <Text allowFontScaling={false} style={styles.label}>
                 <FormattedMessage id="profile.email.label" defaultMessage="Email" />
               </Text>
               <View style={[styles.inputContainer, errors.correo && styles.inputError]}>
                 <MaterialIcons name="email" size={20} color={Colors.light.textSecondary} />
-                <TextInput
+                <Text allowFontScaling={false}Input
                   style={styles.input}
                   placeholder={intl.formatMessage({
                     id: "profile.email.placeholder",
@@ -256,7 +256,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, u
                   editable={!isLoading}
                 />
               </View>
-              {errors.correo && <Text style={styles.errorText}>{errors.correo}</Text>}
+              {errors.correo && <Text allowFontScaling={false} style={styles.errorText}>{errors.correo}</Text>}
             </View>
 
             <View style={styles.accountInfo}>
@@ -265,10 +265,10 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, u
                   <Ionicons name="business-outline" size={20} color={Colors.light.textSecondary} />
                 </View>
                 <View style={styles.infoContent}>
-                  <Text style={styles.infoLabel}>
+                  <Text allowFontScaling={false} style={styles.infoLabel}>
                     <FormattedMessage id="profile.account.status.label" defaultMessage="Estado de la cuenta" />
                   </Text>
-                  <Text
+                  <Text allowFontScaling={false}
                     style={[
                       styles.infoValue,
                       {
@@ -290,10 +290,10 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, u
                     <Ionicons name="shield-checkmark" size={20} color={Colors.light.warning} />
                   </View>
                   <View style={styles.infoContent}>
-                    <Text style={styles.infoLabel}>
+                    <Text allowFontScaling={false} style={styles.infoLabel}>
                       <FormattedMessage id="profile.account.permissions.label" defaultMessage="Permisos" />
                     </Text>
-                    <Text style={[styles.infoValue, { color: Colors.light.warning }]}>
+                    <Text allowFontScaling={false} style={[styles.infoValue, { color: Colors.light.warning }]}>
                       <FormattedMessage id="profile.account.permissions.admin" defaultMessage="Administrador" />
                     </Text>
                   </View>
@@ -310,7 +310,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, u
             activeOpacity={0.7}
             disabled={isLoading}
           >
-            <Text style={styles.cancelButtonText}>
+            <Text allowFontScaling={false} style={styles.cancelButtonText}>
               <FormattedMessage id="profile.actions.cancel" defaultMessage="Cancelar" />
             </Text>
           </TouchableOpacity>
@@ -324,7 +324,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, u
               {isLoading || loadingUpload ? (
                 <ActivityIndicator size="small" color="white" />
               ) : (
-                <Text style={styles.updateButtonText}>
+                <Text allowFontScaling={false} style={styles.updateButtonText}>
                   <FormattedMessage id="profile.actions.save" defaultMessage="Guardar Cambios" />
                 </Text>
               )}

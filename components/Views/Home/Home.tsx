@@ -11,7 +11,7 @@ import LottieView from "lottie-react-native";
 import { FormattedMessage, useIntl } from "react-intl";
 import * as Animatable from "react-native-animatable";
 import { useUser } from "@/hooks/redux/useUser";
-import { HStack, Icon, Image, Select, View } from "native-base";
+import { Button, HStack, Icon, Image, Select, View } from "native-base";
 import { globalStyles } from "@/components/globalStyles";
 import SubscriptionInfo from "@/components/SubscriptionInfo";
 import { useSubscriptionStatus } from "@/hooks/home_functions/useSubscriptionStatus";
@@ -20,6 +20,7 @@ import { Ionicons } from "@expo/vector-icons";
 import moment from "moment";
 import { useHomeData } from "@/hooks/redux/useHomeData";
 import { getTimeAgo } from "@/hooks/home_functions/useLastOrders";
+import { useToastContext } from "@/contexts/ToastContext";
 
 const Home: React.FC = () => {
   const intl = useIntl();
@@ -39,7 +40,8 @@ const Home: React.FC = () => {
     loaded,
   } = useHomeData();
   const empresaName = user?.empresaName ?? "Empresa Name";
-  const isReserva = user?.id_rol === 1;
+  const isReserva = user?.tipo_servicio === ID_TIPOSERVICIO_RESERVA;
+
   const currentPlan = user?.payment?.plan;
   const currentPayment = user?.payment;
 
@@ -66,6 +68,15 @@ const Home: React.FC = () => {
 
   const handleViewSubscriptionDetails = () => {
     router.push("/(tabs)/subscriptions");
+  };
+  const { showToast } = useToastContext();
+
+  const handleTOast = () => {
+    showToast({
+      title: intl.formatMessage({ id: "dispErrorTitle" }),
+      description: intl.formatMessage({ id: "dispErrorDesc" }),
+      status: "error",
+    });
   };
 
   const isCalendar = user?.tipo_servicio === ID_TIPOSERVICIO_RESERVA;

@@ -434,13 +434,13 @@ const CreateOrderModal = ({
               <MaterialIcons name="event-busy" size={24} color="#DC2626" />
             </Box>
             <VStack flex={1}>
-              <Text fontSize="md" fontWeight="600" color="red.700">
+              <Text allowFontScaling={false} fontSize="md" fontWeight="600" color="red.700">
                 <FormattedMessage
                   id="createOrder.noAvailableTimes.title"
                   defaultMessage="No hay horarios disponibles"
                 />
               </Text>
-              <Text fontSize="sm" color="red.600">
+              <Text allowFontScaling={false} fontSize="sm" color="red.600">
                 <FormattedMessage
                   id="createOrder.noAvailableTimes.subtitle"
                   defaultMessage="Intenta seleccionar otra fecha"
@@ -463,13 +463,13 @@ const CreateOrderModal = ({
             />
           </Box>
           <VStack flex={1}>
-            <Text fontSize="md" fontWeight="600" color="gray.800">
+            <Text allowFontScaling={false} fontSize="md" fontWeight="600" color="gray.800">
               <FormattedMessage
                 id="createOrder.addToDate"
                 defaultMessage="Agregar a la fecha"
               />
             </Text>
-            <Text fontSize="lg" fontWeight="700" color={Colors.light.primary}>
+            <Text allowFontScaling={false} fontSize="lg" fontWeight="700" color={Colors.light.primary}>
               {moment(defaultDate).format("dddd, DD MMMM YYYY")}
             </Text>
           </VStack>
@@ -500,7 +500,7 @@ const CreateOrderModal = ({
           <VStack flex={1} space={1}>
             <HStack justifyContent="space-between" alignItems="flex-start">
               <VStack flex={1} flexDir={"column"} space={1}>
-                <Text
+                <Text allowFontScaling={false}
                   fontSize="md"
                   fontWeight="600"
                   color="gray.800"
@@ -508,13 +508,13 @@ const CreateOrderModal = ({
                 >
                   {prod.nombre}
                 </Text>
-                <Text fontSize="sm" color="gray.600" numberOfLines={2}>
+                <Text allowFontScaling={false} fontSize="sm" color="gray.600" numberOfLines={2}>
                   {prod.descripcion}
                 </Text>
               </VStack>
 
               <VStack alignItems="flex-end" space={2}>
-                <Text
+                <Text allowFontScaling={false}
                   fontSize="lg"
                   fontWeight="700"
                   color={Colors.light.secondary}
@@ -532,7 +532,7 @@ const CreateOrderModal = ({
                       size="sm"
                       borderRadius="full"
                     />
-                    <Text
+                    <Text allowFontScaling={false}
                       fontSize="md"
                       fontWeight="600"
                       minW="8"
@@ -570,12 +570,12 @@ const CreateOrderModal = ({
           <Ionicons name="person" size={24} color="white" />
         </Box>
         <VStack flex={1} space={1}>
-          <Text fontSize="md" fontWeight="600" color="gray.800">
+          <Text allowFontScaling={false} fontSize="md" fontWeight="600" color="gray.800">
             {client.nombre}
           </Text>
           <HStack space={2} alignItems="center">
             <Feather name="phone" size={14} color={Colors.light.icon} />
-            <Text fontSize="sm" color="gray.600">
+            <Text allowFontScaling={false} fontSize="sm" color="gray.600">
               {client.telefono}
             </Text>
           </HStack>
@@ -590,7 +590,7 @@ const CreateOrderModal = ({
     return (
       <Box style={styles.summaryCard}>
         <HStack justifyContent="space-between" alignItems="center" mb="3">
-          <Text fontSize="lg" fontWeight="600" color="gray.800">
+          <Text allowFontScaling={false} fontSize="lg" fontWeight="600" color="gray.800">
             {tipoServicio === ID_TIPOSERVICIO_RESERVA ? (
               <FormattedMessage
                 id="createOrder.orderSummaryReserva"
@@ -627,10 +627,10 @@ const CreateOrderModal = ({
                 alignItems="center"
               >
                 <HStack space={2} flex={1}>
-                  <Text fontSize="sm" color="gray.600">
+                  <Text allowFontScaling={false} fontSize="sm" color="gray.600">
                     {quantity}x
                   </Text>
-                  <Text
+                  <Text allowFontScaling={false}
                     fontSize="sm"
                     color="gray.800"
                     flex={1}
@@ -639,7 +639,7 @@ const CreateOrderModal = ({
                     {product.nombre}
                   </Text>
                 </HStack>
-                <Text fontSize="sm" fontWeight="600" color="gray.800">
+                <Text allowFontScaling={false} fontSize="sm" fontWeight="600" color="gray.800">
                   ${(product.precio * quantity).toFixed(2)}
                 </Text>
               </HStack>
@@ -649,10 +649,10 @@ const CreateOrderModal = ({
           <Divider my="2" />
 
           <HStack justifyContent="space-between" alignItems="center">
-            <Text fontSize="md" fontWeight="600" color="gray.800">
+            <Text allowFontScaling={false} fontSize="md" fontWeight="600" color="gray.800">
               <FormattedMessage id="createOrder.total" defaultMessage="Total" />
             </Text>
-            <Text fontSize="lg" fontWeight="700" color={Colors.light.primary}>
+            <Text allowFontScaling={false} fontSize="lg" fontWeight="700" color={Colors.light.primary}>
               ${getTotalAmount().toFixed(2)}
             </Text>
           </HStack>
@@ -691,6 +691,8 @@ const CreateOrderModal = ({
                     , defaultMessage: "Agregar" })}`,
             onPress: () => createOrderData(),
             style: "primary",
+            disabled: loadingNextDateAvailable || loadingCreate,
+            loading: loadingNextDateAvailable || loadingCreate,
             icon: "check",
           }
     ]}
@@ -711,7 +713,7 @@ const CreateOrderModal = ({
                     size={20}
                     color={Colors.light.primary}
                   />
-                  <Text fontSize="lg" fontWeight="600" color="gray.800">
+                  <Text allowFontScaling={false} fontSize="lg" fontWeight="600" color="gray.800">
                     <FormattedMessage
                       id="createOrder.selectTime"
                       defaultMessage="Seleccionar horario"
@@ -755,7 +757,7 @@ const CreateOrderModal = ({
                       name="sparkles-outline"
                       size={20}
                     />
-                    <Text
+                    <Text allowFontScaling={false}
                       fontSize="sm"
                       fontWeight="500"
                       color={Colors.light.primary}
@@ -777,7 +779,7 @@ const CreateOrderModal = ({
                   size={20}
                   color={Colors.light.primary}
                 />
-                <Text fontSize="lg" fontWeight="600" color="gray.800">
+                <Text allowFontScaling={false} fontSize="lg" fontWeight="600" color="gray.800">
                   <FormattedMessage
                     id="createOrder.products"
                     defaultMessage="Productos"
@@ -826,7 +828,7 @@ const CreateOrderModal = ({
             <Box style={styles.sectionCard}>
               <HStack space={2} alignItems="center" mb="4">
                 <Feather name="user" size={20} color={Colors.light.primary} />
-                <Text fontSize="lg" fontWeight="600" color="gray.800">
+                <Text allowFontScaling={false} fontSize="lg" fontWeight="600" color="gray.800">
                   <FormattedMessage
                     id="createOrder.client"
                     defaultMessage="Cliente"
@@ -882,7 +884,7 @@ const CreateOrderModal = ({
                   size={20}
                   color={Colors.light.primary}
                 />
-                <Text fontSize="lg" fontWeight="600" color="gray.800">
+                <Text allowFontScaling={false} fontSize="lg" fontWeight="600" color="gray.800">
                   <FormattedMessage
                     id="createOrder.additionalDetails"
                     defaultMessage="Detalles adicionales"
@@ -907,7 +909,7 @@ const CreateOrderModal = ({
               <Box style={styles.sectionCard}>
                 <HStack space={2} alignItems="center" mb="4">
                   <Feather name="info" size={20} color={Colors.light.primary} />
-                  <Text fontSize="lg" fontWeight="600" color="gray.800">
+                  <Text allowFontScaling={false} fontSize="lg" fontWeight="600" color="gray.800">
                     <FormattedMessage
                       id="createOrder.additionalInfo"
                       defaultMessage="Información adicional"

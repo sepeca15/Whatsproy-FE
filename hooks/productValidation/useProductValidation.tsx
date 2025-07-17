@@ -29,8 +29,8 @@ export const useEditProductValidation = () => {
         description: "Debe seleccionar una imagen para el producto",
         status: "error",
       });
+      newErrors.imagen = "Debe seleccionar una imagen para el producto";
     }
-    
 
     if (!formData.nombre.trim()) {
       newErrors.nombre = "El nombre del producto es obligatorio";

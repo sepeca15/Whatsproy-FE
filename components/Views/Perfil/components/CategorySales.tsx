@@ -66,7 +66,7 @@ const CategorySales: React.FC<CategorySalesProps> = ({
           alignItems={"center"}
           justifyContent={"space-between"}
         >
-          <Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 20 }}>
+          <Text allowFontScaling={false} style={{ fontSize: 16, fontWeight: "bold", marginBottom: 20 }}>
             <FormattedMessage
               id="sales.byCategory"
               defaultMessage="Ventas por categoría"
@@ -79,7 +79,7 @@ const CategorySales: React.FC<CategorySalesProps> = ({
             justifyContent="space-between"
             marginBottom={4}
           >
-            <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+            <Text allowFontScaling={false} style={{ fontSize: 16, fontWeight: "bold" }}>
               <FormattedMessage
                 id="sales.byCategory"
                 defaultMessage="Ventas por categoría"
@@ -143,7 +143,7 @@ const CategorySales: React.FC<CategorySalesProps> = ({
 
         {categories.length === 0 ? (
           <Center py={8}>
-            <Text style={{ color: "#999" }}>
+            <Text allowFontScaling={false} style={{ color: "#999" }}>
               <FormattedMessage
                 id="noData"
                 defaultMessage="No hay datos disponibles"
@@ -167,9 +167,9 @@ const CategorySales: React.FC<CategorySalesProps> = ({
                         color={category.color}
                       />
                     </Box>
-                    <Text style={{ fontSize: 14 }}>{category.name}</Text>
+                    <Text allowFontScaling={false} style={{ fontSize: 14 }}>{category.name}</Text>
                   </HStack>
-                  <Text style={{ fontSize: 14, fontWeight: "bold" }}>
+                  <Text allowFontScaling={false} style={{ fontSize: 14, fontWeight: "bold" }}>
                     <FormattedMessage id="sales" />:{" "}
                     {formatNumber(category.sales)}
                   </Text>
@@ -178,7 +178,7 @@ const CategorySales: React.FC<CategorySalesProps> = ({
                   <SafeProgress
                     value={safeProgressValue}
                   />
-                  <Text
+                  <Text allowFontScaling={false}
                     style={{
                       fontSize: 12,
                       color: "#666",
@@ -196,10 +196,10 @@ const CategorySales: React.FC<CategorySalesProps> = ({
         <Divider my={4} />
 
         <HStack justifyContent="space-between" alignItems="center">
-          <Text style={{ fontSize: 14, fontWeight: "bold" }}>
+          <Text allowFontScaling={false} style={{ fontSize: 14, fontWeight: "bold" }}>
             <FormattedMessage id="sales.total" defaultMessage="Total" />
           </Text>
-          <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+          <Text allowFontScaling={false} style={{ fontSize: 16, fontWeight: "bold" }}>
             <FormattedMessage id="totalProductosVendidos" />
             {": "}
             {formatNumber(totalSales)}

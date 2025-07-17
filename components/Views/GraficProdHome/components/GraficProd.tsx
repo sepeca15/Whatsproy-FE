@@ -105,7 +105,7 @@ const GraficProddet: React.FC<ProductDetailProps> = ({
               backgroundColor: "#2E7D32",
             }}
           >
-            <Text style={styles.badgeText}>
+            <Text allowFontScaling={false} style={styles.badgeText}>
               {" "}
               <FormattedMessage id="available" />{" "}
             </Text>
@@ -117,7 +117,7 @@ const GraficProddet: React.FC<ProductDetailProps> = ({
               backgroundColor: "#7d2e2e",
             }}
           >
-            <Text style={styles.badgeText}>
+            <Text allowFontScaling={false} style={styles.badgeText}>
               {" "}
               <FormattedMessage id="notAvailable" />{" "}
             </Text>
@@ -127,39 +127,39 @@ const GraficProddet: React.FC<ProductDetailProps> = ({
 
       <View style={styles.contentContainer}>
         <View style={styles.titleContainer}>
-          <Text style={styles.productName}>{product.title}</Text>
+          <Text allowFontScaling={false} style={styles.productName}>{product.title}</Text>
           <View style={styles.priceContainer}>
-            <Text style={styles.price}>
+            <Text allowFontScaling={false} style={styles.price}>
               {currenctCurrency?.simbolo}
               {product.price}
             </Text>
-            <Text style={styles.currency}>{currenctCurrency.codigo}</Text>
+            <Text allowFontScaling={false} style={styles.currency}>{currenctCurrency.codigo}</Text>
           </View>
           {/* Eliminada la sección de reseñas */}
         </View>
 
         <View style={styles.infoCard}>
           <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>
+            <Text allowFontScaling={false} style={styles.infoLabel}>
               <FormattedMessage id="currency" />
             </Text>
-            <Text style={styles.infoValue}>
+            <Text allowFontScaling={false} style={styles.infoValue}>
               {currenctCurrency?.codigo}({currenctCurrency?.simbolo})
             </Text>
           </View>
           <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>
+            <Text allowFontScaling={false} style={styles.infoLabel}>
               <FormattedMessage id="duration" />
             </Text>
-            <Text style={styles.infoValue}>{product.duration}</Text>
+            <Text allowFontScaling={false} style={styles.infoValue}>{product.duration}</Text>
           </View>
-          <Text style={styles.descriptionTitle}>
+          <Text allowFontScaling={false} style={styles.descriptionTitle}>
             <FormattedMessage id="description" />
           </Text>
-          <Text style={styles.description}>{product.description}</Text>
+          <Text allowFontScaling={false} style={styles.description}>{product.description}</Text>
 
           <View style={styles.deliveryOptionsContainer}>
-            <Text style={styles.deliveryOptionsTitle}>
+            <Text allowFontScaling={false} style={styles.deliveryOptionsTitle}>
               <FormattedMessage
                 id="deliveryOptions"
                 defaultMessage="Opciones de entrega"
@@ -181,7 +181,7 @@ const GraficProddet: React.FC<ProductDetailProps> = ({
                     color={product.envioADomicilio ? "#1976d2" : "#999"}
                   />
                 </View>
-                <Text
+                <Text allowFontScaling={false}
                   style={[
                     styles.deliveryOptionText,
                     product.envioADomicilio
@@ -211,7 +211,7 @@ const GraficProddet: React.FC<ProductDetailProps> = ({
                     color={product.retiroEnSucursal ? "#1976d2" : "#999"}
                   />
                 </View>
-                <Text
+                <Text allowFontScaling={false}
                   style={[
                     styles.deliveryOptionText,
                     product.retiroEnSucursal
@@ -231,7 +231,7 @@ const GraficProddet: React.FC<ProductDetailProps> = ({
           <View style={styles.tagContainer}>
             {product.tags.map((tag, index) => (
               <View key={index} style={styles.tag}>
-                <Text style={styles.tagText}>{tag}</Text>
+                <Text allowFontScaling={false} style={styles.tagText}>{tag}</Text>
               </View>
             ))}
           </View>

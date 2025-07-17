@@ -34,7 +34,7 @@ const CustomModalPicker = ({ isVisible, onClose, elements, lastStatusOrder, chan
             <Pressable onPress={(onClose)} style={styles.container}>
                 <View style={styles.containerContent}>
                     <View style={styles.header}>
-                        <Text fontWeight={'bold'} fontSize={20} color={'white'}>
+                        <Text allowFontScaling={false} fontWeight={'bold'} fontSize={20} color={'white'}>
                             <FormattedMessage id="changeStatusOrderTitle" />
                         </Text>
                     </View>
@@ -63,10 +63,10 @@ const CustomModalPicker = ({ isVisible, onClose, elements, lastStatusOrder, chan
                                 const findCambioEstado = (changeStatus ?? [])?.find((itm: any) => itm.estado.id === item.id)
                                 return <Pressable onPress={() => changeStatusOrder(item)} backgroundColor={isStatusFinished ? 'gray.200' : 'white'} style={styles.element} key={index}>
                                     <View display={'flex'} flexDir={'column'} alignItems={'flex-start'}>
-                                        <Text fontWeight={'bold'} color={isStatusFinished ? 'gray.400' : 'black'} >{item.nombre}</Text>
+                                        <Text allowFontScaling={false} fontWeight={'bold'} color={isStatusFinished ? 'gray.400' : 'black'} >{item.nombre}</Text>
                                         {
                                             isStatusFinished &&
-                                            <Text marginLeft={4} color={'black'}>{moment.tz((index === 0 ? createOrderDate : findCambioEstado?.createdAt), user.timeZone).format('D [de] MMMM, YYYY, HH:MM').toString()}</Text>
+                                            <Text allowFontScaling={false} marginLeft={4} color={'black'}>{moment.tz((index === 0 ? createOrderDate : findCambioEstado?.createdAt), user.timeZone).format('D [de] MMMM, YYYY, HH:MM').toString()}</Text>
                                         }
                                     </View>
                                     {

@@ -210,13 +210,13 @@ const Categories = () => {
           />
         </View>
         <View style={styles.infoTextContainer}>
-          <Text style={styles.infoTitle}>
+          <Text allowFontScaling={false} style={styles.infoTitle}>
             <FormattedMessage
               id="categories.info.title"
               defaultMessage="Gestión de categorías"
             />
           </Text>
-          <Text style={styles.infoDescription}>
+          <Text allowFontScaling={false} style={styles.infoDescription}>
             <FormattedMessage
               id="categories.info.description"
               defaultMessage="Organiza tus productos en categorías para facilitar la navegación"
@@ -248,7 +248,7 @@ const Categories = () => {
           style={styles.loadingContainer}
         >
           <ActivityIndicator size="large" color={Colors.light.primary} />
-          <Text style={styles.loadingText}>
+          <Text allowFontScaling={false} style={styles.loadingText}>
             <FormattedMessage
               id="categories.loading"
               defaultMessage="Cargando categorías..."
@@ -296,13 +296,13 @@ const Categories = () => {
                   />
                 </LinearGradient>
               </View>
-              <Text style={styles.emptyTitle}>
+              <Text allowFontScaling={false} style={styles.emptyTitle}>
                 <FormattedMessage
                   id="categories.empty.title"
                   defaultMessage="No hay categorías"
                 />
               </Text>
-              <Text style={styles.emptySubtitle}>
+              <Text allowFontScaling={false} style={styles.emptySubtitle}>
                 <FormattedMessage
                   id="categories.empty.subtitle"
                   defaultMessage="Comienza creando tu primera categoría para organizar tus productos"
@@ -318,7 +318,7 @@ const Categories = () => {
                   style={styles.emptyButtonGradient}
                 >
                   <Ionicons name="add" size={20} color="white" />
-                  <Text style={styles.emptyButtonText}>
+                  <Text allowFontScaling={false} style={styles.emptyButtonText}>
                     <FormattedMessage
                       id="categories.empty.button"
                       defaultMessage="Crear primera categoría"
