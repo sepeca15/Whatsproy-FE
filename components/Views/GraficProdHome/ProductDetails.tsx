@@ -56,6 +56,8 @@ const ProductDetails: React.FC = () => {
     monthdata: params.monthdata,
     empresa_id: parseInt(params.empresa_id, 10),
     disponible: params.disponible,
+    retiroEnSucursal: params.retiroEnSucursal === "true",
+    envioADomicilio: params.envioADomicilio === "true",
   };
 
   return (

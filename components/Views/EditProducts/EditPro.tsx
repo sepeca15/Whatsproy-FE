@@ -7,6 +7,8 @@ import { useLocalSearchParams } from "expo-router";
 interface EditProProps {
   id: number;
   name: string;
+  envioADomicilio?: boolean;
+  retiroEnSucursal?: boolean;
   price: string;
   duration: string;
   description: string;
@@ -31,9 +33,10 @@ const EditPro: React.FC = () => {
     disponible: params.disponible as string,
     currency_id: params.currency_id as string,
     empresa_id: parseInt(params.empresa_id as string, 10) || 0,
-    categoryIds: params.category ? (params.category as string).split(',') : [],
+    categoryIds: params.category ? (params.category as string).split(",") : [],
+    envioADomicilio: (params?.envioADomicilio as any) === "true",
+    retiroEnSucursal: params?.retiroEnSucursal === "true",
   };
-console.log("EditProProps:", editProProps.categoryIds);
   return (
     <View style={styles.container}>
       <EditProduct {...editProProps} />

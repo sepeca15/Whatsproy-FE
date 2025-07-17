@@ -45,6 +45,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   onDeleteRequest,
   isBeingDeleted,
 }) => {
+  console.log("productBDD", productBDD?.imagen);
   const router = useRouter();
   const intl = useIntl();
   const [modalVisible, setModalVisible] = useState(false);
@@ -99,6 +100,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
       params: {
         id: productBDD.id.toString(),
         title: productBDD.nombre,
+        envioADomicilio: `${productBDD?.envioADomicilio}`,
+        retiroEnSucursal: `${productBDD?.retiroEnSucursal}`,
         price: productBDD.precio?.toString(),
         currency: currenctCurrency.simbolo,
         description: productBDD.descripcion,
@@ -131,6 +134,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
         disponible: productBDD.disponible.toString(),
         empresa_id: productBDD.empresa_id.toString(),
         category: productBDD.category,
+        envioADomicilio: productBDD.envioADomicilio?.toString(),
+        retiroEnSucursal: productBDD.retiroEnSucursal?.toString(),
       },
     });
   };
@@ -238,7 +243,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 </View>
               )}
               <Image
-                source={{ uri: productBDD.imagen ?? "https://ebschool.net/images/default-image.jpg" }}
+                source={{
+                  uri:
+                    productBDD.imagen &&
+                    productBDD?.imagen !== "../errorimage.png"
+                      ? productBDD.imagen
+                      : "https://ebschool.net/images/default-image.jpg",
+                }}
                 style={enhancedStyles.image as any}
                 onLoad={handleImageLoad}
               />
@@ -297,7 +308,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             <View style={enhancedStyles.modalContainer as any}>
               <View style={enhancedStyles.modalHeader}>
                 <Text style={enhancedStyles.modalTitle}>
-                  Opciones del producto
+                  {<FormattedMessage id="options" />}
                 </Text>
               </View>
 
@@ -396,29 +407,23 @@ const ProductCard: React.FC<ProductCardProps> = ({
         </Modal>
       </Animated.View>
 
-      <AlertConfirmationModal
-        show={showDisableAlert}
-        processing={processing}
-        title={intl.formatMessage({
-          id: "confirmDisable",
-          defaultMessage: "Confirmar deshabilitación",
-        })}
-        message={intl.formatMessage({
-          id: "confirmDisableMessage",
-          defaultMessage:
-            "¿Estás seguro de que quieres deshabilitar este producto?",
-        })}
-        cancelText={intl.formatMessage({
-          id: "cancel",
-          defaultMessage: "Cancelar",
-        })}
-        confirmText={intl.formatMessage({
-          id: "disable",
-          defaultMessage: "Deshabilitar",
-        })}
-        onCancel={() => setShowDisableAlert(false)}
-        onConfirm={confirmDisable}
-      />
+      {showDisableAlert && (
+        <ModalConfirmAction
+          isOpen={showDisableAlert}
+          onClose={() => setShowDisableAlert(false)}
+          onContinue={confirmDisable}
+          loading={processing}
+          title={intl.formatMessage({
+            id: "confirmDisable",
+            defaultMessage: "Confirmar deshabilitación",
+          })}
+          message={intl.formatMessage({
+            id: "confirmDisableMessage",
+            defaultMessage:
+              "¿Estás seguro de que quieres deshabilitar este producto?",
+          })}
+        />
+      )}
 
       <ModalConfirmAction
         isOpen={showDeleteAlert}

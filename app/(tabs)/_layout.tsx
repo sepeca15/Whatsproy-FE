@@ -27,6 +27,8 @@ const TabLayout: React.FC = () => {
     user;
   const globalConfig =
     userConfigured && paymentMade && apiConfigured && greenApiConfigured;
+
+  const isSuperAdmin = user?.isSuperAdmin;
   const intl = useIntl();
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? "light"];
@@ -106,7 +108,7 @@ const TabLayout: React.FC = () => {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <NativeBaseProvider>
         <PrivateView>
-          {globalConfig ? (
+          {globalConfig || isSuperAdmin ? (
             <Layout>
               <View style={{ flex: 1 }}>
                 <Slot />

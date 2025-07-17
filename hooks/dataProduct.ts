@@ -14,6 +14,8 @@ interface Product {
 
 interface ProductBDD {
   id: number;
+  envioADomicilio?: boolean;
+  retiroEnSucursal?: boolean;
   nombre: string;
   descripcion: string;
   imagen: string;

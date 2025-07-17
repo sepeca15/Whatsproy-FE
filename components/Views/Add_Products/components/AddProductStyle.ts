@@ -127,6 +127,22 @@ export const styles = StyleSheet.create({
     height: 100,
     textAlignVertical: "top",
   },
+  switchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f0f0f0",
+    borderRadius: 25,
+    padding: 10,
+    marginBottom: 16,
+  },
+  switchIconContainer: {
+    marginLeft: 10,
+  },
+  switchText: {
+    marginLeft: 10,
+    fontSize: 16,
+    fontWeight: "bold",
+  },
   button: {
     backgroundColor: Colors.light.primary,
     padding: 16,

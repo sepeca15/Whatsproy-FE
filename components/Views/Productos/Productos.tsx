@@ -7,7 +7,7 @@ import {
   Animated,
   RefreshControl,
 } from "react-native";
-import ProductCard from "./components/CardProducts/CardProduct"
+import ProductCard from "./components/CardProducts/CardProduct";
 import ProductCardSkeleton from "./components/ProductCardSkeleton";
 import {
   sampleProducts,
@@ -46,7 +46,9 @@ const Productos: React.FC = () => {
   const intl = useIntl();
   const { showToast } = useToastContext();
   const [isDeleting, setIsDeleting] = useState(true);
-  const [activeTab, setActiveTab] = useState<'products' | 'dailyMenu' | 'uploadMenu'>('products');
+  const [activeTab, setActiveTab] = useState<
+    "products" | "dailyMenu" | "uploadMenu"
+  >("products");
 
   const [allCategories, setAllCategories] = useState<ICategoryData[]>([]);
 
@@ -72,11 +74,11 @@ const Productos: React.FC = () => {
           {
             id: 0,
             name: "Sin categoría",
-            image: '',
+            image: "",
             description: "Empty category",
             producto: [],
             productosCount: 0,
-            createdAt: new Date()
+            createdAt: new Date(),
           },
           ...resp.data,
         ]);
@@ -105,11 +107,12 @@ const Productos: React.FC = () => {
         }
 
         if (resp.ok) {
+          console.log("resp.data", resp.data);
           setProducts(resp.data);
         }
       }
     } catch (error: any) {
-      console.log('xdxd', error.response?.data?.message);
+      console.log("xdxd", error.response?.data?.message);
     } finally {
       setLoadingProducts(false);
     }
@@ -118,13 +121,13 @@ const Productos: React.FC = () => {
   const isInitialLoading = loadingCategories || loadingProducts;
 
   useEffect(() => {
-    if (activeTab === 'products') {
+    if (activeTab === "products") {
       loadAllCategories();
     }
   }, [activeTab]);
 
   useEffect(() => {
-    if (activeTab === 'products') {
+    if (activeTab === "products") {
       loadProductsFromCategory();
     }
   }, [selectCategory, activeTab]);
@@ -138,7 +141,6 @@ const Productos: React.FC = () => {
       }).start();
     }
   }, [isInitialLoading]);
-
 
   const handleDeleteRequest = useCallback(
     (productId: number) => {
@@ -163,10 +165,12 @@ const Productos: React.FC = () => {
           setDeletingProductId(null);
 
           showToast({
-            title: error.response?.data?.message || intl.formatMessage({
-              id: "errorDeletingProduct",
-              defaultMessage: "Error deleting product"
-            }),
+            title:
+              error.response?.data?.message ||
+              intl.formatMessage({
+                id: "errorDeletingProduct",
+                defaultMessage: "Error deleting product",
+              }),
             status: "error",
           });
         }
@@ -201,13 +205,18 @@ const Productos: React.FC = () => {
     )
     .sort((a, b) => a.nombre.localeCompare(b.nombre, locale));
 
-  const renderTabButton = (tabKey: 'products' | 'dailyMenu' | 'uploadMenu', labelId: string, defaultLabel: string) => (
+  const renderTabButton = (
+    tabKey: "products" | "dailyMenu" | "uploadMenu",
+    labelId: string,
+    defaultLabel: string
+  ) => (
     <TouchableOpacity
       style={[
         styles.tabButton,
         {
-          backgroundColor: activeTab === tabKey ? Colors.light.primary : 'transparent',
-        }
+          backgroundColor:
+            activeTab === tabKey ? Colors.light.primary : "transparent",
+        },
       ]}
       onPress={() => setActiveTab(tabKey)}
       activeOpacity={0.7}
@@ -216,18 +225,15 @@ const Productos: React.FC = () => {
         style={[
           styles.tabButtonText,
           {
-            color: activeTab === tabKey ? '#fff' : Colors.light.text,
-            fontWeight: activeTab === tabKey ? 'bold' : 'normal',
-          }
+            color: activeTab === tabKey ? "#fff" : Colors.light.text,
+            fontWeight: activeTab === tabKey ? "bold" : "normal",
+          },
         ]}
       >
         <FormattedMessage id={labelId} defaultMessage={defaultLabel} />
       </Text>
     </TouchableOpacity>
   );
-
-
-
 
   const renderProductsTab = () => (
     <>
@@ -249,7 +255,7 @@ const Productos: React.FC = () => {
           <View style={styles.categoryContainer}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {allCategories.map((category, index) => {
-                const isSelected = selectCategory === category.id;                
+                const isSelected = selectCategory === category.id;
                 return (
                   <TouchableOpacity
                     onPress={() => setSelectCategory(category.id)}
@@ -260,19 +266,18 @@ const Productos: React.FC = () => {
                     ]}
                     activeOpacity={0.7}
                   >
-                    {
-                      category.image !== "" &&
+                    {category.image !== "" && (
                       <Image
-                        alt={''}
+                        alt={""}
                         style={styles.categoryImage}
                         source={{ uri: category.image }}
                       />
-                    }
+                    )}
                     <Text
                       style={[
                         styles.categoryText,
                         isSelected && styles.selectedCategoryText,
-                        {textAlign:'center'}
+                        { textAlign: "center" },
                       ]}
                     >
                       {category.name}
@@ -373,7 +378,7 @@ const Productos: React.FC = () => {
 
   const isReserva = user?.tipo_servicio === ID_TIPOSERVICIO_RESERVA;
 
-  const renderDailyMenuTab = () => <DailyMenuTab />
+  const renderDailyMenuTab = () => <DailyMenuTab />;
 
   return (
     <View style={styles.container}>
@@ -384,13 +389,19 @@ const Productos: React.FC = () => {
               style={globalStyles.businessName}
               accessibilityLabel={intl.formatMessage({
                 id: isReserva ? "servicesAndProduct" : "products",
-                defaultMessage: isReserva ? "Servicios y Productos" : "Productos"
+                defaultMessage: isReserva
+                  ? "Servicios y Productos"
+                  : "Productos",
               })}
             >
-              {isReserva ?
-                <FormattedMessage id="servicesAndProduct" defaultMessage="Servicios y Productos" /> :
+              {isReserva ? (
+                <FormattedMessage
+                  id="servicesAndProduct"
+                  defaultMessage="Servicios y Productos"
+                />
+              ) : (
                 <FormattedMessage id="products" defaultMessage="Productos" />
-              }
+              )}
             </CustomText>
           </View>
         </View>
@@ -398,15 +409,15 @@ const Productos: React.FC = () => {
 
       {!isReserva && (
         <View style={styles.tabContainer}>
-          {renderTabButton('products', 'products', 'Productos')}
-          {renderTabButton('dailyMenu', 'dailyMenu', 'Menú Diario')}
-          {renderTabButton('uploadMenu', 'uploadMenu', 'Subir Menú')}
+          {renderTabButton("products", "products", "Productos")}
+          {renderTabButton("dailyMenu", "dailyMenu", "Menú Diario")}
+          {renderTabButton("uploadMenu", "uploadMenu", "Subir Menú")}
         </View>
       )}
 
-      {activeTab === 'products' && renderProductsTab()}
-      {activeTab === 'dailyMenu' && renderDailyMenuTab()}
-      {activeTab === 'uploadMenu' && <MenusUpload />}
+      {activeTab === "products" && renderProductsTab()}
+      {activeTab === "dailyMenu" && renderDailyMenuTab()}
+      {activeTab === "uploadMenu" && <MenusUpload />}
     </View>
   );
 };

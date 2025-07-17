@@ -16,6 +16,8 @@ export interface Product {
   currency_id?: string;
   tags: string[];
   disponible: string;
+  envioADomicilio?: boolean;
+  retiroEnSucursal?: boolean;
 }
 
 export interface SalesData {
@@ -57,6 +59,8 @@ interface ProductParams {
   title: string;
   price: string;
   currency_id?: string;
+  retiroEnSucursal?: any;
+  envioADomicilio?: any;
   currency: string;
   duration: string;
   description: string;

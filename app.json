@@ -2,9 +2,9 @@
   "expo": {
     "name": "Measy",
     "slug": "Whatsproy",
-    "runtimeVersion": "2.0.11",
+    "runtimeVersion": "2.0.12",
     "newArchEnabled": true,
-    "version": "2.0.11",
+    "version": "2.0.12",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "miapp",
@@ -28,17 +28,14 @@
       }
     },
     "android": {
-      "versionCode": 20011,
+      "versionCode": 20012,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon_foreground.png",
         "backgroundImage": "./assets/images/icon_background.png"
       },
       "googleServicesFile": "./assets/google-services.json",
       "newArchEnabled": true,
-      "permissions": [
-        "NOTIFICATIONS",
-        "CONTACTS"
-      ],
+      "permissions": ["NOTIFICATIONS", "CONTACTS"],
       "package": "com.whatsproy",
       "intentFilters": [
         {
@@ -49,10 +46,7 @@
               "host": "*"
             }
           ],
-          "category": [
-            "BROWSABLE",
-            "DEFAULT"
-          ]
+          "category": ["BROWSABLE", "DEFAULT"]
         }
       ]
     },

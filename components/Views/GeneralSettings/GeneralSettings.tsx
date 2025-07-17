@@ -24,7 +24,8 @@ interface IForm {
   intervaloTiempoCalendario: number;
   notificarReservaHoras: boolean;
   remaindersHorsRemainder: number;
-  retiroEnSucursal?: boolean;
+  retiroEnSucursalHabilitado?: boolean;
+  envioADomicilioHabilitado?: boolean;
   logo?: string;
   notificarMenuDiario?: boolean;
   direccion?: string;
@@ -49,7 +50,8 @@ const GeneralConfig = () => {
     intervaloTiempoCalendario: user.intervaloTiempoCalendario,
     notificarReservaHoras: user.notificarReservaHoras,
     remaindersHorsRemainder: user.remaindersHorsRemainder,
-    retiroEnSucursal: user?.retiroEnSucursal,
+    retiroEnSucursalHabilitado: user?.retiroEnSucursalHabilitado,
+    envioADomicilioHabilitado: user?.envioADomicilioHabilitado,
     logo: user?.logo,
     notificarMenuDiario: user?.notificarMenuDiario,
     direccion: user?.direccion,
@@ -244,14 +246,6 @@ const GeneralConfig = () => {
 
             <View style={styles.addressInputContainer}>
               <InputField
-                icon={
-                  <MaterialIcons
-                    name="place"
-                    size={20}
-                    color={Colors.light.icon}
-                    style={{ marginLeft: 12 }}
-                  />
-                }
                 placeholder={intl.formatMessage({
                   id: "enterCompanyAddress",
                   defaultMessage: "Ingresa la dirección de tu empresa",
@@ -295,35 +289,37 @@ const GeneralConfig = () => {
                 </View>
               </View>
 
-              <View style={styles.notifReserva}>
-                <View style={styles.containerNotifReserva}>
-                  <View style={styles.row1Custom}>
-                    <CustomText style={styles.textInput}>
+              {isDeliveryService && false && (
+                <View style={styles.notifReserva}>
+                  <View style={styles.containerNotifReserva}>
+                    <View style={styles.row1Custom}>
+                      <CustomText style={styles.textInput}>
+                        <FormattedMessage
+                          id="notifyDailyMenuLabel"
+                          defaultMessage="Notificar menú diario"
+                        />
+                      </CustomText>
+                      <Switch
+                        isChecked={form.notificarMenuDiario}
+                        onToggle={() =>
+                          handleInputChange(
+                            "notificarMenuDiario",
+                            !form.notificarMenuDiario
+                          )
+                        }
+                        size="lg"
+                        colorScheme="primary"
+                      />
+                    </View>
+                    <CustomText style={{ fontSize: 12, color: "gray" }}>
                       <FormattedMessage
-                        id="notifyDailyMenuLabel"
-                        defaultMessage="Notificar menú diario"
+                        id="notifyDailyMenuDescription"
+                        defaultMessage="Permite enviar notificaciones del menú diario a los clientes seleccionados"
                       />
                     </CustomText>
-                    <Switch
-                      isChecked={form.notificarMenuDiario}
-                      onToggle={() =>
-                        handleInputChange(
-                          "notificarMenuDiario",
-                          !form.notificarMenuDiario
-                        )
-                      }
-                      size="lg"
-                      colorScheme="primary"
-                    />
                   </View>
-                  <CustomText style={{ fontSize: 12, color: "gray" }}>
-                    <FormattedMessage
-                      id="notifyDailyMenuDescription"
-                      defaultMessage="Permite enviar notificaciones del menú diario a los clientes seleccionados"
-                    />
-                  </CustomText>
                 </View>
-              </View>
+              )}
 
               {isDeliveryService && (
                 <View style={styles.notifReserva}>
@@ -336,11 +332,11 @@ const GeneralConfig = () => {
                         />
                       </CustomText>
                       <Switch
-                        isChecked={form.retiroEnSucursal}
+                        isChecked={form.retiroEnSucursalHabilitado}
                         onToggle={() =>
                           handleInputChange(
-                            "retiroEnSucursal",
-                            !form.retiroEnSucursal
+                            "retiroEnSucursalHabilitado",
+                            !form.retiroEnSucursalHabilitado
                           )
                         }
                         size="lg"
@@ -351,6 +347,37 @@ const GeneralConfig = () => {
                       <FormattedMessage
                         id="pickupInStoreDescription"
                         defaultMessage="Permite a los clientes retirar sus pedidos directamente en tu local"
+                      />
+                    </CustomText>
+                  </View>
+                </View>
+              )}
+              {isDeliveryService && (
+                <View style={styles.notifReserva}>
+                  <View style={styles.containerNotifReserva}>
+                    <View style={styles.row1Custom}>
+                      <CustomText style={styles.textInput}>
+                        <FormattedMessage
+                          id="deliveryEnabled"
+                          defaultMessage="Retiro en sucursal"
+                        />
+                      </CustomText>
+                      <Switch
+                        isChecked={form.envioADomicilioHabilitado}
+                        onToggle={() =>
+                          handleInputChange(
+                            "envioADomicilioHabilitado",
+                            !form.envioADomicilioHabilitado
+                          )
+                        }
+                        size="lg"
+                        colorScheme="primary"
+                      />
+                    </View>
+                    <CustomText style={{ fontSize: 12, color: "gray" }}>
+                      <FormattedMessage
+                        id="deliveryEnabledDescription"
+                        defaultMessage=""
                       />
                     </CustomText>
                   </View>

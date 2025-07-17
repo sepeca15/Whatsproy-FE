@@ -8,6 +8,8 @@ interface ProductoTypes {
   disponible: boolean;
   currency_id?: any;
   categoryIds? : any[]
+  envioADomicilio?: boolean;
+  retiroEnSucursal?: boolean;
 }
 
 export default ProductoTypes;

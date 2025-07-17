@@ -2,8 +2,9 @@
 
 import type React from "react"
 import { useState, useEffect } from "react"
-import { Text, TouchableOpacity, Image, ScrollView, Platform, ActivityIndicator } from "react-native"
+import { Text, TouchableOpacity, Image, ScrollView, Platform, ActivityIndicator, Switch } from "react-native"
 import { AntDesign } from "@expo/vector-icons"
+import { Colors } from "../../../../constants/Colors"
 import { styles } from "./AddProductStyle"
 import type ProductoTypes from "../../../../services/api/products/types"
 import api from "@/services/api/admin"
@@ -40,6 +41,8 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ visible, onClose, onS
     disponible: false,
     categoryIds: [],
     currency_id: null,
+    envioADomicilio: false,
+    retiroEnSucursal: false,
   })
 
   const { user } = useUser()
@@ -78,6 +81,8 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ visible, onClose, onS
       disponible: false,
       categoryIds: [],
       currency_id: null,
+      envioADomicilio: false,
+      retiroEnSucursal: false,
     })
     setSelectedImage(null)
     setErrors({})
@@ -336,6 +341,75 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ visible, onClose, onS
                 style={styles.inputarea}
                 editable={!loading}
               />
+            </View>
+
+            {/* Delivery Options */}
+            <Text style={styles.label}>
+              <FormattedMessage id="deliveryOptions" defaultMessage="Opciones de entrega" />
+            </Text>
+            
+            <View style={styles.switchContainer}>
+              <Switch
+                value={formData.envioADomicilio}
+                onValueChange={(value) =>
+                  setFormData({ ...formData, envioADomicilio: value })
+                }
+                trackColor={{ false: "#767577", true: Colors.light.primary }}
+                thumbColor={formData.envioADomicilio ? "#f4f3f4" : "#f4f3f4"}
+                ios_backgroundColor="#3e3e3e"
+                disabled={loading}
+              />
+              <View style={styles.switchIconContainer}>
+                <AntDesign name="car" size={24} color={formData.envioADomicilio ? "#4CAF50" : "#999"} />
+              </View>
+              <View style={{ flex: 1, marginLeft: 10 }}>
+                <Text
+                  style={[
+                    styles.switchText,
+                    { color: formData.envioADomicilio ? "#4CAF50" : "#999", marginLeft: 0 },
+                  ]}
+                >
+                  <FormattedMessage id="homeDelivery" defaultMessage="Envío a domicilio" />
+                </Text>
+                <Text style={{ fontSize: 12, color: "#666", marginTop: 2 }}>
+                  <FormattedMessage 
+                    id="homeDeliveryDescription" 
+                    defaultMessage="El producto puede ser entregado en el domicilio del cliente"
+                  />
+                </Text>
+              </View>
+            </View>
+
+            <View style={styles.switchContainer}>
+              <Switch
+                value={formData.retiroEnSucursal}
+                onValueChange={(value) =>
+                  setFormData({ ...formData, retiroEnSucursal: value })
+                }
+                trackColor={{ false: "#767577", true: Colors.light.primary }}
+                thumbColor={formData.retiroEnSucursal ? "#f4f3f4" : "#f4f3f4"}
+                ios_backgroundColor="#3e3e3e"
+                disabled={loading}
+              />
+              <View style={styles.switchIconContainer}>
+                <AntDesign name="home" size={24} color={formData.retiroEnSucursal ? "#4CAF50" : "#999"} />
+              </View>
+              <View style={{ flex: 1, marginLeft: 10 }}>
+                <Text
+                  style={[
+                    styles.switchText,
+                    { color: formData.retiroEnSucursal ? "#4CAF50" : "#999", marginLeft: 0 },
+                  ]}
+                >
+                  <FormattedMessage id="storePickup" defaultMessage="Retiro en sucursal" />
+                </Text>
+                <Text style={{ fontSize: 12, color: "#666", marginTop: 2 }}>
+                  <FormattedMessage 
+                    id="storePickupDescription" 
+                    defaultMessage="El cliente puede retirar el producto directamente en tu local"
+                  />
+                </Text>
+              </View>
             </View>
 
             {/* Action Buttons */}

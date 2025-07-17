@@ -24,11 +24,11 @@ import InputField from "@/components/InputField";
 import SelectField from "@/hooks/SelectField/SelectField";
 import { useEditProductValidation } from "@/hooks/productValidation/useProductValidation";
 
-
-
 interface ProductFormData {
   id: number;
   nombre: string;
+  envioADomicilio: boolean;
+retiroEnSucursal: boolean;
   descripcion: string;
   imagen?: string;
   disponible: boolean;
@@ -36,20 +36,22 @@ interface ProductFormData {
   plazoDuracionEstimadoMinutos: number;
   precio: number;
   currency_id?: any;
-  categoryIds: any[]
+  categoryIds: any[];
 }
 
 interface EditProductProps {
   id: number;
   name: string;
   price: string;
+  envioADomicilio?: boolean;
+  retiroEnSucursal?: boolean;
   currency_id?: string;
   duration: string;
   description: string;
   imageUrl?: string;
   disponible?: string;
   empresa_id?: number;
-  categoryIds: any[]
+  categoryIds: any[];
 }
 
 const EditProduct = ({
@@ -63,8 +65,8 @@ const EditProduct = ({
   disponible,
   empresa_id,
   categoryIds,
-
-
+  envioADomicilio,
+  retiroEnSucursal,
 }: EditProductProps) => {
   const router = useRouter();
   const intl = useIntl();
@@ -79,13 +81,14 @@ const EditProduct = ({
     plazoDuracionEstimadoMinutos: Number(duration) || 0,
     precio: Number(price) || 0,
     categoryIds: categoryIds || [],
+    envioADomicilio: envioADomicilio ?? false,
+    retiroEnSucursal: retiroEnSucursal ?? false,
   });
-
 
   const { user } = useUser();
   const currencies = user?.currencies;
   const [selectedImage, setSelectedImage] = useState<string | null>(
-    imageUrl ?? null,
+    imageUrl ?? null
   );
   const [loadingimage, setLoadingimage] = useState(false);
   const { showToast } = useToastContext();
@@ -95,30 +98,37 @@ const EditProduct = ({
   const { validateForm } = useEditProductValidation();
 
   React.useEffect(() => {
-    loadAllCategories()
-  }, [])
+    loadAllCategories();
+  }, []);
   const loadAllCategories = async () => {
     try {
-      const resp = await api.category.getAll()
+      const resp = await api.category.getAll();
 
       if (resp.ok) {
-        setAllCategories(resp.data)
+        setAllCategories(resp.data);
       }
-
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const { pickImage } = useImagePicker({
     toastErrorMessage: "Error al seleccionar la imagen",
     onImagePicked: async ({ localUri, apiUrl }) => {
       if (localUri) setSelectedImage(localUri);
       if (apiUrl) {
-        setFormData(prev => ({ ...prev, imagen: apiUrl }));
+        setFormData((prev) => ({ ...prev, imagen: apiUrl }));
       }
-    }
+    },
   });
+
+  const getImage = () => {
+    const image = selectedImage ?? imageUrl;
+    if (image && image !== "../errorimage.png") {
+      return image;
+    }
+    return "https://ebschool.net/images/default-image.jpg";
+  };
 
   const handleImagePick = async () => {
     try {
@@ -135,12 +145,8 @@ const EditProduct = ({
     }
   };
 
-
-
-
   const handleSubmit = async () => {
-     if (!validateForm(formData, selectedImage, setErrors)) return;
-
+    if (!validateForm(formData, selectedImage, setErrors)) return;
 
     if (loadingimage) {
       showToast({
@@ -151,12 +157,10 @@ const EditProduct = ({
     }
     setLoading(true);
 
-
-
     try {
       const updatedFormData = {
         ...formData,
-        imagen: (formData.imagen || "")
+        imagen: formData.imagen || "",
       };
 
       const res = await api.products.update(formData.id, updatedFormData);
@@ -168,7 +172,9 @@ const EditProduct = ({
         });
         router.back();
       } else {
-        throw new Error(res.data?.message || intl.formatMessage({ id: "errorOccurred" }));
+        throw new Error(
+          res.data?.message || intl.formatMessage({ id: "errorOccurred" })
+        );
       }
     } catch (error: any) {
       console.error("Error al actualizar producto:", error);
@@ -181,12 +187,11 @@ const EditProduct = ({
     }
   };
 
-
   return (
     <KeyboardAwareScrollView
       contentContainerStyle={styles.scrollContent}
       enableOnAndroid
-      extraScrollHeight={Platform.OS === 'ios' ? 20 : 50}
+      extraScrollHeight={Platform.OS === "ios" ? 20 : 50}
     >
       {/* <ScrollView contentContainerStyle={styles.scrollContent}> */}
       <Text style={styles.title}>
@@ -196,7 +201,7 @@ const EditProduct = ({
       <TouchableOpacity style={styles.imageUpload} onPress={handleImagePick}>
         {selectedImage ? (
           <Image
-            source={{ uri: selectedImage || imageUrl }}
+            source={{ uri: getImage() }}
             style={styles.uploadedImage}
           />
         ) : (
@@ -243,7 +248,10 @@ const EditProduct = ({
                 value={formData.precio ? formData.precio.toString() : ""}
                 onChangeText={(text) => {
                   const value = parseFloat(text);
-                  setFormData({ ...formData, precio: isNaN(value) ? 0 : value });
+                  setFormData({
+                    ...formData,
+                    precio: isNaN(value) ? 0 : value,
+                  });
                   if (!isNaN(value) && value > 0) {
                     setErrors((prev) => ({ ...prev, precio: null }));
                   }
@@ -259,17 +267,18 @@ const EditProduct = ({
               <FormattedMessage id="currency" />
             </Text>
             <SelectField
-
               selectedValue={formData.currency_id}
               onValueChange={(value) => {
                 setFormData({ ...formData, currency_id: value });
                 setErrors((prev) => ({ ...prev, currency_id: null }));
               }}
               placeholder="Seleccione una moneda"
-              options={currencies.map((c: { codigo: string; simbolo: string; id: number }) => ({
-                label: `${c.codigo} (${c.simbolo})`,
-                value: c.id,
-              }))}
+              options={currencies.map(
+                (c: { codigo: string; simbolo: string; id: number }) => ({
+                  label: `${c.codigo} (${c.simbolo})`,
+                  value: c.id,
+                })
+              )}
               error={errors.currency_id ?? undefined}
             />
           </View>
@@ -294,7 +303,10 @@ const EditProduct = ({
                 plazoDuracionEstimadoMinutos: isNaN(value) ? 0 : value,
               });
               if (!isNaN(value) && value > 0) {
-                setErrors((prev) => ({ ...prev, plazoDuracionEstimadoMinutos: null }));
+                setErrors((prev) => ({
+                  ...prev,
+                  plazoDuracionEstimadoMinutos: null,
+                }));
               }
             }}
             error={errors.plazoDuracionEstimadoMinutos}
@@ -312,7 +324,10 @@ const EditProduct = ({
                 sizeText={16}
                 height={50}
                 isMultiple
-                placeholder={intl.formatMessage({ id: "selectCategory", defaultMessage: "Seleccionar categoría" })}
+                placeholder={intl.formatMessage({
+                  id: "selectCategory",
+                  defaultMessage: "Seleccionar categoría",
+                })}
                 options={allCategories.map((cat) => ({
                   label: cat.name,
                   value: cat.id.toString(),
@@ -332,9 +347,8 @@ const EditProduct = ({
                     }));
                   }
                 }}
-
-                onSearch={() => { }}
-                error={errors.categoryIds ?? ''}
+                onSearch={() => {}}
+                error={errors.categoryIds ?? ""}
               />
             </View>
           </View>
@@ -396,6 +410,71 @@ const EditProduct = ({
           </Text>
         </View>
 
+        <Text style={styles.label}>
+          <FormattedMessage id="deliveryOptions" defaultMessage="Opciones de entrega" />
+        </Text>
+        
+        <View style={styles.switchContainer}>
+          <Switch
+            value={formData.envioADomicilio}
+            onValueChange={(value) =>
+              setFormData({ ...formData, envioADomicilio: value })
+            }
+            trackColor={{ false: "#767577", true: Colors.light.primary }}
+            thumbColor={formData.envioADomicilio ? "#f4f3f4" : "#f4f3f4"}
+            ios_backgroundColor="#3e3e3e"
+          />
+          <View style={styles.switchIconContainer}>
+            <AntDesign name="car" size={24} color={formData.envioADomicilio ? "#4CAF50" : "#999"} />
+          </View>
+          <View style={{ flex: 1, marginLeft: 10 }}>
+            <Text
+              style={[
+                styles.switchText,
+                { color: formData.envioADomicilio ? "#4CAF50" : "#999", marginLeft: 0 },
+              ]}
+            >
+              <FormattedMessage id="homeDelivery" defaultMessage="Envío a domicilio" />
+            </Text>
+            <Text style={{ fontSize: 12, color: "#666", marginTop: 2 }}>
+              <FormattedMessage 
+                id="homeDeliveryDescription" 
+                defaultMessage="El producto puede ser entregado en el domicilio del cliente"
+              />
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.switchContainer}>
+          <Switch
+            value={formData.retiroEnSucursal}
+            onValueChange={(value) =>
+              setFormData({ ...formData, retiroEnSucursal: value })
+            }
+            trackColor={{ false: "#767577", true: Colors.light.primary }}
+            thumbColor={formData.retiroEnSucursal ? "#f4f3f4" : "#f4f3f4"}
+            ios_backgroundColor="#3e3e3e"
+          />
+          <View style={styles.switchIconContainer}>
+            <AntDesign name="home" size={24} color={formData.retiroEnSucursal ? "#4CAF50" : "#999"} />
+          </View>
+          <View style={{ flex: 1, marginLeft: 10 }}>
+            <Text
+              style={[
+                styles.switchText,
+                { color: formData.retiroEnSucursal ? "#4CAF50" : "#999", marginLeft: 0 },
+              ]}
+            >
+              <FormattedMessage id="storePickup" defaultMessage="Retiro en sucursal" />
+            </Text>
+            <Text style={{ fontSize: 12, color: "#666", marginTop: 2 }}>
+              <FormattedMessage 
+                id="storePickupDescription" 
+                defaultMessage="El cliente puede retirar el producto directamente en tu local"
+              />
+            </Text>
+          </View>
+        </View>
 
         <TouchableOpacity
           style={[styles.button, (loading || loadingimage) && styles.disabled]}

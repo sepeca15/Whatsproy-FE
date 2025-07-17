@@ -129,6 +129,54 @@ export const styles = StyleSheet.create({
     lineHeight: 24,
     color: "#666",
   },
+  
+  deliveryOptionsContainer: {
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  deliveryOptionsTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#1a1a1a",
+    marginBottom: 12,
+  },
+  deliveryOptionsRow: {
+    flexDirection: "row",
+    gap: 12,
+  },
+  deliveryOptionCard: {
+    flex: 1,
+    backgroundColor: "#f8f9fa",
+    borderRadius: 12,
+    padding: 12,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#e9ecef",
+  },
+  deliveryOptionCardActive: {
+    backgroundColor: "#e3f2fd",
+    borderColor: Colors.light.primary,
+  },
+  deliveryOptionCardInactive: {
+    backgroundColor: "#fafafa",
+    borderColor: "#e0e0e0",
+    opacity: 0.6,
+  },
+  deliveryOptionIcon: {
+    marginBottom: 6,
+  },
+  deliveryOptionText: {
+    fontSize: 12,
+    fontWeight: "600",
+    textAlign: "center",
+    color: "#666",
+  },
+  deliveryOptionTextActive: {
+    color: Colors.light.primary,
+  },
+  deliveryOptionTextInactive: {
+    color: "#999",
+  },
 
   chartContainer: {
     backgroundColor: "#fff",

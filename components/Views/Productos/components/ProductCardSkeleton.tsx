@@ -1,10 +1,19 @@
 "use client"
 
 import { View, StyleSheet } from "react-native"
-import Animated, { useSharedValue, useAnimatedStyle } from "react-native-reanimated"
+import Animated, { useSharedValue, useAnimatedStyle, withRepeat, withTiming } from "react-native-reanimated"
+import { useEffect } from "react"
 
 const ProductCardSkeleton = () => {
   const opacity = useSharedValue(0.3)
+
+  useEffect(() => {
+    opacity.value = withRepeat(
+      withTiming(0.8, { duration: 1000 }),
+      -1,
+      true
+    )
+  }, [])
 
   const shimmerStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
@@ -46,8 +55,8 @@ const ProductCardSkeleton = () => {
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 16,
-    marginHorizontal: 4,
+    marginBottom: 12,
+    marginHorizontal: 0,
   },
   cardTouchable: {
     borderRadius: 16,
@@ -65,11 +74,15 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     overflow: "hidden",
     backgroundColor: "#ffffff",
+    flexDirection: "row",
+    minHeight: 120,
   },
   imageContainer: {
     position: "relative",
-    height: 180,
+    width: 120,
+    height: 120,
     backgroundColor: "#f9fafb",
+    flexShrink: 0,
   },
   imageSkeleton: {
     width: "100%",
@@ -78,74 +91,79 @@ const styles = StyleSheet.create({
   },
   statusIndicatorSkeleton: {
     position: "absolute",
-    top: 12,
-    right: 12,
-    width: 12,
-    height: 12,
-    borderRadius: 6,
+    top: 8,
+    right: 8,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
     backgroundColor: "#d1d5db",
+    borderWidth: 1.5,
+    borderColor: "#ffffff",
   },
   content: {
-    padding: 16,
+    flex: 1,
+    padding: 12,
+    justifyContent: "space-between",
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    marginBottom: 8,
+    marginBottom: 6,
   },
   titleContainer: {
     flex: 1,
     marginRight: 8,
   },
   titleSkeleton: {
-    height: 18,
+    height: 16,
     backgroundColor: "#e5e7eb",
     borderRadius: 4,
     marginBottom: 4,
     width: "85%",
   },
   titleSkeletonSecond: {
-    height: 18,
+    height: 16,
     backgroundColor: "#e5e7eb",
     borderRadius: 4,
     width: "60%",
   },
   moreButtonSkeleton: {
-    width: 32,
-    height: 32,
-    borderRadius: 8,
+    padding: 3,
+    borderRadius: 6,
     backgroundColor: "#e5e7eb",
+    width: 24,
+    height: 24,
   },
   priceContainer: {
     flexDirection: "row",
     alignItems: "baseline",
-    marginBottom: 8,
+    marginBottom: 6,
   },
   priceSkeleton: {
-    height: 20,
+    height: 18,
     backgroundColor: "#e5e7eb",
     borderRadius: 4,
-    width: 80,
-    marginRight: 8,
+    width: 70,
+    marginRight: 3,
   },
   currencySkeleton: {
-    height: 14,
+    height: 12,
     backgroundColor: "#e5e7eb",
     borderRadius: 4,
-    width: 30,
+    width: 25,
   },
   descriptionContainer: {
     gap: 4,
   },
   descriptionSkeleton: {
-    height: 16,
+    height: 14,
     backgroundColor: "#e5e7eb",
     borderRadius: 4,
     width: "90%",
   },
   descriptionSkeletonSecond: {
-    height: 16,
+    height: 14,
     backgroundColor: "#e5e7eb",
     borderRadius: 4,
     width: "70%",
