@@ -1,12 +1,9 @@
-"use client"
-
 import type React from "react"
 import { useState } from "react"
 import {
   Modal,
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   Switch,
   KeyboardAvoidingView,
@@ -18,6 +15,7 @@ import { Ionicons, MaterialIcons } from "@expo/vector-icons"
 import type { IUser } from "../../UsuariosType"
 import { Colors } from "@/constants/Coloresuser"
 import { styles } from "./ModalCreateUserStyles"
+import { TextInput } from "react-native-gesture-handler"
 
 interface CreateUserModalProps {
   visible: boolean
@@ -73,6 +71,7 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ visible, onClose, onC
           correo: formData.correo,
           activo: formData.activo,
           isAdmin: formData.isAdmin,
+          password: formData.password
         }
 
         await onCreateUser(userForLocal)
@@ -139,7 +138,7 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ visible, onClose, onC
               <Text allowFontScaling={false} style={styles.label}>Nombre</Text>
               <View style={[styles.inputContainer, errors.nombre && styles.inputError]}>
                 <Ionicons name="person-outline" size={20} color={Colors.light.textSecondary} />
-                <Text allowFontScaling={false}Input
+                <TextInput allowFontScaling={false}
                   style={styles.input}
                   placeholder="Ingresa el nombre"
                   value={formData.nombre}
@@ -156,7 +155,7 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ visible, onClose, onC
               <Text allowFontScaling={false} style={styles.label}>Apellido</Text>
               <View style={[styles.inputContainer, errors.apellido && styles.inputError]}>
                 <Ionicons name="person-outline" size={20} color={Colors.light.textSecondary} />
-                <Text allowFontScaling={false}Input
+                <TextInput allowFontScaling={false}
                   style={styles.input}
                   placeholder="Ingresa el apellido"
                   value={formData.apellido}
@@ -173,7 +172,7 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ visible, onClose, onC
               <Text allowFontScaling={false} style={styles.label}>Email</Text>
               <View style={[styles.inputContainer, errors.correo && styles.inputError]}>
                 <MaterialIcons name="email" size={20} color={Colors.light.textSecondary} />
-                <Text allowFontScaling={false}Input
+                <TextInput allowFontScaling={false}
                   style={styles.input}
                   placeholder="usuario@empresa.com"
                   value={formData.correo}
@@ -192,7 +191,7 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ visible, onClose, onC
               <Text allowFontScaling={false} style={styles.label}>Contraseña</Text>
               <View style={[styles.inputContainer, errors.password && styles.inputError]}>
                 <Ionicons name="lock-closed-outline" size={20} color={Colors.light.textSecondary} />
-                <Text allowFontScaling={false}Input
+                <TextInput allowFontScaling={false}
                   style={styles.input}
                   placeholder="Ingresa la contraseña"
                   value={formData.password}

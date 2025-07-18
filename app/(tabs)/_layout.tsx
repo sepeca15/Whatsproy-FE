@@ -1,11 +1,8 @@
-"use client";
-
 import React from "react";
 import { Slot } from "expo-router";
 import { NativeBaseProvider } from "native-base";
 import { PrivateView } from "@/components/PrivateView";
 import Layout from "@/components/Layout";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useUser } from "@/hooks/redux/useUser";
 import ConfigAccount from "@/components/Views/ConfigAccount";
 import { io } from "socket.io-client";
@@ -27,7 +24,6 @@ const TabLayout: React.FC = () => {
     user;
   const globalConfig =
     userConfigured && paymentMade && apiConfigured && greenApiConfigured;
-
   const isSuperAdmin = user?.isSuperAdmin;
   const intl = useIntl();
   const colorScheme = useColorScheme();

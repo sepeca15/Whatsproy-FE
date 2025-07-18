@@ -5,6 +5,7 @@ export interface IUser {
   activo: boolean
   image?: string
   isAdmin?: boolean
+  password?: string
 }
 
 export interface IUserInfo {

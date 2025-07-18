@@ -5,7 +5,7 @@ import api from "@/services/api/admin";
 
 interface UseImagePickerProps {
   toastErrorMessage?: string;
- 
+
   onImagePicked?: (data: { localUri?: string; apiUrl?: string }) => void;
 }
 
@@ -13,15 +13,15 @@ const useImagePicker = ({ toastErrorMessage, onImagePicked }: UseImagePickerProp
   const { showToast } = useToastContext();
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [loadingUpload, setLoadingUpload] = useState(false);
-  const [imageApiUrl, setImageApiUrl] = useState<string | null>(null);
 
   const pickImage = async (setFormData?: Function) => {
+    setLoadingUpload(true)
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
         aspect: [1, 1],
-        quality: 1,
+        quality: 0.6,
       });
 
       if (result.canceled || !result.assets?.length) return;
@@ -31,7 +31,6 @@ const useImagePicker = ({ toastErrorMessage, onImagePicked }: UseImagePickerProp
         showToast({ title: toastErrorMessage, status: "error" });
         return;
       }
-
 
       setImageUri(asset.uri);
       if (onImagePicked) {
@@ -47,7 +46,6 @@ const useImagePicker = ({ toastErrorMessage, onImagePicked }: UseImagePickerProp
 
   const uploadImage = async (asset: any, setFormData?: Function) => {
     try {
-      setLoadingUpload(true);
       const file = {
         uri: asset.uri,
         type: asset.mimeType || "image/png",
@@ -59,14 +57,13 @@ const useImagePicker = ({ toastErrorMessage, onImagePicked }: UseImagePickerProp
       if (uploadResponse?.url) {
         setFormData?.((prevData: Record<string, any>) => ({
           ...prevData,
-          imagen: uploadResponse.url,
-
+          [prevData.hasOwnProperty("image") ? "image" : "imagen"]: uploadResponse.url,
         }));
 
-      
-        setImageApiUrl(uploadResponse.url);
         if (onImagePicked) {
-          onImagePicked({ apiUrl:  await uploadResponse.url });
+          console.log('entro aqui');
+          
+          onImagePicked({ apiUrl: uploadResponse.url });
         }
         return uploadResponse?.url;
       } else {

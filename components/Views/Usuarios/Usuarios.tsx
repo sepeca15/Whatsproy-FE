@@ -1,10 +1,7 @@
-"use client";
-
 import type React from "react";
 import { useState, useEffect, useRef, useMemo } from "react";
 import {
   View,
-  Text,
   TouchableOpacity,
   Animated,
   FlatList,
@@ -29,6 +26,7 @@ import { FormattedMessage, useIntl } from "react-intl";
 import { useToastContext } from "@/contexts/ToastContext";
 import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmAction";
 import CustomHeader from "@/components/CustomHeader/CustomHeader";
+import { Text } from "native-base";
 
 const UsersScreen: React.FC = () => {
   const [userData, setUserData] = useState<IUserInfo>({
@@ -257,6 +255,8 @@ const UsersScreen: React.FC = () => {
         }),
       });
       setLoadingDeleteUser(false);
+    } finally {
+      setLoadingDeleteUser(false);
     }
   };
 
@@ -286,28 +286,16 @@ const UsersScreen: React.FC = () => {
         nombre: nombre,
         apellido: apellido,
         correo: newUserData.correo,
-        password: "123456",
+        password: newUserData.password ?? '',
         id_empresa: user.id_empresa,
       };
 
       const createdUser = await api.user.create(userData);
-
-      if (createdUser) {
-        const newUser: IUser = {
-          id: createdUser.id,
-          nombre:
-            createdUser.nombre && createdUser.apellido
-              ? `${createdUser.nombre} ${createdUser.apellido}`.trim()
-              : createdUser.name || "",
-          correo: createdUser.correo || createdUser.email || "",
-          activo: createdUser.activo !== undefined ? createdUser.activo : true,
-          isAdmin: newUserData.isAdmin,
-          image: createdUser.image || null,
-        };
-
+    
+      if (createdUser.ok) {
         setUserData((prev) => ({
           ...prev,
-          data: [...prev.data, newUser],
+          data: [...prev.data, createdUser.data],
         }));
         setShowCreateModal(false);
         showToast({
@@ -562,10 +550,11 @@ const UsersScreen: React.FC = () => {
           style={[
             styles.searchContainer,
             {
-              height: searchAnim.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0, 60],
-              }),
+            height: searchAnim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0, 60], // asegurate que cuando está cerrado el height sea 0
+            }),
+            overflow: 'hidden', 
               opacity: searchAnim,
             },
           ]}
@@ -577,7 +566,7 @@ const UsersScreen: React.FC = () => {
               color="rgba(255,255,255,0.7)"
               style={styles.searchIcon}
             />
-            <Text allowFontScaling={false}Input
+            <TextInput allowFontScaling={false}
               style={styles.searchInput}
               placeholder={intl.formatMessage({
                 id: "users.searchPlaceholder",
@@ -602,82 +591,6 @@ const UsersScreen: React.FC = () => {
           </View>
         </Animated.View>}
         />
-
-      {/* <View style={[styles.header, { backgroundColor: Colors.light.primary }]}>
-        <View style={styles.headerContent}>
-          <TouchableOpacity
-            style={styles.backButton}
-            activeOpacity={0.7}
-            onPress={() => router.back()}
-          >
-            <Ionicons name="arrow-back" size={24} color="white" />
-          </TouchableOpacity>
-          <View style={styles.headerCenter}>
-            <Text allowFontScaling={false} style={styles.headerTitle}>
-              <FormattedMessage id="users.title" defaultMessage="Usuarios" />
-            </Text>
-          </View>
-          <View style={styles.headerActions}>
-            <TouchableOpacity
-              style={styles.profileButton}
-              onPress={handleEditProfile}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="person-circle-outline" size={24} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.searchButton}
-              onPress={toggleSearch}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="search" size={24} color="white" />
-            </TouchableOpacity>
-          </View>
-        </View>
-        <Animated.View
-          style={[
-            styles.searchContainer,
-            {
-              height: searchAnim.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0, 60],
-              }),
-              opacity: searchAnim,
-            },
-          ]}
-        >
-          <View style={styles.searchInputContainer}>
-            <Ionicons
-              name="search"
-              size={20}
-              color="rgba(255,255,255,0.7)"
-              style={styles.searchIcon}
-            />
-            <Text allowFontScaling={false}Input
-              style={styles.searchInput}
-              placeholder={intl.formatMessage({
-                id: "users.searchPlaceholder",
-                defaultMessage: "Buscar usuarios...",
-              })}
-              placeholderTextColor="rgba(255,255,255,0.7)"
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-            />
-            {searchQuery.length > 0 && (
-              <TouchableOpacity
-                onPress={() => setSearchQuery("")}
-                style={styles.clearButton}
-              >
-                <Ionicons
-                  name="close"
-                  size={20}
-                  color="rgba(255,255,255,0.7)"
-                />
-              </TouchableOpacity>
-            )}
-          </View>
-        </Animated.View>
-      </View> */}
 
       {userData.loading || currentUserId === null ? (
         <View style={styles.loadingContent}>

@@ -45,13 +45,14 @@ const ModalCreateOrEditCategory = ({
   const [errors, setErrors] = React.useState<Record<string, string>>({});
   const [loadingApi, setLoadingApi] = React.useState<boolean>(false);
 
-  const { pickImage, imageUri, setImageUri } = useImagePicker({
+  const { pickImage, imageUri, setImageUri, loadingUpload } = useImagePicker({
     toastErrorMessage: intl.formatMessage({
       id: "categories.modal.imagePickerError",
       defaultMessage: "Error al seleccionar la imagen",
     }),
     onImagePicked: (data) => {
       if (data.apiUrl) {
+        console.log('recibo aqui el image', data.apiUrl);
         handleChangeValue("image", data.apiUrl);
       }
     },
@@ -153,7 +154,7 @@ const ModalCreateOrEditCategory = ({
           }),
       onPress: onSubmit,
       style: "primary" as const,
-      disabled: loadingApi,
+      disabled: loadingApi || loadingUpload,
     },
   ];
 

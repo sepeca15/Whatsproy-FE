@@ -1,7 +1,7 @@
 import ApiInstances from "@/services/axios/axiosConfig";
 import { IUserCreate, IUserUpdate, WorkerUser } from "./user.types";
 
-export const createUser = async (dataUser: IUserCreate) => {
+export const createUser = async (dataUser: IUserCreate) => {  
   const { data } = await ApiInstances("global").post(`usuario/`, dataUser);
 
   return data;

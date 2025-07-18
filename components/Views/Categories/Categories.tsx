@@ -80,6 +80,7 @@ const Categories = () => {
 
   const editCategorie = async (category: ICategoryData) => {
     try {
+      console.log('recibo', category)
       const resp = await api.category.update({
         categoryId: category.id,
         dataUpdate: category,
