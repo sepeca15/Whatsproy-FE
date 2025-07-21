@@ -42,7 +42,7 @@ const ProductPreviewCard: React.FC<ProductPreviewProps> = ({ product, isSelected
         </TouchableOpacity>
 
         <View style={styles.productInfo}>
-          <Text allowFontScaling={false}Input
+          <TextInput allowFontScaling={false}
             style={[styles.productName, !isSelected && styles.productNameDisabled]}
             value={product.nombre}
             onChangeText={(text) => onChange("nombre", text)}
@@ -69,7 +69,7 @@ const ProductPreviewCard: React.FC<ProductPreviewProps> = ({ product, isSelected
             <Text allowFontScaling={false} style={styles.detailLabel}>
               <FormattedMessage id="description" defaultMessage="Descripción" />
             </Text>
-            <Text allowFontScaling={false}Input
+            <TextInput allowFontScaling={false}
               style={styles.detailInput}
               value={product.descripcion}
               onChangeText={(text) => onChange("descripcion", text)}
@@ -86,7 +86,7 @@ const ProductPreviewCard: React.FC<ProductPreviewProps> = ({ product, isSelected
               <Text allowFontScaling={false} style={styles.detailLabel}>
                 <FormattedMessage id="price" defaultMessage="Precio" />
               </Text>
-              <Text allowFontScaling={false}Input
+              <TextInput allowFontScaling={false}
                 style={styles.priceInput}
                 value={product.precio?.toString() || ""}
                 onChangeText={(text) => onChange("precio", Number.parseFloat(text) || 0)}
@@ -100,7 +100,7 @@ const ProductPreviewCard: React.FC<ProductPreviewProps> = ({ product, isSelected
                 <FormattedMessage id="preparationTime" defaultMessage="Tiempo de preparación" />
               </Text>
               <View style={styles.timeInputContainer}>
-                <Text allowFontScaling={false}Input
+                <TextInput allowFontScaling={false}
                   style={styles.timeInput}
                   value={product.plazoDuracionEstimadoMinutos?.toString() || ""}
                   onChangeText={(text) => onChange("plazoDuracionEstimadoMinutos", Number.parseInt(text) || 0)}

@@ -56,7 +56,7 @@ const LoadAuthCode = ({ AuthCode, handleUpdateData }: ILoadAuthCode) => {
         <FormattedMessage id="enterPhoneNumber" />
       </CustomText>
       <View>
-        <Text allowFontScaling={false}Input
+        <TextInput allowFontScaling={false}
           style={{
             ...styles.input,
             borderRadius: 8,

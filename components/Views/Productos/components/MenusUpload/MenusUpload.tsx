@@ -502,7 +502,7 @@ const MenusUpload: React.FC = () => {
         <Text allowFontScaling={false} style={styles.menuNameLabel}>
           <FormattedMessage id="menuName" defaultMessage="Nombre del menú" />
         </Text>
-        <Text allowFontScaling={false}Input
+        <TextInput allowFontScaling={false}
           style={styles.menuNameInput}
           value={menuName}
           onChangeText={setMenuName}

@@ -308,7 +308,7 @@ const AddOrEditDailyMenu: React.FC<AddOrEditDailyMenuProps> = ({
           <Text allowFontScaling={false} style={styles.label}>
             <FormattedMessage id="name" defaultMessage="Nombre" /> *
           </Text>
-          <Text allowFontScaling={false}Input
+          <TextInput allowFontScaling={false}
             style={styles.textInput}
             value={formData?.nombre}
             onChangeText={(text) => handleInputChange("nombre", text)}
@@ -324,7 +324,7 @@ const AddOrEditDailyMenu: React.FC<AddOrEditDailyMenuProps> = ({
           <Text allowFontScaling={false} style={styles.label}>
             <FormattedMessage id="description" defaultMessage="Descripción" />
           </Text>
-          <Text allowFontScaling={false}Input
+          <TextInput allowFontScaling={false}
             style={[styles.textInput, styles.textArea]}
             value={formData?.descripcion}
             onChangeText={(text) => handleInputChange("descripcion", text)}
@@ -343,7 +343,7 @@ const AddOrEditDailyMenu: React.FC<AddOrEditDailyMenuProps> = ({
             <Text allowFontScaling={false} style={styles.label}>
               <FormattedMessage id="price" defaultMessage="Precio" /> *
             </Text>
-            <Text allowFontScaling={false}Input
+            <TextInput allowFontScaling={false}
               style={styles.textInput}
               value={`${formData?.precio ?? 0}`}
               onChangeText={(text) =>
@@ -363,7 +363,7 @@ const AddOrEditDailyMenu: React.FC<AddOrEditDailyMenuProps> = ({
               />{" "}
               (min)
             </Text>
-            <Text allowFontScaling={false}Input
+            <TextInput allowFontScaling={false}
               style={styles.textInput}
               value={`${formData?.plazoDuracionEstimadoMinutos ?? 0}`}
               onChangeText={(text) =>

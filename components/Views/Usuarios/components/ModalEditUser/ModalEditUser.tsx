@@ -221,7 +221,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, u
               </Text>
               <View style={[styles.inputContainer, errors.nombre && styles.inputError]}>
                 <Ionicons name="person-outline" size={20} color={Colors.light.textSecondary} />
-                <Text allowFontScaling={false}Input
+                <TextInput allowFontScaling={false}TextInput
                   style={styles.input}
                   placeholder={intl.formatMessage({
                     id: "profile.name.placeholder",
@@ -242,7 +242,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, u
               </Text>
               <View style={[styles.inputContainer, errors.correo && styles.inputError]}>
                 <MaterialIcons name="email" size={20} color={Colors.light.textSecondary} />
-                <Text allowFontScaling={false}Input
+                <TextInput allowFontScaling={false}
                   style={styles.input}
                   placeholder={intl.formatMessage({
                     id: "profile.email.placeholder",

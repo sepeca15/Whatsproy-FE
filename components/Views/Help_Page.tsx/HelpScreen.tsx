@@ -639,7 +639,7 @@ const HelpScreen = () => {
       <Animatable.View animation="fadeInDown" duration={800} style={styles.searchContainer}>
         <View style={styles.searchInputContainer}>
           <Feather name="search" size={20} color={colors.icon} style={styles.searchIcon} />
-          <Text allowFontScaling={false}Input
+          <TextInput allowFontScaling={false}
             style={[styles.searchInput, { color: colors.text }]}
             placeholder={intl.formatMessage({
               id: "searchHelp",
