@@ -221,7 +221,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose, u
               </Text>
               <View style={[styles.inputContainer, errors.nombre && styles.inputError]}>
                 <Ionicons name="person-outline" size={20} color={Colors.light.textSecondary} />
-                <TextInput allowFontScaling={false}TextInput
+                <TextInput allowFontScaling={false}
                   style={styles.input}
                   placeholder={intl.formatMessage({
                     id: "profile.name.placeholder",
