@@ -42,6 +42,8 @@ const GeneralConfig = () => {
   const isDeliveryService = user?.tipo_servicio === TipoServicio.DELIVERY;
   const { showToast } = useToastContext();
 
+  console.log("user", user)
+
   const [form, setForm] = React.useState<IForm>({
     hora_apertura: user.hora_apertura,
     hora_cierre: user.hora_cierre,
@@ -50,8 +52,8 @@ const GeneralConfig = () => {
     intervaloTiempoCalendario: user.intervaloTiempoCalendario,
     notificarReservaHoras: user.notificarReservaHoras,
     remaindersHorsRemainder: user.remaindersHorsRemainder,
-    retiroEnSucursalHabilitado: user?.retiroEnSucursalHabilitado,
-    envioADomicilioHabilitado: user?.envioADomicilioHabilitado,
+    retiroEnSucursalHabilitado: user?.retiroEnSucursal,
+    envioADomicilioHabilitado: user?.envioADomicilio,
     logo: user?.logo,
     notificarMenuDiario: user?.notificarMenuDiario,
     direccion: user?.direccion,
