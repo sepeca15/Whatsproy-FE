@@ -1,3 +1,4 @@
+import { Espacio } from "@/services/api/espacio/types";
 import { IEstado } from "../Status/Status";
 
 interface IClient {
@@ -49,4 +50,5 @@ export interface IOrderDetails {
   estadoActual: IEstado,
   detalle: string | null
   detalle_pedido?: string | null
+  espacio?: Espacio
 }

@@ -11,7 +11,7 @@ export const getStatitics = async (filterType: any) => {
   return data;
 };
 
-export const getOrderForCalendar = async (selectedDate: string, userId?: string) => {
+export const getOrderForCalendar = async (selectedDate: string, userId?: string) => {  
   const { data } = await ApiInstances("current").get(
     "pedido/calendar/formatCalendar/" + selectedDate + `?userId=${userId}`,
   );
@@ -19,7 +19,7 @@ export const getOrderForCalendar = async (selectedDate: string, userId?: string)
   return data;
 };
 
-export const getAvailableDates = async (fecha: string, workerId?: string) => {
+export const getAvailableDates = async (fecha: string, workerId?: string) => {  
   const { data } = await ApiInstances("current").get(
     `pedido/calendar/dates-avaiable?fecha=${fecha}&withPast=true&userId=${workerId}`,
   );

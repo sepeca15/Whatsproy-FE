@@ -32,9 +32,10 @@ import CustomText from "@/components/CustomText";
 import { globalStyles } from "@/components/globalStyles";
 import AddButton from "..../../hooks/add_Button/Add_button";
 import { useUser } from "@/hooks/redux/useUser";
-import { ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
+import { ID_TIPOSERVICIO_DELIVERY, ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
 import DailyMenuTab from "./DailyMenuTab";
 import MenusUpload from "./components/MenusUpload";
+import EspaciosTab from "./components/EspaciosTab";
 
 const Productos: React.FC = () => {
   const router = useRouter();
@@ -47,7 +48,7 @@ const Productos: React.FC = () => {
   const { showToast } = useToastContext();
   const [isDeleting, setIsDeleting] = useState(true);
   const [activeTab, setActiveTab] = useState<
-    "products" | "dailyMenu" | "uploadMenu"
+    "products" | "dailyMenu" | "uploadMenu" | 'espacios'
   >("products");
 
   const [allCategories, setAllCategories] = useState<ICategoryData[]>([]);
@@ -206,7 +207,7 @@ const Productos: React.FC = () => {
     .sort((a, b) => a.nombre.localeCompare(b.nombre, locale));
 
   const renderTabButton = (
-    tabKey: "products" | "dailyMenu" | "uploadMenu",
+    tabKey: "products" | "dailyMenu" | "uploadMenu" | "espacios",
     labelId: string,
     defaultLabel: string
   ) => (
@@ -410,14 +411,19 @@ const Productos: React.FC = () => {
       {!isReserva && (
         <View style={styles.tabContainer}>
           {renderTabButton("products", "products", "Productos")}
-          {renderTabButton("dailyMenu", "dailyMenu", "Menú Diario")}
-          {renderTabButton("uploadMenu", "uploadMenu", "Subir Menú")}
+
+          { user.tipo_servicio === ID_TIPOSERVICIO_DELIVERY && renderTabButton("dailyMenu", "dailyMenu", "Menú Diario")}
+          { user.tipo_servicio === ID_TIPOSERVICIO_DELIVERY && renderTabButton("uploadMenu", "uploadMenu", "Subir Menú")}
+          { user.tipo_servicio !== ID_TIPOSERVICIO_DELIVERY && renderTabButton("espacios", "espacios", "Mis espacios")}
+
         </View>
       )}
 
       {activeTab === "products" && renderProductsTab()}
       {activeTab === "dailyMenu" && renderDailyMenuTab()}
       {activeTab === "uploadMenu" && <MenusUpload />}
+      {activeTab === "espacios" && <EspaciosTab />}
+
     </View>
   );
 };

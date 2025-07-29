@@ -15,6 +15,5 @@ export enum TipoPedidoStr {
 export const EmpresaTypeStr = {
   [ID_TIPOSERVICIO_RESERVA]: TipoPedidoStr.RESERVA,
   [ID_TIPOSERVICIO_DELIVERY]: TipoPedidoStr.DELIVERY,
-  [ID_TIPOSERVICIO_RESERVA_ESPACIO]: TipoPedidoStr.DELIVERY,
-
+  [ID_TIPOSERVICIO_RESERVA_ESPACIO]: TipoPedidoStr.RESERVA_ESPACIO,
 };

@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import moment from "moment";
 import "moment/locale/es";
-import { ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
+import { ID_TIPOSERVICIO_RESERVA, ID_TIPOSERVICIO_RESERVA_ESPACIO } from "@/services/api/tiposervicio/tiposervicio.type";
 import api from "@/services/api/admin";
 import ItemCalendar from "./components/ItemCalendar";
 import * as Progress from "react-native-progress";
@@ -30,6 +30,8 @@ import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmActi
 import DatePickerModal from "./components/DatePickerModal/DatePickerModal";
 import { LinearGradient } from "expo-linear-gradient";
 import AddButton from "@/hooks/add_Button/Add_button";
+import { Espacio } from "@/services/api/espacio/types";
+import EspacioSelect from "@/components/EspacioSelect/EspacioSelect";
 
 const primaryColor = "#075e54";
 const secondaryColor = "#128c7e";
@@ -84,15 +86,24 @@ export default function CalendarView() {
   const [selectedDate, setSelectedDate] = useState(
     moment.tz(user.timeZone).format("YYYY-MM-DD")
   );
-  const [workers, setWorkers] = useState<WorkerUser[]>([]);
-  const [selectedWorkerId, setSelectedWorkerId] = useState<any | number | undefined>();
+
+
+  const [calendarData, setCalendarData] = useState<{
+    workers: WorkerUser[];
+    espacios: Espacio[];
+  }>({ workers: [], espacios: [] });
+
+  const [selectedWorkerId, setSelectedWorkerId] = useState<any | undefined>();
+  const [selectedEspacio, setSelectedEspacio] = useState<any | undefined>();
+  const [loadingCalendarData, setLoadingCalendarData] = useState(false);
+
   const [horarios, setHorarios] = useState<any[]>([]);
   const [selectedMonth, setSelectedMonth] = useState<any>("");
   const [selectedYear, setSelectedYear] = useState<any>("");
   const [disabledDates, setDisabledDates] = useState<any>({});
   const [oredrToDelete, setOrderToDelete] = useState<any>(null);
   const orderPerDays = ordenarPedidosPorHora(orderPerDaysAll);
-  const [loadWorkers, setLoadWorkers] = useState(false);
+
   const [ordrDeleteModalConfirm, setOrdrDeleteModalConfirm] = useState(false);
   const [reason, setReason] = useState("");
   const [loadingDelete, setLoadingDelete] = useState(false);
@@ -109,10 +120,10 @@ export default function CalendarView() {
 
       const response = await api.order.getNextDateAvailableForSingleDay(selectedDate, selectedWorkerId);
 
-      if(response) {
+      if (response) {
         setDaySchedules(response || []);
         setShowScheduleModal(true);
-      }      
+      }
     } catch (error) {
       console.error("Error loading day schedules:", error);
       showToast({
@@ -139,18 +150,39 @@ export default function CalendarView() {
     }
   }, [selectedMonth, selectedYear]);
 
-  const handleLoadWorkers = async () => {
+  const handleLoadCalendarData = async () => {
     try {
-      setLoadWorkers(true);
-      const workers = await api.user.findWorkers(user?.id_empresa);
-      setWorkers(workers.data);
-      if (workers?.data && workers?.data?.length > 0) {
-        setSelectedWorkerId(workers?.data[0]?.id);
+      setLoadingCalendarData(true);
+
+      let espacios: Espacio[] = [];
+      let workers: WorkerUser[] = [];
+
+      if (user.tipo_servicio === ID_TIPOSERVICIO_RESERVA_ESPACIO) {
+        const espaciosRes = await api.espacio.findAll();
+        espacios = espaciosRes || [];
+      } else {
+        const workersRes = await api.user.findWorkers(user?.id_empresa);
+        workers = workersRes?.data || [];
+      }
+
+      setCalendarData({ espacios, workers });
+
+      if (espacios.length > 0) {
+        setSelectedEspacio(espacios[0].id);
+      }
+
+      if (workers.length > 0) {
+        setSelectedWorkerId(workers[0].id);
       }
     } catch (error) {
       console.error(error);
+      showToast({
+        title: "Error",
+        description: "Error al cargar datos del calendario",
+        status: "error",
+      });
     } finally {
-      setLoadWorkers(false);
+      setLoadingCalendarData(false);
     }
   };
 
@@ -213,12 +245,16 @@ export default function CalendarView() {
   };
 
   const onLoadItems = async (dateString: string) => {
+    console.log('llamare');
+    
     setLoading(true);
     try {
-      const data = await api.order.getCalendarOrders(dateString, selectedWorkerId);
+      const idSelected = user.tipo_servicio === ID_TIPOSERVICIO_RESERVA_ESPACIO? selectedEspacio : selectedWorkerId
+      
+      const data = await api.order.getCalendarOrders(dateString, idSelected);
       const availableDatesResponse = await api.order.getAvailableDates(
         dateString,
-        selectedWorkerId
+        idSelected
       );
       if (availableDatesResponse?.length > 0) {
         setAvailableDates(availableDatesResponse);
@@ -287,16 +323,16 @@ export default function CalendarView() {
 
   useEffect(() => {
     if (user?.id_empresa) {
-      handleLoadWorkers();
+      handleLoadCalendarData();
       handleLoadHorarios();
     }
   }, [user?.id_empresa]);
 
   useEffect(() => {
-    if (selectedDate && selectedWorkerId) {
+    if (selectedDate && (selectedWorkerId || selectedEspacio)) {
       onLoadItems(selectedDate);
     }
-  }, [selectedDate, selectedWorkerId]);
+  }, [selectedDate, selectedWorkerId, selectedEspacio]);
 
   const handleDateChange = useCallback((newDate: Date) => {
     const formattedDate = moment(newDate)
@@ -363,7 +399,7 @@ export default function CalendarView() {
                 <Ionicons name="time-outline" size={20} color="white" />
               )}
             </TouchableOpacity>
-            
+
             <TouchableOpacity
               disabled={loading}
               onPress={() => onRefresh()}
@@ -413,15 +449,32 @@ export default function CalendarView() {
         </View>
       </View>
 
-      {!loadWorkers && (
-        <View style={styles.workerSelectContainer}>
-          <WorkerSelect
-            workers={workers}
-            selectedId={selectedWorkerId}
-            onSelect={setSelectedWorkerId}
-          />
-        </View>
-      )}
+
+      {
+        user?.tipo_servicio === ID_TIPOSERVICIO_RESERVA_ESPACIO ? (
+          calendarData.espacios.length > 0 && !loadingCalendarData && (
+            <View style={styles.workerSelectContainer}>
+              <EspacioSelect
+                espacios={calendarData.espacios}
+                selectedId={selectedEspacio}
+                onSelect={setSelectedEspacio}
+              />
+            </View>
+          )
+        ) : (
+          calendarData.workers.length > 0 && !loadingCalendarData && (
+            <View style={styles.workerSelectContainer}>
+              <WorkerSelect
+                workers={calendarData.workers}
+                selectedId={selectedWorkerId}
+                onSelect={setSelectedWorkerId}
+              />
+            </View>
+          )
+        )
+      }
+
+
 
       <View style={styles.dateNavigationContainer}>
         <TouchableOpacity onPress={handlePreviousDay} style={styles.dateNavButton}>
@@ -464,7 +517,7 @@ export default function CalendarView() {
 
       {/* Content Area */}
       <View style={styles.contentContainer}>
-        {loading || loadWorkers || loadingCalendarCupos ? (
+        {loading || loadingCalendarData || loadingCalendarCupos ? (
           <View style={styles.loadingContainer}>
             <Progress.Circle color={Colors.light.primary} indeterminate={true} size={50} />
             <Text allowFontScaling={false} style={styles.loadingText}>
@@ -526,19 +579,19 @@ export default function CalendarView() {
                 <Ionicons name="close" size={24} color={Colors.light.icon} />
               </TouchableOpacity>
             </View>
-            
+
             <ScrollView style={styles.modalContent} showsVerticalScrollIndicator={false}>
               {daySchedules.length > 0 ? (
                 daySchedules.map((schedule, index) => (
                   <View key={index} style={styles.scheduleItem}>
                     <View style={styles.scheduleTimeContainer}>
-                      <Ionicons 
-                        name="time-outline" 
-                        size={20} 
-                        color={Colors.light.primary} 
+                      <Ionicons
+                        name="time-outline"
+                        size={20}
+                        color={Colors.light.primary}
                       />
                       <Text allowFontScaling={false} style={styles.scheduleTime}>
-                        {moment.tz(schedule,user.timeZone).format("HH:mm")}
+                        {moment.tz(schedule, user.timeZone).format("HH:mm")}
                       </Text>
                     </View>
                     <View style={styles.scheduleInfo}>
@@ -547,8 +600,8 @@ export default function CalendarView() {
                       </Text>
                       <View style={[
                         styles.scheduleStatusIndicator,
-                        { 
-                          backgroundColor: Colors.light.success 
+                        {
+                          backgroundColor: Colors.light.success
                         }
                       ]} />
                     </View>
@@ -846,9 +899,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalContent: {
-    marginTop:10,
+    marginTop: 10,
     flex: 1,
-    paddingHorizontal:20
+    paddingHorizontal: 20
   },
   scheduleItem: {
     flexDirection: "row",

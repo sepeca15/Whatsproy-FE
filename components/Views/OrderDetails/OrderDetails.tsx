@@ -1,5 +1,3 @@
-"use client"
-
 import * as React from "react"
 import { SafeAreaView, TouchableOpacity, Animated, Modal } from "react-native"
 import { useLocalSearchParams, useRouter } from "expo-router"
@@ -47,7 +45,6 @@ const initialState: IDetailsOrder = {
 }
 
 const OrderDetails = () => {
-  const [pdfPath, setPdfPath] = useState<string | null>(null)
   const { printHTML, loading } = useThermalPrint()
 
   const { handleDeleteOrder, confirmOrder, handleChangeStatusOrder, loadingApiAction } = useOrders()
@@ -285,17 +282,17 @@ const OrderDetails = () => {
   const productosHTML =
     detailOfOrder.data && Array.isArray(detailOfOrder.data.products)
       ? detailOfOrder.data.products
-          .map((prod) => {
-            const nombre = prod.productoInfo?.nombre || "Producto sin nombre"
-            const cantidad = prod.cantidad || 1
-            const detalle = prod.detalle || "Sin detalle"
-            return `
+        .map((prod) => {
+          const nombre = prod.productoInfo?.nombre || "Producto sin nombre"
+          const cantidad = prod.cantidad || 1
+          const detalle = prod.detalle || "Sin detalle"
+          return `
         <div class="item"><strong>Producto:</strong> ${nombre}</div>
         <div class="item"><strong>Cantidad:</strong> ${cantidad}</div>
         <div class="item"><strong>Detalle:</strong> ${detalle}</div>
       `
-          })
-          .join("")
+        })
+        .join("")
       : ""
 
   const comandaHTML = `
@@ -734,6 +731,53 @@ const OrderDetails = () => {
             </View>
           )}
         </Animated.View>
+
+
+        {
+          detailOfOrder.data?.espacio && (
+            <Animated.View style={[styles.sectionCard, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
+              <View style={styles.sectionHeader}>
+                <MaterialIcons name="place" size={20} color={Colors.light.primary} />
+                <Text allowFontScaling={false} style={styles.sectionTitle}>
+                  <FormattedMessage id="space" defaultMessage="Espacio" />
+                </Text>
+              </View>
+
+              <View style={styles.spaceInfoContainer}>
+                <View style={styles.spaceMainInfo}>
+                  <Text allowFontScaling={false} style={styles.spaceName}>
+                    {detailOfOrder.data.espacio.nombre}
+                  </Text>
+                  <Text allowFontScaling={false} style={styles.spaceDescription}>
+                    {detailOfOrder.data.espacio.descripcion}
+                  </Text>
+                </View>
+
+                <View style={styles.spaceDetails}>
+                  <View style={styles.spaceDetailRow}>
+                    <MaterialIcons name="location-on" size={16} color={Colors.light.icon} />
+                    <Text allowFontScaling={false} style={styles.spaceDetailText}>
+                      {detailOfOrder.data.espacio.ubicacion}
+                    </Text>
+                  </View>
+
+                  {detailOfOrder.data.espacio.capacidad && (
+                    <View style={styles.spaceDetailRow}>
+                      <MaterialIcons name="people" size={16} color={Colors.light.icon} />
+                      <Text allowFontScaling={false} style={styles.spaceDetailText}>
+                        <FormattedMessage
+                          id="capacity"
+                          defaultMessage="Capacidad: {capacity} personas"
+                          values={{ capacity: detailOfOrder.data.espacio.capacidad }}
+                        />
+                      </Text>
+                    </View>
+                  )}
+                </View>
+              </View>
+            </Animated.View>
+          )
+        }
 
         {/* Products Card */}
         <Animated.View style={[styles.sectionCard, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>

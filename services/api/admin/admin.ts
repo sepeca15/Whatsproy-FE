@@ -20,6 +20,7 @@ import * as cierreProvisorio from "../cierre_provisoro/cierreProvisorio";
 import * as numeroConfianza from "../numeroConfianza/numeroConfianza";
 import * as schedules from "../schedules/schedules";
 import * as menuImg from "../menuImg/menuImg";
+import * as espacio from "../espacio/espacio";
 
 const api = {
   auth: {
@@ -165,6 +166,13 @@ const api = {
     update: menuImg.markMenuImageAsProcessed,
     parseImageToText: menuImg.parseImage,
   },
+  espacio: {
+    find: espacio.getEspacioById,
+    create: espacio.createEspacio,
+    findAll: espacio.getEspacios,
+    delete: espacio.deleteEspacio,
+    update: espacio.updateEspacio
+  }
 };
 
 export default api;

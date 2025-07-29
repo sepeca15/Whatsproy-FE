@@ -19,6 +19,36 @@ export const styles = StyleSheet.create({
     color: "#6b7280",
     marginTop: 4,
   },
+   spaceInfoContainer: {
+    marginTop: 8,
+  },
+  spaceMainInfo: {
+    marginBottom: 12,
+  },
+  spaceName: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: Colors.light.text,
+    marginBottom: 4,
+  },
+  spaceDescription: {
+    fontSize: 14,
+    color: Colors.light.textSecondary,
+    lineHeight: 20,
+  },
+  spaceDetails: {
+    gap: 8,
+  },
+  spaceDetailRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  spaceDetailText: {
+    fontSize: 14,
+    color: Colors.light.text,
+    flex: 1,
+  },
   reclamoHeader: {
     flexDirection: "row",
     alignItems: "center",
