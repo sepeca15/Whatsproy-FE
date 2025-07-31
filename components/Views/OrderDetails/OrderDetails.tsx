@@ -49,7 +49,7 @@ const OrderDetails = () => {
 
   const { handleDeleteOrder, confirmOrder, handleChangeStatusOrder, loadingApiAction } = useOrders()
   const router = useRouter()
-  const { user } = useUser()
+  const { user, isReserva } = useUser()
   const empresaName = user?.empresaName ?? "Mi Empresa"
   const [detailOfOrder, setDetailOfOrder] = React.useState<IDetailsOrder>(initialState)
   const [reason, setReason] = useState("")
@@ -73,7 +73,6 @@ const OrderDetails = () => {
   const [isImagePreviewVisible, setImagePreviewVisible] = useState(false)
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null)
   const [ordrDeleteModalConfirm, setOrdrDeleteModalConfirm] = useState(false)
-  const isReserva = user?.tipo_servicio === ID_TIPOSERVICIO_RESERVA
 
   const toggleModalStatus = () => setStateModalStatus((prev) => !prev)
 
@@ -629,7 +628,7 @@ const OrderDetails = () => {
 
           <View style={styles.divider} />
 
-          <View style={styles.statusSection}>
+          {!isReserva && <View style={styles.statusSection}>
             <View style={styles.currentStatusContainer}>
               <Text allowFontScaling={false} style={styles.currentStatusLabel}>
                 <FormattedMessage id="currentStatus" defaultMessage="Estado actual" />
@@ -646,7 +645,7 @@ const OrderDetails = () => {
             {detailOfOrder.data?.cambiosEstado.length ? (
               <StatusTimeline statusChanges={detailOfOrder.data.cambiosEstado} />
             ) : null}
-          </View>
+          </View>}
         </Animated.View>
 
         {/* Additional Info Card */}
@@ -734,7 +733,7 @@ const OrderDetails = () => {
 
 
         {
-          detailOfOrder.data?.espacio && (
+          detailOfOrder.data?.espacio?.nombre && (
             <Animated.View style={[styles.sectionCard, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
               <View style={styles.sectionHeader}>
                 <MaterialIcons name="place" size={20} color={Colors.light.primary} />

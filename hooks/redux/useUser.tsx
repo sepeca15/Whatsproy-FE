@@ -1,5 +1,6 @@
 import { useToastContext } from "@/contexts/ToastContext";
 import api from "@/services/api/admin";
+import { ID_TIPOSERVICIO_RESERVA, ID_TIPOSERVICIO_RESERVA_ESPACIO } from "@/services/api/tiposervicio/tiposervicio.type";
 import { IUserUpdate } from "@/services/api/user/user.types";
 import { IUserData } from "@/services/redux/Slices/userSlice/types";
 import {
@@ -24,6 +25,8 @@ export const useUser = () => {
   const Mensaje = () => {
     Dispatch(mostrarMensaje("hola soy un nuevo mensaje ;D"));
   };
+  
+  const isReserva = user?.tipo_servicio === ID_TIPOSERVICIO_RESERVA || user?.tipo_servicio === ID_TIPOSERVICIO_RESERVA_ESPACIO;
 
   const handleAddUserData = async () => {
     try {
@@ -149,5 +152,6 @@ export const useUser = () => {
     handleUpdateFCM,
     handlePayOk,
     isGreenApiConfigured,
+    isReserva,
   };
 };

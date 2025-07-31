@@ -38,7 +38,7 @@ const Categories = () => {
   const [loadingDelete, setLoadingDelete] = React.useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
 
-  console.log("stateModal", stateModal)
+  console.log("stateModal", stateModal);
   const toggleModal = () => setStateModal((prev) => !prev);
   const toggleModalDelete = () => setModalDelete((prev) => !prev);
 
@@ -80,13 +80,13 @@ const Categories = () => {
 
   const editCategorie = async (category: ICategoryData) => {
     try {
-      console.log('recibo', category)
+      console.log("recibo", category);
       const resp = await api.category.update({
         categoryId: category.id,
         dataUpdate: category,
       });
       if (resp.ok) {
-        console.log("sapee 2")
+        console.log("sapee 2");
         setAllCategories((prev) =>
           prev.map((item) => (item.id === resp.data.id ? resp.data : item))
         );
@@ -114,7 +114,7 @@ const Categories = () => {
     try {
       const resp = await api.category.create(data);
       if (resp.ok) {
-        console.log("sapee")
+        console.log("sapee");
         setAllCategories((prev) => [...prev, resp.data]);
         setStateModal(false);
         showToast({
@@ -199,9 +199,7 @@ const Categories = () => {
   );
 
   const renderHeader = () => (
-    <View
-      style={styles.headerSection}
-    >
+    <View style={styles.headerSection}>
       <View style={styles.infoBanner}>
         <View style={styles.infoIconContainer}>
           <MaterialIcons
@@ -233,12 +231,6 @@ const Categories = () => {
       <CustomHeader
         title={
           <FormattedMessage id="categories.title" defaultMessage="Categorías" />
-        }
-        subtitle={
-          <FormattedMessage
-            id="categories.subtitle"
-            defaultMessage="Organiza tus productos"
-          />
         }
         onBack={() => router.back()}
         showBackButton

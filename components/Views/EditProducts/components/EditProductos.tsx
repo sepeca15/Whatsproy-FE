@@ -23,12 +23,13 @@ import { View } from "native-base";
 import InputField from "@/components/InputField";
 import SelectField from "@/hooks/SelectField/SelectField";
 import { useEditProductValidation } from "@/hooks/productValidation/useProductValidation";
+import { ID_TIPOSERVICIO_DELIVERY } from "@/services/api/tiposervicio/tiposervicio.type";
 
 interface ProductFormData {
   id: number;
   nombre: string;
   envioADomicilio: boolean;
-retiroEnSucursal: boolean;
+  retiroEnSucursal: boolean;
   descripcion: string;
   imagen?: string;
   disponible: boolean;
@@ -200,10 +201,7 @@ const EditProduct = ({
 
       <TouchableOpacity style={styles.imageUpload} onPress={handleImagePick}>
         {selectedImage ? (
-          <Image
-            source={{ uri: getImage() }}
-            style={styles.uploadedImage}
-          />
+          <Image source={{ uri: getImage() }} style={styles.uploadedImage} />
         ) : (
           <View style={styles.uploadPlaceholder}>
             <AntDesign name="camera" size={40} color="gray" />
@@ -396,7 +394,8 @@ const EditProduct = ({
               <AntDesign name="closecircle" size={24} color="#F44336" />
             )}
           </View>
-          <Text allowFontScaling={false}
+          <Text
+            allowFontScaling={false}
             style={[
               styles.switchText,
               { color: formData.disponible ? "#4CAF50" : "#F44336" },
@@ -410,72 +409,106 @@ const EditProduct = ({
           </Text>
         </View>
 
-        <Text allowFontScaling={false} style={styles.label}>
-          <FormattedMessage id="deliveryOptions" defaultMessage="Opciones de entrega" />
-        </Text>
-        
-        <View style={styles.switchContainer}>
-          <Switch
-            value={formData.envioADomicilio}
-            onValueChange={(value) =>
-              setFormData({ ...formData, envioADomicilio: value })
-            }
-            trackColor={{ false: "#767577", true: Colors.light.primary }}
-            thumbColor={formData.envioADomicilio ? "#f4f3f4" : "#f4f3f4"}
-            ios_backgroundColor="#3e3e3e"
-          />
-          <View style={styles.switchIconContainer}>
-            <AntDesign name="car" size={24} color={formData.envioADomicilio ? "#4CAF50" : "#999"} />
-          </View>
-          <View style={{ flex: 1, marginLeft: 10 }}>
-            <Text allowFontScaling={false}
-              style={[
-                styles.switchText,
-                { color: formData.envioADomicilio ? "#4CAF50" : "#999", marginLeft: 0 },
-              ]}
-            >
-              <FormattedMessage id="homeDelivery" defaultMessage="Envío a domicilio" />
-            </Text>
-            <Text allowFontScaling={false} style={{ fontSize: 12, color: "#666", marginTop: 2 }}>
-              <FormattedMessage 
-                id="homeDeliveryDescription" 
-                defaultMessage="El producto puede ser entregado en el domicilio del cliente"
+        {user?.tipo_servicio === ID_TIPOSERVICIO_DELIVERY && (
+          <>
+            <Text allowFontScaling={false} style={styles.label}>
+              <FormattedMessage
+                id="deliveryOptions"
+                defaultMessage="Opciones de entrega"
               />
             </Text>
-          </View>
-        </View>
 
-        <View style={styles.switchContainer}>
-          <Switch
-            value={formData.retiroEnSucursal}
-            onValueChange={(value) =>
-              setFormData({ ...formData, retiroEnSucursal: value })
-            }
-            trackColor={{ false: "#767577", true: Colors.light.primary }}
-            thumbColor={formData.retiroEnSucursal ? "#f4f3f4" : "#f4f3f4"}
-            ios_backgroundColor="#3e3e3e"
-          />
-          <View style={styles.switchIconContainer}>
-            <AntDesign name="home" size={24} color={formData.retiroEnSucursal ? "#4CAF50" : "#999"} />
-          </View>
-          <View style={{ flex: 1, marginLeft: 10 }}>
-            <Text allowFontScaling={false}
-              style={[
-                styles.switchText,
-                { color: formData.retiroEnSucursal ? "#4CAF50" : "#999", marginLeft: 0 },
-              ]}
-            >
-              <FormattedMessage id="storePickup" defaultMessage="Retiro en sucursal" />
-            </Text>
-            <Text allowFontScaling={false} style={{ fontSize: 12, color: "#666", marginTop: 2 }}>
-              <FormattedMessage 
-                id="storePickupDescription" 
-                defaultMessage="El cliente puede retirar el producto directamente en tu local"
+            <View style={styles.switchContainer}>
+              <Switch
+                value={formData.envioADomicilio}
+                onValueChange={(value) =>
+                  setFormData({ ...formData, envioADomicilio: value })
+                }
+                trackColor={{ false: "#767577", true: Colors.light.primary }}
+                thumbColor={formData.envioADomicilio ? "#f4f3f4" : "#f4f3f4"}
+                ios_backgroundColor="#3e3e3e"
               />
-            </Text>
-          </View>
-        </View>
+              <View style={styles.switchIconContainer}>
+                <AntDesign
+                  name="car"
+                  size={24}
+                  color={formData.envioADomicilio ? "#4CAF50" : "#999"}
+                />
+              </View>
+              <View style={{ flex: 1, marginLeft: 10 }}>
+                <Text
+                  allowFontScaling={false}
+                  style={[
+                    styles.switchText,
+                    {
+                      color: formData.envioADomicilio ? "#4CAF50" : "#999",
+                      marginLeft: 0,
+                    },
+                  ]}
+                >
+                  <FormattedMessage
+                    id="homeDelivery"
+                    defaultMessage="Envío a domicilio"
+                  />
+                </Text>
+                <Text
+                  allowFontScaling={false}
+                  style={{ fontSize: 12, color: "#666", marginTop: 2 }}
+                >
+                  <FormattedMessage
+                    id="homeDeliveryDescription"
+                    defaultMessage="El producto puede ser entregado en el domicilio del cliente"
+                  />
+                </Text>
+              </View>
+            </View>
 
+            <View style={styles.switchContainer}>
+              <Switch
+                value={formData.retiroEnSucursal}
+                onValueChange={(value) =>
+                  setFormData({ ...formData, retiroEnSucursal: value })
+                }
+                trackColor={{ false: "#767577", true: Colors.light.primary }}
+                thumbColor={formData.retiroEnSucursal ? "#f4f3f4" : "#f4f3f4"}
+                ios_backgroundColor="#3e3e3e"
+              />
+              <View style={styles.switchIconContainer}>
+                <AntDesign
+                  name="home"
+                  size={24}
+                  color={formData.retiroEnSucursal ? "#4CAF50" : "#999"}
+                />
+              </View>
+              <View style={{ flex: 1, marginLeft: 10 }}>
+                <Text
+                  allowFontScaling={false}
+                  style={[
+                    styles.switchText,
+                    {
+                      color: formData.retiroEnSucursal ? "#4CAF50" : "#999",
+                      marginLeft: 0,
+                    },
+                  ]}
+                >
+                  <FormattedMessage
+                    id="storePickup"
+                    defaultMessage="Retiro en sucursal"
+                  />
+                </Text>
+                <Text
+                  allowFontScaling={false}
+                  style={{ fontSize: 12, color: "#666", marginTop: 2 }}
+                >
+                  <FormattedMessage
+                    id="storePickupDescription"
+                    defaultMessage="El cliente puede retirar el producto directamente en tu local"
+                  />
+                </Text>
+              </View>
+            </View>
+          </>
+        )}
         <TouchableOpacity
           style={[styles.button, (loading || loadingimage) && styles.disabled]}
           onPress={handleSubmit}

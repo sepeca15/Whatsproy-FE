@@ -26,8 +26,7 @@ const QuickActionButton: React.FC<QuickActionButtonProps> = ({
   title,
   onPress,
 }) => {
-  const { user } = useUser();
-  const isReserva = user?.tipo_servicio === ID_TIPOSERVICIO_RESERVA;
+  const { user, isReserva } = useUser();
 
   const displayIcon = isReserva
     ? icon === "calendar" || icon === "calendar-outline"

@@ -25,6 +25,8 @@ const TabLayout: React.FC = () => {
   const globalConfig =
     userConfigured && paymentMade && apiConfigured && greenApiConfigured;
   const isSuperAdmin = user?.isSuperAdmin;
+  const assistentEnabled = user?.assistentEnabled;
+
   const intl = useIntl();
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? "light"];
@@ -104,7 +106,7 @@ const TabLayout: React.FC = () => {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <NativeBaseProvider>
         <PrivateView>
-          {globalConfig || isSuperAdmin ? (
+          {globalConfig || isSuperAdmin || assistentEnabled === false ? (
             <Layout>
               <View style={{ flex: 1 }}>
                 <Slot />

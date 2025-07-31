@@ -57,14 +57,10 @@ const MetricCard: React.FC<MetricCardProps> = ({
   style,
   loading = false, // Valor por defecto
 }) => {
-  // Obtener rol de usuario para condicionar iconos y títulos
-  const { user } = useUser()
-  const isReserva = user?.tipo_servicio === ID_TIPOSERVICIO_RESERVA;
+  const { user, isReserva } = useUser()
 
-  // Ajustar icono: si es rol reserva y el icono es de carrito, usar calendario
   const displayIcon = isReserva && icon === "cart-outline" ? "calendar-outline" : icon
 
-  // Ajustar título: reemplazar "Pedidos" por "Reservas" en reservas
   const displayTitle = isReserva ? title.replace(/Pedidos/g, "Reservas").replace(/Pedido/g, "Reserva") : title
 
   const scale = useSharedValue(1)

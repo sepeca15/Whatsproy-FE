@@ -200,12 +200,6 @@ const DateOrder: React.FC = () => {
             defaultMessage="Campos Personalizados"
           />
         }
-        subtitle={
-          <FormattedMessage
-            id="orderData.subtitle"
-            defaultMessage="Gestiona la información que recopilas"
-          />
-        }
         onBack={() => router.back()}
         showBackButton
       />

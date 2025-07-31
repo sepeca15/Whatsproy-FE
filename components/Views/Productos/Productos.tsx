@@ -32,7 +32,10 @@ import CustomText from "@/components/CustomText";
 import { globalStyles } from "@/components/globalStyles";
 import AddButton from "..../../hooks/add_Button/Add_button";
 import { useUser } from "@/hooks/redux/useUser";
-import { ID_TIPOSERVICIO_DELIVERY, ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
+import {
+  ID_TIPOSERVICIO_DELIVERY,
+  ID_TIPOSERVICIO_RESERVA,
+} from "@/services/api/tiposervicio/tiposervicio.type";
 import DailyMenuTab from "./DailyMenuTab";
 import MenusUpload from "./components/MenusUpload";
 import EspaciosTab from "./components/EspaciosTab";
@@ -48,7 +51,7 @@ const Productos: React.FC = () => {
   const { showToast } = useToastContext();
   const [isDeleting, setIsDeleting] = useState(true);
   const [activeTab, setActiveTab] = useState<
-    "products" | "dailyMenu" | "uploadMenu" | 'espacios'
+    "products" | "dailyMenu" | "uploadMenu" | "espacios"
   >("products");
 
   const [allCategories, setAllCategories] = useState<ICategoryData[]>([]);
@@ -63,7 +66,7 @@ const Productos: React.FC = () => {
   const deleteAnimationRef = useRef(null);
   const [refreshing, setRefreshing] = useState(false);
 
-  const { user } = useUser();
+  const { user, isReserva } = useUser();
 
   const loadAllCategories = async () => {
     try {
@@ -222,7 +225,8 @@ const Productos: React.FC = () => {
       onPress={() => setActiveTab(tabKey)}
       activeOpacity={0.7}
     >
-      <Text allowFontScaling={false}
+      <Text
+        allowFontScaling={false}
         style={[
           styles.tabButtonText,
           {
@@ -274,7 +278,8 @@ const Productos: React.FC = () => {
                         source={{ uri: category.image }}
                       />
                     )}
-                    <Text allowFontScaling={false}
+                    <Text
+                      allowFontScaling={false}
                       style={[
                         styles.categoryText,
                         isSelected && styles.selectedCategoryText,
@@ -377,8 +382,6 @@ const Productos: React.FC = () => {
     </>
   );
 
-  const isReserva = user?.tipo_servicio === ID_TIPOSERVICIO_RESERVA;
-
   const renderDailyMenuTab = () => <DailyMenuTab />;
 
   return (
@@ -412,10 +415,12 @@ const Productos: React.FC = () => {
         <View style={styles.tabContainer}>
           {renderTabButton("products", "products", "Productos")}
 
-          { user.tipo_servicio === ID_TIPOSERVICIO_DELIVERY && renderTabButton("dailyMenu", "dailyMenu", "Menú Diario")}
-          { user.tipo_servicio === ID_TIPOSERVICIO_DELIVERY && renderTabButton("uploadMenu", "uploadMenu", "Subir Menú")}
-          { user.tipo_servicio !== ID_TIPOSERVICIO_DELIVERY && renderTabButton("espacios", "espacios", "Mis espacios")}
-
+          {user.tipo_servicio === ID_TIPOSERVICIO_DELIVERY &&
+            renderTabButton("dailyMenu", "dailyMenu", "Menú Diario")}
+          {user.tipo_servicio === ID_TIPOSERVICIO_DELIVERY &&
+            renderTabButton("uploadMenu", "uploadMenu", "Subir Menú")}
+          {user.tipo_servicio !== ID_TIPOSERVICIO_DELIVERY &&
+            renderTabButton("espacios", "espacios", "Mis espacios")}
         </View>
       )}
 
@@ -423,7 +428,6 @@ const Productos: React.FC = () => {
       {activeTab === "dailyMenu" && renderDailyMenuTab()}
       {activeTab === "uploadMenu" && <MenusUpload />}
       {activeTab === "espacios" && <EspaciosTab />}
-
     </View>
   );
 };

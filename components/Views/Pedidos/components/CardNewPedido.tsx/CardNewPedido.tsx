@@ -49,10 +49,7 @@ const CardNewPedido = ({
     deleteState: false,
     confirmState: false,
   });
-  const { user } = useUser();
-  const isReserva = user?.tipo_servicio === ID_TIPOSERVICIO_RESERVA;
-
-  console.log("orderData", orderData);
+  const { user, isReserva } = useUser();
 
   const router = useRouter();
   const [statusModalDelete, setStateModalDelete] = useState<boolean>(false);

@@ -56,6 +56,7 @@ const ItemCalendar = ({
   deleteOrder,
   confirmed,
 }: IItemCalendar) => {
+  console.log("confirmed", confirmed)
   const [loading, setLoading] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
   const { user } = useUser();
@@ -309,7 +310,7 @@ const ItemCalendar = ({
 
                 <View style={styles.actionButton}>
                   <View style={styles.actionSectionRow}>
-                    {!confirmed && (
+                    { (
                       <Pressable
                         style={[styles.actionButton, styles.deleteButton]}
                         onPress={async () => {
@@ -346,7 +347,7 @@ const ItemCalendar = ({
                       </Pressable>
                     )}
 
-                    <Pressable
+                    {!confirmed && <Pressable
                       style={[styles.actionButton, styles.primaryButton]}
                       onPress={confirmOrderFunction}
                       disabled={loading || loadingDelete}
@@ -370,10 +371,9 @@ const ItemCalendar = ({
                       >
                         <FormattedMessage id="confirmOrder" />
                       </Text>
-                    </Pressable>
-                  </View>
+                    </Pressable>}
 
-                  {confirmed && (
+                    {confirmed && (
                     <Pressable
                       style={[styles.actionButton, styles.primaryButton]}
                       onPress={viewDetailsOrder}
@@ -400,6 +400,9 @@ const ItemCalendar = ({
                       </Text>
                     </Pressable>
                   )}
+                  </View>
+
+                 
                 </View>
               </>
             )}

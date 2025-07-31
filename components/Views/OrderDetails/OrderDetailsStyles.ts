@@ -72,7 +72,7 @@ export const styles = StyleSheet.create({
   loadingText: {
     color: Colors.light.text,
     marginTop: 15,
-    fontSize: RFValue(15),
+    fontSize: 15,
     fontWeight: "500",
   },
 
@@ -103,7 +103,7 @@ export const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.2)",
   },
   headerTitle: {
-    fontSize: RFValue(16),
+    fontSize: 16,
     fontWeight: "600",
     color: "white",
   },
@@ -142,23 +142,23 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   orderNumberLabel: {
-    fontSize: RFValue(12),
+    fontSize: 12,
     color: Colors.light.icon,
     marginBottom: 4,
   },
   orderNumberValue: {
-    fontSize: RFValue(18),
+    fontSize: 16,
     fontWeight: "700",
     color: Colors.light.text,
   },
   orderDateLabel: {
-    fontSize: RFValue(12),
+    fontSize: 12,
     color: Colors.light.icon,
     marginBottom: 4,
     textAlign: "right",
   },
   orderDateValue: {
-    fontSize: RFValue(14),
+    fontSize: 14,
     fontWeight: "500",
     color: Colors.light.text,
     textAlign: "right",
@@ -177,7 +177,7 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   currentStatusLabel: {
-    fontSize: RFValue(14),
+    fontSize: 14,
     fontWeight: "500",
     color: Colors.light.text,
   },
@@ -191,7 +191,7 @@ export const styles = StyleSheet.create({
   },
   statusText: {
     color: "white",
-    fontSize: RFValue(12),
+    fontSize: 12,
     fontWeight: "500",
     marginRight: 4,
   },
@@ -215,7 +215,7 @@ export const styles = StyleSheet.create({
   },
   sectionTitle: {
     marginLeft: 10,
-    fontSize: RFValue(16),
+    fontSize: 16,
     fontWeight: "600",
     color: Colors.light.text,
   },
@@ -236,19 +236,19 @@ export const styles = StyleSheet.create({
   },
   clientAvatarText: {
     color: "white",
-    fontSize: RFValue(20),
+    fontSize: 20,
     fontWeight: "600",
   },
   clientDetails: {
     marginLeft: 12,
   },
   clientName: {
-    fontSize: RFValue(16),
+    fontSize: 16,
     fontWeight: "600",
     color: Colors.light.text,
   },
   clientPhone: {
-    fontSize: RFValue(13),
+    fontSize: 13,
     color: Colors.light.icon,
     marginTop: 2,
   },
@@ -261,7 +261,7 @@ export const styles = StyleSheet.create({
   },
   addressText: {
     marginLeft: 8,
-    fontSize: RFValue(13),
+    fontSize: 13,
     color: Colors.light.text,
     flex: 1,
     flexWrap: "wrap",
@@ -276,7 +276,7 @@ export const styles = StyleSheet.create({
     minHeight: 75,
   },
   estimateTimeValue: {
-    fontSize: RFValue(24),
+    fontSize: 24,
     fontWeight: "700",
     color: Colors.light.primary,
     marginLeft: 12,
@@ -285,7 +285,7 @@ export const styles = StyleSheet.create({
     paddingTop: 15,
   },
   estimateTimeUnit: {
-    fontSize: RFValue(16),
+    fontSize: 16,
     fontWeight: "400",
     color: Colors.light.icon,
     paddingTop: 20,
@@ -307,13 +307,13 @@ export const styles = StyleSheet.create({
     borderBottomColor: "#f0f0f0",
   },
   detailLabel: {
-    fontSize: RFValue(12),
+    fontSize: 12,
     color: Colors.light.icon,
 
     marginBottom: 4,
   },
   detailValue: {
-    fontSize: RFValue(14),
+    fontSize: 14,
     fontWeight: "500",
     color: Colors.light.text,
   },
@@ -323,7 +323,7 @@ export const styles = StyleSheet.create({
     padding: 20,
   },
   emptyDetailsText: {
-    fontSize: RFValue(14),
+    fontSize: 14,
     color: Colors.light.icon,
     marginTop: 8,
   },
@@ -333,7 +333,7 @@ export const styles = StyleSheet.create({
     marginBottom: 12,
   },
   productSpecName: {
-    fontSize: RFValue(14),
+    fontSize: 14,
     fontWeight: "600",
     color: Colors.light.text,
     marginBottom: 6,
@@ -349,7 +349,7 @@ export const styles = StyleSheet.create({
     borderLeftColor: Colors.light.secondary,
   },
   productSpecDetail: {
-    fontSize: RFValue(13),
+    fontSize: 13,
     color: Colors.light.text,
   },
   generalNotes: {
@@ -359,7 +359,7 @@ export const styles = StyleSheet.create({
     borderTopColor: "#f0f0f0",
   },
   generalNotesLabel: {
-    fontSize: RFValue(14),
+    fontSize: 14,
     fontWeight: "600",
     color: Colors.light.text,
     marginBottom: 8,
@@ -373,7 +373,7 @@ export const styles = StyleSheet.create({
     borderLeftColor: Colors.light.primary,
   },
   generalNotesText: {
-    fontSize: RFValue(13),
+    fontSize: 13,
     color: Colors.light.text,
     lineHeight: 20,
   },
@@ -413,7 +413,7 @@ export const styles = StyleSheet.create({
   },
   chatButtonText: {
     marginLeft: 8,
-    fontSize: RFValue(12),
+    fontSize: 12,
     fontWeight: "600",
     color: "white",
   },
@@ -482,7 +482,7 @@ export const styles = StyleSheet.create({
   },
   printButtonText: {
     marginLeft: 8,
-    fontSize: RFValue(12),
+    fontSize: 12,
     fontWeight: "600",
     color: "white",
   },

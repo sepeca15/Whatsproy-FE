@@ -15,7 +15,7 @@ import { Button, HStack, Icon, Image, Select, View } from "native-base";
 import { globalStyles } from "@/components/globalStyles";
 import SubscriptionInfo from "@/components/SubscriptionInfo";
 import { useSubscriptionStatus } from "@/hooks/home_functions/useSubscriptionStatus";
-import { ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
+import { ID_TIPOSERVICIO_DELIVERY, ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type";
 import { Ionicons } from "@expo/vector-icons";
 import moment from "moment";
 import { useHomeData } from "@/hooks/redux/useHomeData";
@@ -29,7 +29,7 @@ const Home: React.FC = () => {
   );
   const firstLoadRef = React.useRef(true);
 
-  const { user } = useUser();
+  const { user, isReserva } = useUser();
   const {
     lastThreeOrders,
     numberClientes,
@@ -40,7 +40,6 @@ const Home: React.FC = () => {
     loaded,
   } = useHomeData();
   const empresaName = user?.empresaName ?? "Empresa Name";
-  const isReserva = user?.tipo_servicio === ID_TIPOSERVICIO_RESERVA;
 
   const currentPlan = user?.payment?.plan;
   const currentPayment = user?.payment;
@@ -188,7 +187,7 @@ const Home: React.FC = () => {
               icon="cart-outline"
               title={intl.formatMessage({
                 id: isReserva ? "reservasToday.home" : "ordersToday.home",
-                defaultMessage: isReserva ? "Reservas Hoy" : "Pedidos Hoy",
+                defaultMessage: isReserva ? "Reservas" : "Pedidos",
               })}
               value={numberPedidos}
               onPress={() => {}}

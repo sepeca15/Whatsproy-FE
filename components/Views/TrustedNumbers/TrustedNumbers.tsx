@@ -213,12 +213,6 @@ const TrustedNumbers = () => {
           defaultMessage="Números de Confianza"
         />
       }
-      subtitle={
-        <FormattedMessage
-          id="trustedNumbers.subtitle"
-          defaultMessage="Gestiona los contactos autorizados"
-        />
-      }
       onBack={() => router.back()}
     />
   );
