@@ -5,6 +5,7 @@ import { useIntl } from "react-intl";
 import {
   ID_TIPOSERVICIO_DELIVERY,
   ID_TIPOSERVICIO_RESERVA,
+  ID_TIPOSERVICIO_RESERVA_ESPACIO,
 } from "@/services/api/tiposervicio/tiposervicio.type";
 import InformativeText from "@/components/InformativeText";
 
@@ -35,6 +36,13 @@ const Step2 = ({ formData, errors, handleInputChange }: IStep2) => {
       nombre: intl.formatMessage({
         id: "agendaService",
         defaultMessage: "Agenda/Reserva",
+      }),
+    },
+    {
+      id: ID_TIPOSERVICIO_RESERVA_ESPACIO,
+      nombre: intl.formatMessage({
+        id: "agendaSpacesService",
+        defaultMessage: "Agenda/Reserva de espacios",
       }),
     },
   ];
