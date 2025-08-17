@@ -42,8 +42,10 @@ import EspaciosTab from "./components/EspaciosTab";
 
 const Productos: React.FC = () => {
   const router = useRouter();
-  const [ProductsBD, setProducts] = useState<ProductBDD[]>([]);
+  const { user } = useUser();
 
+  const [ProductsBD, setProducts] = useState<ProductBDD[]>([]);
+  const isReserva = user.tipo_servicio === ID_TIPOSERVICIO_RESERVA
   const [searchTerm, setSearchTerm] = useState<string>("");
   const fadeAnim = useState(new Animated.Value(0))[0];
   const { locale } = useLocalization();
@@ -63,10 +65,7 @@ const Productos: React.FC = () => {
     null
   );
   const [loadingProducts, setLoadingProducts] = useState(true);
-  const deleteAnimationRef = useRef(null);
   const [refreshing, setRefreshing] = useState(false);
-
-  const { user, isReserva } = useUser();
 
   const loadAllCategories = async () => {
     try {
@@ -419,7 +418,7 @@ const Productos: React.FC = () => {
             renderTabButton("dailyMenu", "dailyMenu", "Menú Diario")}
           {user.tipo_servicio === ID_TIPOSERVICIO_DELIVERY &&
             renderTabButton("uploadMenu", "uploadMenu", "Subir Menú")}
-          {user.tipo_servicio !== ID_TIPOSERVICIO_DELIVERY &&
+          {user.tipo_servicio !== ID_TIPOSERVICIO_DELIVERY && user.tipo_servicio !== ID_TIPOSERVICIO_RESERVA &&
             renderTabButton("espacios", "espacios", "Mis espacios")}
         </View>
       )}

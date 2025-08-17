@@ -61,8 +61,6 @@ const useImagePicker = ({ toastErrorMessage, onImagePicked }: UseImagePickerProp
         }));
 
         if (onImagePicked) {
-          console.log('entro aqui');
-          
           onImagePicked({ apiUrl: uploadResponse.url });
         }
         return uploadResponse?.url;

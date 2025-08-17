@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Image, Spinner } from "native-base";
@@ -46,10 +44,6 @@ const ModalCreateOrEditCategory = ({
   const [loadingApi, setLoadingApi] = React.useState<boolean>(false);
 
   const { pickImage, imageUri, setImageUri, loadingUpload } = useImagePicker({
-    toastErrorMessage: intl.formatMessage({
-      id: "categories.modal.imagePickerError",
-      defaultMessage: "Error al seleccionar la imagen",
-    }),
     onImagePicked: (data) => {
       if (data.apiUrl) {
         console.log('recibo aqui el image', data.apiUrl);
@@ -145,13 +139,13 @@ const ModalCreateOrEditCategory = ({
     {
       label: loadingApi
         ? intl.formatMessage({
-            id: "common.saving",
-            defaultMessage: "Guardando...",
-          })
+          id: "common.saving",
+          defaultMessage: "Guardando...",
+        })
         : intl.formatMessage({
-            id: categorySelected ? "common.save" : "common.create",
-            defaultMessage: categorySelected ? "Guardar" : "Crear",
-          }),
+          id: categorySelected ? "common.save" : "common.create",
+          defaultMessage: categorySelected ? "Guardar" : "Crear",
+        }),
       onPress: onSubmit,
       style: "primary" as const,
       disabled: loadingApi || loadingUpload,
@@ -209,16 +203,11 @@ const ModalCreateOrEditCategory = ({
                 />
               ) : (
                 <View style={styles.placeholderContainer}>
-                  <LinearGradient
-                    colors={[colors.primary + "20", colors.primary + "10"]}
-                    style={styles.placeholderGradient}
-                  >
-                    <MaterialIcons
-                      name="image"
-                      size={40}
-                      color={colors.primary}
-                    />
-                  </LinearGradient>
+                  <MaterialIcons
+                    name="image"
+                    size={40}
+                    color={colors.primary}
+                  />
                 </View>
               )}
 
@@ -252,7 +241,7 @@ const ModalCreateOrEditCategory = ({
                 style={[styles.uploadButtonText, { color: colors.primary }]}
               >
                 <FormattedMessage
-                  id={currentImageUri? "categories.modal.changeImage" : "categories.modal.uploadImage"}
+                  id={currentImageUri ? "categories.modal.changeImage" : "categories.modal.uploadImage"}
                   defaultMessage={
                     currentImageUri ? "Cambiar imagen" : "Subir imagen"
                   }
@@ -421,6 +410,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     borderRadius: 60,
+    backgroundColor: 'gray',
     overflow: "hidden",
   },
   placeholderGradient: {

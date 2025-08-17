@@ -4,5 +4,7 @@ export interface Espacio {
   descripcion: string;
   ubicacion: string;
   capacidad: number | null;
-  pedido: any[]
+  pedido: any[],
+  productos: any[]
+  image?: string;
 }
