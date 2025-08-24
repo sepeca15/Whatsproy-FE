@@ -76,7 +76,7 @@ export const getNextDateAvailable = async () => {
 
 export const getNextDateAvailableForSingleDay = async (fecha: string, selectedWorkerId?: string) => {
   const { data } = await ApiInstances("current").get(
-    `pedido/calendar/dates-avaiable?fecha=${fecha}&withPast=false&userId${selectedWorkerId}`,
+    `pedido/calendar/dates-avaiable?fecha=${fecha}&withPast=false&userId=${selectedWorkerId}`,
   );
   return data;
 };
