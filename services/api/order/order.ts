@@ -11,9 +11,13 @@ export const getStatitics = async (filterType: any) => {
   return data;
 };
 
-export const getOrderForCalendar = async (selectedDate: string, userId?: string) => {  
+export const getOrderForCalendar = async (selectedDate: string, userId?: string, isReservaEspacio?: boolean) => {
+  const url = isReservaEspacio? ("pedido/calendar/formatCalendar/" + selectedDate + `?userId=${userId}`)
+  :
+  "pedidoEspacio/calendar/formatCalendar/" + selectedDate + `?espacio_id=${userId}`
+  
   const { data } = await ApiInstances("current").get(
-    "pedido/calendar/formatCalendar/" + selectedDate + `?userId=${userId}`,
+    url,
   );
 
   return data;

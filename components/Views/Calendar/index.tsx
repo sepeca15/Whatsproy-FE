@@ -251,7 +251,7 @@ export default function CalendarView() {
     try {
       const idSelected = user.tipo_servicio === ID_TIPOSERVICIO_RESERVA_ESPACIO? selectedEspacio : selectedWorkerId
       
-      const data = await api.order.getCalendarOrders(dateString, idSelected);
+      const data = await api.order.getCalendarOrders(dateString, idSelected, user?.tipo_servicio === ID_TIPOSERVICIO_RESERVA_ESPACIO );
       const availableDatesResponse = await api.order.getAvailableDates(
         dateString,
         idSelected
