@@ -25,7 +25,7 @@ const ApiInstances = (key: KeysApis) => {
       config.baseURL =
         key === "global"
           ? (process.env.EXPO_PUBLIC_BACKEND_URL ??
-            "https://app.whatsproy.com/")
+            "https://app.measyapp.com/")
           : user?.user.apiUrl;
       const token = await getData("token");
       if (token) {

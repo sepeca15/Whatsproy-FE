@@ -27,7 +27,7 @@ import { useOrders } from "@/hooks/redux/useOrders"
 import { useUser } from "@/hooks/redux/useUser"
 import { io } from "socket.io-client"
 import { useToastContext } from "@/contexts/ToastContext"
-import { ID_TIPOSERVICIO_RESERVA } from "@/services/api/tiposervicio/tiposervicio.type"
+import { ID_TIPOSERVICIO_RESERVA, ID_TIPOSERVICIO_RESERVA_ESPACIO } from "@/services/api/tiposervicio/tiposervicio.type"
 import { useThermalPrint } from "../../../hooks/PDF/PDFGenerate"
 import { useState } from "react"
 import { globalStyles } from "@/components/globalStyles"
@@ -53,7 +53,6 @@ const OrderDetails = () => {
   const empresaName = user?.empresaName ?? "Mi Empresa"
   const [detailOfOrder, setDetailOfOrder] = React.useState<IDetailsOrder>(initialState)
   const [reason, setReason] = useState("")
-
   const { orderId, keyDeleteType } = useLocalSearchParams()
 
   const resolvedKeyDeleteType = keyDeleteType as "pending" | "finished"
@@ -412,6 +411,42 @@ const OrderDetails = () => {
 </html>
 `
 
+  function getEstimateTime() {
+    if (!detailOfOrder?.data) return null
+
+    if (user.tipo_servicio !== ID_TIPOSERVICIO_RESERVA_ESPACIO) {
+      const est = detailOfOrder.data.estimateTime
+      if (!est) return null
+
+      return est >= 60
+        ? { value: Math.floor(est / 60), unit: "hours" }
+        : { value: est, unit: "minutes" }
+    }
+
+    const start = new Date(detailOfOrder.data.fecha_inicio)
+    const end = new Date(detailOfOrder.data.fecha_fin)
+    const diffMs = end.getTime() - start.getTime()
+    const { tipo_intervalo } = detailOfOrder.data.precio
+
+    let value = 0
+    let unit: "minutes" | "hours" | "days" = "minutes"
+
+    if (tipo_intervalo === "horas") {
+      value = Math.floor(diffMs / (1000 * 60 * 60))
+      unit = "hours"
+    } else if (tipo_intervalo === "minutos") {
+      value = Math.floor(diffMs / (1000 * 60))
+      unit = "minutes"
+    } else if (tipo_intervalo === "dias") {
+      value = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+      unit = "days"
+    }
+
+    return { value, unit }
+  }
+
+  const estimate = getEstimateTime()
+
   return (
     <SafeAreaView style={styles.safeArea}>
       {/* Header */}
@@ -712,26 +747,18 @@ const OrderDetails = () => {
               <FormattedMessage id="estimatedTime" defaultMessage="Tiempo Estimado" />
             </Text>
           </View>
-          {detailOfOrder?.data?.estimateTime && (
+          {estimate && (
             <View style={styles.timeContainer}>
               <MaterialCommunityIcons name="timer-outline" size={36} color={Colors.light.primary} />
               <Text allowFontScaling={false} style={styles.estimateTimeValue}>
-                {detailOfOrder.data?.estimateTime! >= 60
-                  ? Math.floor(detailOfOrder?.data?.estimateTime / 60)
-                  : detailOfOrder.data?.estimateTime}{" "}
+                {estimate.value}{" "}
                 <Text allowFontScaling={false} style={styles.estimateTimeUnit}>
-                  {detailOfOrder.data?.estimateTime! >= 60 ? (
-                    <FormattedMessage id="hours" />
-                  ) : (
-                    <FormattedMessage id="minutes" />
-                  )}
+                  <FormattedMessage id={estimate.unit} />
                 </Text>
               </Text>
             </View>
           )}
         </Animated.View>
-
-
         {
           detailOfOrder.data?.espacio?.nombre && (
             <Animated.View style={[styles.sectionCard, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
@@ -741,7 +768,16 @@ const OrderDetails = () => {
                   <FormattedMessage id="space" defaultMessage="Espacio" />
                 </Text>
               </View>
-
+              <View w={'full'} h={200} bg={'gray.200'} rounded={'xl'}>
+                {
+                  detailOfOrder.data?.espacio?.image &&
+                  <Image
+                    source={{ uri: detailOfOrder.data.espacio.image }}
+                    style={styles.transferProofImage}
+                    resizeMode="cover"
+                  />
+                }
+              </View>
               <View style={styles.spaceInfoContainer}>
                 <View style={styles.spaceMainInfo}>
                   <Text allowFontScaling={false} style={styles.spaceName}>
@@ -779,32 +815,39 @@ const OrderDetails = () => {
         }
 
         {/* Products Card */}
-        <Animated.View style={[styles.sectionCard, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
-          <View style={styles.sectionHeader}>
-            <MaterialIcons name="shopping-bag" size={20} color={Colors.light.primary} />
-            <Text allowFontScaling={false} style={styles.sectionTitle}>
-              <FormattedMessage id="products" defaultMessage="Productos" />
-            </Text>
-          </View>
-          <View style={styles.productsList}>
-            {detailOfOrder.data?.products.map((product, idx) => (
-              <ProductOrderCard
-                key={idx}
-                data={product.productoInfo}
-                cantidad={product.cantidad}
-                precio={product.precio}
-              />
-            ))}
-          </View>
-          <View style={styles.totalContainer}>
-            <Text allowFontScaling={false} style={styles.totalLabel}>
-              <FormattedMessage id="total" defaultMessage="Total" />
-            </Text>
-            <Text allowFontScaling={false} style={styles.totalValue}>$ {detailOfOrder.data?.total}</Text>
-          </View>
-        </Animated.View>
 
-        {/* Order Details Card - Especificaciones del cliente */}
+        {
+          user.tipo_servicio !== ID_TIPOSERVICIO_RESERVA_ESPACIO &&
+          <Animated.View style={[styles.sectionCard, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
+            <View style={styles.sectionHeader}>
+              <MaterialIcons name="shopping-bag" size={20} color={Colors.light.primary} />
+              <Text allowFontScaling={false} style={styles.sectionTitle}>
+                <FormattedMessage id="products" defaultMessage="Productos" />
+              </Text>
+            </View>
+            {
+              <View style={styles.productsList}>
+                {
+                  detailOfOrder.data?.products.map((product, idx) => (
+                    <ProductOrderCard
+                      key={idx}
+                      data={product.productoInfo}
+                      cantidad={product.cantidad}
+                      precio={product.precio}
+                    />
+                  ))
+                }
+              </View>
+            }
+            <View style={styles.totalContainer}>
+              <Text allowFontScaling={false} style={styles.totalLabel}>
+                <FormattedMessage id="total" defaultMessage="Total" />
+              </Text>
+              <Text allowFontScaling={false} style={styles.totalValue}>$ {detailOfOrder.data?.total}</Text>
+            </View>
+          </Animated.View>
+        }
+
         <Animated.View style={[styles.sectionCard, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
           <View style={styles.sectionHeader}>
             <MaterialIcons name="notes" size={20} color={Colors.light.primary} />

@@ -6,10 +6,11 @@ import * as Progress from "react-native-progress";
 import api from "@/services/api/admin";
 import type { IOrderDetails } from "@/components/Views/OrderDetails/OrderDetailsTypes";
 import { useRouter } from "expo-router";
-import * as moment from "moment-timezone";
 import { useUser } from "@/hooks/redux/useUser";
 import { FormattedMessage } from "react-intl";
 import { styles } from "./ItemCalendarStyles";
+import { ID_TIPOSERVICIO_RESERVA_ESPACIO } from "@/services/api/tiposervicio/tiposervicio.type";
+import * as moment from "moment-timezone";
 
 const primaryColor = "#075e54";
 const secondaryColor = "#128c7e";
@@ -39,7 +40,7 @@ interface IInfoItem {
 }
 
 interface IItemCalendar {
-  InfoItem: IInfoItem;
+  InfoItem: any;
   deleteOrder: (orderId: number) => void;
   confirmOrder: (orderId: number) => void;
   confirmed: boolean;
@@ -66,6 +67,11 @@ const ItemCalendar = ({
     info: null,
     loadingApi: true,
   });
+
+
+  console.log(InfoItem);
+  console.log(dataDetails);
+
 
   const keyDeleteType = confirmed ? "pending" : "finished";
   const animationHeight = useRef(new Animated.Value(0)).current;
@@ -155,6 +161,52 @@ const ItemCalendar = ({
     outputRange: ["0deg", "180deg"],
   });
 
+  const formatDisplayDate = () => {
+    if (user.tipo_servicio === ID_TIPOSERVICIO_RESERVA_ESPACIO) {
+      const start = moment.utc(InfoItem.fecha_inicio).format("DD/MM/YYYY, HH:mm");
+      const end = moment.utc(InfoItem.fecha_fin).format("HH:mm");
+      return `${start} - ${end}`;
+    }
+
+    // Comportamiento normal
+    return moment.tz(InfoItem.date, "America/Montevideo").format("DD/MM/YYYY");
+  };
+
+  const productDisplayText = () => {
+    if (user.tipo_servicio === ID_TIPOSERVICIO_RESERVA_ESPACIO) {
+      const espacio = InfoItem.espacio?.nombre || "";
+      const cliente = InfoItem.clientName || "";
+      const detalle = InfoItem.espacio?.descripcion || "";
+      return `${espacio} - ${cliente} (${detalle})`;
+    }
+    return InfoItem.product;
+  };
+
+  const getEstimateTime = () => {
+    if (!InfoItem?.fecha_inicio || !InfoItem?.fecha_fin || !InfoItem?.precio?.tipo_intervalo) return "0";
+
+    const start = moment.tz(InfoItem.fecha_inicio, "America/Montevideo");
+    const end = moment.tz(InfoItem.fecha_fin, "America/Montevideo");
+
+    const diffMinutes = end.diff(start, "minutes");
+
+    switch (InfoItem.precio.tipo_intervalo) {
+      case "minutos":
+        return `${diffMinutes} min`;
+      case "horas":
+        const hours = Math.ceil(diffMinutes / 60);
+        return `${hours} h`;
+      case "dias":
+        const days = Math.ceil(diffMinutes / 60 / 24);
+        return `${days} d`;
+      case "segundos":
+        const seconds = diffMinutes * 60;
+        return `${seconds} s`;
+      default:
+        return `${diffMinutes} min`;
+    }
+  };
+
   return (
     <View style={styles.cardContainer}>
       <Pressable style={styles.cardHeader} onPress={toggleExpand}>
@@ -177,8 +229,9 @@ const ItemCalendar = ({
               style={styles.productName}
               numberOfLines={1}
             >
-              {InfoItem.product}
+              {productDisplayText()}
             </Text>
+
             <View style={styles.dateRow}>
               <Ionicons
                 name="calendar-outline"
@@ -186,7 +239,7 @@ const ItemCalendar = ({
                 color={Colors.light.icon}
               />
               <Text allowFontScaling={false} style={styles.dateText}>
-                {InfoItem?.date?.split("T")[0]}
+                {formatDisplayDate()}
               </Text>
             </View>
           </View>
@@ -254,10 +307,12 @@ const ItemCalendar = ({
                       color={Colors.light.icon}
                     />
                     <Text allowFontScaling={false} style={styles.infoText}>
-                      {dataDetails.info?.estimateTime || (
+                      {getEstimateTime() || (
                         <FormattedMessage id="estimateTime" />
                       )}{" "}
-                      min
+                      {
+                        user.tipo_servicio !== 3 && "min"
+                      }
                     </Text>
                   </View>
 
@@ -285,7 +340,7 @@ const ItemCalendar = ({
                       style={styles.infoText}
                       numberOfLines={2}
                     >
-                      {productsText()}
+                      {InfoItem?.espacio?.nombre || productsText()}
                     </Text>
                   </View>
                 </View>
@@ -310,7 +365,7 @@ const ItemCalendar = ({
 
                 <View style={styles.actionButton}>
                   <View style={styles.actionSectionRow}>
-                    { (
+                    {(
                       <Pressable
                         style={[styles.actionButton, styles.deleteButton]}
                         onPress={async () => {
@@ -374,35 +429,35 @@ const ItemCalendar = ({
                     </Pressable>}
 
                     {confirmed && (
-                    <Pressable
-                      style={[styles.actionButton, styles.primaryButton]}
-                      onPress={viewDetailsOrder}
-                      disabled={loading || loadingDelete}
-                    >
-                      {loading ? (
-                        <Progress.Circle
-                          color="white"
-                          indeterminate={true}
-                          size={16}
-                        />
-                      ) : (
-                        <Ionicons
-                          name={"eye-outline"}
-                          size={16}
-                          color="white"
-                        />
-                      )}
-                      <Text
-                        allowFontScaling={false}
-                        style={styles.primaryButtonText}
+                      <Pressable
+                        style={[styles.actionButton, styles.primaryButton]}
+                        onPress={viewDetailsOrder}
+                        disabled={loading || loadingDelete}
                       >
-                        <FormattedMessage id="viewDetails" />
-                      </Text>
-                    </Pressable>
-                  )}
+                        {loading ? (
+                          <Progress.Circle
+                            color="white"
+                            indeterminate={true}
+                            size={16}
+                          />
+                        ) : (
+                          <Ionicons
+                            name={"eye-outline"}
+                            size={16}
+                            color="white"
+                          />
+                        )}
+                        <Text
+                          allowFontScaling={false}
+                          style={styles.primaryButtonText}
+                        >
+                          <FormattedMessage id="viewDetails" />
+                        </Text>
+                      </Pressable>
+                    )}
                   </View>
 
-                 
+
                 </View>
               </>
             )}

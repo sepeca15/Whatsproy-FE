@@ -84,7 +84,7 @@ const Home: React.FC = () => {
     return () => {
       lottieRef.current?.reset();
     };
-  }, []);
+  }, []);  
 
   return (
     <SafeAreaView style={styles.container}>

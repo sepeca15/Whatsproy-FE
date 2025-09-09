@@ -245,8 +245,6 @@ export default function CalendarView() {
   };
 
   const onLoadItems = async (dateString: string) => {
-    console.log('llamare');
-    
     setLoading(true);
     try {
       const idSelected = user.tipo_servicio === ID_TIPOSERVICIO_RESERVA_ESPACIO? selectedEspacio : selectedWorkerId
@@ -364,6 +362,7 @@ export default function CalendarView() {
   const eventsCount = orderPerDays[selectedDate]?.length || 0;
   const confirmedCount =
     orderPerDays[selectedDate]?.filter((order) => order.status)?.length || 0;
+    
 
   return (
     <SafeAreaView style={styles.safeArea}>

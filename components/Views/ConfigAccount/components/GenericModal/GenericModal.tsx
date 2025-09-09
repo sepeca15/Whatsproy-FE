@@ -193,28 +193,30 @@ const GenericModal: React.FC<DynamicModalProps> = ({
                     disabled={action.disabled}
                     activeOpacity={0.7}
                   >
-                    {action.loading ? (
-                      <Spinner color="white" size="sm" />
-                    ) : (
-                      <>
-                        {" "}
-                        {action.icon && (
-                          <Feather
-                            name={action.icon as any}
-                            size={16}
-                            color={action.style === "secondary" ? "black": "#fff"}
-                          />
-                        )}
-                        <Text allowFontScaling={false}
-                          style={[
-                            getActionButtonTextStyle(action.style),
-                            action.disabled && styles.disabledButtonText,
-                          ]}
-                        >
-                          {action.label}
-                        </Text>
-                      </>
-                    )}
+                    <Text>
+                      {action.loading ? (
+                        <Spinner color="white" size="sm" />
+                      ) : (
+                        <>
+                          {" "}
+                          {action.icon && (
+                            <Feather
+                              name={action.icon as any}
+                              size={16}
+                              color={action.style === "secondary" ? "black" : "#fff"}
+                            />
+                          )}
+                          <Text allowFontScaling={false}
+                            style={[
+                              getActionButtonTextStyle(action.style),
+                              action.disabled && styles.disabledButtonText,
+                            ]}
+                          >
+                            {action.label}
+                          </Text>
+                        </>
+                      )}
+                    </Text>
                   </TouchableOpacity>
                 ))}
               </View>

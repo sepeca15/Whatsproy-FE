@@ -21,6 +21,7 @@ import * as numeroConfianza from "../numeroConfianza/numeroConfianza";
 import * as schedules from "../schedules/schedules";
 import * as menuImg from "../menuImg/menuImg";
 import * as espacio from "../espacio/espacio";
+import * as precios from "../precios/precios";
 
 const api = {
   auth: {
@@ -172,6 +173,12 @@ const api = {
     findAll: espacio.getEspacios,
     delete: espacio.deleteEspacio,
     update: espacio.updateEspacio
+  },
+  precios: {
+    create: precios.createPrecio,
+    delete:  precios.deletePrecio,
+    getPreciosByEspacio:  precios.getPreciosByEspacio,
+    update: precios.updatePrecio ,
   }
 };
 

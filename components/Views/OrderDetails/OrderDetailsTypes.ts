@@ -50,5 +50,8 @@ export interface IOrderDetails {
   estadoActual: IEstado,
   detalle: string | null
   detalle_pedido?: string | null
-  espacio?: Espacio
+  espacio?: Espacio,
+  fecha_inicio?: any;
+  fecha_fin?: any
+  precio: any
 }

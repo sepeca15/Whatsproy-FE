@@ -9,6 +9,7 @@ interface Order {
   total: number;
   status: string;
   infoLinesJson: string;
+  direccion?: string;
 }
 
 interface FormattedOrder {
@@ -68,7 +69,7 @@ export const useLastOrders = () => {
         let status = intl.formatMessage({ id: "orders.noStatus" });
         try {
           const info = JSON.parse(order.infoLinesJson);
-          address = info?.Direccion?.trim() || address;
+          address = info?.Direccion?.trim() || order?.direccion || address;
           status = order.status?.trim() || status;
         } catch (error) {
           console.error("Error al parsear infoLinesJson", error);

@@ -15,6 +15,8 @@ import {
   Pressable,
   Avatar,
   Divider,
+  Icon,
+  View,
 } from "native-base"
 import { Ionicons, MaterialIcons } from "@expo/vector-icons"
 import type { Espacio } from "@/services/api/espacio/types"
@@ -26,6 +28,7 @@ import ModalConfirmAction from "@/components/ModalConfirmAction/ModalConfirmActi
 import MultiSelectInput from "@/components/MultiSelectInput"
 import { FormattedMessage, useIntl } from "react-intl"
 import useImagePicker from "@/utils/ImagePicker/useImagePicker"
+import { Precio } from "@/services/api/precios/types"
 
 const Colors = {
   light: {
@@ -49,7 +52,7 @@ const initialState = {
   descripcion: "",
   ubicacion: "",
   capacidad: "",
-  products: [] as any,
+  precios: [] as any,
 }
 
 const EspaciosTab = () => {
@@ -60,7 +63,6 @@ const EspaciosTab = () => {
   const [showModal, setShowModal] = useState(false)
   const [showDeleteAlert, setShowDeleteAlert] = useState(false)
   const [selectedEspacio, setSelectedEspacio] = useState<Espacio | null>(null)
-  const [products, setProducts] = useState<any[]>([])
   const [deleteId, setDeleteId] = useState<number | null>(null)
   const [formData, setFormData] = useState(initialState)
 
@@ -77,29 +79,18 @@ const EspaciosTab = () => {
         }))
       }
     },
-  })  
+  })
   const currentImageUri = imageUri || formData.image
 
-  const handleChangeProducts = (newProds: any[]) => {
-    setFormData((prev) => ({
+  const handleChangePrecios = (newPrice: any) => {
+    setFormData((prev: any) => ({
       ...prev,
-      products: newProds,
+      precios: [...prev.precios, newPrice],
     }))
   }
 
   const handleImagePick = () => {
     pickImage(setFormData)
-  }
-
-  const loadProductos = async () => {
-    try {
-      const { data } = await api.products.findProductsWithQuery("")
-      if (data.length > 0) {
-        setProducts(data)
-      }
-    } catch (error) {
-      console.log(error)
-    }
   }
 
   const loadEspacios = async () => {
@@ -125,20 +116,13 @@ const EspaciosTab = () => {
   }
 
   useEffect(() => {
-    loadProductos()
     loadEspacios()
   }, [])
 
+
   const handleCreate = () => {
     setSelectedEspacio(null)
-    setFormData({
-      nombre: "",
-      descripcion: "",
-      ubicacion: "",
-      capacidad: "",
-      image: "",
-      products: [],
-    })
+    setFormData(initialState)
     setShowModal(true)
   }
 
@@ -146,11 +130,11 @@ const EspaciosTab = () => {
     setSelectedEspacio(espacio)
     setFormData({
       nombre: espacio.nombre,
-      descripcion: espacio.descripcion,
-      ubicacion: espacio.ubicacion,
-      capacidad: espacio.capacidad?.toString() || "",
-      products: [],
-      image: "",
+      descripcion: espacio.descripcion ?? "",
+      ubicacion: espacio.ubicacion ?? "",
+      capacidad: espacio.capacidad?.toString() ?? "",
+      image: espacio.image ?? "",
+      precios: espacio.precios ?? [],
     })
     setShowModal(true)
   }
@@ -158,58 +142,25 @@ const EspaciosTab = () => {
   const handleSave = async () => {
     try {
       const espacioData = {
-        nombre: formData.nombre,
-        descripcion: formData.descripcion,
-        ubicacion: formData.ubicacion,
-        capacidad: formData.capacidad ? Number.parseInt(formData.capacidad) : null,
-        products: formData.products,
-        image: formData.image
+        ...formData,
+        capacidad: formData.capacidad ? Number(formData.capacidad) : null, // 🔹 string → number|null
       }
 
       if (selectedEspacio) {
         await api.espacio.update(selectedEspacio.id, espacioData)
-        showToast({
-          title: intl.formatMessage({
-            id: "espacioTab.spaceUpdated",
-            defaultMessage: "¡Espacio actualizado!",
-          }),
-          description: intl.formatMessage({
-            id: "espacioTab.spaceUpdatedSuccess",
-            defaultMessage: "El espacio fue actualizado exitosamente",
-          }),
-          status: "success",
-        })
+        showToast({ title: "¡Espacio actualizado!", status: "success" })
       } else {
         await api.espacio.create(espacioData)
-        showToast({
-          title: intl.formatMessage({
-            id: "espacioTab.spaceCreated",
-            defaultMessage: "¡Espacio creado!",
-          }),
-          description: intl.formatMessage({
-            id: "espacioTab.spaceCreatedSuccess",
-            defaultMessage: "El espacio fue agregado exitosamente",
-          }),
-          status: "success",
-        })
+        showToast({ title: "¡Espacio creado!", status: "success" })
       }
+
       setShowModal(false)
       loadEspacios()
-    } catch (error: any) {
-      console.log(error.response.data.message)
-      showToast({
-        title: intl.formatMessage({
-          id: "espacioTab.error",
-          defaultMessage: "Error",
-        }),
-        description: intl.formatMessage({
-          id: "espacioTab.saveSpaceError",
-          defaultMessage: "No se pudo guardar el espacio",
-        }),
-        status: "error",
-      })
+    } catch (error) {
+      showToast({ title: "Error", description: "No se pudo guardar el espacio", status: "error" })
     }
   }
+
 
   const handleDelete = (id: number) => {
     setDeleteId(id)
@@ -251,20 +202,15 @@ const EspaciosTab = () => {
   }
 
   React.useEffect(() => {
-    if (showModal) {
-      if (selectedEspacio) {
-        setFormData({
-          nombre: selectedEspacio.nombre || "",
-          image: selectedEspacio.image || "",
-          descripcion: selectedEspacio.descripcion || "",
-          ubicacion: selectedEspacio.ubicacion || "",
-          capacidad: selectedEspacio.capacidad?.toString() || "",
-          products: selectedEspacio.productos?.map((p: any) => p.id) || [],
-        })
-        setImageUri(selectedEspacio.image || null)
-      } else {
-        setFormData(initialState)
-      }
+    if (showModal && selectedEspacio) {
+      setFormData({
+        nombre: selectedEspacio.nombre || "",
+        image: selectedEspacio.image || "",
+        descripcion: selectedEspacio.descripcion || "",
+        ubicacion: selectedEspacio.ubicacion || "",
+        capacidad: selectedEspacio.capacidad?.toString() || "",
+        precios: selectedEspacio.precios,
+      })
     }
   }, [showModal, selectedEspacio, setImageUri])
 
@@ -342,7 +288,6 @@ const EspaciosTab = () => {
 
         <Divider />
 
-        {/* Stats */}
         <HStack justifyContent="space-between" alignItems="center">
           {item.capacidad && (
             <Badge
@@ -352,13 +297,17 @@ const EspaciosTab = () => {
               px={3}
               py={1}
               _text={{ fontSize: "xs", fontWeight: "600" }}
+
             >
-              <HStack space={1} alignItems="center">
-                <Ionicons name="people" size={12} color={Colors.light.success} />
-                <Text fontSize="xs" color={Colors.light.success} fontWeight="600">
-                  {item.capacidad} <FormattedMessage id="espacioTab.people" defaultMessage="personas" />
+              <View display={'flex'} flexDir={'row'} alignItems={'center'} >
+                <Text>
+                  <Ionicons style={{ marginRight: 4 }} name="people" size={12} color={Colors.light.success} />
                 </Text>
-              </HStack>
+                <Text fontSize="xs" color={Colors.light.success} fontWeight="600">
+                  {item.capacidad}
+                </Text>
+
+              </View>
             </Badge>
           )}
         </HStack>
@@ -491,7 +440,6 @@ const EspaciosTab = () => {
         ]}
       >
         <Box bg="coolGray.50" p={2} minH="400px">
-          {/* Header Card mejorado */}
           <Box
             bg="white"
             rounded="2xl"
@@ -562,15 +510,17 @@ const EspaciosTab = () => {
                   variant="outline"
                   borderColor={Colors.light.primary}
                   onPress={handleImagePick}
-                  leftIcon={<MaterialIcons name="cloud-upload" size={20} color={Colors.light.primary} />}
+                  leftIcon={<Icon as={MaterialIcons} name="cloud-upload" size={5} color={Colors.light.primary} />}
                   _text={{ color: Colors.light.primary, fontWeight: "600" }}
                   rounded="full"
                   px={6}
                 >
-                  <FormattedMessage
-                    id={currentImageUri ? "categories.modal.changeImage" : "categories.modal.uploadImage"}
-                    defaultMessage={currentImageUri ? "Cambiar imagen" : "Subir imagen"}
-                  />
+                  <Text>
+                    <FormattedMessage
+                      id={currentImageUri ? "categories.modal.changeImage" : "categories.modal.uploadImage"}
+                      defaultMessage={currentImageUri ? "Cambiar imagen" : "Subir imagen"}
+                    />
+                  </Text>
                 </Button>
               </VStack>
             </Box>
@@ -729,19 +679,33 @@ const EspaciosTab = () => {
                         <Ionicons name="cube" size={16} color={Colors.light.primary} />
                       </Box>
                       <Text fontSize="md" fontWeight="600" color={Colors.light.text}>
-                        <FormattedMessage id="espacioTab.associatedProducts" defaultMessage="Productos asociados" />
+                        <FormattedMessage id="espacioTab.associatedProducts" defaultMessage="Precios asociados" />
                       </Text>
                     </HStack>
                   </FormControl.Label>
                   <MultiSelectInput
-                    options={products?.map((prod) => ({
-                      label: prod?.nombre,
-                      placeholder: prod?.nombre,
-                      value: prod?.id ?? "",
+                    options={formData.precios.map((precio: Precio) => ({
+                      label: `${precio.precio} x ${precio.tipo_intervalo.split('s')[0]}`,
+                      value: precio.id,
                     }))}
-                    itemsSelected={formData.products}
-                    setItemsSelected={handleChangeProducts}
+                    initialStateAdd={[
+                      {
+                        name: "tipo_intervalo", type: "select", options: [
+                          { label: "Minutos", value: "minutos" },
+                          { label: "Horas", value: "horas" },
+                          { label: "Días", value: "dias" },
+                        ]
+                      },
+                      { name: "duracion_intervalo", type: "numeric" },
+                      { name: "precio", type: "numeric" },
+                    ]}
+                    withAdd
+                    itemsSelected={formData.precios.map((p: any) => p.id)}
+                    setItemsSelected={(newPrices) => setFormData({ ...formData, precios: newPrices })}
                     isMultiple
+                    actionToAddItem={async (data) => {
+                      handleChangePrecios(data)
+                    }}
                   />
                 </Box>
               </FormControl>

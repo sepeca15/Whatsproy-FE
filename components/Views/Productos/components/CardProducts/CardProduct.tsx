@@ -55,7 +55,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const [showDisableAlert, setShowDisableAlert] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const { user } = useUser();
-
+  
   const currencies = user?.currencies ?? [];
   const currenctCurrency = currencies.find(
     (itm: any) => itm?.id === productBDD?.currency_id

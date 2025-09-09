@@ -11,6 +11,7 @@ import {
   Button,
   Input,
   Icon as NBIcon,
+  FormControl,
 } from "native-base";
 import InputField from "./InputField";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
@@ -20,10 +21,12 @@ import { FlatList, TouchableOpacity, StyleSheet } from "react-native";
 import TapSensitiveInput from "./TapSensitiveInput/TapSensitiveInput";
 import { useIntl } from "react-intl";
 import GenericModal from "./Views/ConfigAccount/components/GenericModal/GenericModal";
+import { Select, CheckIcon } from "native-base";
 
 interface ItemAdd {
   name: string;
   type: string;
+  options?: { label: string; value: string | number }[];
 }
 
 interface Option {
@@ -429,6 +432,7 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
           {onSearch && renderSearchHeader()}
 
           <FlatList
+            nestedScrollEnabled
             data={options}
             renderItem={renderOptionItem}
             keyExtractor={(item) => `option-${item.value}`}
@@ -453,23 +457,46 @@ const MultiSelectInput: React.FC<MultiSelectInputProps> = ({
           <View style={styles.addModalContent}>
             {initialStateAdd?.map((item, index) => (
               <View key={`field-${index}`} style={styles.formField}>
-                <InputField
-                  label={intl.formatMessage(
-                    { id: "enterField", defaultMessage: "Ingresar {field}" },
-                    { field: item.name }
-                  )}
-                  keyboardType={item.type as any}
-                  isRequired
-                  value={formValues[item.name] || ""}
-                  placeholder={intl.formatMessage(
-                    { id: "enterField", defaultMessage: "Ingresar {field}" },
-                    { field: item.name }
-                  )}
-                  onChangeText={(value) => handleFieldChange(item.name, value)}
-                />
+                {item.type === "select" && item.options ? (
+                  <View w={'full'} >
+                    {label && <FormControl.Label>{label}</FormControl.Label>}
+                    <Select
+                      selectedValue={formValues[item.name] || ""}
+                      minWidth="200"
+                      placeholder={intl.formatMessage(
+                        { id: "selectField", defaultMessage: "Seleccionar {field}" },
+                        { field: item.name }
+                      )}
+                      onValueChange={(value) => handleFieldChange(item.name, value)}
+                      _selectedItem={{
+                        bg: "teal.600",
+                        endIcon: <CheckIcon size="5" />,
+                      }}
+                    >
+                      {item.options?.map((opt) => (
+                        <Select.Item key={opt.value} label={opt.label} value={String(opt.value)} />
+                      ))}
+                    </Select>
+
+                  </View>
+                ) : (
+                  <InputField
+                    label={intl.formatMessage(
+                      { id: "enterField", defaultMessage: "Ingresar {field}" },
+                      { field: item.name }
+                    )}
+                    keyboardType={item.type as any}
+                    isRequired
+                    value={formValues[item.name] || ""}
+                    placeholder={intl.formatMessage(
+                      { id: "enterField", defaultMessage: "Ingresar {field}" },
+                      { field: item.name }
+                    )}
+                    onChangeText={(value) => handleFieldChange(item.name, value)}
+                  />
+                )}
               </View>
             ))}
-
             <View style={styles.addModalActions}>
               <Button
                 style={styles.cancelButton}
@@ -679,7 +706,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   formField: {
-    marginBottom: 16,
+    marginBottom: 10,
   },
   addModalActions: {
     flexDirection: "row",

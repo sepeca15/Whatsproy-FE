@@ -1,3 +1,5 @@
+import { Precio } from "../precios/types";
+
 export interface Espacio {
   id: number;
   nombre: string;
@@ -5,6 +7,6 @@ export interface Espacio {
   ubicacion: string;
   capacidad: number | null;
   pedido: any[],
-  productos: any[]
+  precios: Precio[]
   image?: string;
 }

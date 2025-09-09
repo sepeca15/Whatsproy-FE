@@ -35,6 +35,7 @@ import { useUser } from "@/hooks/redux/useUser";
 import {
   ID_TIPOSERVICIO_DELIVERY,
   ID_TIPOSERVICIO_RESERVA,
+  ID_TIPOSERVICIO_RESERVA_ESPACIO
 } from "@/services/api/tiposervicio/tiposervicio.type";
 import DailyMenuTab from "./DailyMenuTab";
 import MenusUpload from "./components/MenusUpload";
@@ -181,6 +182,12 @@ const Productos: React.FC = () => {
     },
     [intl]
   );
+
+  useEffect(()=> {
+    if( user.tipo_servicio === ID_TIPOSERVICIO_RESERVA_ESPACIO ) {
+      setActiveTab('espacios')
+    }
+  },[])
 
   const updateProduct = (newProduct: any) => {
     setProducts((prevState) => {
@@ -412,14 +419,14 @@ const Productos: React.FC = () => {
 
       {!isReserva && (
         <View style={styles.tabContainer}>
-          {renderTabButton("products", "products", "Productos")}
 
+          {
+            user.tipo_servicio !== ID_TIPOSERVICIO_RESERVA_ESPACIO &&
+            renderTabButton("products", "products", "Productos")}
           {user.tipo_servicio === ID_TIPOSERVICIO_DELIVERY &&
             renderTabButton("dailyMenu", "dailyMenu", "Menú Diario")}
           {user.tipo_servicio === ID_TIPOSERVICIO_DELIVERY &&
             renderTabButton("uploadMenu", "uploadMenu", "Subir Menú")}
-          {user.tipo_servicio !== ID_TIPOSERVICIO_DELIVERY && user.tipo_servicio !== ID_TIPOSERVICIO_RESERVA &&
-            renderTabButton("espacios", "espacios", "Mis espacios")}
         </View>
       )}
 

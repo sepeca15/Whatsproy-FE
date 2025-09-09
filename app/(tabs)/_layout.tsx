@@ -23,7 +23,7 @@ const TabLayout: React.FC = () => {
   const { userConfigured, paymentMade, apiConfigured, greenApiConfigured } =
     user;
   const globalConfig =
-    userConfigured && paymentMade && apiConfigured && greenApiConfigured;
+    userConfigured && paymentMade && apiConfigured && true;
   const isSuperAdmin = user?.isSuperAdmin;
   const assistentEnabled = user?.assistentEnabled;
 
